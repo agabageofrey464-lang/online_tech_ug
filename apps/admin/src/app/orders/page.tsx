@@ -1,0 +1,76 @@
+import Link from "next/link";
+import { apiGet, ugx, type AdminOrder } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+
+const statusTone: Record<string, string> = {
+  pending: "bg-yellow-100 text-yellow-700",
+  confirmed: "bg-blue-100 text-blue-700",
+  processing: "bg-blue-100 text-blue-700",
+  shipped: "bg-indigo-100 text-indigo-700",
+  delivered: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+};
+
+export default async function OrdersPage() {
+  const orders = (await apiGet<AdminOrder[]>("/api/v1/orders")) ?? [];
+  const revenue = orders.reduce((s, o) => s + o.total, 0);
+
+  return (
+    <div>
+      <header className="mb-8">
+        <h1 className="text-2xl font-extrabold text-ink-600">Orders</h1>
+        <p className="text-sm text-ink-600/60">
+          {orders.length} order(s) · {ugx(revenue)} total value
+        </p>
+      </header>
+
+      {orders.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-ink-600/20 bg-white p-10 text-center text-ink-600/60">
+          No orders yet. Orders placed on the storefront will appear here.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-ink-600/10 bg-white shadow-sm">
+          <table className="w-full text-sm">
+            <thead className="border-b border-ink-600/10 bg-ink-50 text-left text-xs uppercase tracking-wider text-ink-600/60">
+              <tr>
+                <th className="p-4">Reference</th>
+                <th className="p-4">Customer</th>
+                <th className="p-4">Phone</th>
+                <th className="p-4">Payment</th>
+                <th className="p-4 text-right">Total</th>
+                <th className="p-4 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr key={o.id} className="border-b border-ink-600/5 last:border-0 hover:bg-ink-50/50">
+                  <td className="p-4">
+                    <Link
+                      href={`/orders/${o.reference}`}
+                      className="font-mono font-semibold text-brand-600 underline-offset-2 hover:underline"
+                    >
+                      {o.reference}
+                    </Link>
+                  </td>
+                  <td className="p-4 font-semibold text-ink-600">{o.customer_name}</td>
+                  <td className="p-4 text-ink-600/70">{o.phone}</td>
+                  <td className="p-4 text-ink-600/70">
+                    {o.payment_method.replace(/_/g, " ")}
+                    <span className="ml-1 text-xs text-ink-600/40">({o.payment_status})</span>
+                  </td>
+                  <td className="p-4 text-right font-semibold text-ink-600">{ugx(o.total)}</td>
+                  <td className="p-4 text-center">
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${statusTone[o.status] ?? "bg-ink-50 text-ink-600"}`}>
+                      {o.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

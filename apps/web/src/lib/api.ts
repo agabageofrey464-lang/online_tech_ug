@@ -1,0 +1,87 @@
+// Thin client for the FastAPI backend.
+
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+// In the browser, call the same-origin proxy (/_api/* -> API) to avoid CORS.
+// On the server, call the API directly.
+const base = () =>
+  typeof window !== "undefined" ? "/_api" : `${API_URL}/api/v1`;
+
+export type ApiProductSpecs = {
+  type: string;
+  processor: string;
+  generation: string;
+  ram: string;
+  storage: string;
+  graphics: string;
+  display: string;
+  os: string;
+  battery: string;
+  ports: string;
+  build: string;
+  purpose: string;
+};
+
+export type ApiProduct = {
+  id: number;
+  slug: string;
+  name: string;
+  category: string;
+  brand: string;
+  condition: string;
+  description: string;
+  price_ugx: number;
+  old_price_ugx: number | null;
+  rating: number;
+  in_stock: boolean;
+  image_url: string;
+  specs: ApiProductSpecs | null;
+};
+
+export type OrderItemPayload = { slug: string; quantity: number };
+
+export type OrderPayload = {
+  customer_name: string;
+  phone: string;
+  email?: string;
+  delivery_town: string;
+  delivery_address: string;
+  notes?: string;
+  payment_method: "cash_on_delivery" | "mtn_momo" | "airtel_money";
+  items: OrderItemPayload[];
+};
+
+export type Order = {
+  reference: string;
+  customer_name: string;
+  phone: string;
+  email: string;
+  delivery_town: string;
+  delivery_address: string;
+  subtotal: number;
+  delivery_fee: number;
+  total: number;
+  payment_method: string;
+  payment_status: string;
+  status: string;
+  items: { product_slug: string; name: string; unit_price: number; quantity: number; line_total: number }[];
+};
+
+export async function createOrder(payload: OrderPayload): Promise<Order> {
+  const res = await fetch(`${base()}/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `Order failed (${res.status})`);
+  }
+  return res.json();
+}
+
+export async function getOrder(reference: string): Promise<Order> {
+  const res = await fetch(`${base()}/orders/${reference}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Order ${reference} not found`);
+  return res.json();
+}
