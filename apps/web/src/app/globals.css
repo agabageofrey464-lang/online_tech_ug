@@ -28,8 +28,8 @@
 
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-display: var(--font-sora), var(--font-jakarta), ui-sans-serif, system-ui,
-    sans-serif;
+  /* One consistent typeface everywhere — headings share the body font */
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 1rem;
 }
@@ -45,6 +45,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Slightly smaller base so text/spacing scale down proportionally (stays matching) */
+  font-size: 15px;
 }
 
 body {

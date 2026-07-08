@@ -116,22 +116,34 @@ export function SiteHeader() {
       </div>
 
       {/* Bar 2 — sub nav (Amazon #232f3e) */}
-      <nav className="bg-[#232f3e] text-white">
+      <nav className="bg-[#232f3e] text-white shadow-sm">
         <div className="container-wide flex items-center gap-1 overflow-x-auto py-1.5 text-sm no-scrollbar">
-          <Link href="/shop" className="flex shrink-0 items-center gap-1 rounded px-2 py-1.5 font-bold hover:outline hover:outline-1 hover:outline-white/60">
+          <Link
+            href="/shop"
+            className="mr-1 flex shrink-0 items-center gap-1.5 rounded-md bg-brand-500 px-3 py-1.5 font-bold text-white shadow-sm transition hover:bg-brand-600"
+          >
             <Menu size={18} /> All
           </Link>
-          {nav.filter((n) => n.href !== "/").map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`shrink-0 whitespace-nowrap rounded px-2.5 py-1.5 hover:outline hover:outline-1 hover:outline-white/60 ${
-                pathname === item.href ? "font-bold text-brand-300" : "text-white/90"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {nav.filter((n) => n.href !== "/").map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 font-medium transition ${
+                  active
+                    ? "bg-white/10 font-bold text-brand-300"
+                    : "text-white/85 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {item.label}
+                {active && (
+                  <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand-400" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </nav>
 

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { X, GraduationCap, CheckCircle2 } from "lucide-react";
-import { whatsappLink, ugx } from "@/lib/site";
+import { whatsappLink, ugx, site } from "@/lib/site";
 import { enroll, setLearnerName } from "@/lib/learning";
+import { registerForCourse } from "@/lib/api";
 
 export function CourseRegister({
   courseSlug,
@@ -19,10 +20,13 @@ export function CourseRegister({
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [code, setCode] = useState("");
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    // No backend yet — record locally and hand off to WhatsApp to confirm.
+    setBusy(true);
+    // Record the registration locally so the learner appears on their dashboard.
     try {
       const key = "otu_course_regs";
       const list = JSON.parse(localStorage.getItem(key) || "[]");
@@ -31,10 +35,29 @@ export function CourseRegister({
     } catch {}
     if (form.name) setLearnerName(form.name);
     enroll(courseSlug); // add to the student's dashboard
+
+    // Auto-generate a (pending) unlock code from the backend.
+    let issued = "";
+    try {
+      const res = await registerForCourse({
+        course_slug: courseSlug,
+        name: form.name,
+        phone: form.phone,
+        email: form.email || undefined,
+      });
+      issued = res.code;
+      setCode(issued);
+    } catch {
+      // Offline / API down — fall back to the WhatsApp-only flow.
+    }
+
     setDone(true);
-    const msg = `Hello Online Tech Uganda! I'd like to REGISTER for the course "${courseTitle}"${
-      price ? ` (${ugx(price)})` : ""
-    }.\nName: ${form.name}\nPhone: ${form.phone}${form.email ? `\nEmail: ${form.email}` : ""}`;
+    setBusy(false);
+    const msg =
+      `Hello Online Tech Uganda! I'd like to REGISTER for the course "${courseTitle}"${
+        price ? ` (${ugx(price)})` : ""
+      }.\nName: ${form.name}\nPhone: ${form.phone}${form.email ? `\nEmail: ${form.email}` : ""}` +
+      (issued ? `\nMy unlock code: ${issued}` : "");
     window.open(whatsappLink(msg), "_blank");
   }
 
@@ -70,12 +93,31 @@ export function CourseRegister({
             </div>
 
             {done ? (
-              <div className="py-4 text-center">
+              <div className="py-3 text-center">
                 <CheckCircle2 className="mx-auto text-green-600" size={40} />
                 <p className="mt-2 font-bold text-ink-700">You&apos;re registered!</p>
-                <p className="mt-1 text-sm text-ink-700/70">
-                  We&apos;ve opened WhatsApp to confirm your spot. We&apos;ll send joining details and payment options.
-                </p>
+
+                {code ? (
+                  <>
+                    <p className="mt-1 text-sm text-ink-700/70">Here is your personal unlock code:</p>
+                    <div className="mt-2 rounded-lg border border-dashed border-brand-300 bg-brand-50 px-4 py-3">
+                      <span className="font-mono text-xl font-extrabold tracking-widest text-brand-700">{code}</span>
+                    </div>
+                    <ol className="mt-3 space-y-1 text-left text-[13px] text-ink-700/75">
+                      <li><b>1.</b> Pay {price ? <b>{ugx(price)}</b> : "the course fee"} via Mobile Money to <b>{site.phoneDisplay}</b>.</li>
+                      <li><b>2.</b> Send your payment confirmation on WhatsApp (we&apos;ve opened it for you).</li>
+                      <li><b>3.</b> We activate your code — then enter it on the course page to unlock all lessons.</li>
+                    </ol>
+                    <p className="mt-2 text-[11px] text-ink-700/50">
+                      Keep this code safe. It unlocks the course as soon as your payment is confirmed.
+                    </p>
+                  </>
+                ) : (
+                  <p className="mt-1 text-sm text-ink-700/70">
+                    We&apos;ve opened WhatsApp to confirm your spot. We&apos;ll send your unlock code and payment options.
+                  </p>
+                )}
+
                 <button
                   onClick={() => setOpen(false)}
                   className="mt-4 rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600"
@@ -108,9 +150,10 @@ export function CourseRegister({
                 />
                 <button
                   type="submit"
-                  className="w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+                  disabled={busy}
+                  className="w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60"
                 >
-                  {price ? `Register · ${ugx(price)}` : "Register free"}
+                  {busy ? "Registering…" : price ? `Register · ${ugx(price)}` : "Register free"}
                 </button>
                 <p className="text-center text-[11px] text-ink-700/50">
                   We&apos;ll confirm your spot and payment on WhatsApp.

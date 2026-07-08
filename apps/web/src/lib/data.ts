@@ -27,9 +27,16 @@ export type Product = {
   rating: number;
   badge?: string;
   inStock?: boolean; // defaults to true when omitted
+  image?: string; // remote/web image URL; falls back to /products/<id>.webp
   specs: string[]; // short bullets for cards/grid
   details?: ProductDetails; // full specification (computers)
 };
+
+// Resolve a product's image: an explicit web URL if provided, else the local
+// curated photo by slug convention.
+export function productImage(p: Pick<Product, "id" | "image">): string {
+  return p.image ?? `/products/${p.id}.webp`;
+}
 
 export const products: Product[] = [
   // ── Budget laptops (550k – 1M) ──────────────────────────────
@@ -1016,6 +1023,22 @@ export const products: Product[] = [
   { id: "wd-elements-2tb", name: "WD Elements 2TB External HDD", category: "Storage", price: 320000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["2TB", "USB 3.0", "Plug & play"] },
   { id: "wd-passport-1tb", name: "WD My Passport 1TB", category: "Storage", price: 260000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["1TB", "USB 3.0", "Password protection"] },
   { id: "wd-blue-ssd-500gb", name: "WD Blue 500GB SSD", category: "Storage", price: 300000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["500GB", "2.5\" SATA", "Reliable upgrade"] },
+
+  // ── Extra stock (web images; sync to backend catalog before enabling checkout) ──
+  { id: "lenovo-thinkpad-t480", name: "Lenovo ThinkPad T480", category: "Laptops", price: 950000, oldPrice: 1100000, brand: "Lenovo", condition: "UK Used", rating: 4.6, badge: "Popular", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80&auto=format", specs: ["Core i5 8th Gen", "8GB RAM", "256GB SSD", "14\" FHD", "Windows 11"] },
+  { id: "macbook-air-2017", name: "Apple MacBook Air 13\" (2017)", category: "Laptops", price: 1900000, brand: "Apple", condition: "Refurbished", rating: 4.7, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80&auto=format", specs: ["Core i5", "8GB RAM", "128GB SSD", "13.3\" display", "macOS"] },
+  { id: "dell-optiplex-3070-micro", name: "Dell OptiPlex 3070 Micro", category: "Desktops", price: 900000, brand: "Dell", condition: "UK Used", rating: 4.5, image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&q=80&auto=format", specs: ["Core i5 9th Gen", "8GB RAM", "256GB SSD", "Tiny form factor", "Windows 11"] },
+  { id: "hp-prodesk-400-g5", name: "HP ProDesk 400 G5 Tower", category: "Desktops", price: 1100000, brand: "HP", condition: "Refurbished", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&q=80&auto=format", specs: ["Core i5 8th Gen", "8GB RAM", "1TB HDD", "Tower", "Windows 11"] },
+  { id: "kingston-fury-8gb-ddr4", name: "Kingston FURY 8GB DDR4 RAM", category: "Components", price: 150000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "New", image: "https://images.unsplash.com/photo-1618410320928-25228d811631?w=600&q=80&auto=format", specs: ["8GB DDR4", "3200MHz", "Desktop DIMM"] },
+  { id: "crucial-mx500-500gb", name: "Crucial MX500 500GB SSD", category: "Components", price: 260000, brand: "Crucial", condition: "Brand New", rating: 4.8, image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=600&q=80&auto=format", specs: ["500GB", "2.5\" SATA", "Fast boot upgrade"] },
+  { id: "anker-powerbank-20000", name: "Anker 20,000mAh Power Bank", category: "Power", price: 185000, brand: "Anker", condition: "Brand New", rating: 4.7, badge: "Bestseller", image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600&q=80&auto=format", specs: ["20,000mAh", "USB-C PD", "Fast charge"] },
+  { id: "usb-c-65w-charger", name: "65W USB-C Laptop Charger", category: "Power", price: 90000, brand: "Generic", condition: "Brand New", rating: 4.4, image: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?w=600&q=80&auto=format", specs: ["65W", "USB-C PD", "Universal laptops"] },
+  { id: "logitech-m170-mouse", name: "Logitech M170 Wireless Mouse", category: "Accessories", price: 45000, brand: "Logitech", condition: "Brand New", rating: 4.6, image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600&q=80&auto=format", specs: ["Wireless", "USB receiver", "18-month battery"] },
+  { id: "redragon-k552-keyboard", name: "Redragon K552 Mechanical Keyboard", category: "Accessories", price: 135000, brand: "Redragon", condition: "Brand New", rating: 4.7, badge: "Gaming", image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80&auto=format", specs: ["Mechanical", "RGB backlight", "Compact TKL"] },
+  { id: "hd-1080p-webcam", name: "1080p HD Webcam", category: "Accessories", price: 120000, brand: "Generic", condition: "Brand New", rating: 4.4, image: "https://images.unsplash.com/photo-1546027658-7aa750153465?w=600&q=80&auto=format", specs: ["1080p", "Built-in mic", "Clip-on"] },
+  { id: "tp-link-archer-c6", name: "TP-Link Archer C6 Router", category: "Networking", price: 165000, brand: "TP-Link", condition: "Brand New", rating: 4.6, image: "https://images.unsplash.com/photo-1601737487795-dab272f52420?w=600&q=80&auto=format", specs: ["AC1200 dual-band", "4 antennas", "MU-MIMO"] },
+  { id: "seagate-expansion-1tb", name: "Seagate Expansion 1TB HDD", category: "Storage", price: 250000, brand: "Seagate", condition: "Brand New", rating: 4.7, image: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600&q=80&auto=format", specs: ["1TB", "USB 3.0", "Plug & play"] },
+  { id: "sandisk-ultra-128gb-flash", name: "SanDisk Ultra 128GB Flash Drive", category: "Storage", price: 60000, brand: "SanDisk", condition: "Brand New", rating: 4.7, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format", specs: ["128GB", "USB 3.0", "Up to 130MB/s"] },
 ];
 
 export const productCategories = [

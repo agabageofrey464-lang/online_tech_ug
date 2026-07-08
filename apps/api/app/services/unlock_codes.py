@@ -43,8 +43,13 @@ def _to_dict(c: UnlockCode) -> dict:
     }
 
 
-def generate_code(db: Session, course_slug: str, note: str = "") -> dict:
-    """Create a unique unlock code for a course. Raises ValueError if course unknown."""
+def generate_code(db: Session, course_slug: str, note: str = "", pending: bool = False) -> dict:
+    """Create a unique unlock code for a course. Raises ValueError if course unknown.
+
+    `pending=True` creates the code in a not-yet-active state (revoked) — used for
+    self-service learner registration, where the code only works once payment is
+    confirmed and an admin activates it. Admin-generated codes are active immediately.
+    """
     if not get_course(db, course_slug):
         raise ValueError("Unknown course")
     # Retry until we get a code that doesn't collide.
@@ -52,7 +57,7 @@ def generate_code(db: Session, course_slug: str, note: str = "") -> dict:
         code = f"{_prefix(course_slug)}-{secrets.token_hex(3).upper()}"  # e.g. CB-9F2A1C
         exists = db.execute(select(UnlockCode).where(UnlockCode.code == code)).scalar_one_or_none()
         if not exists:
-            row = UnlockCode(code=code, course_slug=course_slug, note=note)
+            row = UnlockCode(code=code, course_slug=course_slug, note=note, revoked=pending)
             db.add(row)
             db.commit()
             db.refresh(row)

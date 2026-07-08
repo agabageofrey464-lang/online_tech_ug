@@ -3,7 +3,14 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.session import get_db
-from app.schemas.unlock_code import GenerateIn, UnlockCodeOut, VerifyIn, VerifyOut
+from app.schemas.unlock_code import (
+    GenerateIn,
+    RegisterIn,
+    RegisterOut,
+    UnlockCodeOut,
+    VerifyIn,
+    VerifyOut,
+)
 from app.services import unlock_codes
 
 router = APIRouter()
@@ -18,6 +25,19 @@ def require_admin(x_admin_key: str = Header(default="")) -> None:
 def verify(payload: VerifyIn, db: Session = Depends(get_db)) -> dict:
     """Public: verify a learner's unlock code for a course."""
     return {"valid": unlock_codes.verify_code(db, payload.course_slug, payload.code)}
+
+
+@router.post("/register", response_model=RegisterOut, status_code=201)
+def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
+    """Public: a learner registers for a course and is auto-issued a PENDING unlock
+    code. The code only unlocks the course once payment is confirmed and an admin
+    activates it."""
+    note = f"{payload.name} · {payload.phone}" + (f" · {payload.email}" if payload.email else "")
+    try:
+        created = unlock_codes.generate_code(db, payload.course_slug, note=note, pending=True)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return {"code": created["code"], "course_slug": payload.course_slug, "pending": True}
 
 
 @router.post("", response_model=UnlockCodeOut, status_code=201, dependencies=[Depends(require_admin)])

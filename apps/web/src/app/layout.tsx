@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Sora } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -17,7 +17,6 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   display: "swap",
 });
-const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -67,7 +66,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${sora.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       <body className="min-h-screen bg-white antialiased">
         <CartProvider>
           <WishlistProvider>

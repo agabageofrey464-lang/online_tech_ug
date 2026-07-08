@@ -127,24 +127,34 @@ export default function HomePage() {
       </div>
 
       {/* Promo cards (below the hero & features) */}
-      <div className="grid grid-cols-2 gap-3">
-        <Link href="/services" className="group flex items-center gap-3 rounded-lg border-l-4 border-brand-500 bg-white p-3 shadow-sm transition hover:shadow-md">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-            <Icon name="repair" size={22} />
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold text-ink-900">Repairs & IT Support</p>
-            <p className="truncate text-xs text-ink-700/70">From {ugx(30000)} · onsite & remote</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border-l-4 border-brand-500 bg-white p-4 shadow-sm transition hover:shadow-md">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+              <Icon name="repair" size={24} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-extrabold text-ink-900">Repairs & IT Support</p>
+              <p className="text-xs text-ink-700/70">Laptops, desktops & networks · onsite & remote · from {ugx(30000)}</p>
+            </div>
           </div>
+          <span className="hidden shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-brand-600 sm:inline-block">
+            Book a repair →
+          </span>
         </Link>
-        <Link href="/services" className="group flex items-center gap-3 rounded-lg border-l-4 border-ink-600 bg-white p-3 shadow-sm transition hover:shadow-md">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-50 text-ink-600">
-            <Icon name="web" size={22} />
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold text-ink-900">Websites & Software</p>
-            <p className="truncate text-xs text-ink-700/70">From {ugx(500000)} · get a quote</p>
+        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border-l-4 border-ink-600 bg-white p-4 shadow-sm transition hover:shadow-md">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink-50 text-ink-600">
+              <Icon name="web" size={24} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-extrabold text-ink-900">Websites & Software</p>
+              <p className="text-xs text-ink-700/70">Custom sites, systems & apps for your business · from {ugx(500000)}</p>
+            </div>
           </div>
+          <span className="hidden shrink-0 rounded-full bg-ink-600 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-ink-700 sm:inline-block">
+            Get a quote →
+          </span>
         </Link>
       </div>
 

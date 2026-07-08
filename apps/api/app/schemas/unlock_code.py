@@ -8,6 +8,19 @@ class GenerateIn(BaseModel):
     note: str = ""
 
 
+class RegisterIn(BaseModel):
+    course_slug: str
+    name: str
+    phone: str
+    email: str = ""
+
+
+class RegisterOut(BaseModel):
+    code: str
+    course_slug: str
+    pending: bool = True
+
+
 class VerifyIn(BaseModel):
     course_slug: str
     code: str

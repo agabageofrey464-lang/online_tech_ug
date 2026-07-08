@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/lib/data";
+import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 
 // Jumia-style flash-sale card: discount badge, bold price, old price, "items left" bar.
@@ -14,7 +14,7 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
     <Link href={`/shop/${product.id}`} className="group block rounded-lg bg-white p-2.5 shadow-sm transition hover:shadow-md sm:p-3">
       <div className="relative aspect-square overflow-hidden bg-white">
         <Image
-          src={`/products/${product.id}.webp`}
+          src={productImage(product)}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 42vw, 16vw"

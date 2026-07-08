@@ -104,14 +104,21 @@ export function CourseCodes({ slug }: { slug: string }) {
                 {copied === c.code ? "Copied!" : c.code}
               </button>
               <span className="min-w-0 flex-1 truncate text-ink-600/60">{c.note || "—"}</span>
+              <span
+                className={`shrink-0 rounded px-1.5 py-0.5 font-semibold ${
+                  c.revoked ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
+                }`}
+              >
+                {c.revoked ? "Pending" : "Active"}
+              </span>
               <span className="shrink-0 text-ink-600/50">{c.redeemed_count} use(s)</span>
               <button
                 onClick={() => toggleRevoke(c)}
                 className={`shrink-0 rounded px-2 py-0.5 font-semibold ${
-                  c.revoked ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  c.revoked ? "bg-green-600 text-white hover:bg-green-700" : "bg-red-100 text-red-700"
                 }`}
               >
-                {c.revoked ? "Restore" : "Revoke"}
+                {c.revoked ? "Activate (paid)" : "Revoke"}
               </button>
             </li>
           ))}

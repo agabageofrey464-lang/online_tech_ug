@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
-import { products } from "@/lib/data";
+import { products, productImage } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
 import { Badge, Stars, Button } from "@/components/ui";
 import { AddToCartButton } from "@/components/add-to-cart-button";
@@ -89,7 +89,7 @@ export default async function ProductDetailPage({
       {/* Amazon-style 3 zones: gallery · details · buy box */}
       <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)_minmax(0,3fr)]">
         {/* Gallery */}
-        <ProductGallery images={productImages[product.id] ?? [`/products/${product.id}.webp`]} alt={product.name}>
+        <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
           <div className="absolute left-4 top-4 z-10 flex gap-2">
             {product.badge && <Badge>{product.badge}</Badge>}
             {discount > 0 && <Badge tone="ink">-{discount}%</Badge>}

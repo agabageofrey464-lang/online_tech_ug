@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/lib/data";
+import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { WishlistButton } from "@/components/wishlist-button";
@@ -19,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-white">
           <Image
-            src={`/products/${product.id}.webp`}
+            src={productImage(product)}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -57,8 +57,8 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Price — small currency + prominent amount */}
         <div className="mt-1.5 flex items-baseline gap-1">
-          <span className="text-[11px] font-semibold text-ink-900">UGX</span>
-          <span className="text-xl font-extrabold leading-none text-ink-900">{priceNum}</span>
+          <span className="text-[10px] font-semibold text-ink-900">UGX</span>
+          <span className="text-[15px] font-extrabold leading-none text-ink-900">{priceNum}</span>
         </div>
         {product.oldPrice && (
           <div className="mt-0.5 flex items-center gap-1.5 text-[11px]">
@@ -75,7 +75,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="mt-2">
         {inStock ? (
           <AddToCartButton
-            variant="amazon"
+            pill
             className="w-full !py-1.5 text-xs"
             label="Add to cart"
             item={{

@@ -86,6 +86,23 @@ export async function getOrder(reference: string): Promise<Order> {
   return res.json();
 }
 
+// Register a learner for a course — the backend auto-issues a PENDING unlock code
+// that activates once payment is confirmed. Throws on a network/server error.
+export async function registerForCourse(input: {
+  course_slug: string;
+  name: string;
+  phone: string;
+  email?: string;
+}): Promise<{ code: string; course_slug: string; pending: boolean }> {
+  const res = await fetch(`${base()}/unlock-codes/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Register failed (${res.status})`);
+  return res.json();
+}
+
 // Verify a learner's course unlock code against the backend. Throws on a
 // network/server error so callers can fall back to a local check if offline.
 export async function verifyUnlockCode(courseSlug: string, code: string): Promise<boolean> {
