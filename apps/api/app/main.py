@@ -27,6 +27,17 @@ async def lifespan(app: FastAPI):
             conn.execute(text("SELECT 1"))
         Base.metadata.create_all(bind=engine)
         logger.info("Database connected and tables ensured.")
+        # Seed courses into the DB if the table is empty (idempotent).
+        try:
+            from app.db.session import SessionLocal
+            from app.services.courses import seed_courses
+
+            with SessionLocal() as db:
+                added = seed_courses(db)
+                if added:
+                    logger.info("Seeded %d courses into the database.", added)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Course seeding skipped (%s).", exc)
     except Exception as exc:  # noqa: BLE001
         logger.warning("Database unavailable at startup (%s). Running in degraded mode.", exc)
     yield

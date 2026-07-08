@@ -4,12 +4,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, MapPin, User, ShoppingCart, Phone } from "lucide-react";
+import { Menu, MapPin, User, ShoppingCart, Phone, Heart } from "lucide-react";
 import { nav, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
+import { useWishlist } from "@/lib/wishlist";
 import { SearchBar } from "@/components/search-bar";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
+
+function HeaderWishlist() {
+  const { count } = useWishlist();
+  return (
+    <Link
+      href="/wishlist"
+      aria-label={`Wishlist, ${count} items`}
+      className="relative hidden items-end gap-1 rounded px-2 py-2 text-white hover:outline hover:outline-1 hover:outline-white/60 sm:flex"
+    >
+      <span className="relative">
+        <Heart size={26} strokeWidth={1.8} />
+        {count > 0 && (
+          <span className="absolute -top-1 left-3 text-sm font-bold text-brand-400">{count}</span>
+        )}
+      </span>
+      <span className="hidden text-sm font-bold lg:inline">List</span>
+    </Link>
+  );
+}
 
 function HeaderCart() {
   const { count, open } = useCart();
@@ -60,33 +80,38 @@ export function SiteHeader() {
             <SearchBar />
           </div>
 
-          {/* Account */}
-          <Link href="/account" className="hidden items-center gap-1 rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 md:flex">
-            <span className="flex flex-col leading-tight">
-              <span className="text-[11px] text-white/70">Hello, sign in</span>
-              <span className="text-sm font-bold">Account &amp; Lists</span>
-            </span>
-          </Link>
+          {/* Right-side actions: account, orders, wishlist, cart — anchored to the right */}
+          <div className="ml-auto flex items-center gap-2 md:gap-3">
+            {/* Account */}
+            <Link href="/account" className="hidden items-center gap-1 rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 md:flex">
+              <span className="flex flex-col leading-tight">
+                <span className="text-[11px] text-white/70">Hello, sign in</span>
+                <span className="text-sm font-bold">Account &amp; Lists</span>
+              </span>
+            </Link>
 
-          {/* Orders */}
-          <Link href="/account" className="hidden items-center rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 lg:flex">
-            <span className="flex flex-col leading-tight">
-              <span className="text-[11px] text-white/70">Returns</span>
-              <span className="text-sm font-bold">&amp; Orders</span>
-            </span>
-          </Link>
+            {/* Orders */}
+            <Link href="/account" className="hidden items-center rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 lg:flex">
+              <span className="flex flex-col leading-tight">
+                <span className="text-[11px] text-white/70">Returns</span>
+                <span className="text-sm font-bold">&amp; Orders</span>
+              </span>
+            </Link>
 
-          <HeaderCart />
+            <HeaderWishlist />
 
-          {/* Mobile menu toggle */}
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => setOpen((v) => !v)}
-            className="rounded p-2 hover:outline hover:outline-1 hover:outline-white/60 md:hidden"
-          >
-            <Menu size={24} />
-          </button>
+            <HeaderCart />
+
+            {/* Mobile menu toggle */}
+            <button
+              type="button"
+              aria-label="Menu"
+              onClick={() => setOpen((v) => !v)}
+              className="rounded p-2 hover:outline hover:outline-1 hover:outline-white/60 md:hidden"
+            >
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -116,6 +141,9 @@ export function SiteHeader() {
           <nav className="container-wide flex flex-col py-2">
             <div className="flex items-center gap-3 px-3 pb-2 text-sm text-ink-700/70">
               <User size={18} /> <Link href="/account" onClick={() => setOpen(false)} className="font-semibold">Your account</Link>
+            </div>
+            <div className="flex items-center gap-3 px-3 pb-2 text-sm text-ink-700/70">
+              <Heart size={18} /> <Link href="/wishlist" onClick={() => setOpen(false)} className="font-semibold">Your list</Link>
             </div>
             {nav.map((item) => (
               <Link

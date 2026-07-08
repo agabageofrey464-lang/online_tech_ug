@@ -35,6 +35,35 @@ export type AdminOrder = {
   status: string;
 };
 
+export type AdminLesson = { title: string; minutes: number; free?: boolean; youtube?: string | null; preview?: string | null };
+export type AdminCourse = {
+  id: number;
+  slug: string;
+  title: string;
+  level: string;
+  lessons: number;
+  hours: number;
+  price_ugx: number;
+  blurb: string;
+  emoji: string;
+  unlock_code: string;
+  sample_video: string;
+  syllabus: AdminLesson[];
+  materials: { title: string; file: string }[];
+  quiz: { q: string; options: string[]; answer: number }[];
+};
+
+export type AdminUnlockCode = {
+  id: number;
+  code: string;
+  course_slug: string;
+  note: string;
+  redeemed_count: number;
+  revoked: boolean;
+  created_at: string;
+  last_used: string | null;
+};
+
 export type AdminOrderItem = {
   product_slug: string;
   name: string;

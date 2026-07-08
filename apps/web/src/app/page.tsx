@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { FlashSaleCard } from "@/components/flash-sale-card";
@@ -5,6 +6,7 @@ import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
+import { RecentlyViewed } from "@/components/recently-viewed";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
 
@@ -27,20 +29,20 @@ function byCat(cat: Product["category"]) {
 function Panel({
   title,
   href,
-  accent,
   children,
 }: {
   title: string;
   href?: string;
-  accent?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded bg-white shadow-sm">
-      <div className={`flex items-center justify-between px-4 py-3 ${accent ? "bg-brand-500" : ""}`}>
-        <h2 className={`text-base font-extrabold ${accent ? "text-white" : "text-ink-900"}`}>{title}</h2>
+    <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-ink-600/5 px-4 py-3">
+        <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
+          <span className="h-4 w-1 rounded-full bg-brand-500" /> {title}
+        </h2>
         {href && (
-          <Link href={href} className={`text-sm font-semibold ${accent ? "text-white/90 hover:text-white" : "text-brand-600 hover:underline"}`}>
+          <Link href={href} className="text-sm font-semibold text-brand-600 hover:underline">
             See all →
           </Link>
         )}
@@ -80,8 +82,8 @@ export default function HomePage() {
 
   return (
     <div className="container-wide space-y-3 py-3">
-      {/* Hero row: sidebar + banner */}
-      <div className="grid gap-3 lg:grid-cols-[230px_1fr]">
+      {/* Hero row: sidebar + banner (hidden on mobile — looks cramped on small screens) */}
+      <div className="hidden gap-3 lg:grid lg:grid-cols-[230px_1fr]">
         {/* Left column: category mega-menu (flyout expands to the right) */}
         <aside className="hidden lg:block lg:h-[400px]">
           <div className="relative h-full rounded bg-white shadow-sm">
@@ -112,13 +114,13 @@ export default function HomePage() {
       {/* Feature strip */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {whyUs.map((w) => (
-          <div key={w.title} className="flex items-center gap-3 rounded bg-[#232f3e] p-3 shadow-sm">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-400">
+          <div key={w.title} className="flex items-center gap-3 rounded-lg bg-white p-3 shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
               <Icon name={w.icon} size={20} />
             </span>
             <div>
-              <p className="text-xs font-bold text-white">{w.title}</p>
-              <p className="hidden text-[11px] text-white/60 sm:block">{w.body}</p>
+              <p className="text-xs font-bold text-ink-900">{w.title}</p>
+              <p className="hidden text-[11px] text-ink-700/60 sm:block">{w.body}</p>
             </div>
           </div>
         ))}
@@ -126,28 +128,62 @@ export default function HomePage() {
 
       {/* Promo cards (below the hero & features) */}
       <div className="grid grid-cols-2 gap-3">
-        <Link href="/services" className="flex items-center gap-3 rounded bg-[#131921] p-3 shadow-sm transition hover:bg-[#232f3e]">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-400">
+        <Link href="/services" className="group flex items-center gap-3 rounded-lg border-l-4 border-brand-500 bg-white p-3 shadow-sm transition hover:shadow-md">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
             <Icon name="repair" size={22} />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold text-white">Repairs & IT Support</p>
-            <p className="truncate text-xs text-white/70">From {ugx(30000)} · onsite & remote</p>
+            <p className="truncate text-sm font-extrabold text-ink-900">Repairs & IT Support</p>
+            <p className="truncate text-xs text-ink-700/70">From {ugx(30000)} · onsite & remote</p>
           </div>
         </Link>
-        <Link href="/services" className="flex items-center gap-3 rounded bg-[#131921] p-3 shadow-sm transition hover:bg-[#232f3e]">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-400">
+        <Link href="/services" className="group flex items-center gap-3 rounded-lg border-l-4 border-ink-600 bg-white p-3 shadow-sm transition hover:shadow-md">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-50 text-ink-600">
             <Icon name="web" size={22} />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold text-white">Websites & Software</p>
-            <p className="truncate text-xs text-white/70">From {ugx(500000)} · get a quote</p>
+            <p className="truncate text-sm font-extrabold text-ink-900">Websites & Software</p>
+            <p className="truncate text-xs text-ink-700/70">From {ugx(500000)} · get a quote</p>
           </div>
         </Link>
       </div>
 
+      {/* Shop by category (Amazon-style cards) */}
+      <section>
+        <div className="mb-2 flex items-center justify-between px-1">
+          <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
+            <span className="h-4 w-1 rounded-full bg-brand-500" /> Shop by Category
+          </h2>
+          <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {[
+          { label: "Laptops", img: "macbook-air-m1", href: "/shop?cat=Laptops" },
+          { label: "Desktops", img: "hp-prodesk-600-g1", href: "/shop?cat=Desktops" },
+          { label: "RAM & SSD", img: "ssd-nvme-500gb", href: "/shop?cat=Components" },
+          { label: "Power", img: "power-bank-20000", href: "/shop?cat=Power" },
+          { label: "Accessories", img: "logitech-mk270", href: "/shop?cat=Accessories" },
+          { label: "Storage", img: "sandisk-ssd-1tb", href: "/shop?cat=Storage" },
+        ].map((c) => (
+          <Link key={c.label} href={c.href} className="group flex flex-col rounded-lg bg-white p-3 shadow-sm transition hover:shadow-md">
+            <p className="text-sm font-extrabold text-ink-900">{c.label}</p>
+            <div className="relative my-2 aspect-square overflow-hidden rounded bg-[#f7f7f7]">
+              <Image
+                src={`/products/${c.img}.webp`}
+                alt={c.label}
+                fill
+                sizes="(max-width: 640px) 45vw, 16vw"
+                className="object-contain p-2 transition group-hover:scale-105"
+              />
+            </div>
+            <span className="mt-auto text-xs font-bold text-brand-600 group-hover:underline">Shop now →</span>
+          </Link>
+        ))}
+        </div>
+      </section>
+
       {/* Flash sales (Jumia-style) */}
-      <section className="overflow-hidden rounded bg-white shadow-sm">
+      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
         <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
           <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
             <Icon name="zap" size={18} /> Flash Sales
@@ -170,7 +206,7 @@ export default function HomePage() {
       </section>
 
       {/* Shop by brand */}
-      <section className="overflow-hidden rounded bg-white shadow-sm">
+      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
         <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-base font-extrabold text-ink-900">Shop by Brand</h2>
           <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
@@ -191,7 +227,7 @@ export default function HomePage() {
       </section>
 
       {/* Category sections */}
-      <Panel title="Laptops" href="/shop?cat=Laptops" accent>
+      <Panel title="Laptops" href="/shop?cat=Laptops">
         <Grid items={byCat("Laptops").slice(0, 10)} />
       </Panel>
 
@@ -232,19 +268,29 @@ export default function HomePage() {
 
       {/* Learn */}
       <Panel title="Learn Computer Skills" href="/learn">
-        <div className="grid grid-cols-2 gap-px bg-ink-600/10 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2.5 p-3 lg:grid-cols-4">
           {courses.map((c) => (
-            <Link key={c.slug} href="/learn" className="flex flex-col bg-white p-4 transition hover:shadow-md">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink-50 text-ink-600">
+            <Link
+              key={c.slug}
+              href={`/learn/${c.slug}`}
+              className="flex flex-col rounded-lg border border-ink-600/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                 <Icon name={c.emoji} size={24} />
               </span>
               <p className="mt-2 text-sm font-bold text-ink-900">{c.title}</p>
               <p className="mt-0.5 text-[11px] text-ink-700/60">{c.level} · {c.lessons} lessons</p>
+              <p className="mt-2 inline-flex w-fit rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700">
+                Free lessons
+              </p>
               <p className="mt-auto pt-2 text-sm font-extrabold text-brand-600">{ugx(c.price)}</p>
             </Link>
           ))}
         </div>
       </Panel>
+
+      {/* Your recently viewed items */}
+      <RecentlyViewed />
 
       {/* WhatsApp CTA */}
       <section className="rounded bg-ink-700 px-6 py-8 text-center text-white">

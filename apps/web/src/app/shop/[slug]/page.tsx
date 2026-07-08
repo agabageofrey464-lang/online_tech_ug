@@ -7,9 +7,11 @@ import { products } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
 import { Badge, Stars, Button } from "@/components/ui";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { WishlistButton } from "@/components/wishlist-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { RecentlyViewedTracker, RecentlyViewed } from "@/components/recently-viewed";
 import { productImages } from "@/lib/product-images";
 
 export function generateStaticParams() {
@@ -73,6 +75,7 @@ export default async function ProductDetailPage({
 
   return (
     <div className="container-page py-10">
+      <RecentlyViewedTracker slug={product.id} />
       <div className="mb-6">
         <Breadcrumbs
           items={[
@@ -182,6 +185,7 @@ export default async function ProductDetailPage({
             >
               💬 Ask on WhatsApp
             </Button>
+            <WishlistButton slug={product.id} variant="full" />
           </div>
 
           <ul className="mt-4 space-y-2 border-t border-ink-600/10 pt-4 text-xs text-ink-700/70">
@@ -204,6 +208,10 @@ export default async function ProductDetailPage({
           </div>
         </section>
       )}
+
+      <div className="mt-16">
+        <RecentlyViewed exclude={product.id} />
+      </div>
     </div>
   );
 }

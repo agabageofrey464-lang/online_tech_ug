@@ -45,3 +45,4 @@ coverage/
 
 # Raw media source (processed into apps/web/public via scripts/)
 /images/
+*.tsbuildinfo

@@ -9,6 +9,17 @@ type Sort = "popular" | "price-asc" | "price-desc";
 
 const ALL_BRANDS = ["All", ...Array.from(new Set(products.map((p) => p.brand))).sort()];
 
+const PRICE_BANDS: { label: string; min: number; max: number }[] = [
+  { label: "All prices", min: 0, max: Infinity },
+  { label: "Under UGX 100,000", min: 0, max: 100000 },
+  { label: "UGX 100,000 – 500,000", min: 100000, max: 500000 },
+  { label: "UGX 500,000 – 2,000,000", min: 500000, max: 2000000 },
+  { label: "UGX 2,000,000 – 5,000,000", min: 2000000, max: 5000000 },
+  { label: "Over UGX 5,000,000", min: 5000000, max: Infinity },
+];
+
+const RATINGS = [0, 4, 3];
+
 export function ShopGrid() {
   const params = useSearchParams();
   const [category, setCategory] = useState<string>("All");
@@ -16,6 +27,8 @@ export function ShopGrid() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("popular");
   const [showFilters, setShowFilters] = useState(false);
+  const [priceIdx, setPriceIdx] = useState(0);
+  const [minRating, setMinRating] = useState(0);
 
   // Initialise from URL (?cat= & ?brand= & ?q=).
   useEffect(() => {
@@ -27,9 +40,20 @@ export function ShopGrid() {
     if (q) setQuery(q);
   }, [params]);
 
+  const anyFilter = category !== "All" || brand !== "All" || priceIdx !== 0 || minRating !== 0;
+  function clearAll() {
+    setCategory("All");
+    setBrand("All");
+    setPriceIdx(0);
+    setMinRating(0);
+  }
+
   const filtered = useMemo(() => {
+    const band = PRICE_BANDS[priceIdx];
     let list = products.filter((p) => (category === "All" ? true : p.category === category));
     if (brand !== "All") list = list.filter((p) => p.brand === brand);
+    list = list.filter((p) => p.price >= band.min && p.price < band.max);
+    if (minRating > 0) list = list.filter((p) => p.rating >= minRating);
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
@@ -38,7 +62,7 @@ export function ShopGrid() {
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     if (sort === "popular") list = [...list].sort((a, b) => b.rating - a.rating);
     return list;
-  }, [category, brand, query, sort]);
+  }, [category, brand, query, sort, priceIdx, minRating]);
 
   return (
     <div className="grid gap-3 lg:grid-cols-[210px_1fr]">
@@ -89,6 +113,49 @@ export function ShopGrid() {
             </button>
           ))}
         </div>
+
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-700/50">Price</p>
+        <div className="mt-2 flex flex-col">
+          {PRICE_BANDS.map((b, i) => (
+            <button
+              key={b.label}
+              onClick={() => setPriceIdx(i)}
+              className={`rounded px-2 py-1.5 text-left text-sm transition ${
+                priceIdx === i ? "bg-brand-50 font-semibold text-brand-700" : "text-ink-800 hover:bg-ink-50"
+              }`}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
+
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-700/50">Customer rating</p>
+        <div className="mt-2 flex flex-col">
+          {RATINGS.map((r) => (
+            <button
+              key={r}
+              onClick={() => setMinRating(r)}
+              className={`flex items-center gap-1 rounded px-2 py-1.5 text-left text-sm transition ${
+                minRating === r ? "bg-brand-50 font-semibold text-brand-700" : "text-ink-800 hover:bg-ink-50"
+              }`}
+            >
+              {r === 0 ? (
+                "All ratings"
+              ) : (
+                <>
+                  <span className="text-brand-500">{"★".repeat(r)}<span className="text-ink-600/25">{"★".repeat(5 - r)}</span></span>
+                  <span className="text-xs text-ink-700/60">&amp; Up</span>
+                </>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {anyFilter && (
+          <button onClick={clearAll} className="mt-4 text-sm font-semibold text-brand-600 hover:underline">
+            Clear all filters
+          </button>
+        )}
       </aside>
 
       {/* Results */}

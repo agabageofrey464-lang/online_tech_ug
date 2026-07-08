@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import { Lock, Clock, Play, X, Check } from "lucide-react";
 import { lessonPrice, type Course, type Lesson } from "@/lib/data";
 import { ugx, whatsappLink, site } from "@/lib/site";
-import { doneLessons, toggleLesson, isUnlocked, tryUnlock } from "@/lib/learning";
+import { doneLessons, toggleLesson, isUnlocked, tryUnlock, markUnlocked } from "@/lib/learning";
+import { verifyUnlockCode } from "@/lib/api";
 
 export function LessonList({ course }: { course: Course }) {
   const { slug, title: courseTitle, syllabus } = course;
-  const [playing, setPlaying] = useState<{ title: string; video?: string } | null>(null);
+  const [playing, setPlaying] = useState<{ title: string; video?: string; youtube?: string } | null>(null);
   const [done, setDone] = useState<number[]>([]);
   const [unlocked, setUnlocked] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
   const [code, setCode] = useState("");
   const [err, setErr] = useState("");
+  const [checking, setChecking] = useState(false);
 
   useEffect(() => {
     setDone(doneLessons(slug));
@@ -25,15 +27,31 @@ export function LessonList({ course }: { course: Course }) {
     setDone(doneLessons(slug));
   }
 
-  function submitCode(e: React.FormEvent) {
+  async function submitCode(e: React.FormEvent) {
     e.preventDefault();
-    if (tryUnlock(slug, code, course.unlockCode || "")) {
-      setUnlocked(true);
-      setShowUnlock(false);
-      setCode("");
-      setErr("");
-    } else {
-      setErr("That code isn't correct. Check the code we sent you on WhatsApp.");
+    const entered = code.trim();
+    if (!entered) return;
+    setChecking(true);
+    setErr("");
+    try {
+      let ok = false;
+      try {
+        // Preferred: verify the per-payment code against the backend.
+        ok = await verifyUnlockCode(slug, entered);
+        if (ok) markUnlocked(slug);
+      } catch {
+        // Offline / API unreachable — fall back to the course's static code.
+        ok = tryUnlock(slug, entered, course.unlockCode || "");
+      }
+      if (ok) {
+        setUnlocked(true);
+        setShowUnlock(false);
+        setCode("");
+      } else {
+        setErr("That code isn't correct. Check the code we sent you on WhatsApp.");
+      }
+    } finally {
+      setChecking(false);
     }
   }
 
@@ -70,7 +88,7 @@ export function LessonList({ course }: { course: Course }) {
               {canWatch ? (
                 <button
                   onClick={() => {
-                    setPlaying({ title: lesson.title, video: lesson.preview || course.sampleVideo });
+                    setPlaying({ title: lesson.title, video: lesson.preview || course.sampleVideo, youtube: lesson.youtube });
                     mark(i, true);
                   }}
                   className="flex shrink-0 items-center gap-1.5 rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
@@ -99,8 +117,18 @@ export function LessonList({ course }: { course: Course }) {
           <button className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" onClick={() => setPlaying(null)} aria-label="Close">
             <X size={20} />
           </button>
-          <div className="w-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
-            {playing.video ? (
+          <div className="w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            {playing.youtube ? (
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${playing.youtube}?autoplay=1&rel=0`}
+                  title={playing.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+            ) : playing.video ? (
               <video src={playing.video} controls autoPlay playsInline className="w-full rounded-lg bg-black" />
             ) : (
               <div className="rounded-lg bg-ink-800 p-10 text-center text-white">Lesson video coming soon.</div>
@@ -141,8 +169,8 @@ export function LessonList({ course }: { course: Course }) {
                 className="w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm uppercase focus:border-brand-500 focus:outline-none"
               />
               {err && <p className="mt-1 text-xs text-red-500">{err}</p>}
-              <button type="submit" className="mt-2 w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
-                Unlock course
+              <button type="submit" disabled={checking} className="mt-2 w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
+                {checking ? "Checking…" : "Unlock course"}
               </button>
             </form>
           </div>

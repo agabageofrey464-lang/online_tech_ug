@@ -85,3 +85,16 @@ export async function getOrder(reference: string): Promise<Order> {
   if (!res.ok) throw new Error(`Order ${reference} not found`);
   return res.json();
 }
+
+// Verify a learner's course unlock code against the backend. Throws on a
+// network/server error so callers can fall back to a local check if offline.
+export async function verifyUnlockCode(courseSlug: string, code: string): Promise<boolean> {
+  const res = await fetch(`${base()}/unlock-codes/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ course_slug: courseSlug, code }),
+  });
+  if (!res.ok) throw new Error(`Verify failed (${res.status})`);
+  const data = (await res.json()) as { valid: boolean };
+  return data.valid;
+}

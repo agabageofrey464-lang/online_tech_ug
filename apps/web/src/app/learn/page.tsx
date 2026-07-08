@@ -5,6 +5,7 @@ import { Radio, CalendarClock, GraduationCap } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
+import { SectionHeading } from "@/components/section-heading";
 import { courses, liveClasses } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
 
@@ -109,6 +110,7 @@ export default function LearnPage() {
 
       {/* Courses */}
       <section className="container-page pb-8">
+        <SectionHeading title="Our Courses" href="/learn/dashboard" linkLabel="My Learning →" className="mb-4" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((c) => (
             <div

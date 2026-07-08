@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { WishlistButton } from "@/components/wishlist-button";
 
 export function ProductCard({ product }: { product: Product }) {
   const discount =
@@ -13,6 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className="group relative flex flex-col rounded-lg bg-white p-2.5 shadow-sm transition hover:shadow-md sm:p-3">
+      <WishlistButton slug={product.id} className="absolute right-2 top-2 z-10" />
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-white">
           <Image
@@ -28,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           )}
           {discount > 0 && (
-            <span className="absolute right-1.5 top-1.5 rounded bg-brand-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
+            <span className="absolute bottom-1.5 left-1.5 rounded bg-brand-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
               -{discount}%
             </span>
           )}

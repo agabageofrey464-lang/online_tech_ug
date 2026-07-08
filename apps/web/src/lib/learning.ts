@@ -85,6 +85,14 @@ export function isUnlocked(slug: string): boolean {
   return read().unlocked.includes(slug);
 }
 
+// Mark a course as unlocked on this device (after a code is verified server-side).
+export function markUnlocked(slug: string) {
+  const s = read();
+  if (!s.unlocked.includes(slug)) s.unlocked.push(slug);
+  if (!s.enrolled.includes(slug)) s.enrolled.push(slug);
+  write(s);
+}
+
 // Unlock a course if the entered code matches (case-insensitive). Returns success.
 export function tryUnlock(slug: string, entered: string, code: string): boolean {
   if (!code || entered.trim().toUpperCase() !== code.trim().toUpperCase()) return false;

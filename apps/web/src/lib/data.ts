@@ -1092,6 +1092,7 @@ export type Lesson = {
   minutes: number;
   free?: boolean; // free lessons are playable without payment
   preview?: string; // video URL for free/preview lessons
+  youtube?: string; // YouTube video id for teaching videos
 };
 
 export type LiveClass = {
@@ -1194,6 +1195,7 @@ export const courses: Course[] = [
       "Start from zero — mouse, keyboard, files, internet and staying safe online. Perfect for students and mature learners.",
     emoji: "laptop",
     syllabus: [
+      { title: "Computer basics — full beginner tutorial (video)", minutes: 60, free: true, youtube: "y2kg3MOk1sY" },
       { title: "Meet the computer: parts & switching on", minutes: 8, free: true, preview: "/videos/v-01.mp4" },
       { title: "Using the mouse & keyboard confidently", minutes: 15 },
       { title: "The desktop, windows & menus", minutes: 18 },
@@ -1209,6 +1211,12 @@ export const courses: Course[] = [
       { q: "What is used to type text into a computer?", options: ["Mouse", "Speaker", "Keyboard", "Webcam"], answer: 2 },
       { q: "Where are your saved documents kept?", options: ["Files & folders", "The mouse", "The screen", "The power button"], answer: 0 },
       { q: "To stay safe online you should…", options: ["Share your password", "Click every link", "Use strong passwords", "Ignore updates"], answer: 2 },
+      { q: "What does CPU stand for?", options: ["Central Processing Unit", "Computer Power Unit", "Central Print Unit", "Control Panel Unit"], answer: 0 },
+      { q: "Which of these is an output device?", options: ["Keyboard", "Mouse", "Monitor", "Microphone"], answer: 2 },
+      { q: "Which shortcut saves your work?", options: ["Ctrl + S", "Ctrl + P", "Ctrl + X", "Ctrl + A"], answer: 0 },
+      { q: "Turning the computer off correctly is called…", options: ["Crashing", "Shutting down", "Refreshing", "Logging in"], answer: 1 },
+      { q: "A folder is mainly used to…", options: ["Play music", "Organise files", "Print pages", "Delete viruses"], answer: 1 },
+      { q: "Which part stores your files permanently?", options: ["RAM", "The screen", "Hard drive / SSD", "The mouse"], answer: 2 },
     ],
   },
   {
@@ -1221,12 +1229,12 @@ export const courses: Course[] = [
     blurb: "Word, Excel and PowerPoint for school, work and business — with hands-on practice.",
     emoji: "office",
     syllabus: [
-      { title: "Word: formatting professional documents", minutes: 35, free: true, preview: "/videos/v-02.mp4" },
-      { title: "Word: tables, images & printing", minutes: 28 },
-      { title: "Excel: rows, columns & basic formulas", minutes: 40 },
-      { title: "Excel: charts & simple budgets", minutes: 45 },
-      { title: "PowerPoint: building a slide deck", minutes: 30 },
-      { title: "PowerPoint: animations & presenting", minutes: 20 },
+      { title: "Microsoft Word — full beginner tutorial", minutes: 60, free: true, youtube: "v3zc3bXL5pc" },
+      { title: "Microsoft Excel — full beginner tutorial", minutes: 60, free: true, youtube: "Vl0H-qTclOg" },
+      { title: "Microsoft PowerPoint — full beginner tutorial", minutes: 60, free: true, youtube: "KqgyvGxISxk" },
+      { title: "Microsoft Access — beginner database tutorial", minutes: 60, free: true, youtube: "hMuSHYfG7H8" },
+      { title: "Word: tables, images & printing (practice)", minutes: 28 },
+      { title: "Excel: charts & simple budgets (practice)", minutes: 45 },
     ],
     unlockCode: "OFFICE-2026",
     sampleVideo: "/videos/v-06.mp4",
@@ -1236,6 +1244,12 @@ export const courses: Course[] = [
       { q: "In Excel, a formula always starts with…", options: ["#", "@", "=", "!"], answer: 2 },
       { q: "Which app is used to create slide presentations?", options: ["Word", "Excel", "PowerPoint", "Notepad"], answer: 2 },
       { q: "To make text bold you press…", options: ["Ctrl + B", "Ctrl + S", "Ctrl + P", "Ctrl + Z"], answer: 0 },
+      { q: "In Excel, a single box is called a…", options: ["Cell", "Slide", "Page", "Paragraph"], answer: 0 },
+      { q: "Which shortcut undoes your last action?", options: ["Ctrl + Y", "Ctrl + Z", "Ctrl + V", "Ctrl + B"], answer: 1 },
+      { q: "Which Office app is best for calculations & budgets?", options: ["Word", "Excel", "PowerPoint", "Access"], answer: 1 },
+      { q: "To print a document you press…", options: ["Ctrl + P", "Ctrl + S", "Ctrl + D", "Ctrl + F"], answer: 0 },
+      { q: "Microsoft Access is used to manage…", options: ["Photos", "Databases", "Videos", "Music"], answer: 1 },
+      { q: "In Word, where do you change the font size?", options: ["Home tab", "Power button", "Taskbar", "Start menu"], answer: 0 },
     ],
   },
   {
@@ -1248,7 +1262,8 @@ export const courses: Course[] = [
     blurb: "Browse, search, send email, use mobile money safely and avoid online scams.",
     emoji: "globe",
     syllabus: [
-      { title: "How the internet & browsers work", minutes: 10, free: true, preview: "/videos/v-03.mp4" },
+      { title: "Internet & online safety — full tutorial (video)", minutes: 30, free: true, youtube: "aO858HyFbKI" },
+      { title: "Email basics — how email works (video)", minutes: 20, free: true, youtube: "0kIaw1yhUVM" },
       { title: "Searching Google like a pro", minutes: 14 },
       { title: "Creating & using email", minutes: 22 },
       { title: "Mobile Money safety", minutes: 16 },
@@ -1262,6 +1277,12 @@ export const courses: Course[] = [
       { q: "An email address always contains…", options: ["@", "#", "&", "%"], answer: 0 },
       { q: "If a message says you won money you never entered for, it is likely…", options: ["True", "A scam", "From your bank", "Safe to click"], answer: 1 },
       { q: "Before sending Mobile Money you should…", options: ["Confirm the number", "Share your PIN", "Rush", "Ignore the amount"], answer: 0 },
+      { q: "A website address (like onlinetechug.com) is called a…", options: ["URL", "PIN", "CPU", "RAM"], answer: 0 },
+      { q: "To open websites you use a…", options: ["Web browser", "Calculator", "Printer", "Speaker"], answer: 0 },
+      { q: "You should NEVER share your…", options: ["Name", "PIN / password", "Photo", "Email address"], answer: 1 },
+      { q: "WWW stands for…", options: ["World Wide Web", "Wide World Website", "Web World Wide", "World Web Wide"], answer: 0 },
+      { q: "A link from an unknown sender you should…", options: ["Click quickly", "Not click", "Forward to all", "Reply with your PIN"], answer: 1 },
+      { q: "Antivirus software helps to…", options: ["Type faster", "Protect from viruses", "Save money", "Print faster"], answer: 1 },
     ],
   },
   {
@@ -1274,6 +1295,7 @@ export const courses: Course[] = [
     blurb: "Build real typing speed with guided drills — a skill every computer user needs.",
     emoji: "keyboard",
     syllabus: [
+      { title: "Learn to touch type — full tutorial (video)", minutes: 60, free: true, youtube: "bEKQQvMF8QE" },
       { title: "Home row & correct finger placement", minutes: 9, free: true, preview: "/videos/v-04.mp4" },
       { title: "Top & bottom rows", minutes: 12 },
       { title: "Numbers & symbols", minutes: 15 },
@@ -1288,6 +1310,12 @@ export const courses: Course[] = [
       { q: "The 'home row' keys for the left hand are…", options: ["QWER", "ASDF", "ZXCV", "1234"], answer: 1 },
       { q: "Typing speed is measured in…", options: ["KPH", "WPM", "MB", "GHz"], answer: 1 },
       { q: "For accuracy you should…", options: ["Type fast & ignore errors", "Look at the keyboard", "Practice steadily", "Use one hand"], answer: 2 },
+      { q: "The home row keys for the right hand are…", options: ["JKL;", "UIOP", "NM,.", "5678"], answer: 0 },
+      { q: "Which key do your thumbs press?", options: ["Enter", "Spacebar", "Shift", "Tab"], answer: 1 },
+      { q: "'Touch typing' means typing…", options: ["Very slowly", "Without looking at the keys", "With one hand", "Only numbers"], answer: 1 },
+      { q: "Which finger usually presses the F key?", options: ["Left index", "Right thumb", "Left pinky", "Right index"], answer: 0 },
+      { q: "To type a capital letter you hold…", options: ["Shift", "Tab", "Ctrl", "Alt"], answer: 0 },
+      { q: "The best way to improve typing is…", options: ["Never practice", "Regular practice", "Looking down", "Using two fingers"], answer: 1 },
     ],
   },
 ];
