@@ -22,18 +22,18 @@ export const site = {
 } as const;
 
 export const nav = [
+  // Ordered by business importance: revenue-driving pages first, info pages last.
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/videos", label: "Videos" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/learn", label: "Learn" },
   { href: "/request", label: "Request Software" },
   { href: "/track", label: "Track Project" },
+  { href: "/videos", label: "Videos" },
   { href: "/blog", label: "Blog" },
-  { href: "/jobs", label: "Jobs" },
   { href: "/sell", label: "Sell with us" },
+  { href: "/jobs", label: "Jobs" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;

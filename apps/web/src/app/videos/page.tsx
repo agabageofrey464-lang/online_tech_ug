@@ -53,11 +53,8 @@ export default function VideosPage() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-wide flex flex-col items-center justify-between gap-2 py-6 text-xs text-white/50 sm:flex-row">
+        <div className="container-wide flex items-center justify-center gap-2 py-6 text-xs text-white/50">
           <p>© {new Date().getFullYear()} Online Tech Uganda · OnlineTech Studio</p>
-          <Link href="/gallery" className="text-brand-300 hover:text-brand-200">
-            Looking for photos? Visit the Gallery →
-          </Link>
         </div>
       </div>
     </div>

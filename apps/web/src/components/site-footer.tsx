@@ -34,7 +34,6 @@ const cols = [
       { label: "Learn / Courses", href: "/learn" },
       { label: "Tech Blog", href: "/blog" },
       { label: "Jobs & Internships", href: "/jobs" },
-      { label: "Gallery", href: "/gallery" },
       { label: "Videos", href: "/videos" },
       { label: "Contact", href: "/contact" },
     ],
