@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Laptop, Cpu, HardDrive, Headphones, Wifi, MousePointer2 } from "lucide-react";
+import { Laptop, Cpu, HardDrive, Headphones, Wifi, MousePointer2, ChevronLeft, ChevronRight, Truck, ShieldCheck } from "lucide-react";
 
 type Slide = {
   img: string;
@@ -43,6 +43,7 @@ const SLIDES: Slide[] = [
 
 export function HeroRotator() {
   const [i, setI] = useState(0);
+  const go = (n: number) => setI((v) => (v + n + SLIDES.length) % SLIDES.length);
 
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % SLIDES.length), 5500);
@@ -50,7 +51,7 @@ export function HeroRotator() {
   }, []);
 
   return (
-    <div className="relative min-h-[260px] overflow-hidden rounded text-white sm:min-h-[320px] lg:h-[400px]">
+    <div className="group/hero relative min-h-[260px] overflow-hidden rounded-lg text-white shadow-md ring-1 ring-black/5 sm:min-h-[320px] lg:h-[400px]">
       {/* Slides */}
       {SLIDES.map((s, idx) => (
         <div
@@ -69,13 +70,14 @@ export function HeroRotator() {
         </div>
       ))}
 
-      {/* Balanced dark overlay for centered text legibility */}
-      <div className="absolute inset-0 bg-ink-900/60" />
+      {/* Branded gradient overlay — richer than a flat dark wash, boosts text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-br from-ink-900/85 via-ink-900/55 to-brand-900/45" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/70 via-transparent to-transparent" />
 
-      {/* Edge fade — feathers only the outer edges to the navigation colour (no blur) */}
+      {/* Edge vignette — feathers the outer edges to the navigation colour */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] rounded"
-        style={{ boxShadow: "inset 0 0 60px 18px #131921" }}
+        className="pointer-events-none absolute inset-0 z-[1] rounded-lg"
+        style={{ boxShadow: "inset 0 0 70px 20px #131921" }}
       />
 
       {/* Decorative animated graphics */}
@@ -92,21 +94,45 @@ export function HeroRotator() {
       <span className="pointer-events-none absolute right-12 top-10 hidden h-2.5 w-2.5 animate-ping rounded-full bg-brand-300 lg:block" />
       <span className="pointer-events-none absolute left-12 bottom-16 hidden h-2 w-2 animate-pulse rounded-full bg-white/70 lg:block" />
 
+      {/* Prev / Next arrows (appear on hover, always tappable on touch) */}
+      <button
+        onClick={() => go(-1)}
+        aria-label="Previous slide"
+        className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:opacity-0 lg:group-hover/hero:opacity-100"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={() => go(1)}
+        aria-label="Next slide"
+        className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:opacity-0 lg:group-hover/hero:opacity-100"
+      >
+        <ChevronRight size={20} />
+      </button>
+
       {/* Content (centered) */}
       <div className="relative flex h-full flex-col items-center justify-center p-6 text-center sm:p-10">
         <div key={i} className="hero-fade mx-auto max-w-xl">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-300">{SLIDES[i].eyebrow}</p>
-          <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-4xl">{SLIDES[i].title}</h1>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-300 ring-1 ring-white/15 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-400" /> {SLIDES[i].eyebrow}
+          </span>
+          <h1 className="mt-3 text-2xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl">{SLIDES[i].title}</h1>
           <p className="mx-auto mt-2 max-w-lg text-sm text-white/85 sm:text-base">{SLIDES[i].sub}</p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Link href={SLIDES[i].cta.href} className="rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
+          <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+            <Link href={SLIDES[i].cta.href} className="rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-brand-900/30 transition hover:bg-brand-600 hover:shadow-brand-900/50">
               {SLIDES[i].cta.label} →
             </Link>
             {SLIDES[i].cta2 && (
-              <Link href={SLIDES[i].cta2!.href} className="rounded-md border border-white/40 px-5 py-2.5 text-sm font-bold text-white hover:bg-white/10">
+              <Link href={SLIDES[i].cta2!.href} className="rounded-lg border border-white/40 bg-white/5 px-6 py-2.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15">
                 {SLIDES[i].cta2!.label}
               </Link>
             )}
+          </div>
+
+          {/* Trust badges */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-semibold text-white/75">
+            <span className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-brand-300" /> Genuine & warranted</span>
+            <span className="flex items-center gap-1.5"><Truck size={14} className="text-brand-300" /> Countrywide delivery</span>
           </div>
         </div>
 
@@ -117,7 +143,7 @@ export function HeroRotator() {
               key={idx}
               onClick={() => setI(idx)}
               aria-label={`Slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all ${idx === i ? "w-6 bg-brand-400" : "w-2 bg-white/50"}`}
+              className={`h-1.5 rounded-full transition-all ${idx === i ? "w-6 bg-brand-400" : "w-2 bg-white/50 hover:bg-white/80"}`}
             />
           ))}
         </div>
