@@ -131,55 +131,80 @@ const CATS: Cat[] = [
   { label: "Online Courses", icon: "learn", href: "/learn" },
 ];
 
-export function CategoryMenu() {
+function CategoryRow({ c }: { c: Cat }) {
   return (
-    <nav className="relative h-full py-1">
-      {CATS.map((c) => (
-        <div key={c.label} className="group/item static">
-          <Link
-            href={c.href}
-            className="flex items-center justify-between gap-2 px-4 py-[7px] text-sm text-ink-800 transition hover:bg-brand-50 hover:text-brand-700"
-          >
-            <span className="flex items-center gap-3">
-              <Icon name={c.icon} size={17} className="shrink-0 text-brand-500" /> {c.label}
-            </span>
-            {c.groups && <ChevronRight size={14} className="text-ink-700/40" />}
-          </Link>
+    <div className="group/item static">
+      <Link
+        href={c.href}
+        className="flex items-center justify-between gap-2 px-4 py-2 text-sm text-ink-800 transition hover:bg-ink-50 hover:text-ink-900"
+      >
+        <span className="flex items-center gap-3">
+          <Icon name={c.icon} size={17} className="shrink-0 text-brand-500" /> {c.label}
+        </span>
+        {c.groups && <ChevronRight size={15} className="text-ink-700/40 group-hover/item:text-ink-700/70" />}
+      </Link>
 
-          {/* Flyout panel — expands to the right on hover */}
-          {c.groups && (
-            <div className="invisible absolute left-full top-0 z-40 ml-0 hidden h-full w-[520px] rounded-r bg-white p-5 opacity-0 shadow-2xl ring-1 ring-ink-600/10 transition group-hover/item:visible group-hover/item:opacity-100 lg:block">
-              <div className="flex items-center justify-between border-b border-ink-600/10 pb-2">
-                <p className="text-sm font-extrabold text-ink-900">{c.label}</p>
-                <Link href={c.href} className="text-xs font-semibold text-brand-600 hover:underline">
-                  Shop all →
-                </Link>
+      {/* Flyout panel — expands to the right on hover */}
+      {c.groups && (
+        <div className="invisible absolute left-full top-0 z-40 ml-0 hidden h-full w-[540px] rounded-r-lg bg-white p-6 opacity-0 shadow-2xl ring-1 ring-ink-600/10 transition group-hover/item:visible group-hover/item:opacity-100 lg:block">
+          <div className="flex items-center justify-between border-b border-ink-600/10 pb-3">
+            <p className="flex items-center gap-2 text-base font-extrabold text-ink-900">
+              <Icon name={c.icon} size={18} className="text-brand-500" /> {c.label}
+            </p>
+            <Link href={c.href} className="text-xs font-bold text-brand-600 hover:underline">
+              See all deals →
+            </Link>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-5">
+            {c.groups.map((g) => (
+              <div key={g.title}>
+                <p className="mb-2.5 border-b border-ink-600/5 pb-1 text-xs font-bold uppercase tracking-wider text-ink-900">
+                  {g.title}
+                </p>
+                <ul className="space-y-2">
+                  {g.links.map(([label, href]) => (
+                    <li key={label}>
+                      <Link
+                        href={href}
+                        className="text-sm text-ink-700/80 transition hover:text-brand-600 hover:underline"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-5">
-                {c.groups.map((g) => (
-                  <div key={g.title}>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-700/50">
-                      {g.title}
-                    </p>
-                    <ul className="space-y-1.5">
-                      {g.links.map(([label, href]) => (
-                        <li key={label}>
-                          <Link
-                            href={href}
-                            className="text-sm text-ink-700/80 transition hover:text-brand-600"
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
-      ))}
+      )}
+    </div>
+  );
+}
+
+export function CategoryMenu() {
+  const shop = CATS.filter((c) => c.groups);
+  const more = CATS.filter((c) => !c.groups);
+
+  return (
+    <nav className="relative flex h-full flex-col">
+      {/* Amazon-style dark header */}
+      <p className="bg-[#232f3e] px-4 py-2.5 text-sm font-extrabold text-white">Shop by Category</p>
+
+      <div className="flex-1 overflow-y-auto py-1.5">
+        {shop.map((c) => (
+          <CategoryRow key={c.label} c={c} />
+        ))}
+
+        {/* Divider + services section */}
+        <div className="my-1.5 border-t border-ink-600/10" />
+        <p className="px-4 pb-1 pt-1.5 text-[11px] font-bold uppercase tracking-wider text-ink-700/45">
+          More from Online Tech
+        </p>
+        {more.map((c) => (
+          <CategoryRow key={c.label} c={c} />
+        ))}
+      </div>
     </nav>
   );
 }
