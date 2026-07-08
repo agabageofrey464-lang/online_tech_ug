@@ -52,9 +52,9 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {/* Add to cart — slides up on hover (Jumia grid behaviour); card links to detail on mobile */}
-      {inStock ? (
-        <div className="absolute inset-x-0 bottom-0 translate-y-full border-t border-ink-600/10 bg-white p-2 shadow-[0_-4px_10px_rgba(0,0,0,0.06)] transition duration-200 group-hover:translate-y-0">
+      {/* Add to cart — always visible */}
+      <div className="mt-auto px-2.5 pb-2.5">
+        {inStock ? (
           <AddToCartButton
             className="w-full !rounded !py-1.5 text-xs"
             label="ADD TO CART"
@@ -66,8 +66,15 @@ export function ProductCard({ product }: { product: Product }) {
               condition: product.condition,
             }}
           />
-        </div>
-      ) : null}
+        ) : (
+          <button
+            disabled
+            className="w-full cursor-not-allowed rounded bg-ink-100 py-1.5 text-xs font-bold text-ink-700/50"
+          >
+            Out of stock
+          </button>
+        )}
+      </div>
     </article>
   );
 }
