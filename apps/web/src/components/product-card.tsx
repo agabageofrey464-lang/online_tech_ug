@@ -44,7 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="px-2.5 pb-2.5 pt-1.5">
-          <h3 className="truncate text-[13px] text-ink-800 group-hover:text-brand-600">{product.name}</h3>
+          <h3 className="clamp-2 min-h-[2.25rem] text-[13px] leading-tight text-ink-800 group-hover:text-brand-600">{product.name}</h3>
           <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</p>
           {product.oldPrice && (
             <p className="text-[11px] text-ink-700/40 line-through">{ugx(product.oldPrice)}</p>

@@ -113,7 +113,8 @@ h1, h2, h3, .font-display {
   width: 100%;
   margin-inline: auto;
   max-width: 80rem;
-  padding-inline: 1.25rem;
+  /* Responsive gutter so text never sits flush to the screen edge (mobile → desktop) */
+  padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
 /* Brand gradient used in hero / CTAs */
@@ -135,7 +136,8 @@ h1, h2, h3, .font-display {
   width: 100%;
   margin-inline: auto;
   max-width: 84rem;
-  padding-inline: 0.75rem;
+  /* Responsive gutter so content keeps clear of the screen edge on all sizes */
+  padding-inline: clamp(0.875rem, 3vw, 1.5rem);
 }
 
 /* Hide scrollbar for horizontal carousels (flash sales) */
