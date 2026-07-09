@@ -16,7 +16,7 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    img: "/hero-1.webp",
+    img: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1400&q=80&auto=format&fit=crop",
     eyebrow: "Online Tech Uganda",
     title: "Genuine Computers, Unbeatable Prices",
     sub: "Laptops, desktops & accessories from UGX 65,000 — warranty, countrywide delivery & Mobile Money.",
@@ -24,7 +24,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Learn computer basics", href: "/learn" },
   },
   {
-    img: "/hero-2.webp",
+    img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1400&q=80&auto=format&fit=crop",
     eyebrow: "Laptops",
     title: "Laptops for Every Budget",
     sub: "Business, gaming & student laptops — from quality UK-used to brand new.",
@@ -32,7 +32,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "View gaming", href: "/shop?q=ROG" },
   },
   {
-    img: "/hero-3.webp",
+    img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1400&q=80&auto=format&fit=crop",
     eyebrow: "Accessories & Components",
     title: "Upgrade & Accessorize",
     sub: "RAM, SSDs, chargers, power banks, bags, mice & keyboards — everything for your setup.",
@@ -70,9 +70,9 @@ export function HeroRotator() {
         </div>
       ))}
 
-      {/* Branded gradient overlay — richer than a flat dark wash, boosts text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-br from-ink-900/85 via-ink-900/55 to-brand-900/45" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/70 via-transparent to-transparent" />
+      {/* Lighter overlay so the bright accessory photos show through; scrim only where text sits */}
+      <div className="absolute inset-0 bg-gradient-to-br from-ink-900/55 via-ink-900/25 to-brand-900/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/65 via-transparent to-transparent" />
 
       {/* Edge vignette — feathers the outer edges to the navigation colour */}
       <div
@@ -116,8 +116,8 @@ export function HeroRotator() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-300 ring-1 ring-white/15 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" /> {SLIDES[i].eyebrow}
           </span>
-          <h1 className="mt-3 text-2xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl">{SLIDES[i].title}</h1>
-          <p className="mx-auto mt-2 max-w-lg text-sm text-white/85 sm:text-base">{SLIDES[i].sub}</p>
+          <h1 className="mt-3 text-2xl font-extrabold leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] sm:text-4xl">{SLIDES[i].title}</h1>
+          <p className="mx-auto mt-2 max-w-lg text-sm text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.5)] sm:text-base">{SLIDES[i].sub}</p>
           <div className="mt-5 flex flex-wrap justify-center gap-2.5">
             <Link href={SLIDES[i].cta.href} className="rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-brand-900/30 transition hover:bg-brand-600 hover:shadow-brand-900/50">
               {SLIDES[i].cta.label} →
