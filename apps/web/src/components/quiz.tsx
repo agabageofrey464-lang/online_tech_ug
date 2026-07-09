@@ -63,19 +63,26 @@ export function Quiz({
                 const correct = q.answer === oi;
                 let cls = "border-ink-600/15 hover:border-brand-300";
                 if (submitted) {
-                  if (correct) cls = "border-green-500 bg-green-50";
-                  else if (chosen) cls = "border-red-400 bg-red-50";
+                  if (correct) cls = "border-green-500 bg-green-50 font-semibold";
+                  else if (chosen) cls = "border-red-400 bg-red-50 font-semibold";
                 } else if (chosen) {
-                  cls = "border-brand-500 bg-brand-50";
+                  cls = "border-brand-600 bg-brand-100 font-bold text-ink-900 ring-2 ring-brand-400/50 shadow-sm";
                 }
                 return (
                   <button
                     key={oi}
                     disabled={submitted}
                     onClick={() => setAnswers((a) => ({ ...a, [qi]: oi }))}
-                    className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition ${cls}`}
+                    className={`flex items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left text-sm transition ${cls}`}
                   >
-                    <span>{opt}</span>
+                    <span
+                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
+                        chosen ? "border-brand-600 bg-brand-600" : "border-ink-600/30"
+                      }`}
+                    >
+                      {chosen && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                    </span>
+                    <span className="flex-1">{opt}</span>
                     {submitted && correct && <CheckCircle2 size={16} className="text-green-600" />}
                     {submitted && chosen && !correct && <XCircle size={16} className="text-red-500" />}
                   </button>
