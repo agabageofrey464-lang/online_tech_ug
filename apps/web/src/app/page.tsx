@@ -114,8 +114,8 @@ export default function HomePage() {
       {/* Feature strip */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {whyUs.map((w) => (
-          <div key={w.title} className="flex items-center gap-3 rounded-lg bg-white p-3 shadow-sm">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+          <div key={w.title} className="flex items-center gap-3 rounded-lg border border-brand-100 bg-brand-50 p-3 shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
               <Icon name={w.icon} size={20} />
             </span>
             <div>
@@ -128,9 +128,9 @@ export default function HomePage() {
 
       {/* Promo cards (below the hero & features) */}
       <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border-l-4 border-brand-500 bg-white p-4 shadow-sm transition hover:shadow-md">
+        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border border-brand-100 border-l-4 border-l-brand-500 bg-brand-50 p-4 shadow-sm transition hover:shadow-md">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
               <Icon name="repair" size={24} />
             </span>
             <div className="min-w-0">
@@ -142,9 +142,9 @@ export default function HomePage() {
             Book a repair →
           </span>
         </Link>
-        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border-l-4 border-ink-600 bg-white p-4 shadow-sm transition hover:shadow-md">
+        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-200 border-l-4 border-l-ink-600 bg-ink-50 p-4 shadow-sm transition hover:shadow-md">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink-50 text-ink-600">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-600 shadow-sm">
               <Icon name="web" size={24} />
             </span>
             <div className="min-w-0">
