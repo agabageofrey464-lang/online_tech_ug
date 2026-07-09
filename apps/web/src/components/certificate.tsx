@@ -16,23 +16,28 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
   function print() {
     if (name.trim()) setLearnerName(name.trim());
     const safe = (s: string) => s.replace(/[<>&]/g, "");
+    const origin = window.location.origin;
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Certificate</title>
     <style>
       *{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,'Times New Roman',serif}
       body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#eee}
       .cert{width:1000px;max-width:96vw;aspect-ratio:1.414/1;background:#fff;border:14px solid #282363;
-        position:relative;padding:64px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+        position:relative;padding:56px 64px;text-align:center;display:flex;flex-direction:column;justify-content:center}
       .cert:before{content:"";position:absolute;inset:18px;border:2px solid #F15A29}
+      .logo{width:74px;height:74px;border-radius:14px;object-fit:cover;margin:0 auto 6px;display:block}
       .brand{color:#F15A29;letter-spacing:4px;font-weight:bold;font-size:18px;text-transform:uppercase}
-      h1{color:#282363;font-size:44px;margin:18px 0 6px}
+      h1{color:#282363;font-size:42px;margin:14px 0 6px}
       .sub{color:#555;font-size:16px}
-      .name{color:#282363;font-size:40px;margin:26px 0 6px;border-bottom:2px solid #F15A29;display:inline-block;padding:0 30px 6px}
-      .course{font-size:22px;color:#333;margin-top:18px}
-      .row{display:flex;justify-content:space-between;margin-top:54px;font-size:14px;color:#555}
+      .name{color:#282363;font-size:38px;margin:22px 0 6px;border-bottom:2px solid #F15A29;display:inline-block;padding:0 30px 6px}
+      .course{font-size:22px;color:#333;margin-top:16px}
+      .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:50px;font-size:14px;color:#555}
       .row b{display:block;color:#282363;font-size:16px}
+      .sig{text-align:center}
+      .signline{font-family:'Brush Script MT','Segoe Script',cursive;font-size:26px;color:#282363;line-height:1;padding:0 20px 4px;border-bottom:1px solid #999;display:inline-block}
       @media print{body{background:#fff}.cert{box-shadow:none}}
     </style></head><body>
       <div class="cert">
+        <img class="logo" src="${origin}/logo.jpeg" alt="Online Tech Uganda" />
         <div class="brand">Online Tech Uganda</div>
         <h1>Certificate of Completion</h1>
         <div class="sub">This certifies that</div>
@@ -41,10 +46,13 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
         <div class="course"><b>${safe(courseTitle)}</b></div>
         <div class="row">
           <div>Date<b>${date}</b></div>
-          <div>Issued by<b>Online Tech Uganda</b></div>
+          <div class="sig">
+            <div class="signline">Agaba Geofrey</div>
+            <b>Mr. Agaba Geofrey — Director</b>
+          </div>
         </div>
       </div>
-      <script>window.onload=function(){setTimeout(function(){window.print()},300)}</script>
+      <script>window.onload=function(){setTimeout(function(){window.print()},400)}</script>
     </body></html>`;
     const w = window.open("", "_blank");
     if (w) {

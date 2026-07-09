@@ -40,6 +40,7 @@ export function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-ink-700 p-4">
       <form
         onSubmit={submit}
+        autoComplete="off"
         className="w-full max-w-sm rounded-2xl bg-white p-7 shadow-xl"
       >
         <div className="mb-6 flex flex-col items-center text-center">
@@ -53,7 +54,7 @@ export function LoginForm() {
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
+            autoComplete="off"
             required
             className="w-full rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
           />
@@ -65,7 +66,7 @@ export function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
+            autoComplete="new-password"
             required
             className="w-full rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
           />

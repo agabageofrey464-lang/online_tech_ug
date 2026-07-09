@@ -207,19 +207,19 @@ export default function HomePage() {
 
       {/* Category sections */}
       <Panel title="Laptops" href="/shop?cat=Laptops">
-        <Grid items={byCat("Laptops").slice(0, 10)} />
+        <Grid items={byCat("Laptops").slice(0, 6)} />
       </Panel>
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops">
-        <Grid items={byCat("Desktops")} />
+        <Grid items={byCat("Desktops").slice(0, 6)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components">
-        <Grid items={[...byCat("Components"), ...byCat("Power")].slice(0, 10)} />
+        <Grid items={[...byCat("Components"), ...byCat("Power")].slice(0, 6)} />
       </Panel>
 
       <Panel title="Accessories, Networking & Storage" href="/shop">
-        <Grid items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 10)} />
+        <Grid items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 6)} />
       </Panel>
 
       {/* Services */}
