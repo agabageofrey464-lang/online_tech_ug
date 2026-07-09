@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import { site } from "@/lib/site";
 
-export default function LoginPage() {
+function LoginInner() {
   const { login } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
@@ -80,5 +80,13 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-ink-700/50">Loading…</div>}>
+      <LoginInner />
+    </Suspense>
   );
 }

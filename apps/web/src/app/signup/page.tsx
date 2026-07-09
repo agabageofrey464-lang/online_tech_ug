@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import { Store, User } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { site } from "@/lib/site";
 
-export default function SignupPage() {
+function SignupInner() {
   const { register } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
@@ -105,5 +105,13 @@ export default function SignupPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-ink-700/50">Loading…</div>}>
+      <SignupInner />
+    </Suspense>
   );
 }
