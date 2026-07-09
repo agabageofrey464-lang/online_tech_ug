@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { User, Package, Mail, Heart, Ticket, Store, LogOut, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { Avatar } from "@/components/avatar";
 
 export function HeaderAccount() {
   const { user, loading, logout } = useAuth();
@@ -41,9 +42,9 @@ export function HeaderAccount() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded px-1.5 py-2 text-white hover:outline hover:outline-1 hover:outline-white/60"
+        className="flex items-center gap-1.5 rounded px-1.5 py-1.5 text-white hover:outline hover:outline-1 hover:outline-white/60"
       >
-        <User size={22} strokeWidth={1.8} className="md:hidden" />
+        <Avatar name={user.name} seed={user.email} size={28} className="ring-1 ring-white/40" />
         <span className="hidden flex-col leading-tight text-left md:flex">
           <span className="text-[11px] text-white/70">Hello,</span>
           <span className="text-sm font-bold">Hi, {first}</span>

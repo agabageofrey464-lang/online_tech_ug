@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { site, whatsappLink, ugx } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { Avatar } from "@/components/avatar";
 import { useAuth } from "@/lib/auth";
 import { productImage } from "@/lib/data";
 
@@ -146,9 +147,7 @@ export default function AccountPage() {
         {/* Sidebar menu (Jumia-style) */}
         <aside className="h-fit overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-ink-600/10 bg-ink-50/60 p-4">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-500 text-white">
-              <User size={22} />
-            </span>
+            <Avatar name={displayName} seed={user?.email || profile?.email} size={44} />
             <div className="min-w-0">
               <p className="truncate font-extrabold text-ink-900">{displayName}</p>
               <p className="truncate text-xs text-ink-700/60">{user?.email || profile?.email || "Guest account"}</p>
