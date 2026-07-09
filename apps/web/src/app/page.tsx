@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { FlashSaleCard } from "@/components/flash-sale-card";
@@ -6,6 +5,7 @@ import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
+import { CategoryCircles } from "@/components/category-circles";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -158,39 +158,8 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Shop by category (Amazon-style cards) */}
-      <section>
-        <div className="mb-2 flex items-center justify-between px-1">
-          <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
-            <span className="h-4 w-1 rounded-full bg-brand-500" /> Shop by Category
-          </h2>
-          <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {[
-          { label: "Laptops", img: "macbook-air-m1", href: "/shop?cat=Laptops" },
-          { label: "Desktops", img: "hp-prodesk-600-g1", href: "/shop?cat=Desktops" },
-          { label: "RAM & SSD", img: "ssd-nvme-500gb", href: "/shop?cat=Components" },
-          { label: "Power", img: "power-bank-20000", href: "/shop?cat=Power" },
-          { label: "Accessories", img: "logitech-mk270", href: "/shop?cat=Accessories" },
-          { label: "Storage", img: "sandisk-ssd-1tb", href: "/shop?cat=Storage" },
-        ].map((c) => (
-          <Link key={c.label} href={c.href} className="group flex flex-col rounded-lg bg-white p-3 shadow-sm transition hover:shadow-md">
-            <p className="text-sm font-extrabold text-ink-900">{c.label}</p>
-            <div className="relative my-2 aspect-square overflow-hidden rounded bg-[#f7f7f7]">
-              <Image
-                src={`/products/${c.img}.webp`}
-                alt={c.label}
-                fill
-                sizes="(max-width: 640px) 45vw, 16vw"
-                className="object-contain p-2 transition group-hover:scale-105"
-              />
-            </div>
-            <span className="mt-auto text-xs font-bold text-brand-600 group-hover:underline">Shop now →</span>
-          </Link>
-        ))}
-        </div>
-      </section>
+      {/* Shop by category (Jumia-style circular tiles on an orange panel) */}
+      <CategoryCircles />
 
       {/* Flash sales (Jumia-style) */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 
-type Sort = "popular" | "price-asc" | "price-desc";
+type Sort = "popular" | "price-asc" | "price-desc" | "new";
 
 const ALL_BRANDS = ["All", ...Array.from(new Set(products.map((p) => p.brand))).sort()];
 
@@ -35,9 +35,11 @@ export function ShopGrid() {
     const cat = params.get("cat");
     const br = params.get("brand");
     const q = params.get("q");
+    const s = params.get("sort");
     if (cat && (productCategories as readonly string[]).includes(cat)) setCategory(cat);
     if (br && ALL_BRANDS.includes(br)) setBrand(br);
     if (q) setQuery(q);
+    if (s === "new" || s === "price-asc" || s === "price-desc" || s === "popular") setSort(s);
   }, [params]);
 
   const anyFilter = category !== "All" || brand !== "All" || priceIdx !== 0 || minRating !== 0;
@@ -61,6 +63,7 @@ export function ShopGrid() {
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     if (sort === "popular") list = [...list].sort((a, b) => b.rating - a.rating);
+    if (sort === "new") list = [...list].reverse(); // newest products are appended last
     return list;
   }, [category, brand, query, sort, priceIdx, minRating]);
 
@@ -175,6 +178,7 @@ export function ShopGrid() {
               className="rounded-md border border-ink-600/15 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
             >
               <option value="popular">Most popular</option>
+              <option value="new">Newest arrivals</option>
               <option value="price-asc">Price: low to high</option>
               <option value="price-desc">Price: high to low</option>
             </select>
