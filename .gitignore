@@ -46,3 +46,7 @@ coverage/
 # Raw media source (processed into apps/web/public via scripts/)
 /images/
 *.tsbuildinfo
+
+# Local dev SQLite DB
+*.db
+local_dev.db
