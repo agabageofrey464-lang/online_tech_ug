@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, type AdminOrder, type AdminProduct } from "@/lib/api";
+import { apiGet, ugx, orderDate, type AdminOrder, type AdminProduct } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +79,7 @@ export default async function DashboardPage() {
             <thead className="border-b border-ink-600/10 bg-ink-50 text-left text-xs uppercase tracking-wider text-ink-600/60">
               <tr>
                 <th className="p-4">Reference</th>
+                <th className="p-4">Date</th>
                 <th className="p-4">Customer</th>
                 <th className="p-4 text-right">Total</th>
                 <th className="p-4 text-center">Status</th>
@@ -88,6 +89,7 @@ export default async function DashboardPage() {
               {orderList.slice(0, 6).map((o) => (
                 <tr key={o.id} className="border-b border-ink-600/5 last:border-0 hover:bg-ink-50/50">
                   <td className="p-4"><Link href={`/orders/${o.reference}`} className="font-mono font-semibold text-brand-600 hover:underline">{o.reference}</Link></td>
+                  <td className="whitespace-nowrap p-4 text-xs text-ink-600/60">{orderDate(o.created_at)}</td>
                   <td className="p-4 font-semibold text-ink-600">{o.customer_name}</td>
                   <td className="p-4 text-right font-semibold text-ink-600">{ugx(o.total)}</td>
                   <td className="p-4 text-center"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${statusTone[o.status] ?? "bg-ink-50 text-ink-600"}`}>{o.status}</span></td>

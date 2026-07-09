@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
@@ -52,6 +53,7 @@ class OrderOut(BaseModel):
     payment_method: str
     payment_status: str
     status: str
+    created_at: datetime | None = None
     items: list[OrderItemOut]
 
 
@@ -68,6 +70,7 @@ class OrderSummary(BaseModel):
     payment_method: str
     payment_status: str
     status: str
+    created_at: datetime | None = None
 
 
 class OrderUpdate(BaseModel):

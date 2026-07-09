@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, type AdminOrderDetail } from "@/lib/api";
+import { apiGet, ugx, orderDate, type AdminOrderDetail } from "@/lib/api";
 import { OrderStatusControls } from "@/components/order-status-controls";
 
 export const dynamic = "force-dynamic";
@@ -46,6 +46,7 @@ export default async function OrderDetailPage({
           <p className="text-sm text-ink-600/60">
             {order.payment_method.replace(/_/g, " ")} · {order.payment_status}
           </p>
+          <p className="mt-0.5 text-xs text-ink-600/50">Placed {orderDate(order.created_at)}</p>
         </div>
         <span
           className={`rounded-full px-3 py-1 text-sm font-semibold ${

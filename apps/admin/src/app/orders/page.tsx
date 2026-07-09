@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, type AdminOrder } from "@/lib/api";
+import { apiGet, ugx, orderDate, type AdminOrder } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +60,7 @@ export default async function OrdersPage({
             <thead className="border-b border-ink-600/10 bg-ink-50 text-left text-xs uppercase tracking-wider text-ink-600/60">
               <tr>
                 <th className="p-4">Reference</th>
+                <th className="p-4">Date</th>
                 <th className="p-4">Customer</th>
                 <th className="p-4">Phone</th>
                 <th className="p-4">Payment</th>
@@ -78,6 +79,7 @@ export default async function OrdersPage({
                       {o.reference}
                     </Link>
                   </td>
+                  <td className="whitespace-nowrap p-4 text-xs text-ink-600/60">{orderDate(o.created_at)}</td>
                   <td className="p-4 font-semibold text-ink-600">{o.customer_name}</td>
                   <td className="p-4 text-ink-600/70">{o.phone}</td>
                   <td className="p-4 text-ink-600/70">

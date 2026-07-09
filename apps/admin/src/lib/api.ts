@@ -33,7 +33,16 @@ export type AdminOrder = {
   payment_method: string;
   payment_status: string;
   status: string;
+  created_at?: string;
 };
+
+// Format an order timestamp as a short date + time.
+export function orderDate(iso?: string): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
 
 export type AdminLesson = { title: string; minutes: number; free?: boolean; youtube?: string | null; preview?: string | null };
 export type AdminCourse = {
