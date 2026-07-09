@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, MapPin, User, ShoppingCart, Phone, Heart } from "lucide-react";
+import { Menu, MapPin, User, ShoppingCart, Phone, Heart, Package } from "lucide-react";
 import { nav, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
@@ -18,7 +18,7 @@ function HeaderWishlist() {
     <Link
       href="/wishlist"
       aria-label={`Wishlist, ${count} items`}
-      className="relative hidden items-end gap-1 rounded px-2 py-2 text-white hover:outline hover:outline-1 hover:outline-white/60 sm:flex"
+      className="relative flex items-end gap-1 rounded px-2 py-2 text-white hover:outline hover:outline-1 hover:outline-white/60"
     >
       <span className="relative">
         <Heart size={26} strokeWidth={1.8} />
@@ -75,24 +75,26 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          {/* Search (orange button lives inside SearchBar) */}
-          <div className="order-last w-full flex-1 md:order-none md:w-auto">
+          {/* Search — full-width on its own row on mobile, inline on desktop */}
+          <div className="order-last w-full md:order-none md:w-auto md:flex-1">
             <SearchBar />
           </div>
 
           {/* Right-side actions: account, orders, wishlist, cart — anchored to the right */}
           <div className="ml-auto flex items-center gap-2 md:gap-3">
-            {/* Account */}
-            <Link href="/account" className="hidden items-center gap-1 rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 md:flex">
-              <span className="flex flex-col leading-tight">
+            {/* Account — icon on mobile, full label on desktop */}
+            <Link href="/account" aria-label="Your account" className="flex items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60">
+              <User size={24} strokeWidth={1.8} className="md:hidden" />
+              <span className="hidden flex-col leading-tight md:flex">
                 <span className="text-[11px] text-white/70">Hello, sign in</span>
                 <span className="text-sm font-bold">Account &amp; Lists</span>
               </span>
             </Link>
 
-            {/* Orders */}
-            <Link href="/account" className="hidden items-center rounded px-2 py-2 hover:outline hover:outline-1 hover:outline-white/60 lg:flex">
-              <span className="flex flex-col leading-tight">
+            {/* Orders — icon on mobile/tablet, full label on desktop */}
+            <Link href="/account#orders" aria-label="Returns & orders" className="flex items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60">
+              <Package size={24} strokeWidth={1.8} className="lg:hidden" />
+              <span className="hidden flex-col leading-tight lg:flex">
                 <span className="text-[11px] text-white/70">Returns</span>
                 <span className="text-sm font-bold">&amp; Orders</span>
               </span>

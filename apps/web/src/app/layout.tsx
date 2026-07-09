@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { AiAssistant } from "@/components/ai-assistant";
+import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
 import { RecentlyViewedProvider } from "@/lib/recently-viewed";
@@ -68,19 +69,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={jakarta.variable}>
       <body className="min-h-screen bg-white antialiased">
-        <CartProvider>
-          <WishlistProvider>
-            <RecentlyViewedProvider>
-              <SiteHeader />
-              <main>{children}</main>
-              <SiteFooter />
-              <WhatsAppButton />
-              <AiAssistant />
-              <CartDrawer />
-              <CartToast />
-            </RecentlyViewedProvider>
-          </WishlistProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <RecentlyViewedProvider>
+                <SiteHeader />
+                <main>{children}</main>
+                <SiteFooter />
+                <WhatsAppButton />
+                <AiAssistant />
+                <CartDrawer />
+                <CartToast />
+              </RecentlyViewedProvider>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     # Email (Resend)
     resend_api_key: str = ""
     email_from: str = "Online Tech Uganda <noreply@onlinetech.ug>"
-    contact_inbox: str = "onlinetech@gmail.com"
+    contact_inbox: str = "onlinetechug@gmail.com"
 
     @property
     def cors_origins_list(self) -> list[str]:
