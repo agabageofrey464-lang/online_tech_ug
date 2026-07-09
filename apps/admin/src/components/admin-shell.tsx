@@ -9,6 +9,7 @@ const sections = [
   { href: "/products", label: "Products", icon: "🛒" },
   { href: "/orders", label: "Orders", icon: "📦" },
   { href: "/courses", label: "Courses", icon: "🎓" },
+  { href: "/vendors", label: "Vendors", icon: "🏪" },
   { href: "/leads", label: "Leads", icon: "💬" },
   { href: "/settings", label: "Settings", icon: "⚙️" },
 ];
