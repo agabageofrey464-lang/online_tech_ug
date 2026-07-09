@@ -15,6 +15,7 @@ class UnlockCode(Base):
     code: Mapped[str] = mapped_column(String(40), unique=True, index=True)
     course_slug: Mapped[str] = mapped_column(String(160), index=True)
     note: Mapped[str] = mapped_column(String(200), default="")  # customer name/phone
+    email: Mapped[str] = mapped_column(String(200), default="")  # learner email for auto-delivery
     redeemed_count: Mapped[int] = mapped_column(Integer, default=0)
     revoked: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -68,3 +68,10 @@ class OrderSummary(BaseModel):
     payment_method: str
     payment_status: str
     status: str
+
+
+class OrderUpdate(BaseModel):
+    """Admin: update an order's fulfilment status and/or payment status."""
+
+    status: str | None = None
+    payment_status: str | None = None

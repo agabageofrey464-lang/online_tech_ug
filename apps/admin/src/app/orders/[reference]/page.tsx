@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { apiGet, ugx, type AdminOrderDetail } from "@/lib/api";
+import { OrderStatusControls } from "@/components/order-status-controls";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,12 @@ export default async function OrderDetailPage({
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         {/* Customer + delivery */}
         <div className="space-y-6 lg:col-span-1">
+          <OrderStatusControls
+            reference={order.reference}
+            status={order.status}
+            paymentStatus={order.payment_status}
+          />
+
           <section className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
             <h2 className="text-xs font-bold uppercase tracking-wider text-ink-600/50">Customer</h2>
             <p className="mt-2 font-semibold text-ink-600">{order.customer_name}</p>

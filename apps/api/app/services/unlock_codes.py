@@ -36,6 +36,7 @@ def _to_dict(c: UnlockCode) -> dict:
         "code": c.code,
         "course_slug": c.course_slug,
         "note": c.note,
+        "email": c.email,
         "redeemed_count": c.redeemed_count,
         "revoked": c.revoked,
         "created_at": c.created_at,
@@ -43,7 +44,7 @@ def _to_dict(c: UnlockCode) -> dict:
     }
 
 
-def generate_code(db: Session, course_slug: str, note: str = "", pending: bool = False) -> dict:
+def generate_code(db: Session, course_slug: str, note: str = "", pending: bool = False, email: str = "") -> dict:
     """Create a unique unlock code for a course. Raises ValueError if course unknown.
 
     `pending=True` creates the code in a not-yet-active state (revoked) — used for

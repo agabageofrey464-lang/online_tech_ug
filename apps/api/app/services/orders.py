@@ -116,3 +116,23 @@ def list_orders(db: Session, limit: int = 100) -> list[Order]:
     return list(
         db.execute(select(Order).order_by(Order.created_at.desc()).limit(limit)).scalars().all()
     )
+
+
+_ALLOWED_STATUS = {"pending", "confirmed", "processing", "shipped", "delivered", "cancelled"}
+_ALLOWED_PAYMENT = {"pending", "unpaid", "paid", "refunded"}
+
+
+def update_order(
+    db: Session, reference: str, status: str | None = None, payment_status: str | None = None
+) -> Order | None:
+    """Admin: update fulfilment/payment status. Returns the order, or None if missing."""
+    order = get_order(db, reference)
+    if not order:
+        return None
+    if status and status in _ALLOWED_STATUS:
+        order.status = status
+    if payment_status and payment_status in _ALLOWED_PAYMENT:
+        order.payment_status = payment_status
+    db.commit()
+    db.refresh(order)
+    return order
