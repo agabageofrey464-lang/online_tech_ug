@@ -56,7 +56,7 @@ function Grid({ items }: { items: Product[] }) {
   // Mobile: horizontal scroll showing ~2 cards + a peek of the 3rd (Jumia style).
   // sm+: regular grid.
   return (
-    <div className="grid grid-cols-2 gap-2.5 p-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3 lg:grid-cols-6">
       {items.map((p) => (
         <ProductCard key={p.id} product={p} />
       ))}

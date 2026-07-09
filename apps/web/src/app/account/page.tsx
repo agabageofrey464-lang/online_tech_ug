@@ -75,6 +75,7 @@ export default function AccountPage() {
     try {
       setOrders(JSON.parse(localStorage.getItem("otu_orders") || "[]"));
     } catch {}
+    if (typeof window !== "undefined" && window.location.hash === "#orders") setTab("orders");
     setLoaded(true);
   }, []);
 

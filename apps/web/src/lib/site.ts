@@ -10,7 +10,7 @@ export const site = {
   phoneAlt: "+256 760 547 211",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "256756839270",
   address: "Liberty Tower, Kampala Road, Kampala",
-  ceo: { name: "Agaba Geofrey", title: "Founder & CEO · IT Specialist", email: "onlinetechug@gmail.com" },
+  ceo: { name: "Agaba Geofrey", title: "Founder & CEO · IT Specialist", email: "agabageofrey464@gmail.com" },
   socials: {
     // Brand handle: @onlinetechug across all platforms.
     tiktok: "https://www.tiktok.com/@onlinetechug",

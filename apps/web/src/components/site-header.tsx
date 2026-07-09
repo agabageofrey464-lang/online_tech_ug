@@ -9,6 +9,7 @@ import { nav, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { SearchBar } from "@/components/search-bar";
+import { HeaderAccount } from "@/components/header-account";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -82,14 +83,8 @@ export function SiteHeader() {
 
           {/* Right-side actions: account, orders, wishlist, cart — anchored to the right */}
           <div className="ml-auto flex items-center gap-2 md:gap-3">
-            {/* Account — icon on mobile, full label on desktop */}
-            <Link href="/account" aria-label="Your account" className="flex items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60">
-              <User size={24} strokeWidth={1.8} className="md:hidden" />
-              <span className="hidden flex-col leading-tight md:flex">
-                <span className="text-[11px] text-white/70">Hello, sign in</span>
-                <span className="text-sm font-bold">Account &amp; Lists</span>
-              </span>
-            </Link>
+            {/* Account — sign-in prompt or logged-in dropdown */}
+            <HeaderAccount />
 
             {/* Orders — icon on mobile/tablet, full label on desktop */}
             <Link href="/account#orders" aria-label="Returns & orders" className="flex items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60">
