@@ -62,31 +62,25 @@ export function OrderStatusControls({
         ✓ Mark Delivered &amp; Paid
       </button>
 
+      {/* Changing a dropdown saves immediately (auto-save) */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="text-sm">
           <span className="mb-1 block font-medium text-ink-600/70">Fulfilment status</span>
-          <select value={s} onChange={(e) => setS(e.target.value)} disabled={busy} className={`w-full ${sel}`}>
+          <select value={s} onChange={(e) => update({ status: e.target.value })} disabled={busy} className={`w-full ${sel}`}>
             {STATUSES.map((x) => <option key={x} value={x}>{x}</option>)}
           </select>
         </label>
         <label className="text-sm">
           <span className="mb-1 block font-medium text-ink-600/70">Payment status</span>
-          <select value={p} onChange={(e) => setP(e.target.value)} disabled={busy} className={`w-full ${sel}`}>
+          <select value={p} onChange={(e) => update({ payment_status: e.target.value })} disabled={busy} className={`w-full ${sel}`}>
             {PAYMENTS.map((x) => <option key={x} value={x}>{x}</option>)}
           </select>
         </label>
       </div>
 
-      {/* Apply the chosen status/payment */}
-      <button
-        onClick={() => update({ status: s, payment_status: p })}
-        disabled={busy || (s === status && p === paymentStatus)}
-        className="mt-4 w-full rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {busy ? "Saving…" : "Apply changes"}
-      </button>
-
-      {msg && <p className="mt-3 text-center text-sm font-semibold text-green-600">{msg}</p>}
+      <p className="mt-2 text-center text-xs text-ink-600/50">
+        {busy ? "Saving…" : msg || "Changes save automatically."}
+      </p>
     </section>
   );
 }
