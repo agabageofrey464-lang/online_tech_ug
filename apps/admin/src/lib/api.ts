@@ -3,9 +3,11 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000
 export const ugx = (n: number) =>
   new Intl.NumberFormat("en-UG", { style: "currency", currency: "UGX", maximumFractionDigits: 0 }).format(n);
 
+// Cache API responses briefly so admin pages load fast (data is at most ~12s
+// stale; status changes update the UI immediately client-side regardless).
 export async function apiGet<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_URL}${path}`, { cache: "no-store" });
+    const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 12 } });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
@@ -17,7 +19,7 @@ export async function apiGet<T>(path: string): Promise<T | null> {
 export async function apiGetAdmin<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${API_URL}${path}`, {
-      cache: "no-store",
+      next: { revalidate: 12 },
       headers: { "X-Admin-Key": process.env.ADMIN_API_KEY ?? "" },
     });
     if (!res.ok) return null;

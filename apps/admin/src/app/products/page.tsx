@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { apiGet, ugx, type AdminProduct } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
 
 const CATEGORY_ORDER = ["Laptops", "Desktops", "Components", "Power", "Accessories", "Networking", "Storage"];
 

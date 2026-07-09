@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { apiGet, apiGetAdmin, ugx, orderDate, type AdminOrder, type AdminProduct, type AdminLead } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 async function getHealth() {
   try {
-    const res = await fetch(`${API}/api/v1/health`, { cache: "no-store" });
+    const res = await fetch(`${API}/api/v1/health`, { next: { revalidate: 12 } });
     if (!res.ok) return null;
     return (await res.json()) as { status: string; version: string };
   } catch {

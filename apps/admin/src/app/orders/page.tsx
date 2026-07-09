@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { apiGet, ugx, orderDate, type AdminOrder } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
 
 const statusTone: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",

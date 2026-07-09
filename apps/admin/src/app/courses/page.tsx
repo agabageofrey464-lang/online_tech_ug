@@ -1,7 +1,6 @@
 import { apiGet, ugx, type AdminCourse } from "@/lib/api";
 import { CourseCodes } from "@/components/course-codes";
 
-export const dynamic = "force-dynamic";
 
 export default async function CoursesPage() {
   const courses = (await apiGet<AdminCourse[]>("/api/v1/courses")) ?? [];

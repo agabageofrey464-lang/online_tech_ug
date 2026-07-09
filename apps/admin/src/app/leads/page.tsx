@@ -1,6 +1,5 @@
 import { apiGetAdmin, type AdminLead } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
 
 export default async function LeadsPage() {
   const leads = (await apiGetAdmin<AdminLead[]>("/api/v1/contact")) ?? [];
