@@ -13,6 +13,30 @@ export async function apiGet<T>(path: string): Promise<T | null> {
   }
 }
 
+// Server-side fetch that includes the admin key (for admin-gated endpoints).
+export async function apiGetAdmin<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API_URL}${path}`, {
+      cache: "no-store",
+      headers: { "X-Admin-Key": process.env.ADMIN_API_KEY ?? "" },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+export type AdminLead = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  subject: string;
+  message: string;
+  handled: boolean;
+};
+
 export type AdminProduct = {
   id: number;
   slug: string;

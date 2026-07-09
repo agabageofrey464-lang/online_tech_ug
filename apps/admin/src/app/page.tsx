@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, orderDate, type AdminOrder, type AdminProduct } from "@/lib/api";
+import { apiGet, apiGetAdmin, ugx, orderDate, type AdminOrder, type AdminProduct, type AdminLead } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +25,11 @@ const statusTone: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const [health, orders, products] = await Promise.all([
+  const [health, orders, products, leads] = await Promise.all([
     getHealth(),
     apiGet<AdminOrder[]>("/api/v1/orders"),
     apiGet<AdminProduct[]>("/api/v1/products"),
+    apiGetAdmin<AdminLead[]>("/api/v1/contact"),
   ]);
 
   const orderList = orders ?? [];
@@ -40,7 +41,7 @@ export default async function DashboardPage() {
     { label: "Revenue (all orders)", value: ugx(revenue), hint: `${orderList.length} order(s)`, tone: "brand" as const },
     { label: "Orders", value: String(orderList.length), hint: `${pending} pending · ${delivered} delivered`, tone: "ink" as const },
     { label: "Products", value: String(products?.length ?? 0), hint: "Live catalog", tone: "ink" as const },
-    { label: "Pending orders", value: String(pending), hint: "Awaiting fulfilment", tone: "brand" as const },
+    { label: "New leads", value: String(leads?.length ?? 0), hint: "From contact form", tone: "brand" as const },
   ];
 
   return (
