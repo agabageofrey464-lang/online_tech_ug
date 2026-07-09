@@ -48,8 +48,7 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
         <div class="row">
           <div>Date<b>${date}</b></div>
           <div class="sig">
-            <img class="signimg" src="${origin}/signature.png" alt="Signature" onerror="this.style.display='none';var s=document.getElementById('sigfallback');if(s)s.style.display='inline-block'" />
-            <div id="sigfallback" class="signline" style="display:none">Agaba Geofrey</div>
+            <img class="signimg" src="${origin}/signature.png" alt="Signature" onerror="this.style.display='none'" />
             <b>Mr. Agaba Geofrey — Director</b>
           </div>
         </div>
