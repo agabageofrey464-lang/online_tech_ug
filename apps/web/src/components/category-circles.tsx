@@ -4,7 +4,7 @@ import Link from "next/link";
 type Tile = { label: string; href: string; id: string };
 
 // Higher-res crop so the circular thumbnails stay crisp on retina screens.
-const src = (id: string) => `https://images.unsplash.com/photo-${id}?w=200&q=72&auto=format&fit=crop`;
+const src = (id: string) => `/web/photo-${id}.jpg`;
 
 const TILES: Tile[] = [
   { label: "Laptops", href: "/shop?cat=Laptops", id: "1496181133206-80ce9b88a853" },

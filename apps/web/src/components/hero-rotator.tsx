@@ -16,7 +16,7 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    img: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1400&q=80&auto=format&fit=crop",
+    img: "/web/photo-1498049794561-7780e7231661.jpg",
     eyebrow: "Online Tech Uganda",
     title: "Genuine Computers, Unbeatable Prices",
     sub: "Laptops, desktops & accessories from UGX 65,000 — warranty, countrywide delivery & Mobile Money.",
@@ -24,7 +24,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Learn computer basics", href: "/learn" },
   },
   {
-    img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1400&q=80&auto=format&fit=crop",
+    img: "/web/photo-1517336714731-489689fd1ca8.jpg",
     eyebrow: "Laptops",
     title: "Laptops for Every Budget",
     sub: "Business, gaming & student laptops — from quality UK-used to brand new.",
@@ -32,7 +32,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "View gaming", href: "/shop?q=ROG" },
   },
   {
-    img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1400&q=80&auto=format&fit=crop",
+    img: "/web/photo-1587829741301-dc798b83add3.jpg",
     eyebrow: "Accessories & Components",
     title: "Upgrade & Accessorize",
     sub: "RAM, SSDs, chargers, power banks, bags, mice & keyboards — everything for your setup.",

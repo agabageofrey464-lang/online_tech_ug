@@ -24,7 +24,7 @@ export const projectCategories: (ProjectCategory | "All")[] = [
 ];
 
 // Temporary web images so cards aren't blank (replace with real screenshots in /public/portfolio later).
-const u = (id: string) => `https://images.unsplash.com/photo-${id}?w=900&q=80&auto=format&fit=crop`;
+const u = (id: string) => `/web/photo-${id}.jpg`;
 
 export const portfolio: PortfolioItem[] = [
   {
