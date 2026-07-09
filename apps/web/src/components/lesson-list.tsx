@@ -38,12 +38,14 @@ export function LessonList({ course }: { course: Course }) {
       try {
         // Preferred: verify the per-payment code against the backend.
         ok = await verifyUnlockCode(slug, entered);
-        if (ok) markUnlocked(slug);
       } catch {
-        // Offline / API unreachable — fall back to the course's static code.
-        ok = tryUnlock(slug, entered, course.unlockCode || "");
+        // API unreachable — ignore, we still try the static code below.
       }
+      // Always also accept the course's static code (e.g. CB-2026), so both the
+      // dynamic per-payment codes and the fixed course codes unlock the course.
+      if (!ok) ok = tryUnlock(slug, entered, course.unlockCode || "");
       if (ok) {
+        markUnlocked(slug);
         setUnlocked(true);
         setShowUnlock(false);
         setCode("");
