@@ -33,6 +33,7 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
       .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:50px;font-size:14px;color:#555}
       .row b{display:block;color:#282363;font-size:16px}
       .sig{text-align:center}
+      .signimg{height:64px;max-width:200px;object-fit:contain;display:block;margin:0 auto 2px}
       .signline{font-family:'Brush Script MT','Segoe Script',cursive;font-size:26px;color:#282363;line-height:1;padding:0 20px 4px;border-bottom:1px solid #999;display:inline-block}
       @media print{body{background:#fff}.cert{box-shadow:none}}
     </style></head><body>
@@ -47,7 +48,8 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
         <div class="row">
           <div>Date<b>${date}</b></div>
           <div class="sig">
-            <div class="signline">Agaba Geofrey</div>
+            <img class="signimg" src="${origin}/signature.png" alt="Signature" onerror="this.style.display='none';var s=document.getElementById('sigfallback');if(s)s.style.display='inline-block'" />
+            <div id="sigfallback" class="signline" style="display:none">Agaba Geofrey</div>
             <b>Mr. Agaba Geofrey — Director</b>
           </div>
         </div>
