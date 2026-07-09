@@ -61,7 +61,7 @@ export function SiteHeader() {
           {/* Logo + brand */}
           <Link href="/" className="flex shrink-0 items-center gap-2 rounded px-1 py-1 hover:outline hover:outline-1 hover:outline-white/60">
             <Image src="/logo.jpeg" alt={site.name} width={36} height={36} className="h-9 w-9 rounded object-cover" priority />
-            <span className="flex flex-col leading-none">
+            <span className="hidden flex-col leading-none sm:flex">
               <span className="font-display text-base font-extrabold tracking-tight">Online Tech</span>
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-400">Uganda</span>
             </span>
@@ -86,8 +86,8 @@ export function SiteHeader() {
             {/* Account — sign-in prompt or logged-in dropdown */}
             <HeaderAccount />
 
-            {/* Orders — icon on mobile/tablet, full label on desktop */}
-            <Link href="/account#orders" aria-label="Returns & orders" className="flex items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60">
+            {/* Orders — hidden on small phones (in the account menu); icon on tablet, label on desktop */}
+            <Link href="/account#orders" aria-label="Returns & orders" className="hidden items-center gap-1.5 rounded px-1.5 py-2 hover:outline hover:outline-1 hover:outline-white/60 sm:flex">
               <Package size={24} strokeWidth={1.8} className="lg:hidden" />
               <span className="hidden flex-col leading-tight lg:flex">
                 <span className="text-[11px] text-white/70">Returns</span>
