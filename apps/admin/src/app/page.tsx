@@ -58,9 +58,9 @@ export default async function DashboardPage() {
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
+          <div key={c.label} className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
             <p className="text-sm text-ink-600/60">{c.label}</p>
-            <p className={`mt-2 text-3xl font-extrabold ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
+            <p className={`mt-2 break-words text-2xl font-extrabold leading-tight tabular-nums ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
             <p className="mt-1 text-xs text-ink-600/50">{c.hint}</p>
           </div>
         ))}

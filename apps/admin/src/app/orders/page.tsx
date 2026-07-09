@@ -12,18 +12,43 @@ const statusTone: Record<string, string> = {
   cancelled: "bg-red-100 text-red-700",
 };
 
-export default async function OrdersPage() {
-  const orders = (await apiGet<AdminOrder[]>("/api/v1/orders")) ?? [];
+const FILTERS = ["all", "pending", "confirmed", "shipped", "delivered", "cancelled"];
+
+export default async function OrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status } = await searchParams;
+  const active = status && FILTERS.includes(status) ? status : "all";
+  const all = (await apiGet<AdminOrder[]>("/api/v1/orders")) ?? [];
+  const orders = active === "all" ? all : all.filter((o) => o.status === active);
   const revenue = orders.reduce((s, o) => s + o.total, 0);
+  const countFor = (f: string) => (f === "all" ? all.length : all.filter((o) => o.status === f).length);
 
   return (
     <div>
-      <header className="mb-8">
+      <header className="mb-5">
         <h1 className="text-2xl font-extrabold text-ink-600">Orders</h1>
         <p className="text-sm text-ink-600/60">
           {orders.length} order(s) · {ugx(revenue)} total value
         </p>
       </header>
+
+      {/* Status filter tabs */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {FILTERS.map((f) => (
+          <Link
+            key={f}
+            href={f === "all" ? "/orders" : `/orders?status=${f}`}
+            className={`rounded-full px-3.5 py-1.5 text-sm font-semibold capitalize transition ${
+              active === f ? "bg-brand-500 text-white" : "bg-white text-ink-600 shadow-sm hover:bg-brand-50"
+            }`}
+          >
+            {f} <span className={active === f ? "text-white/80" : "text-ink-600/40"}>({countFor(f)})</span>
+          </Link>
+        ))}
+      </div>
 
       {orders.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-ink-600/20 bg-white p-10 text-center text-ink-600/60">
