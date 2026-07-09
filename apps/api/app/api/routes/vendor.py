@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.api.routes.auth import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.vendor_product import VendorProductIn, VendorProductOut
+from app.schemas.vendor_product import MarketplaceItem, VendorProductIn, VendorProductOut
 from app.services import vendor_products
 
 router = APIRouter()
@@ -45,6 +45,6 @@ def remove_product(
 
 
 # Public marketplace feed of all vendor products.
-@router.get("/marketplace", response_model=list[VendorProductOut])
+@router.get("/marketplace", response_model=list[MarketplaceItem])
 def marketplace(db: Session = Depends(get_db)) -> list:
     return vendor_products.list_public(db)

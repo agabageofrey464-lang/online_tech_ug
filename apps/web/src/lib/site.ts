@@ -25,6 +25,7 @@ export const nav = [
   // Ordered by business importance: revenue-driving pages first, info pages last.
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
+  { href: "/marketplace", label: "Marketplace" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/learn", label: "Learn" },

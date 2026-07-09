@@ -52,7 +52,12 @@ export default async function LeadsPage() {
                   Reply on WhatsApp
                 </a>
                 {l.email && (
-                  <a href={`mailto:${l.email}`} className="rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-semibold text-ink-600 hover:bg-ink-50">
+                  <a
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(l.email)}&su=${encodeURIComponent("Re: " + (l.subject || "Your enquiry — Online Tech Uganda"))}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-semibold text-ink-600 hover:bg-ink-50"
+                  >
                     Email back
                   </a>
                 )}

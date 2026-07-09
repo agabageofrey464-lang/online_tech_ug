@@ -22,3 +22,9 @@ class VendorProductOut(BaseModel):
     image_url: str
     in_stock: bool
     created_at: datetime
+
+
+class MarketplaceItem(VendorProductOut):
+    """Public marketplace item — includes the seller's display name."""
+
+    vendor_name: str = ""
