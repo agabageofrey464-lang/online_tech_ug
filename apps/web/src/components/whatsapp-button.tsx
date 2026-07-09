@@ -9,7 +9,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="group fixed bottom-5 right-4 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-3.5 py-3.5 text-white shadow-xl shadow-black/25 transition hover:brightness-105 sm:right-5"
+      className="group fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-3.5 py-3.5 text-white shadow-xl shadow-black/25 transition hover:brightness-105 sm:right-5 md:bottom-5"
     >
       {/* pulse ring */}
       <span

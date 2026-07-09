@@ -68,14 +68,14 @@ export function AiAssistant() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Open chat assistant"
-        className="fixed bottom-5 left-4 z-40 flex items-center gap-2 rounded-full bg-ink-700 px-3.5 py-3.5 text-white shadow-xl shadow-black/25 transition hover:bg-ink-600 sm:left-5"
+        className="fixed bottom-20 left-4 z-40 flex items-center gap-2 rounded-full bg-ink-700 px-3.5 py-3.5 text-white shadow-xl shadow-black/25 transition hover:bg-ink-600 sm:left-5 md:bottom-5"
       >
         {open ? <X size={22} /> : <Headset size={22} />}
         {!open && <span className="hidden pr-1 text-sm font-bold sm:inline">Ask AI</span>}
       </button>
 
       {open && (
-        <div className="fixed bottom-24 left-4 z-40 flex h-[28rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-ink-600/10 bg-white shadow-2xl sm:left-5">
+        <div className="fixed bottom-36 left-4 z-40 flex h-[28rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-ink-600/10 bg-white shadow-2xl sm:left-5 md:bottom-24">
           <div className="flex items-center gap-2 bg-ink-700 px-4 py-3 text-white">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500">
               <Headset size={18} />
