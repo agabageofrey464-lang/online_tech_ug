@@ -29,6 +29,7 @@ class ProductBase(BaseModel):
     old_price_ugx: int | None = None
     rating: float = 0
     in_stock: bool = True
+    stock_qty: int = 0
     image_url: str = ""
     specs: ProductSpecs | None = None
 

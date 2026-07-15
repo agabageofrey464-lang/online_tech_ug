@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { MapPin, Briefcase, Check } from "lucide-react";
+import { MapPin, Briefcase, Check, Mail, MessageCircle } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { jobs } from "@/lib/jobs";
+import { JobApply } from "@/components/job-apply";
+import { jobs as seedJobs } from "@/lib/jobs";
 import { site, whatsappLink } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -10,8 +11,33 @@ export const metadata: Metadata = {
     "IT jobs, internships and other openings at Online Tech Uganda. Apply for software, IT support, sales, design and marketing roles.",
 };
 
-const fmt = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+// Always fetch fresh so newly posted jobs appear immediately.
+export const dynamic = "force-dynamic";
+
+type JobItem = {
+  id: string | number;
+  title: string;
+  type: string;
+  category: string;
+  location: string;
+  summary: string;
+  requirements: string[];
+  openings: number;
+};
+
+async function getJobs(): Promise<JobItem[]> {
+  const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  try {
+    const res = await fetch(`${API}/api/v1/jobs`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+    }
+  } catch {
+    /* fall through to seed */
+  }
+  return seedJobs as unknown as JobItem[];
+}
 
 const typeTone: Record<string, string> = {
   "Full-time": "bg-green-100 text-green-700",
@@ -20,7 +46,9 @@ const typeTone: Record<string, string> = {
   Contract: "bg-purple-100 text-purple-700",
 };
 
-export default function JobsPage() {
+export default async function JobsPage() {
+  const jobs = await getJobs();
+
   return (
     <>
       <PageHeader
@@ -38,7 +66,7 @@ export default function JobsPage() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-lg font-extrabold text-ink-600">{j.title}</h2>
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${typeTone[j.type]}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${typeTone[j.type] ?? "bg-ink-100 text-ink-700"}`}>
                       {j.type}
                     </span>
                   </div>
@@ -46,23 +74,23 @@ export default function JobsPage() {
                     <span className="flex items-center gap-1"><Briefcase size={13} /> {j.category}</span>
                     <span className="flex items-center gap-1"><MapPin size={13} /> {j.location}</span>
                     <span>{j.openings} opening(s)</span>
-                    <span>Posted {fmt(j.postedAt)}</span>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
+                  <JobApply jobId={typeof j.id === "number" ? j.id : undefined} jobTitle={j.title} />
+                  <a
+                    href={`mailto:${site.email}?subject=${encodeURIComponent("Application: " + j.title)}`}
+                    className="inline-flex items-center gap-1.5 rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-ink-50"
+                  >
+                    <Mail size={15} /> Email
+                  </a>
                   <a
                     href={whatsappLink(`Hi, I'd like to apply for the "${j.title}" position at Online Tech Uganda.`)}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-50"
                   >
-                    Apply
-                  </a>
-                  <a
-                    href={`mailto:${site.email}?subject=${encodeURIComponent("Application: " + j.title)}`}
-                    className="rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-ink-50"
-                  >
-                    Email CV
+                    <MessageCircle size={15} /> WhatsApp
                   </a>
                 </div>
               </div>

@@ -6,9 +6,24 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-export function ContactForm() {
+const SUBJECTS = [
+  "Buying a computer / accessory",
+  "Become a vendor / sell with us",
+  "Get listed as a freelancer",
+  "Advertise with us",
+  "Website development",
+  "Mobile app / software system",
+  "Repairs & IT support",
+  "Networking services",
+  "Online courses",
+  "Other",
+];
+
+export function ContactForm({ initialSubject = "" }: { initialSubject?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
+  // Ensure the hinted subject is selectable even if it's not in the base list.
+  const options = initialSubject && !SUBJECTS.includes(initialSubject) ? [initialSubject, ...SUBJECTS] : SUBJECTS;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,15 +83,12 @@ export function ContactForm() {
         <select
           id="subject"
           name="subject"
+          defaultValue={initialSubject || undefined}
           className="w-full rounded-lg border border-ink-600/20 bg-white px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
         >
-          <option>Buying a computer / accessory</option>
-          <option>Website development</option>
-          <option>Mobile app / software system</option>
-          <option>Repairs & IT support</option>
-          <option>Networking services</option>
-          <option>Online courses</option>
-          <option>Other</option>
+          {options.map((o) => (
+            <option key={o}>{o}</option>
+          ))}
         </select>
       </div>
       <div>

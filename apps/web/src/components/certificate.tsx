@@ -22,7 +22,7 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
 
   useEffect(() => {
     setName(learnerName());
-    loadImg("/logo.jpeg").then((i) => (logo.current = i));
+    loadImg("/logo.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 

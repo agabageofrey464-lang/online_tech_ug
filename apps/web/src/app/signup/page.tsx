@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { Store, User } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { site } from "@/lib/site";
@@ -16,7 +16,7 @@ function SignupInner() {
   const initialRole = params.get("role") === "vendor" ? "vendor" : "customer";
 
   const [role, setRole] = useState<"customer" | "vendor">(initialRole);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", business_name: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", business_name: "", business_category: "", location: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -26,6 +26,21 @@ function SignupInner() {
     setErr("");
     try {
       const user = await register({ ...form, role });
+      // Alert the owner (email + dashboard) when a new vendor registers, so it
+      // can be reviewed and approved in the Vendors tab.
+      if (role === "vendor") {
+        fetch("/_api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            phone: form.phone,
+            email: form.email,
+            subject: "🆕 New vendor application",
+            message: `New VENDOR registration — review & approve in the Vendors tab.\nBusiness: ${form.business_name}\nOwner: ${form.name}\nPhone: ${form.phone}\nEmail: ${form.email}`,
+          }),
+        }).catch(() => {});
+      }
       router.push(role === "vendor" ? "/vendor" : next);
       void user;
     } catch (e) {
@@ -41,7 +56,7 @@ function SignupInner() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-4 py-12">
       <Link href="/" className="mb-5 flex items-center gap-2">
-        <Image src="/logo.jpeg" alt={site.name} width={40} height={40} className="h-10 w-10 rounded object-cover" />
+        <BrandLogo className="h-10 w-10 text-ink-600" />
         <span className="font-display text-lg font-extrabold text-ink-900">Online Tech Uganda</span>
       </Link>
 
@@ -68,15 +83,41 @@ function SignupInner() {
 
         <form onSubmit={submit} className="mt-4 space-y-3">
           {role === "vendor" && (
-            <input
-              required
-              placeholder="Business / shop name"
-              value={form.business_name}
-              onChange={(e) => setForm({ ...form, business_name: e.target.value })}
-              className={input}
-            />
+            <>
+              <input
+                required
+                placeholder="Business / shop name"
+                value={form.business_name}
+                onChange={(e) => setForm({ ...form, business_name: e.target.value })}
+                className={input}
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <select
+                  required
+                  value={form.business_category}
+                  onChange={(e) => setForm({ ...form, business_category: e.target.value })}
+                  className={`${input} bg-white`}
+                >
+                  <option value="">Business category…</option>
+                  {[
+                    "Computers & Laptops", "Phones & Accessories", "Electronics", "Fashion & Clothing",
+                    "Home & Living", "Beauty & Health", "Food & Groceries", "Books & Stationery",
+                    "Agriculture", "General / Other",
+                  ].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <input
+                  required
+                  placeholder="Location (e.g. Kampala)"
+                  value={form.location}
+                  onChange={(e) => setForm({ ...form, location: e.target.value })}
+                  className={input}
+                />
+              </div>
+            </>
           )}
-          <input required placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} />
+          <input required placeholder={role === "vendor" ? "Owner's full name" : "Full name"} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} />
           <input required type="email" placeholder="Email address" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={input} />
           <input placeholder="Phone (07xx xxx xxx)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={input} />
           <input required type="password" placeholder="Password (min 6 characters)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={input} />

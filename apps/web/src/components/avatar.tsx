@@ -1,5 +1,9 @@
-// Initials-based profile picture (Gmail-style). A consistent colour is derived
-// from the name/email so each user gets a stable avatar without a photo upload.
+"use client";
+
+// Profile picture. Shows the photo linked to the user's email account (Gravatar)
+// when they have one, otherwise a stable initials avatar (Gmail-style).
+
+import { useEffect, useState } from "react";
 
 const COLORS = [
   "bg-brand-500",
@@ -33,18 +37,60 @@ export function Avatar({
   className = "",
 }: {
   name: string;
-  seed?: string;
+  seed?: string; // the user's email — used to look up their account photo
   size?: number;
   className?: string;
 }) {
+  const [src, setSrc] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  const email = (seed || "").trim().toLowerCase();
+
+  // Derive the Gravatar URL from the email (SHA-256). d=404 → if they have no
+  // Gravatar the request 404s and we fall back to the initials avatar.
+  useEffect(() => {
+    setFailed(false);
+    setSrc(null);
+    if (!email.includes("@") || typeof crypto === "undefined" || !crypto.subtle) return;
+    let alive = true;
+    (async () => {
+      try {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(email));
+        const hex = Array.from(new Uint8Array(buf))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        if (alive) setSrc(`https://www.gravatar.com/avatar/${hex}?s=${Math.round(size * 2)}&d=404`);
+      } catch {
+        /* SubtleCrypto unavailable (e.g. non-HTTPS) — keep initials. */
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [email, size]);
+
   const bg = colorFor(seed || name || "?");
+  const showPhoto = src && !failed;
+
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-bold leading-none text-white ${bg} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-bold leading-none text-white ${bg} ${className}`}
       style={{ width: size, height: size, fontSize: Math.round(size * 0.4) }}
-      aria-hidden
     >
-      {initials(name || "?")}
+      {showPhoto ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={name}
+          width={size}
+          height={size}
+          className="h-full w-full rounded-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        initials(name || "?")
+      )}
     </span>
   );
 }

@@ -10,7 +10,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.order import Order, OrderItem
+from app.models.vendor_product import VendorProduct
 from app.schemas.order import OrderCreate
+from app.services import catalog, coupons
 from app.services.catalog import get_product
 
 # Free delivery above this subtotal (UGX) — within the Kampala metro
@@ -30,6 +32,21 @@ TOWN_DISTANCE_KM = {
 
 class OrderError(Exception):
     """Raised when an order cannot be created (e.g. unknown / out-of-stock item)."""
+
+
+def commission_rate_for(line_total: int) -> float:
+    """Tiered platform commission by line value (higher value → lower %). Range 5–10%."""
+    if line_total < 100_000:
+        return 0.10
+    if line_total < 500_000:
+        return 0.08
+    if line_total < 2_000_000:
+        return 0.06
+    return 0.05
+
+
+def commission_for(line_total: int) -> int:
+    return round(line_total * commission_rate_for(line_total))
 
 
 def _fee_for_km(km: int) -> int:
@@ -60,6 +77,32 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
     subtotal = 0
 
     for item in payload.items:
+        # Vendor marketplace item — slug is "vp-<vendor_product_id>"
+        if item.slug.startswith("vp-"):
+            try:
+                vp_id = int(item.slug[3:])
+            except ValueError:
+                raise OrderError(f"Invalid product: {item.slug}") from None
+            vp = db.get(VendorProduct, vp_id)
+            if not vp or not vp.in_stock:
+                raise OrderError(f"Marketplace item unavailable: {item.slug}")
+            unit_price = int(vp.price_ugx)
+            line_total = unit_price * item.quantity
+            commission = commission_for(line_total)
+            subtotal += line_total
+            line_items.append(
+                OrderItem(
+                    product_slug=item.slug,
+                    name=vp.name,
+                    unit_price=unit_price,
+                    quantity=item.quantity,
+                    line_total=line_total,
+                    vendor_id=vp.vendor_id,
+                    commission=commission,
+                )
+            )
+            continue
+
         product = get_product(db, item.slug)
         if not product:
             raise OrderError(f"Product not found: {item.slug}")
@@ -77,9 +120,17 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
                 line_total=line_total,
             )
         )
+        # Reduce inventory for tracked house products (no-op for seed/untracked items).
+        catalog.decrement_stock(db, product["slug"], item.quantity)
 
     delivery_fee = compute_delivery_fee(payload.delivery_town, subtotal)
-    total = subtotal + delivery_fee
+
+    # Apply a discount coupon if one was supplied (server recomputes & records usage).
+    discount, coupon_code = 0, ""
+    if payload.coupon_code:
+        discount, coupon_code = coupons.redeem(db, payload.coupon_code, subtotal)
+
+    total = max(0, subtotal - discount) + delivery_fee
 
     # MoMo flows start as "pending" payment; COD is collected on delivery.
     payment_status = "pending" if payload.payment_method.value != "cash_on_delivery" else "unpaid"
@@ -94,6 +145,8 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         notes=payload.notes,
         subtotal=subtotal,
         delivery_fee=delivery_fee,
+        discount=discount,
+        coupon_code=coupon_code,
         total=total,
         payment_method=payload.payment_method.value,
         payment_status=payment_status,
@@ -103,7 +156,151 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
     db.add(order)
     db.commit()
     db.refresh(order)
+
+    # Affiliate: credit the referrer if a valid referral code was used.
+    if payload.referral_code:
+        try:
+            from app.services import referrals
+            referrals.credit_referral(db, payload.referral_code, order)
+        except Exception:  # noqa: BLE001 — never fail an order over referral crediting
+            db.rollback()
+
     return order
+
+
+def sales_report(db: Session, days: int = 14) -> dict:
+    """Aggregate sales figures for the admin report dashboard."""
+    from collections import defaultdict
+    from datetime import datetime, timedelta
+
+    orders = list(db.execute(select(Order)).scalars().all())
+    now = datetime.utcnow()
+    since = now - timedelta(days=days)
+
+    revenue = sum(int(o.total) for o in orders)
+    # Confirmed revenue = money actually received (payment marked "paid").
+    paid_revenue = sum(int(o.total) for o in orders if o.payment_status == "paid")
+    # Expected but not yet collected (placed/confirmed but unpaid, excludes cancelled).
+    pending_revenue = sum(
+        int(o.total) for o in orders if o.payment_status != "paid" and o.status != "cancelled"
+    )
+    discounts = sum(int(getattr(o, "discount", 0) or 0) for o in orders)
+    count = len(orders)
+    delivered = sum(1 for o in orders if o.status == "delivered")
+    pending = sum(1 for o in orders if o.status == "pending")
+    avg = round(revenue / count) if count else 0
+
+    def _naive(dt):
+        # Postgres returns tz-aware datetimes; utcnow() is naive. Normalise to naive.
+        return dt.replace(tzinfo=None) if dt and dt.tzinfo else dt
+
+    # revenue per day (last `days`)
+    by_day_rev: dict[str, int] = defaultdict(int)
+    by_day_cnt: dict[str, int] = defaultdict(int)
+    for o in orders:
+        co = _naive(o.created_at)
+        if co and co >= since:
+            key = co.strftime("%Y-%m-%d")
+            by_day_rev[key] += int(o.total)
+            by_day_cnt[key] += 1
+    by_day = []
+    for i in range(days - 1, -1, -1):
+        d = (now - timedelta(days=i)).strftime("%Y-%m-%d")
+        by_day.append({"date": d, "revenue": by_day_rev.get(d, 0), "orders": by_day_cnt.get(d, 0)})
+
+    # status breakdown
+    status_counts: dict[str, int] = defaultdict(int)
+    for o in orders:
+        status_counts[o.status] += 1
+
+    # top products by revenue
+    prod_rev: dict[str, int] = defaultdict(int)
+    prod_qty: dict[str, int] = defaultdict(int)
+    for o in orders:
+        for it in o.items:
+            prod_rev[it.name] += int(it.line_total)
+            prod_qty[it.name] += int(it.quantity)
+    top_products = sorted(
+        ({"name": n, "revenue": prod_rev[n], "qty": prod_qty[n]} for n in prod_rev),
+        key=lambda x: x["revenue"], reverse=True,
+    )[:8]
+
+    return {
+        "revenue": revenue,
+        "paid_revenue": paid_revenue,
+        "pending_revenue": pending_revenue,
+        "discounts": discounts,
+        "orders": count,
+        "delivered": delivered,
+        "pending": pending,
+        "avg_order": avg,
+        "by_day": by_day,
+        "status_counts": dict(status_counts),
+        "top_products": top_products,
+    }
+
+
+def _naive_dt(dt):
+    """Postgres returns tz-aware datetimes; utcnow() is naive. Normalise to naive."""
+    return dt.replace(tzinfo=None) if dt and dt.tzinfo else dt
+
+
+def assess_orders(orders: list[Order]) -> dict[int, dict]:
+    """Heuristic fraud/risk scoring for a batch of orders.
+
+    Returns {order_id: {"level": none|low|medium|high, "reasons": [...]}}. Pure
+    read-only signals — never blocks an order, just flags it for a human to review.
+    """
+    from collections import defaultdict
+
+    by_phone: dict[str, list[Order]] = defaultdict(list)
+    for o in orders:
+        if o.phone:
+            by_phone[o.phone.strip()].append(o)
+
+    out: dict[int, dict] = {}
+    for o in orders:
+        score = 0
+        reasons: list[str] = []
+        total = int(o.total or 0)
+
+        if total >= 5_000_000:
+            score += 3
+            reasons.append("Very high order value")
+        elif total >= 2_000_000:
+            score += 2
+            reasons.append("High order value")
+
+        co = _naive_dt(o.created_at)
+        if o.phone and co:
+            same = [
+                x for x in by_phone[o.phone.strip()]
+                if x.id != o.id and _naive_dt(x.created_at)
+                and abs((_naive_dt(x.created_at) - co).total_seconds()) <= 86_400
+            ]
+            if len(same) >= 2:
+                score += 3
+                reasons.append(f"{len(same) + 1} orders from this phone in 24h")
+            elif len(same) == 1:
+                score += 1
+                reasons.append("Repeat order from this phone")
+
+        if o.payment_method != "cash_on_delivery" and not o.email:
+            score += 1
+            reasons.append("No email on a mobile-money order")
+
+        if o.payment_method == "cash_on_delivery" and total >= 2_000_000:
+            score += 2
+            reasons.append("Large cash-on-delivery order")
+
+        level = (
+            "high" if score >= 4
+            else "medium" if score >= 2
+            else "low" if score >= 1
+            else "none"
+        )
+        out[o.id] = {"level": level, "reasons": reasons}
+    return out
 
 
 def get_order(db: Session, reference: str) -> Order | None:

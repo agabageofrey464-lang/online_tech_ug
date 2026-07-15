@@ -9,8 +9,25 @@ export const site = {
   phoneDisplay: "+256 756 839 270",
   phoneAlt: "+256 760 547 211",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "256756839270",
-  address: "Liberty Tower, Kampala Road, Kampala",
-  ceo: { name: "Agaba Geofrey", title: "Founder & CEO · IT Specialist", email: "agabageofrey464@gmail.com" },
+  address: "Kampala, Uganda",
+  ceo: {
+    name: "Agaba Geofrey",
+    title: "Founder & CEO · IT Specialist",
+    email: "agabageofrey464@gmail.com",
+    photo: "/agaba.jpeg", // CEO headshot
+  },
+  // Where customers/vendors send payments. Update anytime.
+  payment: {
+    momo: { number: "0760 547 211", name: "Online Tech Uganda", provider: "MTN Mobile Money" },
+    // Airtel Money merchant account — customers can "Pay Merchant" using the ID or number.
+    momoAlt: {
+      number: "0756 839 270",
+      name: "Online TechUG Services",
+      provider: "Airtel Money (Merchant)",
+      merchantId: "7148212",
+    },
+    bank: { bank: "", account: "", name: "" }, // fill in to display bank details
+  },
   socials: {
     // Brand handle: @onlinetechug across all platforms.
     tiktok: "https://www.tiktok.com/@onlinetechug",
@@ -21,22 +38,52 @@ export const site = {
   },
 } as const;
 
+// Core top-level links shown on the desktop sub-nav (fill the bar).
+export const navPrimary = [
+  { href: "/shop", label: "Shop" },
+  { href: "/marketplace", label: "Marketplace" },
+  { href: "/sell", label: "Vendors" },
+  { href: "/jobs", label: "Jobs" },
+  { href: "/advertise", label: "Advertise" },
+  { href: "/services", label: "Services" },
+  { href: "/blog", label: "Blog" },
+  { href: "/freelancers", label: "Freelancers" },
+  { href: "/about", label: "About Us" },
+  { href: "/contact", label: "Contact" },
+] as const;
+
+// Everything else tucked into a single dropdown.
+export const navGroups = [
+  {
+    label: "More",
+    items: [
+      { href: "/learn", label: "Learn" },
+      { href: "/news", label: "News" },
+      { href: "/pricing", label: "Pricing & Plans" },
+      { href: "/portfolio", label: "Portfolio" },
+      { href: "/request", label: "Request Software" },
+      { href: "/track", label: "Track Project" },
+      { href: "/help", label: "Help" },
+    ],
+  },
+] as const;
+
+// Full flat list — used by the mobile menu and footer.
 export const nav = [
-  // Ordered by business importance: revenue-driving pages first, info pages last.
+  // Marketplace ecosystem first (after Home/Shop), then services & info pages.
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/marketplace", label: "Marketplace" },
+  { href: "/sell", label: "Vendors" },
+  { href: "/learn", label: "Learn" },
+  { href: "/jobs", label: "Jobs & Internships" },
+  { href: "/advertise", label: "Advertise" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
-  { href: "/learn", label: "Learn" },
   { href: "/request", label: "Request Software" },
   { href: "/track", label: "Track Project" },
-  { href: "/videos", label: "Videos" },
   { href: "/blog", label: "Blog" },
-  { href: "/sell", label: "Sell with us" },
-  { href: "/jobs", label: "Jobs" },
   { href: "/about", label: "About" },
-  { href: "/help", label: "Help" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
@@ -45,11 +92,11 @@ export function whatsappLink(message?: string) {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-/** Format a number as Ugandan Shillings. */
-export function ugx(amount: number) {
-  return new Intl.NumberFormat("en-UG", {
-    style: "currency",
-    currency: "UGX",
-    maximumFractionDigits: 0,
-  }).format(amount);
+/**
+ * Format a number as Ugandan Shillings — one clean currency, e.g. "UGX 1,250,000".
+ * Single line, no USD, and a plain "UGX" prefix (clearer than the "USh" symbol).
+ * The second arg is kept for backwards-compatibility with existing call sites.
+ */
+export function ugx(amount: number, _withUsd = false) {
+  return `UGX ${new Intl.NumberFormat("en-US").format(Math.round(amount))}`;
 }

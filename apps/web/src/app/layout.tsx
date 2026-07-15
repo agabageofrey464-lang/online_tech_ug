@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -12,13 +11,10 @@ import { RecentlyViewedProvider } from "@/lib/recently-viewed";
 import { CartDrawer } from "@/components/cart-drawer";
 import { CartToast } from "@/components/cart-toast";
 import { MobileTabBar } from "@/components/mobile-tab-bar";
+import { ReferralCapture } from "@/components/referral-capture";
+import { Analytics } from "@/components/analytics";
+import { GoogleTranslate } from "@/components/google-translate";
 import { site } from "@/lib/site";
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-jakarta",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -54,26 +50,23 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "en_UG",
     type: "website",
-    images: [{ url: "/logo.jpeg", width: 1200, height: 630, alt: site.name }],
+    images: [{ url: "/logo.png", width: 1200, height: 630, alt: site.name }],
   },
-  twitter: { card: "summary_large_image", title: site.name, description: site.description, images: ["/logo.jpeg"] },
-  icons: {
-    icon: [
-      { url: "/icon.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: "/apple-icon.png",
-  },
+  twitter: { card: "summary_large_image", title: site.name, description: site.description, images: ["/logo.png"] },
+  // Favicon comes from the file-based app/icon.svg (new orbit logo).
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={jakarta.variable}>
-      <body className="min-h-screen bg-white antialiased">
+    <html lang="en">
+      <body className="min-h-screen antialiased">
+        <Analytics />
+        <GoogleTranslate />
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
               <RecentlyViewedProvider>
+                <ReferralCapture />
                 <SiteHeader />
                 <main className="pb-14 md:pb-0">{children}</main>
                 <SiteFooter />

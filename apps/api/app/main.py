@@ -38,6 +38,28 @@ async def lifespan(app: FastAPI):
                     logger.info("Seeded %d courses into the database.", added)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Course seeding skipped (%s).", exc)
+        # Seed job postings into the DB if the table is empty (idempotent).
+        try:
+            from app.db.session import SessionLocal
+            from app.services.jobs import seed_jobs
+
+            with SessionLocal() as db:
+                added = seed_jobs(db)
+                if added:
+                    logger.info("Seeded %d jobs into the database.", added)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Job seeding skipped (%s).", exc)
+        # Seed blog / tech-news posts if the table is empty (idempotent).
+        try:
+            from app.db.session import SessionLocal
+            from app.services.posts import seed_posts
+
+            with SessionLocal() as db:
+                added = seed_posts(db)
+                if added:
+                    logger.info("Seeded %d posts into the database.", added)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Post seeding skipped (%s).", exc)
     except Exception as exc:  # noqa: BLE001
         logger.warning("Database unavailable at startup (%s). Running in degraded mode.", exc)
     yield

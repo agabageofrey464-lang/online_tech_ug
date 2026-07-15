@@ -13,6 +13,12 @@ export function CourseCodes({ slug }: { slug: string }) {
   const [err, setErr] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
+  // Auto-load this course's codes on mount so they always show (no extra click).
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function load() {
     setLoading(true);
     setErr("");

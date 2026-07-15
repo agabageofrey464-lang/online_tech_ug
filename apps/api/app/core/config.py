@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     # Shared key required for admin write operations (create/update/delete products)
     admin_api_key: str = ""
 
+    # Marketplace: platform commission taken from each vendor sale (0.10 = 10%)
+    platform_commission_rate: float = 0.10
+
+    # Where uploaded CVs are stored (relative to the API working directory).
+    upload_dir: str = "uploads"
+
     # CORS — comma separated origins
     cors_origins: str = "http://localhost:3000,http://localhost:3001"
 
@@ -33,6 +39,9 @@ class Settings(BaseSettings):
     resend_api_key: str = ""
     email_from: str = "Online Tech Uganda <noreply@onlinetech.ug>"
     contact_inbox: str = "onlinetechug@gmail.com"
+    # Email (Gmail SMTP) — preferred when set; delivers to any recipient.
+    gmail_user: str = "onlinetechug@gmail.com"
+    gmail_app_password: str = ""
 
     @property
     def cors_origins_list(self) -> list[str]:

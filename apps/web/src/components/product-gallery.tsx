@@ -44,7 +44,7 @@ export function ProductGallery({
           fill
           sizes="(max-width: 1024px) 100vw, 45vw"
           priority
-          className="object-contain p-2"
+          className="object-contain p-1"
         />
         {children}
       </div>

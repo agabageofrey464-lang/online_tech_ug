@@ -9,6 +9,7 @@ export type Article = {
   author: string;
   date: string; // ISO
   readMins: number;
+  image: string; // headline image
   body: Block[];
 };
 
@@ -21,6 +22,7 @@ export const articles: Article[] = [
     author: "Agaba Geofrey",
     date: "2026-06-22T09:00:00+03:00",
     readMins: 5,
+    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1000&q=70",
     body: [
       { p: "Buying a laptop can feel confusing with all the specs. Here's how to keep it simple and get value for your money." },
       { h: "1. Start with what you'll do" },
@@ -42,6 +44,7 @@ export const articles: Article[] = [
     author: "Online Tech Uganda",
     date: "2026-06-15T09:00:00+03:00",
     readMins: 4,
+    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=70",
     body: [
       { p: "One of the most common questions we get: should I buy UK-used or brand new? The honest answer — it depends." },
       { h: "Why UK-Used is popular" },
@@ -60,6 +63,7 @@ export const articles: Article[] = [
     author: "Online Tech Uganda",
     date: "2026-06-08T09:00:00+03:00",
     readMins: 4,
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1000&q=70",
     body: [
       { p: "Scammers are getting smarter. These five habits will keep you safe." },
       { h: "1. Never share your PIN or OTP" },
@@ -82,6 +86,7 @@ export const articles: Article[] = [
     author: "Agaba Geofrey",
     date: "2026-06-01T09:00:00+03:00",
     readMins: 4,
+    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=1000&q=70",
     body: [
       { p: "Social media is great, but a website is your business's home online — one you fully own and control." },
       { h: "It builds trust" },

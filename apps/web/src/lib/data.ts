@@ -1059,6 +1059,7 @@ export type Service = {
   summary: string;
   bullets: string[];
   startingFrom?: number;
+  image?: string; // banner photo communicating the service
 };
 
 export const services: Service[] = [
@@ -1070,6 +1071,7 @@ export const services: Service[] = [
       "Fast, modern, mobile-friendly websites that win customers — business sites, e-commerce, and web apps.",
     bullets: ["Business & landing sites", "E-commerce stores", "SEO & analytics", "Maintenance plans"],
     startingFrom: 500000,
+    image: "/web/photo-1547658719-da2b51169166.jpg", // web design / wireframe
   },
   {
     slug: "mobile-apps",
@@ -1078,6 +1080,7 @@ export const services: Service[] = [
     summary: "Android & iOS apps that put your service in your customers' pockets.",
     bullets: ["Cross-platform apps", "Push notifications", "Payments integration", "App store launch"],
     startingFrom: 2500000,
+    image: "/web/photo-1512941937669-90a1b58e7e9c.jpg", // smartphone app
   },
   {
     slug: "software-systems",
@@ -1085,6 +1088,7 @@ export const services: Service[] = [
     title: "Software Systems",
     summary: "Custom systems that run your business — School, POS, Inventory & SACCO management.",
     bullets: ["School management", "POS & inventory", "SACCO systems", "Setup + support plans"],
+    image: "/web/photo-1551288049-bebda4e38f71.jpg", // dashboard / analytics
   },
   {
     slug: "repairs-support",
@@ -1093,6 +1097,7 @@ export const services: Service[] = [
     summary: "Laptop & desktop repair, upgrades, OS installation and ongoing IT support.",
     bullets: ["Hardware repair", "OS & software installation", "Upgrades (RAM/SSD)", "Remote & onsite support"],
     startingFrom: 30000,
+    image: "/web/photo-1581092160562-40aa08e78837.jpg", // repair workbench
   },
   {
     slug: "networking",
@@ -1100,6 +1105,7 @@ export const services: Service[] = [
     title: "Networking Services",
     summary: "Reliable internet & networks for homes, offices and institutions.",
     bullets: ["Wi-Fi setup", "Office LAN/cabling", "CCTV & access control", "Network security"],
+    image: "/web/photo-1601737487795-dab272f52420.jpg", // router / networking
   },
   {
     slug: "digital-learning",
@@ -1107,6 +1113,7 @@ export const services: Service[] = [
     title: "Digital Learning Platforms",
     summary: "We build online learning platforms — and run our own academy too.",
     bullets: ["Course platforms (LMS)", "Video hosting", "Certificates", "Payments"],
+    image: "/web/photo-1516321318423-f06f85e504b3.jpg", // online learning
   },
 ];
 

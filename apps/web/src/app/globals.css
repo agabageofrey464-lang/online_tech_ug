@@ -14,6 +14,18 @@
   --color-brand-800: #8c2a0c;
   --color-brand-900: #6e240e;
 
+  /* Accent — gold/amber (kept for small accents) */
+  --color-gold-50: #fff4e6;
+  --color-gold-100: #ffe3bf;
+  --color-gold-200: #ffcd85;
+  --color-gold-300: #fdb04a;
+  --color-gold-400: #fa9a22;
+  --color-gold-500: #f7941d;
+  --color-gold-600: #e57c0c;
+  --color-gold-700: #bd640c;
+  --color-gold-800: #934f10;
+  --color-gold-900: #6e3d10;
+
   /* Secondary — indigo */
   --color-ink-50: #eeeef6;
   --color-ink-100: #d6d6ec;
@@ -26,16 +38,31 @@
   --color-ink-800: #1a1740;
   --color-ink-900: #12102e;
 
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Success — green (#00A651) */
+  --color-green-50: #e6f7ee;
+  --color-green-100: #c2ebd4;
+  --color-green-200: #8fdbb0;
+  --color-green-300: #57c98a;
+  --color-green-400: #22b56c;
+  --color-green-500: #00a651; /* core */
+  --color-green-600: #00994b;
+  --color-green-700: #00803e;
+  --color-green-800: #006633;
+  --color-green-900: #00522a;
+
+  /* Jumia-exact native font stack: no web-font download — uses the device's
+     own UI font (Segoe UI on Windows, Roboto on Android, SF on iPhone). */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   /* One consistent typeface everywhere — headings share the body font */
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 
   --radius-card: 1rem;
 }
 
 :root {
-  --background: #f1f3f6; /* Jumia-style light-gray canvas */
+  --background: #eef0f4; /* soft light-grey canvas so white cards float (Jumia-style depth) */
   --foreground: #1f1f29;
 }
 
@@ -45,8 +72,9 @@
 
 html {
   scroll-behavior: smooth;
-  /* Slightly smaller base so text/spacing scale down proportionally (stays matching) */
-  font-size: 15px;
+  /* Jumia-style compact base (~14px). Text and rem-based spacing scale down
+     together, giving the same dense, readable feel as jumia.ug. */
+  font-size: 14px;
 }
 
 body {
@@ -98,14 +126,25 @@ h1, h2, h3, p, li, dd, a {
 .animate-blob { animation: blob 9s ease-in-out infinite; }
 .animate-blob-slow { animation: blob 14s ease-in-out infinite; }
 
+/* Continuous horizontal marquee (category strip). Track holds two copies of
+   the items, so shifting by -50% loops seamlessly. */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee-x 40s linear infinite; }
+.marquee-group:hover .animate-marquee { animation-play-state: paused; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-kenburns, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
+  .animate-marquee { animation: none; }
 }
 
-/* Headings use the display face for a sharper, more premium look */
+/* Headings share the same humanist face (Open Sans). It reads best at near-
+   normal tracking, so we drop the tight negative letter-spacing. */
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.003em;
 }
 
 /* Reusable layout helpers */
@@ -138,6 +177,51 @@ h1, h2, h3, .font-display {
   max-width: 84rem;
   /* Responsive gutter so content keeps clear of the screen edge on all sizes */
   padding-inline: clamp(0.875rem, 3vw, 1.5rem);
+}
+
+/* Full-bleed on mobile: cancel a container's side gutter so a grid reaches the
+   screen edges. Matches the exact clamp() padding of each container utility. */
+@utility bleed-wide {
+  margin-inline: calc(clamp(0.875rem, 3vw, 1.5rem) * -1);
+}
+@utility bleed-page {
+  margin-inline: calc(clamp(1rem, 4vw, 2rem) * -1);
+}
+
+/* Google Translate: fully hide ALL of its chrome (top banner, language grid,
+   tooltip, spinner) so translation happens silently with no Google UI. */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-menu-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-te-spinner-pos,
+.goog-te-gadget-icon,
+iframe.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+.goog-te-gadget {
+  height: 0 !important;
+  overflow: hidden !important;
+  font-size: 0 !important;
+}
+#google_translate_element {
+  position: absolute !important;
+  left: -9999px !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+/* Don't let GT restyle translated text or push the page down. */
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+body {
+  top: 0 !important;
+  position: static !important;
 }
 
 /* Hide scrollbar for horizontal carousels (flash sales) */

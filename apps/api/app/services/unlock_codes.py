@@ -58,7 +58,7 @@ def generate_code(db: Session, course_slug: str, note: str = "", pending: bool =
         code = f"{_prefix(course_slug)}-{secrets.token_hex(3).upper()}"  # e.g. CB-9F2A1C
         exists = db.execute(select(UnlockCode).where(UnlockCode.code == code)).scalar_one_or_none()
         if not exists:
-            row = UnlockCode(code=code, course_slug=course_slug, note=note, revoked=pending)
+            row = UnlockCode(code=code, course_slug=course_slug, note=note, revoked=pending, email=email)
             db.add(row)
             db.commit()
             db.refresh(row)
@@ -68,7 +68,8 @@ def generate_code(db: Session, course_slug: str, note: str = "", pending: bool =
 
 def verify_code(db: Session, course_slug: str, code: str) -> bool:
     """True if the code is valid for the course (exists, matches, not revoked)."""
-    entered = code.strip().upper()
+    # Normalise: drop ALL whitespace (e.g. "CB - 3D9CD8") and upper-case.
+    entered = "".join(code.split()).upper()
     try:
         row = db.execute(
             select(UnlockCode).where(UnlockCode.code == entered)

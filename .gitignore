@@ -50,3 +50,5 @@ coverage/
 # Local dev SQLite DB
 *.db
 local_dev.db
+
+.vercel

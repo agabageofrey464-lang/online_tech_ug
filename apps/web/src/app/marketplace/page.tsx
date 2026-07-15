@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Store } from "lucide-react";
-import { ugx, whatsappLink, site } from "@/lib/site";
+import { ugx } from "@/lib/site";
+import { fallbackImage } from "@/lib/image-fallback";
 import { PageHeader } from "@/components/page-header";
+import { VendorAddToCart } from "@/components/vendor-add-to-cart";
+import { MessageSeller } from "@/components/message-seller";
 
 export const metadata: Metadata = {
   title: "Marketplace — Shop from our vendors",
@@ -13,12 +16,16 @@ export const dynamic = "force-dynamic";
 
 type Item = {
   id: number;
+  vendor_id: number;
   name: string;
   category: string;
   price_ugx: number;
   description: string;
   image_url: string;
   vendor_name: string;
+  vendor_verified?: boolean;
+  vendor_phone?: string;
+  vendor_email?: string;
 };
 
 async function getItems(): Promise<Item[]> {
@@ -31,8 +38,34 @@ async function getItems(): Promise<Item[]> {
   }
 }
 
+type VendorProfile = { name: string; verified: boolean; count: number; categories: string[]; phone: string; email: string };
+
+// Build vendor profiles from the marketplace feed (one card per seller).
+function vendorProfiles(items: Item[]): VendorProfile[] {
+  const map = new Map<string, VendorProfile>();
+  for (const p of items) {
+    const v = map.get(p.vendor_name) ?? { name: p.vendor_name, verified: false, count: 0, categories: [], phone: "", email: "" };
+    v.count += 1;
+    v.verified = v.verified || !!p.vendor_verified;
+    v.phone = v.phone || p.vendor_phone || "";
+    v.email = v.email || p.vendor_email || "";
+    if (p.category && !v.categories.includes(p.category)) v.categories.push(p.category);
+    map.set(p.vendor_name, v);
+  }
+  return [...map.values()].sort((a, b) => b.count - a.count);
+}
+
+const waFromPhone = (p: string) => `https://wa.me/${p.replace(/\D/g, "").replace(/^0/, "256")}`;
+
+const catSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
 export default async function MarketplacePage() {
   const items = await getItems();
+  const vendors = vendorProfiles(items);
+
+  // Group vendor products by category so the marketplace shows every category.
+  const categories = [...new Set(items.map((p) => p.category || "Other"))].sort();
+  const grouped = categories.map((c) => ({ cat: c, list: items.filter((p) => (p.category || "Other") === c) }));
 
   return (
     <>
@@ -40,16 +73,59 @@ export default async function MarketplacePage() {
         crumbs={[{ label: "Marketplace" }]}
         eyebrow="Marketplace"
         title="Shop from our vendors"
-        subtitle="Products listed by verified independent vendors on Online Tech Uganda. Found something? Order it in a tap on WhatsApp."
+        subtitle="Products listed by verified independent vendors on Online Tech Uganda. Add to cart and check out securely — we handle payment and delivery."
       />
 
       <div className="container-page py-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-ink-700/60">{items.length} product(s) from our vendors</p>
-          <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
+          <Link href="/sell" className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
             <Store size={16} /> Sell with us
           </Link>
         </div>
+
+        {/* Our Vendors — seller profiles */}
+        {vendors.length > 0 && (
+          <section className="mb-8">
+            <h2 className="mb-3 text-base font-extrabold text-ink-900">Our Vendors</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {vendors.map((v) => (
+                <div key={v.name} className="flex flex-col rounded-xl border border-ink-600/10 bg-white p-3 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
+                      {v.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="flex items-center gap-1 truncate text-sm font-bold text-ink-900">
+                        <span className="truncate">{v.name}</span>
+                        {v.verified && (
+                          <span title="Verified vendor" className="shrink-0 rounded-full bg-green-100 px-1.5 text-[9px] font-bold text-green-700">✓</span>
+                        )}
+                      </p>
+                      <p className="truncate text-[11px] text-ink-700/55">
+                        {v.count} product{v.count > 1 ? "s" : ""}
+                        {v.categories.length > 0 ? ` · ${v.categories.slice(0, 2).join(", ")}` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  {(v.phone || v.email) && (
+                    <div className="mt-2.5 flex flex-wrap gap-1.5 border-t border-ink-600/10 pt-2.5">
+                      {v.phone && (
+                        <>
+                          <a href={`tel:${v.phone.replace(/\s/g, "")}`} className="rounded-md bg-brand-500 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-brand-600">Call</a>
+                          <a href={waFromPhone(v.phone)} target="_blank" rel="noreferrer" className="rounded-md bg-[#25D366] px-2.5 py-1 text-[11px] font-bold text-white hover:brightness-105">WhatsApp</a>
+                        </>
+                      )}
+                      {v.email && (
+                        <a href={`mailto:${v.email}`} className="rounded-md border border-ink-600/20 px-2.5 py-1 text-[11px] font-bold text-ink-700 hover:bg-ink-50">Email</a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {items.length === 0 ? (
           <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-12 text-center">
@@ -58,43 +134,79 @@ export default async function MarketplacePage() {
             <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/60">
               Our vendor marketplace is just getting started. Are you a seller?
             </p>
-            <Link href="/signup?role=vendor" className="mt-4 inline-block rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
+            <Link href="/sell" className="mt-4 inline-block rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
               Become a vendor
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {items.map((p) => (
-              <article key={p.id} className="group flex flex-col overflow-hidden rounded-md border border-ink-600/10 bg-white transition hover:shadow-md">
-                <div className="relative aspect-square bg-white">
-                  {p.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image_url} alt={p.name} className="h-full w-full object-contain p-2" />
-                  ) : (
-                    <span className="flex h-full items-center justify-center text-ink-700/20"><Store size={32} /></span>
-                  )}
-                  <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                    Vendor
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-1.5">
-                  <h3 className="clamp-2 min-h-[2.25rem] text-[13px] leading-tight text-ink-800">{p.name}</h3>
-                  <p className="mt-0.5 truncate text-[11px] text-ink-700/50">by {p.vendor_name}</p>
-                  <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
-                  <a
-                    href={whatsappLink(`Hi ${site.name}! I'm interested in "${p.name}" (${ugx(p.price_ugx)}) from vendor ${p.vendor_name} on your marketplace.`)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-auto rounded bg-brand-500 px-3 py-1.5 text-center text-xs font-bold text-white transition hover:bg-brand-600"
-                  >
-                    Buy on WhatsApp
+          <>
+            {/* Category quick-nav chips */}
+            {categories.length > 1 && (
+              <div className="mb-6 flex flex-wrap gap-2">
+                {categories.map((c) => (
+                  <a key={c} href={`#cat-${catSlug(c)}`} className="rounded-full border border-ink-600/15 bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 shadow-sm transition hover:border-brand-300 hover:text-brand-600">
+                    {c}
                   </a>
+                ))}
+              </div>
+            )}
+
+            {/* One section per category */}
+            {grouped.map(({ cat, list }) => (
+              <section key={cat} id={`cat-${catSlug(cat)}`} className="mb-8 scroll-mt-24">
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
+                    <span className="h-5 w-1.5 rounded-full bg-brand-500" /> {cat}
+                  </h2>
+                  <span className="text-xs text-ink-700/50">{list.length} item{list.length > 1 ? "s" : ""}</span>
                 </div>
-              </article>
+                <div className="bleed-page grid grid-cols-2 gap-x-2 gap-y-5 sm:mx-0 sm:grid-cols-3 lg:grid-cols-5">
+                  {list.map((p) => (
+                    <VendorCard key={p.id} p={p} />
+                  ))}
+                </div>
+              </section>
             ))}
-          </div>
+          </>
         )}
       </div>
     </>
+  );
+}
+
+function VendorCard({ p }: { p: Item }) {
+  return (
+    <article className="group flex flex-col overflow-hidden rounded-xl bg-white transition duration-200 hover:shadow-[0_6px_22px_rgba(20,16,46,0.13)] hover:ring-1 hover:ring-ink-600/10">
+      <div className="relative aspect-[4/3] bg-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={p.image_url || fallbackImage(p.name, p.category)}
+          alt={p.name}
+          className="h-full w-full object-contain p-1"
+        />
+        <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+          Vendor
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-1.5">
+        <h3 className="clamp-2 min-h-[2.25rem] text-[13px] leading-tight text-ink-800">{p.name}</h3>
+        <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-ink-700/50">
+          by {p.vendor_name}
+          {p.vendor_verified && (
+            <span title="Verified vendor" className="inline-flex items-center gap-0.5 rounded-full bg-green-100 px-1.5 text-[9px] font-bold text-green-700">✓ Verified</span>
+          )}
+        </p>
+        <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
+        <VendorAddToCart
+          id={p.id}
+          name={p.name}
+          price={p.price_ugx}
+          category={p.category}
+          vendorName={p.vendor_name}
+          image={p.image_url}
+        />
+        <MessageSeller vendorId={p.vendor_id} vendorName={p.vendor_name} product={p.name} />
+      </div>
+    </article>
   );
 }

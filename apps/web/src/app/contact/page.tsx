@@ -10,7 +10,20 @@ export const metadata: Metadata = {
     "Get in touch with Online Tech Uganda — call, WhatsApp, email or send us a message. We're in Kampala and deliver countrywide.",
 };
 
-export default function ContactPage() {
+// Map a ?subject= hint (from Sell/Freelancer "contact us" links) to a form option.
+const SUBJECT_MAP: Record<string, string> = {
+  "become-a-vendor": "Become a vendor / sell with us",
+  "freelancer-listing": "Get listed as a freelancer",
+  advertise: "Advertise with us",
+};
+
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subject?: string }>;
+}) {
+  const { subject } = await searchParams;
+  const initialSubject = subject ? SUBJECT_MAP[subject] ?? "" : "";
   const channels = [
     { icon: "chat", label: "WhatsApp", value: site.phoneDisplay, href: whatsappLink("Hello Online Tech Uganda") },
     { icon: "phone", label: "Call us", value: `${site.phoneDisplay} · ${site.phoneAlt}`, href: `tel:${site.phoneDisplay.replace(/\s/g, "")}` },
@@ -79,7 +92,7 @@ export default function ContactPage() {
             <h2 className="text-xl font-extrabold text-ink-600">Send us a message</h2>
             <p className="mt-1 text-sm text-ink-700/70">We typically reply within a few hours.</p>
             <div className="mt-6">
-              <ContactForm />
+              <ContactForm initialSubject={initialSubject} />
             </div>
           </div>
         </div>

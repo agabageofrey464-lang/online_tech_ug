@@ -27,8 +27,20 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
 
 @router.get("", response_model=list[OrderSummary])
 def list_orders(db: Session = Depends(get_db)) -> list[OrderSummary]:
-    """Admin: recent orders."""
-    return orders_service.list_orders(db)
+    """Admin: recent orders, each tagged with a fraud/risk level."""
+    orders = orders_service.list_orders(db)
+    risk = orders_service.assess_orders(orders)
+    for o in orders:
+        info = risk.get(o.id, {})
+        o.risk_level = info.get("level", "none")
+        o.risk_reasons = info.get("reasons", [])
+    return orders
+
+
+@router.get("/report", dependencies=[Depends(require_admin)])
+def sales_report(days: int = 14, db: Session = Depends(get_db)) -> dict:
+    """Admin: aggregated sales figures for the report dashboard."""
+    return orders_service.sales_report(db, days=days)
 
 
 @router.get("/{reference}", response_model=OrderOut)

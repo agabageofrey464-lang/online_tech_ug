@@ -102,7 +102,7 @@ export default async function ProductDetailPage({
         {/* Center: details (Jumia-style) */}
         <div className="order-3 lg:order-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded bg-[#1a4bbd] px-2 py-0.5 text-[11px] font-bold text-white">Official Store</span>
+            <span className="rounded bg-ink-600 px-2 py-0.5 text-[11px] font-bold text-white">Official Store</span>
             {discount > 0 && (
               <span className="rounded bg-brand-500 px-2 py-0.5 text-[11px] font-bold text-white">discount @ checkout</span>
             )}
@@ -122,7 +122,7 @@ export default async function ProductDetailPage({
           {/* Price box */}
           <div className="mt-4 overflow-hidden rounded-lg border border-ink-600/10">
             {discount > 0 && (
-              <div className="flex items-center justify-between bg-[#c2113a] px-4 py-2 text-white">
+              <div className="flex items-center justify-between bg-[#c41c2e] px-4 py-2 text-white">
                 <span className="text-sm font-bold">⚡ Flash Sale</span>
                 <span className="text-xs font-semibold">While stocks last</span>
               </div>
@@ -222,18 +222,18 @@ export default async function ProductDetailPage({
 
         {/* Right: Delivery & Returns (Jumia-style) */}
         <aside className="order-2 h-fit overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm lg:order-3 lg:sticky lg:top-28">
-          <div className="border-b border-ink-600/10 px-4 py-3">
+          <div className="border-b border-ink-600/10 px-4 py-2.5">
             <p className="text-sm font-extrabold tracking-wide text-ink-900">DELIVERY &amp; RETURNS</p>
           </div>
           <div className="divide-y divide-ink-600/10 text-sm">
-            <div className="flex items-start gap-3 p-4">
+            <div className="flex items-start gap-2.5 p-3">
               <MapPin size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
                 <p className="font-bold text-ink-900">Choose your location</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">Kampala Region · Countrywide delivery available.</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-4">
+            <div className="flex items-start gap-2.5 p-3">
               <Truck size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
                 <p className="font-bold text-ink-900">Door Delivery</p>
@@ -242,14 +242,14 @@ export default async function ProductDetailPage({
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-4">
+            <div className="flex items-start gap-2.5 p-3">
               <RotateCcw size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
                 <p className="font-bold text-ink-900">Returns Policy</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">7-day easy return on eligible items.</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-4">
+            <div className="flex items-start gap-2.5 p-3">
               <ShieldCheck size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
                 <p className="font-bold text-ink-900">Genuine &amp; Warranted</p>

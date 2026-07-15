@@ -12,6 +12,8 @@ from app.schemas.unlock_code import (
     VerifyOut,
 )
 from app.services import unlock_codes
+from app.services.courses import get_course
+from app.services.email import send_enrollment_alert
 
 router = APIRouter()
 
@@ -28,16 +30,34 @@ def verify(payload: VerifyIn, db: Session = Depends(get_db)) -> dict:
 
 
 @router.post("/register", response_model=RegisterOut, status_code=201)
-def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
+async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
     """Public: a learner registers for a course and is auto-issued a PENDING unlock
-    code. The code only unlocks the course once payment is confirmed and an admin
-    activates it."""
+    code, which is emailed to them automatically. The code only unlocks the course
+    once payment is confirmed and an admin activates it."""
     note = f"{payload.name} · {payload.phone}" + (f" · {payload.email}" if payload.email else "")
     try:
-        created = unlock_codes.generate_code(db, payload.course_slug, note=note, pending=True)
+        # Active immediately — the learner never sees it; only the owner (who emails
+        # it out after confirming payment) does. No separate activation step needed.
+        created = unlock_codes.generate_code(
+            db, payload.course_slug, note=note, pending=False, email=payload.email
+        )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
-    return {"code": created["code"], "course_slug": payload.course_slug, "pending": True}
+
+    # The learner never sees the code — email it to the OWNER (contact inbox) so
+    # they can send it to the learner after confirming payment.
+    course = get_course(db, payload.course_slug)
+    await send_enrollment_alert(
+        course_title=course["title"] if course else payload.course_slug,
+        code=created["code"],
+        name=payload.name,
+        phone=payload.phone,
+        email=payload.email,
+        price=int(course["price_ugx"]) if course and course.get("price_ugx") else 0,
+    )
+
+    # Return no code — the owner distributes it manually.
+    return {"code": "", "course_slug": payload.course_slug, "pending": False}
 
 
 @router.post("", response_model=UnlockCodeOut, status_code=201, dependencies=[Depends(require_admin)])

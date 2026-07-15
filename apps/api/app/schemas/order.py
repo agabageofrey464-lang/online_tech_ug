@@ -23,6 +23,8 @@ class OrderCreate(BaseModel):
     delivery_address: str = ""
     notes: str = ""
     payment_method: PaymentMethod = PaymentMethod.cash_on_delivery
+    coupon_code: str = ""
+    referral_code: str = ""
     items: list[OrderItemIn] = Field(min_length=1)
 
 
@@ -49,6 +51,8 @@ class OrderOut(BaseModel):
     notes: str
     subtotal: int
     delivery_fee: int
+    discount: int = 0
+    coupon_code: str = ""
     total: int
     payment_method: str
     payment_status: str
@@ -71,6 +75,9 @@ class OrderSummary(BaseModel):
     payment_status: str
     status: str
     created_at: datetime | None = None
+    # Fraud/risk signals (computed, not stored)
+    risk_level: str = "none"
+    risk_reasons: list[str] = []
 
 
 class OrderUpdate(BaseModel):

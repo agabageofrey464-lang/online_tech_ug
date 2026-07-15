@@ -1,13 +1,19 @@
+import { Suspense, type ReactNode } from "react";
+import { Zap } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { ProductCard } from "@/components/product-card";
+import { ShopGrid } from "@/components/shop-grid";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { CategoryCircles } from "@/components/category-circles";
+import { HomeAdverts } from "@/components/home-adverts";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
+import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
 
 const MOBILE_CATS = [
@@ -52,15 +58,62 @@ function Panel({
   );
 }
 
-function Grid({ items }: { items: Product[] }) {
-  // Mobile: horizontal scroll showing ~2 cards + a peek of the 3rd (Jumia style).
-  // sm+: regular grid.
+// Jumia-style horizontal product rail — fixed-width cards, scrolls sideways.
+function Rail({ items }: { items: Product[] }) {
   return (
-    <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3 lg:grid-cols-6">
+    <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
       {items.map((p) => (
-        <ProductCard key={p.id} product={p} />
+        <div key={p.id} className="w-[45%] shrink-0 snap-start sm:w-[30%] lg:w-[15.5%]">
+          <ProductCard product={p} />
+        </div>
       ))}
     </div>
+  );
+}
+
+// Coloured banner section that separates product batches (brand orange).
+function DealBand({
+  title,
+  subtitle,
+  href,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  href?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/5">
+      {/* Distinctive banner: angled gradient + soft diagonal texture, badge, pill CTA */}
+      <div className="relative flex items-center justify-between gap-2 overflow-hidden bg-gradient-to-r from-[#e0451c] to-[#f4632e] px-3.5 py-3 text-white sm:px-5">
+        <span
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 18px)" }}
+        />
+        <span className="pointer-events-none absolute -right-6 -top-8 h-24 w-24 rounded-full bg-white/10 blur-xl" />
+        <h2 className="relative flex items-center gap-2.5 text-base font-extrabold tracking-tight sm:text-lg">
+          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 ring-1 ring-white/25">
+            <Zap size={14} className="fill-white text-white" />
+          </span>
+          {title}
+          {subtitle && (
+            <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] ring-1 ring-white/20 sm:text-[11px]">
+              {subtitle}
+            </span>
+          )}
+        </h2>
+        {href && (
+          <Link
+            href={href}
+            className="relative flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-bold ring-1 ring-white/25 backdrop-blur-sm transition hover:bg-white/30 sm:text-sm"
+          >
+            See All <span className="text-sm leading-none">›</span>
+          </Link>
+        )}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -79,6 +132,19 @@ export default function HomePage() {
   const flash = FLASH.map((f) => ({ p: products.find((x) => x.id === f.id)!, sold: f.sold })).filter(
     (f) => f.p,
   );
+
+  // Top sellers (highest rated) and best deals (biggest discounts) for the Jumia-style rails.
+  const topSelling = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 12);
+  const deals = products
+    .filter((p) => p.oldPrice && p.oldPrice > p.price)
+    .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!)
+    .slice(0, 12);
+
+  // A "Brand | Top Deals" band for each brand with enough products (most first).
+  const brandSections = Array.from(new Set(products.map((p) => p.brand)))
+    .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
+    .filter((g) => g.items.length >= 4)
+    .sort((a, b) => b.items.length - a.items.length);
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -111,10 +177,26 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Feature strip */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* Sponsored adverts (admin-managed, placement=home) */}
+      <HomeAdverts />
+
+      {/* Shop by category (Jumia-style circular tiles on an orange panel) */}
+      <CategoryCircles />
+
+      {/* Browse all products with filters (same experience as the Shop page) */}
+      <section>
+        <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
+          <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Browse all products
+        </h2>
+        <Suspense fallback={<div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">Loading…</div>}>
+          <ShopGrid />
+        </Suspense>
+      </section>
+
+      {/* Feature strip (trust badges) — computers only (hidden on phones) */}
+      <div className="hidden gap-3 md:grid md:grid-cols-4">
         {whyUs.map((w) => (
-          <div key={w.title} className="flex items-center gap-3 rounded-lg border border-brand-100 bg-brand-50 p-3 shadow-sm">
+          <div key={w.title} className="flex items-center gap-3 rounded-lg border border-ink-600/10 bg-white p-3 shadow-sm">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
               <Icon name={w.icon} size={20} />
             </span>
@@ -126,9 +208,9 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Promo cards (below the hero & features) */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border border-brand-100 border-l-4 border-l-brand-500 bg-brand-50 p-4 shadow-sm transition hover:shadow-md">
+      {/* Promo cards — Repairs & Websites — computers only (hidden on phones) */}
+      <div className="hidden gap-3 md:grid md:grid-cols-2">
+        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-600/10 border-l-4 border-l-brand-500 bg-white p-4 shadow-sm transition hover:shadow-md">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
               <Icon name="repair" size={24} />
@@ -142,7 +224,7 @@ export default function HomePage() {
             Book a repair →
           </span>
         </Link>
-        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-200 border-l-4 border-l-ink-600 bg-ink-50 p-4 shadow-sm transition hover:shadow-md">
+        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-600/10 border-l-4 border-l-ink-600 bg-white p-4 shadow-sm transition hover:shadow-md">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-600 shadow-sm">
               <Icon name="web" size={24} />
@@ -158,9 +240,6 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Shop by category (Jumia-style circular tiles on an orange panel) */}
-      <CategoryCircles />
-
       {/* Flash sales (Jumia-style) */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
         <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
@@ -175,7 +254,7 @@ export default function HomePage() {
             See All ›
           </Link>
         </div>
-        <div className="flex snap-x gap-2.5 overflow-x-auto p-3 no-scrollbar">
+        <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
           {flash.map(({ p, sold }) => (
             <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-1/4 lg:w-1/6">
               <FlashSaleCard product={p} sold={sold} />
@@ -183,6 +262,30 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Top selling — teal banded separator */}
+      <DealBand title="Top Selling" subtitle="Best Rated" href="/shop?sort=popular">
+        <Rail items={topSelling} />
+      </DealBand>
+
+      {/* Weekend Top Deals — teal banded separator */}
+      {deals.length > 0 && (
+        <DealBand title="Explosion Weekend" subtitle="Top Deals" href="/shop?deals=1">
+          <Rail items={deals} />
+        </DealBand>
+      )}
+
+      {/* A teal "Brand | Top Deals" band for every brand — categorises the whole page */}
+      {brandSections.map((g) => (
+        <DealBand
+          key={g.brand}
+          title={g.brand}
+          subtitle="Top Deals"
+          href={`/shop?brand=${encodeURIComponent(g.brand)}`}
+        >
+          <Rail items={g.items} />
+        </DealBand>
+      ))}
 
       {/* Shop by brand */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -205,21 +308,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category sections */}
+      {/* Category sections (Jumia-style horizontal rails) */}
       <Panel title="Laptops" href="/shop?cat=Laptops">
-        <Grid items={byCat("Laptops").slice(0, 6)} />
+        <Rail items={byCat("Laptops").slice(0, 12)} />
       </Panel>
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops">
-        <Grid items={byCat("Desktops").slice(0, 6)} />
+        <Rail items={byCat("Desktops").slice(0, 12)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components">
-        <Grid items={[...byCat("Components"), ...byCat("Power")].slice(0, 6)} />
+        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, 12)} />
       </Panel>
 
       <Panel title="Accessories, Networking & Storage" href="/shop">
-        <Grid items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 6)} />
+        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 12)} />
       </Panel>
 
       {/* Services */}
@@ -229,17 +332,29 @@ export default function HomePage() {
             <Link
               key={s.slug}
               href={`/services#${s.slug}`}
-              className="group relative flex flex-col items-center overflow-hidden rounded-xl border border-ink-600/10 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-ink-600/10 bg-white text-center shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
             >
-              <span className="absolute inset-x-0 top-0 h-1 scale-x-0 bg-brand-500 transition-transform group-hover:scale-x-100" />
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white">
-                <Icon name={s.icon} size={26} />
-              </span>
-              <p className="mt-3 text-sm font-bold text-ink-900">{s.title}</p>
-              <p className="clamp-2 mt-1 text-[11px] leading-snug text-ink-700/60">{s.summary}</p>
-              <p className="mt-2 text-[11px] font-bold text-brand-600">
-                {s.startingFrom ? `From ${ugx(s.startingFrom)}` : "Get a quote"}
-              </p>
+              {/* Service photo banner with the icon badge */}
+              <div className="relative h-24 w-full overflow-hidden bg-ink-50">
+                <Image
+                  src={s.image ?? fallbackImage(s.title)}
+                  alt={s.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                  className="object-cover transition duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-900/45 to-transparent" />
+                <span className="absolute bottom-2 left-1/2 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-white text-brand-600 shadow-md">
+                  <Icon name={s.icon} size={18} />
+                </span>
+              </div>
+              <div className="flex flex-col items-center p-3">
+                <p className="text-sm font-bold text-ink-900">{s.title}</p>
+                <p className="clamp-2 mt-1 text-[11px] leading-snug text-ink-700/60">{s.summary}</p>
+                <p className="mt-2 text-[11px] font-bold text-brand-600">
+                  {s.startingFrom ? `From ${ugx(s.startingFrom)}` : "Get a quote"}
+                </p>
+              </div>
             </Link>
           ))}
         </div>

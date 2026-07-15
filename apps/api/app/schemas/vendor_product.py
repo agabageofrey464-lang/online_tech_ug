@@ -21,10 +21,25 @@ class VendorProductOut(BaseModel):
     description: str
     image_url: str
     in_stock: bool
+    approved: bool = False
     created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 
 class MarketplaceItem(VendorProductOut):
-    """Public marketplace item — includes the seller's display name."""
+    """Public marketplace item — includes the seller's display name & contacts."""
 
     vendor_name: str = ""
+    vendor_verified: bool = False
+    vendor_phone: str = ""
+    vendor_email: str = ""
+
+
+class PayoutIn(BaseModel):
+    vendor_id: int
+    amount: int = Field(ge=0)
+    method: str = "Mobile Money"
+    reference: str = ""
+    note: str = ""

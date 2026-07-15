@@ -22,8 +22,11 @@ const cols = [
       { label: "All Services", href: "/services" },
       { label: "Our Portfolio", href: "/portfolio" },
       { label: "Sell with us", href: "/sell" },
+      { label: "Advertise with us", href: "/advertise" },
+      { label: "Pricing & Plans", href: "/pricing" },
       { label: "Request Software", href: "/request" },
       { label: "Track Your Project", href: "/track" },
+      { label: "Confirm a Payment", href: "/pay" },
       { label: "Repairs & Support", href: "/services#repairs-support" },
     ],
   },
@@ -34,7 +37,8 @@ const cols = [
       { label: "Learn / Courses", href: "/learn" },
       { label: "Tech Blog", href: "/blog" },
       { label: "Jobs & Internships", href: "/jobs" },
-      { label: "Videos", href: "/videos" },
+      { label: "Freelancers", href: "/freelancers" },
+      { label: "Marketplace", href: "/marketplace" },
       { label: "Contact", href: "/contact" },
     ],
   },
@@ -67,9 +71,9 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Columns */}
-      <div className="container-wide grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
+      {/* Columns — two-per-row on mobile (left & right), 4 across on desktop */}
+      <div className="container-wide grid grid-cols-2 gap-x-6 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="col-span-2 lg:col-span-1">
           <p className="text-lg font-extrabold text-white">Online Tech Uganda</p>
           <p className="mt-3 text-sm text-ink-200/80">{site.tagline}</p>
           <ul className="mt-4 space-y-2 text-sm text-ink-200/90">
@@ -89,6 +93,11 @@ export function SiteFooter() {
             <li>
               <a href={`mailto:${site.email}`} className="flex items-center gap-2 hover:text-white">
                 <Mail size={16} className="shrink-0 text-brand-300" /> {site.email}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${site.ceo.email}`} className="flex items-center gap-2 hover:text-white">
+                <Mail size={16} className="shrink-0 text-brand-300" /> {site.ceo.email}
               </a>
             </li>
           </ul>
@@ -112,22 +121,25 @@ export function SiteFooter() {
 
       {/* Payments (left) + socials (centered, away from the WhatsApp button) — one line */}
       <div className="border-t border-white/10">
-        <div className="container-wide flex items-center gap-3 py-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-ink-200/70">We accept:</span>
+        <div className="container-wide flex flex-col items-center gap-4 py-5 sm:flex-row sm:gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+            <Link href="/pay" title="Confirm a payment you've made" className="text-xs text-ink-200/70 underline-offset-2 hover:text-white hover:underline">
+              We accept:
+            </Link>
             {[
               { src: "/Icons/mtn.svg", label: "MTN MoMo" },
               { src: "/Icons/airtel.svg", label: "Airtel Money" },
               { src: "/Icons/bank.svg", label: "Bank transfer" },
             ].map((p) => (
-              <span
+              <Link
                 key={p.label}
-                title={p.label}
+                href="/pay"
+                title={`${p.label} — confirm a payment`}
                 className="flex h-7 items-center justify-center rounded bg-white px-2"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.src} alt={p.label} className="h-5 w-auto object-contain" />
-              </span>
+              </Link>
             ))}
             <span className="flex h-7 items-center gap-1 rounded bg-white/10 px-2 text-xs font-semibold text-white">
               <Banknote size={14} /> Cash

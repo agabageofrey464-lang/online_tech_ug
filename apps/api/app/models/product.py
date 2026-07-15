@@ -18,6 +18,7 @@ class Product(Base):
     old_price_ugx: Mapped[int | None] = mapped_column(Numeric(12, 0), nullable=True)
     rating: Mapped[float] = mapped_column(Numeric(2, 1), default=0)
     in_stock: Mapped[bool] = mapped_column(Boolean, default=True)
+    stock_qty: Mapped[int] = mapped_column(Integer, default=0)  # units on hand (inventory)
     image_url: Mapped[str] = mapped_column(String(500), default="")
 
     # Structured specifications (type, processor, generation, ram, storage,

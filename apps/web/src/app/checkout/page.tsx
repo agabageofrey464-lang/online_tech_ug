@@ -3,26 +3,54 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Ticket } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { ugx, whatsappLink } from "@/lib/site";
-import { createOrder, type OrderPayload } from "@/lib/api";
-import { DELIVERY_TOWNS, estimateDelivery, STORE_LOCATION } from "@/lib/delivery";
+import { useAuth } from "@/lib/auth";
+import { ugx, site } from "@/lib/site";
+import { createOrder, validateCoupon, type OrderPayload } from "@/lib/api";
+import { DELIVERY_TOWNS, estimateDelivery, STORE_LOCATION, deliveryDays, estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export default function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
+  const { user } = useAuth();
   const router = useRouter();
   const [town, setTown] = useState("Kampala");
   const [payment, setPayment] = useState<OrderPayload["payment_method"]>("cash_on_delivery");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [waUrl, setWaUrl] = useState("");
+
+  // Coupon / discount
+  const [promo, setPromo] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [couponMsg, setCouponMsg] = useState("");
+  const [applying, setApplying] = useState(false);
 
   const { fee: deliveryFee, km } = useMemo(
     () => estimateDelivery(town, subtotal),
     [town, subtotal],
   );
-  const total = subtotal + deliveryFee;
+  const discount = coupon ? Math.min(coupon.discount, subtotal) : 0;
+  const total = Math.max(0, subtotal - discount) + deliveryFee;
+
+  async function applyPromo() {
+    const code = promo.trim();
+    if (!code) return;
+    setApplying(true);
+    setCouponMsg("");
+    try {
+      const res = await validateCoupon(code, subtotal);
+      if (res.valid) {
+        setCoupon({ code: res.code, discount: res.discount });
+        setCouponMsg(`✓ ${res.code} applied — you save ${ugx(res.discount)}`);
+      } else {
+        setCoupon(null);
+        setCouponMsg(res.message || "Invalid code");
+      }
+    } finally {
+      setApplying(false);
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -49,6 +77,8 @@ export default function CheckoutPage() {
       delivery_address: String(f.get("delivery_address") || ""),
       notes: String(f.get("notes") || ""),
       payment_method: payment,
+      coupon_code: coupon?.code ?? "",
+      referral_code: (typeof window !== "undefined" && localStorage.getItem("otu_ref")) || "",
       items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
     };
     try {
@@ -72,23 +102,15 @@ export default function CheckoutPage() {
       router.push(`/checkout/success?ref=${order.reference}`);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Checkout failed.",
+        err instanceof Error ? err.message : "Something went wrong placing your order. Please try again.",
       );
-      // Build a WhatsApp fallback so the order is never lost.
-      const lines = items.map((i) => `• ${i.name} ×${i.quantity} — ${ugx(i.price * i.quantity)}`).join("\n");
-      const msg =
-        `Hello Online Tech Uganda! I'd like to place this order:\n${lines}\n` +
-        `Subtotal: ${ugx(subtotal)}\nDelivery (${town}): ${ugx(deliveryFee)}\nTotal: ${ugx(total)}\n` +
-        `Name: ${payload.customer_name}\nPhone: ${payload.phone}\nAddress: ${payload.delivery_address}, ${town}\n` +
-        `Payment: ${payload.payment_method.replace(/_/g, " ")}`;
-      setWaUrl(whatsappLink(msg));
       setSubmitting(false);
     }
   }
 
   const prepay = [
-    { v: "mtn_momo", label: "Pay now with MTN Money", hint: "Use number format: 2567XXXXXXXX", icon: "/Icons/mtn.svg" },
-    { v: "airtel_money", label: "Pay now with Airtel Money", hint: "Use number format: 2567XXXXXXXX", icon: "/Icons/airtel.svg" },
+    { v: "mtn_momo", label: "MTN Mobile Money", hint: "Pay to our MoMo number, then confirm your order.", icon: "/Icons/mtn.svg" },
+    { v: "airtel_money", label: "Airtel Money (Merchant)", hint: "Pay to our Airtel merchant, then confirm your order.", icon: "/Icons/airtel.svg" },
   ] as const;
 
   return (
@@ -104,12 +126,19 @@ export default function CheckoutPage() {
             {/* 1. Customer address */}
             <section className="overflow-hidden rounded-lg bg-white shadow-sm">
               <StepHeader n={1} title="CUSTOMER ADDRESS" done />
-              <div className="grid gap-4 p-5 sm:grid-cols-2">
-                <Input name="customer_name" label="Full name" required placeholder="Your full name" />
-                <Input name="phone" label="Phone" required placeholder="07XX XXX XXX" />
-                <Input name="email" type="email" label="Email (for receipt)" placeholder="you@example.com" />
+              {/* key remounts these once the signed-in account loads, so the
+                  order carries the customer's REGISTERED name/phone/email. */}
+              <div key={user?.email ?? "guest"} className="grid gap-4 p-5 sm:grid-cols-2">
+                <Input name="customer_name" label="Full name" required placeholder="Your full name" defaultValue={user?.name} />
+                <Input name="phone" label="Phone" required placeholder="07XX XXX XXX" defaultValue={user?.phone} />
+                <Input name="email" type="email" label="Email (for receipt)" placeholder="you@example.com" defaultValue={user?.email} />
                 <Input name="delivery_address" label="Address / Landmark" required placeholder="e.g. Ntinda, near..." />
               </div>
+              {user && (
+                <p className="px-5 pb-3 text-xs text-ink-700/55">
+                  ✓ Using your account details ({user.email}). Edit above if delivering to someone else.
+                </p>
+              )}
             </section>
 
             {/* 2. Delivery details */}
@@ -134,6 +163,9 @@ export default function CheckoutPage() {
                     <p className="text-xs text-ink-700/60">
                       {km !== null ? `≈ ${km} km from our shop · ` : ""}
                       Delivery fee {deliveryFee === 0 ? "Free" : ugx(deliveryFee)}. Confirmed by our team.
+                    </p>
+                    <p className="mt-1 flex items-center gap-1 text-xs font-bold text-green-700">
+                      📅 Arrives by {formatDeliveryDate(estimatedDeliveryDate(town))} · about {deliveryDays(km)} days
                     </p>
                   </div>
                 </div>
@@ -161,6 +193,32 @@ export default function CheckoutPage() {
                   payment={payment}
                   setPayment={setPayment}
                 />
+
+                {/* How-to-pay steps for the chosen mobile-money method */}
+                {(payment === "airtel_money" || payment === "mtn_momo") && (
+                  <div className="mt-4 rounded-lg border border-brand-200 bg-brand-50 p-4 text-sm">
+                    <p className="font-extrabold text-ink-900">
+                      How to pay — {payment === "airtel_money" ? "Airtel Money" : "MTN Mobile Money"}
+                    </p>
+                    {payment === "airtel_money" ? (
+                      <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-700/80">
+                        <li>Dial <b>*185#</b> and choose <b>Pay Merchant</b>.</li>
+                        <li>Enter Merchant ID <b>{site.payment.momoAlt.merchantId}</b> (or number <b>{site.payment.momoAlt.number}</b>).</li>
+                        <li>Enter amount <b>{ugx(total)}</b> and approve with your PIN.</li>
+                        <li>You&apos;ll see <b>{site.payment.momoAlt.name}</b> — that&apos;s us.</li>
+                      </ol>
+                    ) : (
+                      <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-700/80">
+                        <li>Dial <b>*165#</b> and choose <b>Send Money</b>.</li>
+                        <li>Send to <b>{site.payment.momo.number}</b> ({site.payment.momo.name}).</li>
+                        <li>Enter amount <b>{ugx(total)}</b> and approve with your PIN.</li>
+                      </ol>
+                    )}
+                    <p className="mt-2 rounded-md bg-white/70 px-2.5 py-1.5 text-xs text-ink-700/75">
+                      After paying, tap <b>Confirm order</b> below. We verify your payment and dispatch — you can also pay on delivery.
+                    </p>
+                  </div>
+                )}
               </div>
             </section>
           </div>
@@ -177,6 +235,12 @@ export default function CheckoutPage() {
                 <span>Delivery fees</span>
                 <span className="font-semibold text-ink-900">{deliveryFee === 0 ? "Free" : ugx(deliveryFee)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between font-semibold text-green-600">
+                  <span>Discount {coupon ? `(${coupon.code})` : ""}</span>
+                  <span>−{ugx(discount)}</span>
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-between border-y border-ink-600/10 py-3">
               <span className="text-sm font-bold text-ink-900">Total</span>
@@ -185,21 +249,32 @@ export default function CheckoutPage() {
 
             {/* Promo code */}
             <div className="mt-4 flex gap-2">
-              <input name="promo" placeholder="Enter code here" className="min-w-0 flex-1 rounded-md border border-ink-600/20 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none" />
-              <button type="button" className="shrink-0 rounded-md px-3 py-2 text-sm font-bold text-brand-600 hover:bg-brand-50">APPLY</button>
+              <div className="relative min-w-0 flex-1">
+                <Ticket size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand-500" />
+                <input
+                  value={promo}
+                  onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                  placeholder="Enter code here"
+                  className="w-full rounded-md border border-ink-600/20 py-2 pl-9 pr-3 text-sm uppercase focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={applyPromo}
+                disabled={applying || !promo.trim()}
+                className="shrink-0 rounded-md px-3 py-2 text-sm font-bold text-brand-600 hover:bg-brand-50 disabled:opacity-50"
+              >
+                {applying ? "…" : "APPLY"}
+              </button>
             </div>
+            {couponMsg && (
+              <p className={`mt-1.5 text-xs font-semibold ${discount > 0 ? "text-green-600" : "text-red-500"}`}>{couponMsg}</p>
+            )}
 
             {error && (
-              <div className="mt-4 rounded-lg border border-brand-200 bg-brand-50 p-3">
-                <p className="text-sm font-medium text-brand-700">{error}</p>
-                {waUrl && (
-                  <>
-                    <p className="mt-1 text-xs text-ink-700/70">Complete your order on WhatsApp and we&apos;ll confirm right away.</p>
-                    <a href={waUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block rounded-md bg-[#25D366] px-4 py-2 text-sm font-bold text-white hover:brightness-105">
-                      Complete order on WhatsApp
-                    </a>
-                  </>
-                )}
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
+                <p className="text-sm font-medium text-red-700">{error}</p>
+                <p className="mt-1 text-xs text-ink-700/70">Please check your details and tap “Confirm order” to try again.</p>
               </div>
             )}
 
@@ -272,12 +347,14 @@ function Input({
   type = "text",
   required,
   placeholder,
+  defaultValue,
 }: {
   name: string;
   label: string;
   type?: string;
   required?: boolean;
   placeholder?: string;
+  defaultValue?: string;
 }) {
   return (
     <div>
@@ -287,6 +364,7 @@ function Input({
       <input
         id={name}
         name={name}
+        defaultValue={defaultValue}
         type={type}
         required={required}
         placeholder={placeholder}

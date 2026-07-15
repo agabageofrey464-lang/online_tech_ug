@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -7,6 +8,11 @@ from app.schemas.product import ProductCreate, ProductOut
 from app.services import catalog
 
 router = APIRouter()
+
+
+class StockUpdate(BaseModel):
+    stock_qty: int
+    in_stock: bool | None = None
 
 
 def require_admin(x_admin_key: str = Header(default="")) -> None:
@@ -42,6 +48,20 @@ def create_product(payload: ProductCreate, db: Session = Depends(get_db)) -> dic
         return catalog.create_product(db, data)
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
+
+
+@router.get("/admin/inventory", dependencies=[Depends(require_admin)])
+def inventory(db: Session = Depends(get_db)) -> list[dict]:
+    """Admin: all products with stock levels, lowest first."""
+    return catalog.list_inventory(db)
+
+
+@router.patch("/{slug}/stock", dependencies=[Depends(require_admin)])
+def update_stock(slug: str, payload: StockUpdate, db: Session = Depends(get_db)) -> dict:
+    updated = catalog.update_stock(db, slug, payload.stock_qty, payload.in_stock)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return updated
 
 
 @router.get("/{slug}", response_model=ProductOut)

@@ -48,6 +48,8 @@ export type OrderPayload = {
   delivery_address: string;
   notes?: string;
   payment_method: "cash_on_delivery" | "mtn_momo" | "airtel_money";
+  coupon_code?: string;
+  referral_code?: string;
   items: OrderItemPayload[];
 };
 
@@ -60,12 +62,27 @@ export type Order = {
   delivery_address: string;
   subtotal: number;
   delivery_fee: number;
+  discount?: number;
+  coupon_code?: string;
   total: number;
   payment_method: string;
   payment_status: string;
   status: string;
   items: { product_slug: string; name: string; unit_price: number; quantity: number; line_total: number }[];
 };
+
+export type CouponResult = { valid: boolean; discount: number; code: string; message: string };
+
+/** Validate a discount code against a cart subtotal. */
+export async function validateCoupon(code: string, subtotal: number): Promise<CouponResult> {
+  const res = await fetch(`${base()}/coupons/validate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code, subtotal }),
+  });
+  if (!res.ok) return { valid: false, discount: 0, code, message: "Could not check code" };
+  return res.json();
+}
 
 export async function createOrder(payload: OrderPayload): Promise<Order> {
   const res = await fetch(`${base()}/orders`, {

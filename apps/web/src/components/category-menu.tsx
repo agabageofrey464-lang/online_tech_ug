@@ -188,7 +188,7 @@ export function CategoryMenu() {
 
   return (
     <nav className="relative flex h-full flex-col">
-      {/* Amazon-style dark header */}
+      {/* Dark header (near-black, matches the site palette) */}
       <p className="bg-[#232f3e] px-4 py-2.5 text-sm font-extrabold text-white">Shop by Category</p>
 
       <div className="flex-1 overflow-y-auto py-1.5">

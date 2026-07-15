@@ -23,24 +23,49 @@ const statusTone: Record<string, string> = {
   cancelled: "bg-red-100 text-red-700",
 };
 
+type Commissions = { total_commission: number; outstanding: number; vendors: unknown[] };
+
+// Areas worth acting on — shown on the dashboard only when their count > 0.
+const ATTENTION: { key: string; label: string; href: string; icon: string }[] = [
+  { key: "orders", label: "New orders", href: "/orders", icon: "📦" },
+  { key: "payments", label: "Payments to confirm", href: "/payments", icon: "💵" },
+  { key: "vendors", label: "Vendors", href: "/vendors", icon: "🏪" },
+  { key: "enrollments", label: "Course enrollments", href: "/enrollments", icon: "🎟️" },
+  { key: "applications", label: "Job applications", href: "/applications", icon: "📄" },
+  { key: "referrals", label: "Referrals", href: "/referrals", icon: "🎁" },
+  { key: "freelancers", label: "Freelancers", href: "/freelancers", icon: "🧑‍💻" },
+  { key: "leads", label: "New leads", href: "/leads", icon: "💬" },
+];
+
 export default async function DashboardPage() {
-  const [health, orders, products, leads] = await Promise.all([
+  const [health, orders, products, leads, commissions, counts] = await Promise.all([
     getHealth(),
     apiGet<AdminOrder[]>("/api/v1/orders"),
     apiGet<AdminProduct[]>("/api/v1/products"),
     apiGetAdmin<AdminLead[]>("/api/v1/contact"),
+    apiGetAdmin<Commissions>("/api/v1/vendor/admin/commissions"),
+    apiGetAdmin<Record<string, number>>("/api/v1/stats/counts"),
   ]);
 
+  const attentionItems = ATTENTION.map((a) => ({ ...a, n: counts?.[a.key] ?? 0 })).filter((a) => a.n > 0);
+
   const orderList = orders ?? [];
-  const revenue = orderList.reduce((s, o) => s + o.total, 0);
+  // Revenue = money actually received (payment confirmed), not just orders placed.
+  const paidRevenue = orderList.filter((o) => o.payment_status === "paid").reduce((s, o) => s + o.total, 0);
+  const pendingRevenue = orderList
+    .filter((o) => o.payment_status !== "paid" && o.status !== "cancelled")
+    .reduce((s, o) => s + o.total, 0);
   const pending = orderList.filter((o) => o.status === "pending").length;
   const delivered = orderList.filter((o) => o.status === "delivered").length;
 
   const cards = [
-    { label: "Revenue (all orders)", value: ugx(revenue), hint: `${orderList.length} order(s)`, tone: "brand" as const },
+    { label: "Revenue received", value: ugx(paidRevenue), hint: "Paid & confirmed orders", tone: "brand" as const },
+    { label: "Pending (awaiting payment)", value: ugx(pendingRevenue), hint: "Not yet collected", tone: "ink" as const },
     { label: "Orders", value: String(orderList.length), hint: `${pending} pending · ${delivered} delivered`, tone: "ink" as const },
     { label: "Products", value: String(products?.length ?? 0), hint: "Live catalog", tone: "ink" as const },
     { label: "New leads", value: String(leads?.length ?? 0), hint: "From contact form", tone: "brand" as const },
+    { label: "Marketplace commission", value: ugx(commissions?.total_commission ?? 0), hint: `${commissions?.vendors?.length ?? 0} vendor(s) selling`, tone: "brand" as const },
+    { label: "Owed to vendors", value: ugx(commissions?.outstanding ?? 0), hint: "Outstanding payouts", tone: "ink" as const },
   ];
 
   return (
@@ -60,11 +85,37 @@ export default async function DashboardPage() {
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
             <p className="text-sm text-ink-600/60">{c.label}</p>
-            <p className={`mt-2 break-words text-2xl font-extrabold leading-tight tabular-nums ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
+            <p className={`mt-2 whitespace-nowrap text-lg font-extrabold leading-tight tabular-nums sm:text-xl ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
             <p className="mt-1 text-xs text-ink-600/50">{c.hint}</p>
           </div>
         ))}
       </div>
+
+      {/* Needs your attention — only areas with active items (count > 0) */}
+      {attentionItems.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-3 flex items-center gap-2 font-extrabold text-ink-600">
+            🔔 Needs your attention
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {attentionItems.map((a) => (
+              <Link
+                key={a.key}
+                href={a.href}
+                className="group flex items-center justify-between gap-3 rounded-2xl border border-brand-200 bg-brand-50 p-4 shadow-sm transition hover:border-brand-400 hover:shadow-md"
+              >
+                <span className="flex items-center gap-2.5">
+                  <span className="text-xl">{a.icon}</span>
+                  <span className="text-sm font-bold text-ink-600">{a.label}</span>
+                </span>
+                <span className="flex h-7 min-w-7 items-center justify-center rounded-full bg-brand-500 px-2 text-sm font-extrabold tabular-nums text-white">
+                  {a.n}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recent orders */}
       <div className="mt-8 overflow-hidden rounded-2xl border border-ink-600/10 bg-white shadow-sm">

@@ -9,6 +9,7 @@ export type CartItem = {
   category: string;
   condition: string;
   quantity: number;
+  image?: string; // explicit image (vendor products); house catalog resolves by slug
 };
 
 type CartState = {

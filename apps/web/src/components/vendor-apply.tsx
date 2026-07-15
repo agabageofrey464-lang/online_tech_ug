@@ -4,7 +4,13 @@ import { useState } from "react";
 import { CheckCircle2, Store } from "lucide-react";
 import { whatsappLink, site } from "@/lib/site";
 
-const CATS = ["Computers & Laptops", "Phones & Accessories", "Components & Parts", "Networking", "Other electronics"];
+const CATS = [
+  // Tech
+  "Computers & Laptops", "Phones & Accessories", "Components & Parts", "Networking", "Other electronics",
+  // Open to all businesses — not just IT
+  "Fashion & Clothing", "Home & Living", "Beauty & Health", "Food & Groceries",
+  "Books & Stationery", "Agriculture", "General Services", "Other business",
+];
 
 export function VendorApply() {
   const [f, setF] = useState({ shop: "", owner: "", phone: "", email: "", category: CATS[0], products: "" });

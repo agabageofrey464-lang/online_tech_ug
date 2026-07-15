@@ -7,10 +7,14 @@ import { useCart } from "@/lib/cart";
 import { ugx } from "@/lib/site";
 import { products, productImage } from "@/lib/data";
 
-const imgFor = (slug: string) => {
-  const p = products.find((x) => x.id === slug);
-  return productImage(p ?? { id: slug });
+const imgFor = (item: { slug: string; image?: string }) => {
+  if (item.image) return item.image; // vendor products carry their own image
+  const p = products.find((x) => x.id === item.slug);
+  return productImage(p ?? { id: item.slug });
 };
+
+// Vendor marketplace items use slug "vp-<id>" and live on /marketplace, not /shop.
+const linkFor = (slug: string) => (slug.startsWith("vp-") ? "/marketplace" : `/shop/${slug}`);
 
 export function CartDrawer() {
   const { items, isOpen, close, setQty, remove, subtotal, count } = useCart();
@@ -57,15 +61,15 @@ export function CartDrawer() {
               {items.map((i) => (
                 <div key={i.slug} className="flex gap-3 rounded-lg bg-white p-3 shadow-sm">
                   <Link
-                    href={`/shop/${i.slug}`}
+                    href={linkFor(i.slug)}
                     onClick={close}
                     className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-ink-600/10 bg-white"
                   >
-                    <Image src={imgFor(i.slug)} alt={i.name} fill sizes="80px" className="object-contain p-1" />
+                    <Image src={imgFor(i)} alt={i.name} fill sizes="80px" className="object-contain p-1" />
                   </Link>
 
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <Link href={`/shop/${i.slug}`} onClick={close} className="clamp-2 text-sm font-semibold text-ink-800 hover:text-brand-600">
+                    <Link href={linkFor(i.slug)} onClick={close} className="clamp-2 text-sm font-semibold text-ink-800 hover:text-brand-600">
                       {i.name}
                     </Link>
                     <p className="mt-0.5 text-[11px] font-semibold text-green-700">In stock</p>

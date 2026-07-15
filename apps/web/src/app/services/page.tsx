@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Check } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { services } from "@/lib/data";
+import { fallbackImage } from "@/lib/image-fallback";
+import Link from "next/link";
 import { ugx, whatsappLink } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -51,22 +54,31 @@ export default function ServicesPage() {
             <div
               key={s.slug}
               id={s.slug}
-              className="rounded-card border border-ink-600/10 bg-white p-7 shadow-sm transition hover:shadow-md"
+              className="overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:shadow-md"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
-                    <Icon name={s.icon} size={28} />
-                  </span>
-                  <h2 className="mt-3 text-xl font-extrabold text-ink-600">{s.title}</h2>
-                </div>
+              {/* Service photo banner (communicates the service) */}
+              <div className="relative h-44 w-full overflow-hidden bg-ink-50">
+                <Image
+                  src={s.image ?? fallbackImage(s.title)}
+                  alt={s.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-900/55 via-ink-900/10 to-transparent" />
+                <span className="absolute bottom-3 left-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-brand-600 shadow-md">
+                  <Icon name={s.icon} size={26} />
+                </span>
                 {s.startingFrom && (
-                  <span className="shrink-0 rounded-full bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
+                  <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 text-sm font-semibold text-brand-700 shadow-sm">
                     From {ugx(s.startingFrom)}
                   </span>
                 )}
               </div>
-              <p className="mt-3 text-ink-700/75">{s.summary}</p>
+
+              <div className="p-7 pt-5">
+              <h2 className="text-xl font-extrabold text-ink-600">{s.title}</h2>
+              <p className="mt-2 text-ink-700/75">{s.summary}</p>
               <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                 {s.bullets.map((b) => (
                   <li key={b} className="flex items-center gap-2 text-sm text-ink-700/80">
@@ -89,9 +101,21 @@ export default function ServicesPage() {
                   Request a quote
                 </Button>
               </div>
+              </div>
             </div>
           ))}
         </div>
+
+        <Link
+          href="/pricing"
+          className="mt-10 flex items-center justify-between gap-3 rounded-card border border-ink-600/10 bg-white p-5 shadow-sm transition hover:shadow-md"
+        >
+          <div>
+            <p className="text-sm font-extrabold text-ink-900">See service pricing & plans</p>
+            <p className="text-xs text-ink-700/60">Websites, apps & software — clear pricing, all in one place.</p>
+          </div>
+          <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">View pricing →</span>
+        </Link>
       </section>
 
       <section className="bg-ink-50/60 py-16">

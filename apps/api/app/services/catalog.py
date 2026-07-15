@@ -424,10 +424,41 @@ def create_product(db: Session, data: dict) -> dict:
         image_url=data.get("image_url", ""),
         specs=data.get("specs") or None,
     )
+    product.stock_qty = int(data.get("stock_qty", 0) or 0)
     db.add(product)
     db.commit()
     db.refresh(product)
     return _to_dict(product)
+
+
+def list_inventory(db: Session) -> list[dict]:
+    """All DB products with stock levels, lowest stock first (admin inventory)."""
+    rows = db.execute(select(Product)).scalars().all()
+    items = [_to_dict(r) for r in rows]
+    items.sort(key=lambda x: (x["stock_qty"], x["name"]))
+    return items
+
+
+def update_stock(db: Session, slug: str, stock_qty: int, in_stock: bool | None = None) -> dict | None:
+    row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()
+    if not row:
+        return None
+    row.stock_qty = max(0, int(stock_qty))
+    # Auto-set the in-stock flag from quantity unless explicitly overridden.
+    row.in_stock = (row.stock_qty > 0) if in_stock is None else in_stock
+    db.commit()
+    db.refresh(row)
+    return _to_dict(row)
+
+
+def decrement_stock(db: Session, slug: str, qty: int) -> None:
+    """Reduce stock when an order is placed. No-op if the product isn't tracked in the DB."""
+    row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()
+    if not row or row.stock_qty <= 0:
+        return
+    row.stock_qty = max(0, row.stock_qty - qty)
+    if row.stock_qty == 0:
+        row.in_stock = False
 
 
 def _to_dict(p: Product) -> dict:
@@ -443,6 +474,7 @@ def _to_dict(p: Product) -> dict:
         "old_price_ugx": int(p.old_price_ugx) if p.old_price_ugx is not None else None,
         "rating": float(p.rating),
         "in_stock": p.in_stock,
+        "stock_qty": getattr(p, "stock_qty", 0) or 0,
         "image_url": p.image_url,
         "specs": p.specs,
     }

@@ -15,6 +15,8 @@ export type AuthUser = {
   role: "customer" | "vendor" | "admin";
   business_name: string;
   vendor_approved: boolean;
+  email_verified: boolean;
+  twofa_enabled: boolean;
   created_at: string;
 };
 
@@ -25,13 +27,21 @@ export type RegisterInput = {
   phone?: string;
   role?: "customer" | "vendor";
   business_name?: string;
+  business_category?: string;
+  location?: string;
 };
+
+type LoginResult = { twofa_required: boolean; user?: AuthUser };
 
 type AuthState = {
   user: AuthUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<AuthUser>;
+  login: (email: string, password: string) => Promise<LoginResult>;
+  verifyLogin: (email: string, code: string) => Promise<AuthUser>;
   register: (input: RegisterInput) => Promise<AuthUser>;
+  verifyEmail: (code: string) => Promise<AuthUser>;
+  resendVerification: () => Promise<void>;
+  setTwofa: (enabled: boolean) => Promise<AuthUser>;
   logout: () => void;
 };
 
@@ -68,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleAuth(path: string, body: unknown): Promise<AuthUser> {
+  async function post(path: string, body: unknown) {
     const res = await fetch(`${base()}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -76,13 +86,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.detail || "Something went wrong. Please try again.");
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    setUser(data.user);
-    return data.user as AuthUser;
+    return data;
   }
 
-  const login = (email: string, password: string) => handleAuth("/auth/login", { email, password });
-  const register = (input: RegisterInput) => handleAuth("/auth/register", input);
+  function saveSession(data: { access_token: string; user: AuthUser }): AuthUser {
+    localStorage.setItem(TOKEN_KEY, data.access_token);
+    setUser(data.user);
+    return data.user;
+  }
+
+  async function login(email: string, password: string): Promise<LoginResult> {
+    const data = await post("/auth/login", { email, password });
+    if (data.twofa_required) return { twofa_required: true };
+    const u = saveSession(data);
+    return { twofa_required: false, user: u };
+  }
+
+  async function verifyLogin(email: string, code: string): Promise<AuthUser> {
+    return saveSession(await post("/auth/login/verify", { email, code }));
+  }
+
+  const register = async (input: RegisterInput) => saveSession(await post("/auth/register", input));
+
+  async function verifyEmail(code: string): Promise<AuthUser> {
+    const res = await authFetch("/auth/verify-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Invalid or expired code");
+    setUser(data);
+    return data as AuthUser;
+  }
+
+  async function resendVerification(): Promise<void> {
+    await authFetch("/auth/resend-verification", { method: "POST" });
+  }
+
+  async function setTwofa(enabled: boolean): Promise<AuthUser> {
+    const res = await authFetch("/auth/2fa", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enabled }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Could not update 2FA");
+    setUser(data);
+    return data as AuthUser;
+  }
 
   function logout() {
     localStorage.removeItem(TOKEN_KEY);
@@ -90,7 +142,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, verifyLogin, register, verifyEmail, resendVerification, setTwofa, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

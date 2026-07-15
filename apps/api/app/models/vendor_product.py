@@ -19,4 +19,6 @@ class VendorProduct(Base):
     description: Mapped[str] = mapped_column(String(1000), default="")
     image_url: Mapped[str] = mapped_column(String(500), default="")
     in_stock: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Owner approval: products are hidden from the marketplace until the admin approves.
+    approved: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

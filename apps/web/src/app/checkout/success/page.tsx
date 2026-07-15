@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { getOrder, type Order } from "@/lib/api";
 import { ugx } from "@/lib/site";
+import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 function SuccessInner() {
   const ref = useSearchParams().get("ref");
@@ -29,10 +30,32 @@ function SuccessInner() {
         <h1 className="mt-4 text-3xl font-extrabold text-ink-600">Order placed!</h1>
         {ref && (
           <p className="mt-2 text-ink-700/70">
-            Your order reference is <b className="text-brand-600">{ref}</b>. We&apos;ll contact you
-            shortly to confirm delivery.
+            Your order reference is <b className="text-brand-600">{ref}</b>.
           </p>
         )}
+      </div>
+
+      {/* Jumia-style confirmation — order is recorded, pay on delivery. No WhatsApp step. */}
+      <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">
+        <p className="text-base font-extrabold text-ink-900">✅ Your order is confirmed</p>
+        <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
+          We&apos;ve received your order and it&apos;s being processed. You&apos;ll get a call to arrange
+          delivery, and you <b>pay on delivery</b> — nothing to pay now.
+        </p>
+        <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
+          <Link
+            href={ref ? `/track?ref=${ref}` : "/track"}
+            className="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+          >
+            📦 Track your order
+          </Link>
+          <Link
+            href="/account#orders"
+            className="rounded-lg border border-ink-600/20 bg-white px-5 py-2.5 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
+          >
+            View my orders
+          </Link>
+        </div>
       </div>
 
       {loading && <p className="mt-8 text-center text-ink-700/60">Loading your order…</p>}
@@ -58,7 +81,12 @@ function SuccessInner() {
               <span>{ugx(order.total)}</span>
             </div>
           </div>
-          <p className="mt-4 text-xs text-ink-700/60">
+          {order.delivery_town && (
+            <p className="mt-4 flex items-center gap-1.5 rounded-lg bg-green-50 px-3 py-2 text-sm font-bold text-green-700">
+              📅 Estimated delivery to {order.delivery_town}: {formatDeliveryDate(estimatedDeliveryDate(order.delivery_town))}
+            </p>
+          )}
+          <p className="mt-3 text-xs text-ink-700/60">
             Payment: {order.payment_method.replace(/_/g, " ")} · Status: {order.status}
           </p>
         </div>

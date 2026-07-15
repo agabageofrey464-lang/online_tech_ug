@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui";
 import { Icon } from "@/components/icon";
+import { ProfilePhoto } from "@/components/profile-photo";
 import { stats, whyUs } from "@/lib/data";
 import { site } from "@/lib/site";
 
@@ -98,29 +99,74 @@ export default function AboutPage() {
       </section>
 
       {/* Leadership */}
-      <section className="container-page py-16">
-        <h2 className="text-2xl font-extrabold text-ink-600 sm:text-3xl">Leadership</h2>
-        <div className="mt-8 max-w-2xl rounded-card border border-ink-600/10 bg-white p-7 shadow-sm">
-          <div className="flex items-center gap-5">
-            <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-ink-700 text-2xl font-extrabold text-white">
-              {site.ceo.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+      <section className="bg-gradient-to-b from-ink-50/70 to-white py-16">
+        <div className="container-page">
+          <div className="text-center">
+            <span className="inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-700">
+              Our leadership
             </span>
-            <div>
-              <h3 className="text-lg font-extrabold text-ink-600">{site.ceo.name}</h3>
+            <h2 className="mt-3 text-2xl font-extrabold text-ink-900 sm:text-3xl">Meet the Founder</h2>
+          </div>
+          <div className="mx-auto mt-8 grid max-w-4xl items-start gap-6 md:grid-cols-[320px_1fr]">
+            {/* Photo — image alone in its own card */}
+            <div className="relative flex items-center justify-center overflow-hidden rounded-2xl border border-ink-600/10 bg-gradient-to-br from-ink-700 via-brand-700 to-brand-500 p-8 shadow-lg">
+              <span className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
+              <span className="pointer-events-none absolute -bottom-10 left-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
+              <div className="relative overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-white/40">
+                <ProfilePhoto
+                  src={site.ceo.photo}
+                  name={site.ceo.name}
+                  className="h-auto w-full max-w-[260px] rounded-xl text-5xl"
+                />
+              </div>
+            </div>
+
+            {/* Bio — details alone in its own card */}
+            <div className="rounded-2xl border border-ink-600/10 bg-white p-7 shadow-lg sm:p-8">
+              <span className="inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-700">
+                Founder &amp; CEO
+              </span>
+              <h3 className="mt-3 text-2xl font-extrabold text-ink-900">{site.ceo.name}</h3>
               <p className="text-sm font-semibold text-brand-600">{site.ceo.title}</p>
-              <a href={`mailto:${site.ceo.email}`} className="text-sm text-ink-700/70 hover:text-brand-600">
+              <a href={`mailto:${site.ceo.email}`} className="mt-1 block text-sm text-ink-700/70 hover:text-brand-600">
                 {site.ceo.email}
               </a>
+              <blockquote className="mt-5 border-l-4 border-brand-500 pl-4 text-ink-700/80">
+                “My mission is to make quality technology and digital skills affordable and accessible to
+                every Ugandan — from your first laptop to your first website, and the skills to use them
+                with confidence.”
+              </blockquote>
+
+              <p className="mt-5 text-sm text-ink-700/80">
+                Agaba Geofrey is a hands-on IT specialist with strong experience in system administration,
+                database development, IT support and creative media. He has worked across government,
+                education and business — and founded Online Tech Uganda to bring affordable, reliable
+                technology and digital skills to every Ugandan.
+              </p>
+
+              <div className="mt-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-ink-700/50">Experience</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-ink-700/80">
+                  <li className="flex gap-2"><span className="text-brand-500">▸</span> <span><b className="text-ink-900">KCCA</b> — IT Expert, Hardware &amp; Software Department</span></li>
+                  <li className="flex gap-2"><span className="text-brand-500">▸</span> <span><b className="text-ink-900">Prime Learn</b> — Educational video production for students (full Adobe Creative Suite)</span></li>
+                  <li className="flex gap-2"><span className="text-brand-500">▸</span> <span><b className="text-ink-900">Gallery Antique Uganda</b> — System Administrator &amp; Database Developer</span></li>
+                </ul>
+              </div>
+
+              <div className="mt-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-ink-700/50">IT skills</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {[
+                    "System Administration", "Database Development", "Hardware & Software Support",
+                    "Networking", "Adobe Creative Suite", "Video Editing (Premiere · After Effects)",
+                    "Graphic Design (Photoshop · Illustrator)", "Web & Software Systems", "IT Support & Training",
+                  ].map((s) => (
+                    <span key={s} className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700">{s}</span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          <p className="mt-5 text-ink-700/75">
-            Leading Online Tech Uganda with a mission to make quality technology and digital skills
-            affordable and accessible to every Ugandan — from your first laptop to your first website,
-            and the skills to use them with confidence.
-          </p>
         </div>
       </section>
 

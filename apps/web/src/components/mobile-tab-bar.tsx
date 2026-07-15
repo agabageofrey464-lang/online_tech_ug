@@ -32,7 +32,7 @@ export function MobileTabBar() {
       <Link href="/" className={cls(pathname === "/")}>
         <Home size={22} strokeWidth={1.8} /> Home
       </Link>
-      <Link href="/shop" className={cls(pathname.startsWith("/shop"))}>
+      <Link href="/categories" className={cls(pathname.startsWith("/categories") || pathname.startsWith("/shop"))}>
         <LayoutGrid size={22} strokeWidth={1.8} /> Categories
       </Link>
       <button onClick={open} className={cls(false)}>

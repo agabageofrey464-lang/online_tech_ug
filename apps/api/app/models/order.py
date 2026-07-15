@@ -3,6 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
+# NOTE: adding the vendor_id/commission columns to order_items requires an
+# alembic migration on the production Postgres (create_all won't ALTER an
+# existing table). Local SQLite recreates the table automatically.
+
 
 class Order(Base):
     __tablename__ = "orders"
@@ -23,6 +27,8 @@ class Order(Base):
     # Money (all in UGX)
     subtotal: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
     delivery_fee: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
+    discount: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
+    coupon_code: Mapped[str] = mapped_column(String(40), default="")
     total: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
 
     # Payment & fulfilment
@@ -46,5 +52,9 @@ class OrderItem(Base):
     unit_price: Mapped[int] = mapped_column(Numeric(12, 0))
     quantity: Mapped[int] = mapped_column(Integer, default=1)
     line_total: Mapped[int] = mapped_column(Numeric(12, 0))
+
+    # Marketplace: set when the item belongs to a vendor (else house catalog).
+    vendor_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    commission: Mapped[int] = mapped_column(Numeric(12, 0), default=0)  # platform cut of this line
 
     order: Mapped["Order"] = relationship(back_populates="items")

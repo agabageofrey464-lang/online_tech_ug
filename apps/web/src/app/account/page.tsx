@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   User,
@@ -14,13 +13,19 @@ import {
   MapPin,
   GraduationCap,
   Store,
+  Gift,
   ChevronRight,
+  MessageCircle,
+  Phone,
+  HelpCircle,
 } from "lucide-react";
 import { site, whatsappLink, ugx } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Avatar } from "@/components/avatar";
 import { useAuth } from "@/lib/auth";
-import { productImage } from "@/lib/data";
+import { productImage, products } from "@/lib/data";
+import { fallbackImage } from "@/lib/image-fallback";
+import { SafeImage } from "@/components/safe-image";
 
 type Profile = {
   name: string;
@@ -43,15 +48,7 @@ type SavedOrder = {
 };
 
 const KEY = "otu_account_v1";
-
-const statusTone: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-700",
-  confirmed: "bg-blue-100 text-blue-700",
-  processing: "bg-blue-100 text-blue-700",
-  shipped: "bg-indigo-100 text-indigo-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
-};
+const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
 type Tab = "overview" | "orders" | "address" | "details";
 
@@ -63,6 +60,7 @@ export default function AccountPage() {
   const [saved, setSaved] = useState(false);
   const [orders, setOrders] = useState<SavedOrder[]>([]);
   const [tab, setTab] = useState<Tab>("overview");
+  const [orderFilter, setOrderFilter] = useState<"ongoing" | "canceled">("ongoing");
 
   useEffect(() => {
     try {
@@ -119,6 +117,7 @@ export default function AccountPage() {
   ];
 
   const links = [
+    { href: "/refer", label: "Refer & Earn", icon: Gift },
     { href: "/wishlist", label: "Saved Items", icon: Heart },
     { href: "/learn/dashboard", label: "My Learning", icon: GraduationCap },
     ...(user?.role === "vendor" ? [{ href: "/vendor", label: "Vendor Dashboard", icon: Store }] : []),
@@ -143,17 +142,70 @@ export default function AccountPage() {
         </div>
       )}
 
+      {/* Vendor banner — unmissable path to the seller dashboard */}
+      {user?.role === "vendor" && (
+        <Link
+          href="/vendor"
+          className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-4 shadow-sm transition hover:shadow-md"
+        >
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
+              <Store size={22} />
+            </span>
+            <div>
+              <p className="font-extrabold text-ink-900">
+                You&apos;re a vendor{user.vendor_approved ? "" : " (pending approval)"} — go to your dashboard
+              </p>
+              <p className="text-sm text-ink-700/65">Add products, upload photos and manage your store &amp; sales.</p>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-full bg-brand-500 px-5 py-2.5 text-sm font-bold text-white">
+            Open Vendor Dashboard →
+          </span>
+        </Link>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
         {/* Sidebar menu (Jumia-style) */}
         <aside className="h-fit overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-ink-600/10 bg-ink-50/60 p-4">
             <Avatar name={displayName} seed={user?.email || profile?.email} size={44} />
             <div className="min-w-0">
-              <p className="truncate font-extrabold text-ink-900">{displayName}</p>
+              <p className="truncate font-extrabold text-ink-900">Welcome {displayName.split(" ")[0]}!</p>
               <p className="truncate text-xs text-ink-700/60">{user?.email || profile?.email || "Guest account"}</p>
             </div>
           </div>
+
+          {/* Live Chat / WhatsApp (Jumia-style) */}
+          <div className="grid grid-cols-2 gap-2 border-b border-ink-600/10 p-3">
+            <a
+              href={telHref(site.phoneDisplay)}
+              className="flex items-center justify-center gap-1.5 rounded-md bg-brand-500 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-brand-600"
+            >
+              <Phone size={15} /> Call us
+            </a>
+            <a
+              href={whatsappLink("Hi Online Tech Uganda, I need help with my account.")}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-1.5 rounded-md bg-[#25D366] px-3 py-2.5 text-xs font-bold text-white transition hover:brightness-95"
+            >
+              <MessageCircle size={15} /> WhatsApp
+            </a>
+          </div>
+
+          {/* Need assistance */}
+          <p className="px-4 pt-3 text-[11px] font-bold uppercase tracking-wider text-ink-700/45">Need assistance?</p>
+          <Link
+            href="/help"
+            className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-ink-50"
+          >
+            <span className="flex items-center gap-3"><HelpCircle size={18} /> Help &amp; Support</span>
+            <ChevronRight size={16} className="text-ink-700/40" />
+          </Link>
+
           <nav className="p-2">
+            <p className="px-1 pb-1 pt-1 text-[11px] font-bold uppercase tracking-wider text-ink-700/45">My account</p>
             {menu.map((m) => (
               <button
                 key={m.key}
@@ -199,6 +251,8 @@ export default function AccountPage() {
                 <p className="text-sm text-ink-700/60">Welcome to your account dashboard.</p>
               </div>
 
+              {user && <SecuritySection />}
+
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Account details card */}
                 <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
@@ -239,9 +293,34 @@ export default function AccountPage() {
           {tab === "orders" && (
             <div>
               <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-ink-900">
-                <ShoppingBag size={22} className="text-brand-500" /> Order history
+                <ShoppingBag size={22} className="text-brand-500" /> Orders
               </h1>
-              <OrderList orders={orders} />
+              {/* Jumia-style tabs */}
+              <div className="mb-4 flex border-b border-ink-600/10">
+                {([
+                  { key: "ongoing", label: "ONGOING / DELIVERED" },
+                  { key: "canceled", label: "CANCELED / RETURNED" },
+                ] as const).map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={() => setOrderFilter(t.key)}
+                    className={`flex-1 border-b-2 px-2 pb-2.5 text-xs font-extrabold tracking-wide transition sm:text-sm ${
+                      orderFilter === t.key
+                        ? "border-brand-500 text-brand-600"
+                        : "border-transparent text-ink-700/50 hover:text-ink-700"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <OrderList
+                orders={orders.filter((o) =>
+                  orderFilter === "canceled"
+                    ? ["cancelled", "returned"].includes(o.status.toLowerCase())
+                    : !["cancelled", "returned"].includes(o.status.toLowerCase()),
+                )}
+              />
             </div>
           )}
 
@@ -305,11 +384,153 @@ export default function AccountPage() {
   );
 }
 
+// Email verification + two-factor authentication controls.
+function SecuritySection() {
+  const { user, verifyEmail, resendVerification, setTwofa } = useAuth();
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [err, setErr] = useState("");
+
+  if (!user) return null;
+
+  async function doVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      await verifyEmail(code);
+      setMsg("Email verified ✓");
+      setCode("");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Invalid code");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resend() {
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      await resendVerification();
+      setMsg("A new code has been emailed to you.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function toggle2fa() {
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      await setTwofa(!user!.twofa_enabled);
+      setMsg(user!.twofa_enabled ? "Two-factor turned off." : "Two-factor turned on.");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not update 2FA");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
+      <div className="flex items-center gap-2">
+        <ShieldCheck size={18} className="text-brand-500" />
+        <h2 className="font-extrabold text-ink-900">Security</h2>
+      </div>
+
+      {/* Email verification */}
+      <div className="mt-4 border-t border-ink-600/10 pt-4">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <p className="text-sm font-bold text-ink-900">Email address</p>
+            <p className="text-xs text-ink-700/60">{user.email}</p>
+          </div>
+          {user.email_verified ? (
+            <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold text-green-700">✓ Verified</span>
+          ) : (
+            <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-700">Unverified</span>
+          )}
+        </div>
+        {!user.email_verified && (
+          <form onSubmit={doVerify} className="mt-3 flex flex-wrap items-center gap-2">
+            <input
+              inputMode="numeric"
+              placeholder="6-digit code"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              className="w-36 rounded-md border border-ink-600/15 px-3 py-2 text-sm tracking-widest focus:border-brand-500 focus:outline-none"
+            />
+            <button type="submit" disabled={busy || code.length < 4} className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-50">
+              Verify
+            </button>
+            <button type="button" onClick={resend} disabled={busy} className="text-xs font-semibold text-brand-600 hover:underline disabled:opacity-50">
+              Resend code
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* Two-factor */}
+      <div className="mt-4 border-t border-ink-600/10 pt-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-ink-900">Two-factor authentication</p>
+            <p className="text-xs text-ink-700/60">Email a one-time code each time you sign in.</p>
+          </div>
+          <button
+            onClick={toggle2fa}
+            disabled={busy || (!user.email_verified && !user.twofa_enabled)}
+            title={!user.email_verified ? "Verify your email first" : undefined}
+            className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-40 ${user.twofa_enabled ? "bg-green-500" : "bg-ink-300"}`}
+          >
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${user.twofa_enabled ? "left-[22px]" : "left-0.5"}`} />
+          </button>
+        </div>
+        {!user.email_verified && (
+          <p className="mt-1 text-xs text-amber-600">Verify your email to enable two-factor.</p>
+        )}
+      </div>
+
+      {msg && <p className="mt-3 text-xs font-semibold text-green-600">{msg}</p>}
+      {err && <p className="mt-3 text-xs font-semibold text-red-500">{err}</p>}
+    </div>
+  );
+}
+
+// Jumia-style status badge (green DELIVERED, red cancelled, etc.)
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Processing",
+  confirmed: "Confirmed",
+  processing: "Processing",
+  shipped: "Out for delivery",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Returned",
+};
+function StatusBadge({ status }: { status: string }) {
+  const s = status.toLowerCase();
+  const tone =
+    s === "delivered"
+      ? "bg-green-500 text-white"
+      : s === "cancelled" || s === "returned"
+        ? "bg-red-500 text-white"
+        : s === "shipped"
+          ? "bg-indigo-500 text-white"
+          : "bg-brand-500 text-white"; // pending/confirmed/processing
+  return (
+    <span className={`inline-block rounded px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${tone}`}>
+      {STATUS_LABEL[s] ?? status}
+    </span>
+  );
+}
+
+const fmtLong = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
+
 function OrderList({ orders }: { orders: SavedOrder[] }) {
   if (orders.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-8 text-center">
-        <p className="text-sm font-semibold text-ink-700">You have no orders yet.</p>
+        <p className="text-sm font-semibold text-ink-700">You have no orders here yet.</p>
         <Link href="/shop" className="mt-3 inline-block rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600">
           Start shopping
         </Link>
@@ -317,44 +538,56 @@ function OrderList({ orders }: { orders: SavedOrder[] }) {
     );
   }
   return (
-    <div className="space-y-3">
-      {orders.map((o) => (
-        <div key={o.reference} className="rounded-card border border-ink-600/10 bg-white p-4 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <p className="font-mono text-sm font-bold text-brand-600">{o.reference}</p>
-              <p className="text-xs text-ink-700/50">
-                {new Date(o.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                {" · "}
-                {o.payment_method.replace(/_/g, " ")}
+    <div className="divide-y divide-ink-600/10 overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
+      {orders.map((o) => {
+        const first = o.items[0];
+        const more = o.items.length - 1;
+        // Look up the full product so we use its real image (not just the slug path).
+        const prod = products.find((p) => p.id === first?.product_slug);
+        const imgSrc = prod ? productImage(prod) : fallbackImage(first?.name ?? "");
+        return (
+          <div key={o.reference} className="flex gap-3 p-4 transition hover:bg-ink-50/50">
+            {/* Product image (Jumia-style) */}
+            <span className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md border border-ink-600/10 bg-white">
+              <SafeImage
+                src={imgSrc}
+                alt={first?.name ?? "Item"}
+                fill
+                sizes="96px"
+                className="object-contain p-1"
+              />
+            </span>
+
+            {/* Details */}
+            <div className="flex min-w-0 flex-1 flex-col">
+              <p className="clamp-2 text-sm font-semibold text-ink-900">
+                {first?.name ?? "Order"}
+                {more > 0 && <span className="font-normal text-ink-700/60"> +{more} more item{more > 1 ? "s" : ""}</span>}
               </p>
+              <p className="mt-0.5 text-xs text-ink-700/50">Order #{o.reference}</p>
+              <div className="mt-1.5">
+                <StatusBadge status={o.status} />
+              </div>
+              <p className="mt-1 text-xs text-ink-700/50">On {fmtLong(o.createdAt)}</p>
+
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="font-extrabold text-ink-900">{ugx(o.total)}</span>
+                <a
+                  href={whatsappLink(`Hi, I'd like an update on my order ${o.reference}.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md border border-ink-600/20 px-3 py-1 text-xs font-semibold text-ink-700 hover:bg-ink-50"
+                >
+                  Track order
+                </a>
+                <Link href="/shop" className="rounded-md bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600 hover:bg-brand-100">
+                  Buy again
+                </Link>
+              </div>
             </div>
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone[o.status] ?? "bg-ink-50 text-ink-600"}`}>
-              {o.status}
-            </span>
           </div>
-          <div className="mt-3 flex items-center gap-2">
-            {o.items.slice(0, 4).map((it) => (
-              <span key={it.product_slug} className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-ink-600/10 bg-white">
-                <Image src={productImage({ id: it.product_slug })} alt={it.name} fill sizes="48px" className="object-contain p-0.5" />
-              </span>
-            ))}
-            {o.items.length > 4 && <span className="text-xs font-semibold text-ink-700/60">+{o.items.length - 4} more</span>}
-            <span className="ml-auto text-right">
-              <span className="block text-xs text-ink-700/50">{o.items.reduce((s, i) => s + i.quantity, 0)} item(s)</span>
-              <span className="block font-extrabold text-ink-900">{ugx(o.total)}</span>
-            </span>
-          </div>
-          <div className="mt-3 flex gap-2">
-            <a href={whatsappLink(`Hi, I'd like an update on my order ${o.reference}.`)} target="_blank" rel="noreferrer" className="rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-semibold text-ink-700 hover:bg-ink-50">
-              Track / ask update
-            </a>
-            <Link href="/shop" className="rounded-md bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600 hover:bg-brand-100">
-              Buy again
-            </Link>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

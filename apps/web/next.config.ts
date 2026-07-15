@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/_api/:path*", destination: `${API_ORIGIN}/api/v1/:path*` }];
   },
+  // Friendly aliases so common URLs never 404.
+  async redirects() {
+    return [{ source: "/vendors", destination: "/sell", permanent: false }];
+  },
 };
 
 export default nextConfig;

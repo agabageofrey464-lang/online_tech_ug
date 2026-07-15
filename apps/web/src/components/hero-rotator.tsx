@@ -14,28 +14,29 @@ type Slide = {
   cta2?: { label: string; href: string };
 };
 
+// Sharp, high-resolution hero photos (w=1920) so the Ken Burns zoom stays crisp.
 const SLIDES: Slide[] = [
   {
-    img: "/web/photo-1498049794561-7780e7231661.jpg",
+    img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Online Tech Uganda",
-    title: "Genuine Computers, Unbeatable Prices",
-    sub: "Laptops, desktops & accessories from UGX 65,000 — warranty, countrywide delivery & Mobile Money.",
+    title: "Powering Uganda, One Device at a Time",
+    sub: "Genuine laptops, desktops & accessories — warranty included, countrywide delivery and easy Mobile Money.",
     cta: { label: "Shop now", href: "/shop" },
-    cta2: { label: "Learn computer basics", href: "/learn" },
+    cta2: { label: "Learn computer skills", href: "/learn" },
   },
   {
-    img: "/web/photo-1517336714731-489689fd1ca8.jpg",
+    img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Laptops",
-    title: "Laptops for Every Budget",
-    sub: "Business, gaming & student laptops — from quality UK-used to brand new.",
+    title: "Find the Perfect Laptop for You",
+    sub: "Work, school or gaming — quality UK-used and brand-new machines to fit every budget.",
     cta: { label: "Shop laptops", href: "/shop?cat=Laptops" },
-    cta2: { label: "View gaming", href: "/shop?q=ROG" },
+    cta2: { label: "Gaming laptops", href: "/shop?q=ROG" },
   },
   {
-    img: "/web/photo-1587829741301-dc798b83add3.jpg",
-    eyebrow: "Accessories & Components",
-    title: "Upgrade & Accessorize",
-    sub: "RAM, SSDs, chargers, power banks, bags, mice & keyboards — everything for your setup.",
+    img: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1920&q=80",
+    eyebrow: "Accessories & Upgrades",
+    title: "Level Up Your Setup",
+    sub: "Faster SSDs, more RAM, chargers, keyboards, mice & bags — everything to upgrade and personalise your device.",
     cta: { label: "Shop accessories", href: "/shop?cat=Accessories" },
     cta2: { label: "RAM & SSD", href: "/shop?cat=Components" },
   },

@@ -7,10 +7,30 @@ export default async function CoursesPage() {
 
   return (
     <div>
-      <header className="mb-8">
+      <header className="mb-5">
         <h1 className="text-2xl font-extrabold text-ink-600">Courses</h1>
         <p className="text-sm text-ink-600/60">{courses.length} course(s) in the database.</p>
       </header>
+
+      {/* How the unlock-code flow works — so anyone can handle a "send my code" request. */}
+      <div className="mb-6 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-ink-600">
+        <p className="font-extrabold text-ink-600">🔑 How to unlock a course for a learner</p>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-600/80">
+          <li>
+            The learner pays you on <b>Mobile Money</b> and messages you on WhatsApp (e.g. &ldquo;I&apos;ve paid
+            for Computer Basics, send my unlock code&rdquo;).
+          </li>
+          <li>
+            Find that course below. If they <b>already have a code</b> (from registering on the site), it shows in
+            the list as <span className="rounded bg-amber-100 px-1 font-semibold text-amber-700">Pending</span> — click
+            <b> Activate (paid)</b>. If they have <b>no code</b>, type their name/phone and click <b>Generate code</b>.
+          </li>
+          <li>
+            <b>Click the code to copy it</b>, then send it to them on WhatsApp. They enter it on the course page and
+            all lessons unlock instantly.
+          </li>
+        </ol>
+      </div>
 
       {courses.length === 0 ? (
         <div className="space-y-4">

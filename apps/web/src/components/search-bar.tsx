@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Search } from "lucide-react";
 
 export function SearchBar({ className = "" }: { className?: string }) {
   const router = useRouter();
@@ -23,9 +24,11 @@ export function SearchBar({ className = "" }: { className?: string }) {
       />
       <button
         type="submit"
-        className="shrink-0 rounded-r-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+        aria-label="Search"
+        className="flex shrink-0 items-center gap-1.5 rounded-r-md bg-brand-500 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600 sm:px-5"
       >
-        Search
+        <Search size={18} strokeWidth={2.5} />
+        <span className="hidden sm:inline">Search</span>
       </button>
     </form>
   );

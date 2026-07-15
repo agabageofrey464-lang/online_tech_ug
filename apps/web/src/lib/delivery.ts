@@ -1,8 +1,8 @@
-// Distance-based delivery (transport) cost, measured from the shop at
-// Liberty Tower, Kampala Road. Distances are road-km to each town.
+// Distance-based delivery (transport) cost, measured from the shop in
+// Kampala. Distances are road-km to each town.
 // (A live Google Maps Distance Matrix upgrade can replace this table later.)
 
-export const STORE_LOCATION = "Liberty Tower, Kampala Road, Kampala";
+export const STORE_LOCATION = "Kampala, Uganda";
 
 export const TOWN_DISTANCE_KM: Record<string, number> = {
   Kampala: 0,
@@ -56,4 +56,25 @@ export function estimateDelivery(
   // Free delivery within the Kampala metro for big orders.
   if (subtotal >= FREE_DELIVERY_THRESHOLD && distance <= 25) fee = 0;
   return { fee, km };
+}
+
+// Estimated delivery time in days by distance — 2 days base, longer upcountry.
+export function deliveryDays(km: number | null): number {
+  const d = km ?? 150;
+  if (d <= 80) return 2; // Kampala metro & near towns
+  if (d <= 200) return 3; // mid-distance
+  if (d <= 350) return 4; // far
+  return 5; // very far
+}
+
+// The date an order placed now should arrive at `town`.
+export function estimatedDeliveryDate(town: string, from: Date = new Date()): Date {
+  const km = TOWN_DISTANCE_KM[town] ?? null;
+  const d = new Date(from);
+  d.setDate(d.getDate() + deliveryDays(km));
+  return d;
+}
+
+export function formatDeliveryDate(d: Date): string {
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 }

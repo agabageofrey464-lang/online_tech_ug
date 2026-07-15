@@ -21,7 +21,6 @@ export function CourseRegister({
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [code, setCode] = useState("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,19 +35,17 @@ export function CourseRegister({
     if (form.name) setLearnerName(form.name);
     enroll(courseSlug); // add to the student's dashboard
 
-    // Auto-generate a (pending) unlock code from the backend.
-    let issued = "";
+    // Register with the backend — this generates the unlock code and emails it to
+    // the OWNER (not the learner). The learner never sees the code.
     try {
-      const res = await registerForCourse({
+      await registerForCourse({
         course_slug: courseSlug,
         name: form.name,
         phone: form.phone,
         email: form.email || undefined,
       });
-      issued = res.code;
-      setCode(issued);
     } catch {
-      // Offline / API down — fall back to the WhatsApp-only flow.
+      // Offline / API down — fall back to the WhatsApp-only flow below.
     }
 
     setDone(true);
@@ -56,8 +53,7 @@ export function CourseRegister({
     const msg =
       `Hello Online Tech Uganda! I'd like to REGISTER for the course "${courseTitle}"${
         price ? ` (${ugx(price)})` : ""
-      }.\nName: ${form.name}\nPhone: ${form.phone}${form.email ? `\nEmail: ${form.email}` : ""}` +
-      (issued ? `\nMy unlock code: ${issued}` : "");
+      }.\nName: ${form.name}\nPhone: ${form.phone}${form.email ? `\nEmail: ${form.email}` : ""}`;
     window.open(whatsappLink(msg), "_blank");
   }
 
@@ -96,28 +92,11 @@ export function CourseRegister({
               <div className="py-3 text-center">
                 <CheckCircle2 className="mx-auto text-green-600" size={40} />
                 <p className="mt-2 font-bold text-ink-700">You&apos;re registered!</p>
-
-                {code ? (
-                  <>
-                    <p className="mt-1 text-sm text-ink-700/70">Here is your personal unlock code:</p>
-                    <div className="mt-2 rounded-lg border border-dashed border-brand-300 bg-brand-50 px-4 py-3">
-                      <span className="font-mono text-xl font-extrabold tracking-widest text-brand-700">{code}</span>
-                    </div>
-                    <ol className="mt-3 space-y-1 text-left text-[13px] text-ink-700/75">
-                      <li><b>1.</b> Pay {price ? <b>{ugx(price)}</b> : "the course fee"} via Mobile Money to <b>{site.phoneDisplay}</b>.</li>
-                      <li><b>2.</b> Send your payment confirmation on WhatsApp (we&apos;ve opened it for you).</li>
-                      <li><b>3.</b> We activate your code — then enter it on the course page to unlock all lessons.</li>
-                    </ol>
-                    <p className="mt-2 text-[11px] text-ink-700/50">
-                      Keep this code safe. It unlocks the course as soon as your payment is confirmed.
-                    </p>
-                  </>
-                ) : (
-                  <p className="mt-1 text-sm text-ink-700/70">
-                    We&apos;ve opened WhatsApp to confirm your spot. We&apos;ll send your unlock code and payment options.
-                  </p>
-                )}
-
+                <ol className="mt-3 space-y-1 text-left text-[13px] text-ink-700/75">
+                  <li><b>1.</b> Pay {price ? <b>{ugx(price)}</b> : "the course fee"} via Mobile Money to <b>{site.phoneDisplay}</b>.</li>
+                  <li><b>2.</b> Send your payment confirmation on WhatsApp (we&apos;ve opened it for you).</li>
+                  <li><b>3.</b> We&apos;ll send you your unlock code once payment is confirmed — enter it on the course page to open all lessons.</li>
+                </ol>
                 <button
                   onClick={() => setOpen(false)}
                   className="mt-4 rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600"
@@ -142,8 +121,9 @@ export function CourseRegister({
                   className={input}
                 />
                 <input
+                  required
                   type="email"
-                  placeholder="Email (optional)"
+                  placeholder="Email address"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className={input}

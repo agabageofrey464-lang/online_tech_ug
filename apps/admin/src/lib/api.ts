@@ -60,6 +60,8 @@ export type AdminOrder = {
   payment_status: string;
   status: string;
   created_at?: string;
+  risk_level?: "none" | "low" | "medium" | "high";
+  risk_reasons?: string[];
 };
 
 // Format an order timestamp as a short date + time.

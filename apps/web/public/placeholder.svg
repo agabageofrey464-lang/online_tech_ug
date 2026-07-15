@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Online Tech Uganda">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f3f9"/>
+      <stop offset="1" stop-color="#e7e9f4"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200 176)" fill="none" stroke="#c9ccdd" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-70" y="-52" width="140" height="96" rx="10"/>
+    <line x1="-30" y1="60" x2="30" y2="60"/>
+    <line x1="0" y1="44" x2="0" y2="60"/>
+  </g>
+  <circle cx="200" cy="176" r="20" fill="#f15a29"/>
+  <text x="200" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#282363">Online Tech Uganda</text>
+  <text x="200" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#9aa0bd">Image coming soon</text>
+</svg>

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -44,7 +44,7 @@ export function LoginForm() {
         className="w-full max-w-sm rounded-2xl bg-white p-7 shadow-xl"
       >
         <div className="mb-6 flex flex-col items-center text-center">
-          <Image src="/logo.jpeg" alt="Logo" width={48} height={48} className="h-12 w-12 rounded-xl object-cover" />
+          <BrandLogo className="h-12 w-12 text-ink-600" />
           <h1 className="mt-3 text-lg font-extrabold text-ink-600">Online Tech Admin</h1>
           <p className="text-sm text-ink-600/60">Sign in to manage your store</p>
         </div>
