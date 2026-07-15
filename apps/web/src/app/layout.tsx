@@ -11,6 +11,7 @@ import { RecentlyViewedProvider } from "@/lib/recently-viewed";
 import { CartDrawer } from "@/components/cart-drawer";
 import { CartToast } from "@/components/cart-toast";
 import { MobileTabBar } from "@/components/mobile-tab-bar";
+import { SideAdverts } from "@/components/side-adverts";
 import { ReferralCapture } from "@/components/referral-capture";
 import { Analytics } from "@/components/analytics";
 import { GoogleTranslate } from "@/components/google-translate";
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <RecentlyViewedProvider>
                 <ReferralCapture />
                 <SiteHeader />
+                <SideAdverts />
                 <main className="pb-14 md:pb-0">{children}</main>
                 <SiteFooter />
                 <WhatsAppButton />

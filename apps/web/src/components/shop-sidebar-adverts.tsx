@@ -18,7 +18,7 @@ export function ShopSidebarAdverts({ className = "" }: { className?: string }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/_api/adverts", { cache: "no-store" });
+        const res = await fetch("/_api/adverts?placement=sidebar", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) setAds(data);

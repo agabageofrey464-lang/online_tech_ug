@@ -12,6 +12,14 @@ type Advert = {
   link_url: string;
 };
 
+// Only real http(s) links open on "Learn more" — never image/upload URLs.
+function isWebLink(url: string) {
+  if (!url) return false;
+  if (/\.(png|jpe?g|webp|gif|svg)($|\?)/i.test(url)) return false;
+  if (/\/uploads\/|\/_next\/image/i.test(url)) return false;
+  return /^https?:\/\//i.test(url);
+}
+
 /** Homepage sponsored banner — admin adverts (placement "home"), auto-rotating like Jumia. */
 export function HomeAdverts() {
   const [ads, setAds] = useState<Advert[]>([]);
@@ -20,7 +28,7 @@ export function HomeAdverts() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/_api/adverts", { cache: "no-store" });
+        const res = await fetch("/_api/adverts?placement=home", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) setAds(data);
@@ -63,7 +71,7 @@ export function HomeAdverts() {
         </span>
         <h3 className="mt-0.5 line-clamp-2 max-w-[78%] text-base font-extrabold leading-tight drop-shadow-sm sm:text-2xl">{ad.title}</h3>
         {ad.description && <p className="mt-0.5 line-clamp-1 hidden max-w-md text-xs text-white/85 sm:block sm:text-sm">{ad.description}</p>}
-        {ad.link_url && (
+        {isWebLink(ad.link_url) && (
           <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-md bg-white px-3 py-1.5 text-xs font-bold text-ink-900 shadow-sm sm:text-sm">
             Learn more →
           </span>
@@ -74,7 +82,7 @@ export function HomeAdverts() {
 
   return (
     <section className="group relative">
-      {ad.link_url ? (
+      {isWebLink(ad.link_url) ? (
         <a href={ad.link_url} target="_blank" rel="noreferrer" className="block">{banner}</a>
       ) : (
         banner

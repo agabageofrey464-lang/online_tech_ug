@@ -91,8 +91,15 @@ export default function AdvertsPage() {
       const res = editing
         ? await fetch(`/api/adverts/${editing}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) })
         : await fetch("/api/adverts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      if (!res.ok) setErr("Couldn't save. Check the admin key in Settings.");
-      else {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const detail = typeof data?.detail === "string"
+          ? data.detail
+          : Array.isArray(data?.detail)
+            ? data.detail[0]?.msg
+            : "";
+        setErr(detail || (res.status === 401 ? "Unauthorized — check the admin key in Settings." : "Couldn't save. Keep the title short (max 200 characters) and try again."));
+      } else {
         setShowForm(false);
         await load();
       }
@@ -188,12 +195,15 @@ export default function AdvertsPage() {
 
               {/* Form fields */}
               <form onSubmit={save} className="order-2 space-y-3 lg:order-1">
-                <input required placeholder="Headline (advert title)" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={input} />
+                <div>
+                  <input required maxLength={200} placeholder="Headline (advert title) — keep it short" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={input} />
+                  <p className={`mt-0.5 text-right text-[11px] ${form.title.length > 180 ? "text-red-500" : "text-ink-600/40"}`}>{form.title.length}/200</p>
+                </div>
                 <input placeholder="Advertiser (business/school/company name)" value={form.advertiser} onChange={(e) => setForm({ ...form, advertiser: e.target.value })} className={input} />
                 <textarea placeholder="Short description" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={input} />
                 <input placeholder="Background image URL (or upload below)" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={input} />
                 <ImageUpload value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
-                <input placeholder="Link URL (where it goes when clicked)" value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} className={input} />
+                <input placeholder="Advertiser's website — where 'Learn more' goes (e.g. https://their-site.com)" value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} className={input} />
                 <div className="grid grid-cols-2 gap-3">
                   <select value={form.placement} onChange={(e) => setForm({ ...form, placement: e.target.value })} className={input}>
                     {PLACEMENTS.map((p) => <option key={p.v} value={p.v}>{p.label}</option>)}
