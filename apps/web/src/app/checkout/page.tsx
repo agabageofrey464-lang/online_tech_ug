@@ -99,6 +99,27 @@ export default function CheckoutPage() {
         localStorage.setItem(key, JSON.stringify(list));
       } catch {}
       clear();
+      // Merchant payment is the live method: the customer pays our MoMo/Airtel
+      // merchant, then confirms. The Flutterwave hop is skipped entirely unless
+      // NEXT_PUBLIC_ONLINE_PAYMENTS=1, so nobody waits on a call that cannot
+      // succeed while the API keys are unset. Flip that env var to enable it.
+      const onlineEnabled = process.env.NEXT_PUBLIC_ONLINE_PAYMENTS === "1";
+      if (onlineEnabled && (payment === "mtn_momo" || payment === "airtel_money")) {
+        try {
+          const res = await fetch("/_api/payments/online/init", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reference: order.reference }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.link) {
+            window.location.href = data.link;
+            return;
+          }
+        } catch {
+          /* fall through to the manual-pay success page */
+        }
+      }
       router.push(`/checkout/success?ref=${order.reference}`);
     } catch (err) {
       setError(
@@ -108,9 +129,24 @@ export default function CheckoutPage() {
     }
   }
 
+  // Airtel first: it is our only true merchant account (Pay Merchant shows our
+  // business name before the customer confirms, so they know the money is
+  // reaching us). MTN is a normal send-money number.
   const prepay = [
-    { v: "mtn_momo", label: "MTN Mobile Money", hint: "Pay to our MoMo number, then confirm your order.", icon: "/Icons/mtn.svg" },
-    { v: "airtel_money", label: "Airtel Money (Merchant)", hint: "Pay to our Airtel merchant, then confirm your order.", icon: "/Icons/airtel.svg" },
+    {
+      v: "airtel_money",
+      label: "Airtel Money (Merchant)",
+      hint: "Pay Merchant — you'll see our business name before you confirm.",
+      icon: "/Icons/airtel.svg",
+      recommended: true,
+    },
+    {
+      v: "mtn_momo",
+      label: "MTN Mobile Money",
+      hint: "Send Money to our MoMo number, then confirm your order.",
+      icon: "/Icons/mtn.svg",
+      recommended: false,
+    },
   ] as const;
 
   return (
@@ -306,7 +342,7 @@ function StepHeader({ n, title, done }: { n: number; title: string; done?: boole
   );
 }
 
-type PayOpt = { v: string; label: string; hint: string; icon?: string };
+type PayOpt = { v: string; label: string; hint: string; icon?: string; recommended?: boolean };
 function PayOption({
   opt,
   payment,
@@ -328,7 +364,14 @@ function PayOption({
         className="accent-[#F15A29]"
       />
       <span className="flex-1">
-        <span className="block text-sm font-semibold text-ink-900">{opt.label}</span>
+        <span className="flex flex-wrap items-center gap-1.5">
+          <span className="text-sm font-semibold text-ink-900">{opt.label}</span>
+          {opt.recommended && (
+            <span className="rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-700">
+              Recommended
+            </span>
+          )}
+        </span>
         <span className="block text-xs text-ink-700/60">{opt.hint}</span>
       </span>
       {opt.icon && (

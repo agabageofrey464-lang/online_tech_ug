@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Store } from "lucide-react";
+import { Store, Users, ShieldCheck } from "lucide-react";
 import { ugx } from "@/lib/site";
 import { fallbackImage } from "@/lib/image-fallback";
 import { PageHeader } from "@/components/page-header";
@@ -77,9 +77,20 @@ export default async function MarketplacePage() {
       />
 
       <div className="container-page py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-ink-700/60">{items.length} product(s) from our vendors</p>
-          <Link href="/sell" className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
+        {/* Trust / stats bar */}
+        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-ink-600/10 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <span className="flex items-center gap-1.5 font-bold text-ink-900">
+              <Store size={16} className="text-brand-500" /> {items.length} product{items.length === 1 ? "" : "s"}
+            </span>
+            <span className="flex items-center gap-1.5 text-ink-700/70">
+              <Users size={15} className="text-brand-500" /> {vendors.length} vendor{vendors.length === 1 ? "" : "s"}
+            </span>
+            <span className="hidden items-center gap-1.5 text-ink-700/70 sm:flex">
+              <ShieldCheck size={15} className="text-green-600" /> Secure checkout — we handle payment &amp; delivery
+            </span>
+          </div>
+          <Link href="/sell" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
             <Store size={16} /> Sell with us
           </Link>
         </div>
@@ -87,12 +98,14 @@ export default async function MarketplacePage() {
         {/* Our Vendors — seller profiles */}
         {vendors.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-3 text-base font-extrabold text-ink-900">Our Vendors</h2>
+            <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
+              <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Our Vendors
+            </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {vendors.map((v) => (
-                <div key={v.name} className="flex flex-col rounded-xl border border-ink-600/10 bg-white p-3 shadow-sm">
+                <div key={v.name} className="flex flex-col rounded-xl border border-ink-600/10 bg-white p-3 shadow-sm transition hover:shadow-md hover:ring-1 hover:ring-brand-200">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-sm font-extrabold text-white shadow-sm">
                       {v.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
                     </span>
                     <div className="min-w-0">
@@ -160,7 +173,7 @@ export default async function MarketplacePage() {
                   </h2>
                   <span className="text-xs text-ink-700/50">{list.length} item{list.length > 1 ? "s" : ""}</span>
                 </div>
-                <div className="bleed-page grid grid-cols-2 gap-x-2 gap-y-5 sm:mx-0 sm:grid-cols-3 lg:grid-cols-5">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                   {list.map((p) => (
                     <VendorCard key={p.id} p={p} />
                   ))}
@@ -176,26 +189,27 @@ export default async function MarketplacePage() {
 
 function VendorCard({ p }: { p: Item }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl bg-white transition duration-200 hover:shadow-[0_6px_22px_rgba(20,16,46,0.13)] hover:ring-1 hover:ring-ink-600/10">
-      <div className="relative aspect-[4/3] bg-white">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-ink-600/10 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(20,16,46,0.14)] hover:ring-1 hover:ring-brand-200">
+      {/* Square photo frame with an even inset — matches the store cards. */}
+      <div className="relative aspect-square bg-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={p.image_url || fallbackImage(p.name, p.category)}
           alt={p.name}
-          className="h-full w-full object-contain p-1"
+          className="h-full w-full object-contain p-2 transition duration-200 group-hover:scale-[1.03]"
         />
         <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
           Vendor
         </span>
+        {p.vendor_verified && (
+          <span title="Verified vendor" className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-green-600 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
+            ✓ Verified
+          </span>
+        )}
       </div>
-      <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-1.5">
-        <h3 className="clamp-2 min-h-[2.25rem] text-[13px] leading-tight text-ink-800">{p.name}</h3>
-        <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-ink-700/50">
-          by {p.vendor_name}
-          {p.vendor_verified && (
-            <span title="Verified vendor" className="inline-flex items-center gap-0.5 rounded-full bg-green-100 px-1.5 text-[9px] font-bold text-green-700">✓ Verified</span>
-          )}
-        </p>
+      <div className="flex flex-1 flex-col border-t border-ink-600/5 px-2.5 pb-2.5 pt-2">
+        <h3 className="clamp-2 min-h-[2.25rem] text-[13px] font-medium leading-tight text-ink-800 group-hover:text-brand-600">{p.name}</h3>
+        <p className="mt-0.5 truncate text-[11px] text-ink-700/50">by {p.vendor_name}</p>
         <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
         <VendorAddToCart
           id={p.id}

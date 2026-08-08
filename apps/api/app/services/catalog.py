@@ -451,6 +451,45 @@ def update_stock(db: Session, slug: str, stock_qty: int, in_stock: bool | None =
     return _to_dict(row)
 
 
+def update_product(db: Session, slug: str, data: dict) -> dict | None:
+    """Update an existing DB product in place. Only the keys present in `data`
+    are changed. Returns None if the slug isn't in the DB."""
+    row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()
+    if not row:
+        return None
+    for field in (
+        "name", "category", "brand", "condition", "description",
+        "image_url", "specs",
+    ):
+        if field in data and data[field] is not None:
+            setattr(row, field, data[field])
+    if data.get("price_ugx") is not None:
+        row.price_ugx = int(data["price_ugx"])
+    # old_price_ugx may be intentionally cleared (sent as null), so honour an
+    # explicit key even when the value is None.
+    if "old_price_ugx" in data:
+        row.old_price_ugx = int(data["old_price_ugx"]) if data["old_price_ugx"] else None
+    if data.get("rating") is not None:
+        row.rating = float(data["rating"])
+    if data.get("stock_qty") is not None:
+        row.stock_qty = max(0, int(data["stock_qty"]))
+    if data.get("in_stock") is not None:
+        row.in_stock = bool(data["in_stock"])
+    db.commit()
+    db.refresh(row)
+    return _to_dict(row)
+
+
+def delete_product(db: Session, slug: str) -> bool:
+    """Delete a DB product. Returns False if it isn't in the DB (e.g. a seed)."""
+    row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()
+    if not row:
+        return False
+    db.delete(row)
+    db.commit()
+    return True
+
+
 def decrement_stock(db: Session, slug: str, qty: int) -> None:
     """Reduce stock when an order is placed. No-op if the product isn't tracked in the DB."""
     row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()

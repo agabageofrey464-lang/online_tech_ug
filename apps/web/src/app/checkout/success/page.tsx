@@ -8,9 +8,12 @@ import { ugx } from "@/lib/site";
 import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 function SuccessInner() {
-  const ref = useSearchParams().get("ref");
+  const params = useSearchParams();
+  const ref = params.get("ref");
+  const txId = params.get("transaction_id"); // present when returning from Flutterwave
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [payStatus, setPayStatus] = useState<null | "checking" | "successful" | "failed">(null);
 
   useEffect(() => {
     if (!ref) {
@@ -23,6 +26,19 @@ function SuccessInner() {
       .finally(() => setLoading(false));
   }, [ref]);
 
+  // Verify an online payment when returning from the Flutterwave checkout.
+  useEffect(() => {
+    if (!txId) return;
+    setPayStatus("checking");
+    fetch(`/_api/payments/online/verify?transaction_id=${encodeURIComponent(txId)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setPayStatus(d?.status === "successful" ? "successful" : "failed");
+        if (ref) getOrder(ref).then(setOrder).catch(() => {});
+      })
+      .catch(() => setPayStatus("failed"));
+  }, [txId, ref]);
+
   return (
     <div className="container-page py-16">
       <div className="mx-auto max-w-xl text-center">
@@ -34,6 +50,23 @@ function SuccessInner() {
           </p>
         )}
       </div>
+
+      {/* Online payment result (when returning from Flutterwave) */}
+      {payStatus && (
+        <div
+          className={`mx-auto mt-5 max-w-xl rounded-card border p-4 text-center text-sm font-bold ${
+            payStatus === "successful"
+              ? "border-green-300 bg-green-50 text-green-700"
+              : payStatus === "failed"
+                ? "border-amber-300 bg-amber-50 text-amber-700"
+                : "border-ink-600/15 bg-ink-50 text-ink-700"
+          }`}
+        >
+          {payStatus === "checking" && "⏳ Confirming your payment…"}
+          {payStatus === "successful" && "✅ Payment received — thank you! Your order is paid."}
+          {payStatus === "failed" && "⚠️ Payment wasn't completed. No problem — you can pay on delivery, or contact us to try again."}
+        </div>
+      )}
 
       {/* Jumia-style confirmation — order is recorded, pay on delivery. No WhatsApp step. */}
       <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">

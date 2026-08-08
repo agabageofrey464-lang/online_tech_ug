@@ -66,23 +66,24 @@ export function LessonList({ course }: { course: Course }) {
           const canWatch = free || unlocked;
           const isDone = done.includes(i);
           return (
-            <li key={lesson.title} className="flex items-center gap-3 p-4">
+            <li key={lesson.title} className={`flex items-start gap-3 p-3.5 transition sm:items-center sm:p-4 ${isDone ? "bg-green-50/40" : "hover:bg-ink-50/50"}`}>
               <button
                 onClick={() => mark(i, !isDone)}
                 title={isDone ? "Mark as not done" : "Mark as completed"}
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold transition ${
+                className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold transition sm:mt-0 ${
                   isDone ? "bg-green-600 text-white" : free ? "bg-green-100 text-green-700" : "bg-ink-50 text-ink-600 hover:bg-ink-100"
                 }`}
               >
                 {isDone ? <Check size={16} /> : i + 1}
               </button>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-ink-800">
+                {/* Full title — wraps instead of truncating so long lesson names stay readable on mobile. */}
+                <p className="text-sm font-semibold leading-snug text-ink-800">
                   {lesson.title}
-                  {free && <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-green-700">Free</span>}
-                  {!free && unlocked && <span className="ml-2 rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-brand-700">Unlocked</span>}
+                  {free && <span className="ml-2 align-middle rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-green-700">Free</span>}
+                  {!free && unlocked && <span className="ml-2 align-middle rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-brand-700">Unlocked</span>}
                 </p>
-                <p className="mt-0.5 flex items-center gap-1 text-xs text-ink-700/60">
+                <p className="mt-1 flex items-center gap-1 text-xs text-ink-700/60">
                   <Clock size={12} /> {lesson.minutes} min
                 </p>
               </div>
@@ -93,20 +94,17 @@ export function LessonList({ course }: { course: Course }) {
                     setPlaying({ title: lesson.title, video: lesson.preview || course.sampleVideo, youtube: lesson.youtube });
                     mark(i, true);
                   }}
-                  className="flex shrink-0 items-center gap-1.5 rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
+                  className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
                 >
                   <Play size={13} /> Watch{free ? " free" : ""}
                 </button>
               ) : (
-                <>
-                  <span className="hidden text-sm font-extrabold text-brand-600 sm:block">{ugx(price)}</span>
-                  <button
-                    onClick={() => setShowUnlock(true)}
-                    className="flex shrink-0 items-center gap-1.5 rounded-md bg-brand-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
-                  >
-                    <Lock size={13} /> Unlock {ugx(price)}
-                  </button>
-                </>
+                <button
+                  onClick={() => setShowUnlock(true)}
+                  className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-brand-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
+                >
+                  <Lock size={13} /> {ugx(price)}
+                </button>
               )}
             </li>
           );

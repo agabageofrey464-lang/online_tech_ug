@@ -68,18 +68,33 @@ export default function FreelancersAdminPage() {
     e.preventDefault();
     setSaving(true);
     setErr("");
+    let saved = false;
     try {
       const res = await fetch("/api/freelancers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      if (!res.ok) setErr("Couldn't add. Check the admin key in Settings.");
-      else {
-        setShowForm(false);
-        setForm(emptyForm);
-        await load();
+      if (res.ok) {
+        saved = true;
+      } else {
+        // Show what the server actually said, not a guess.
+        const data = await res.json().catch(() => ({} as Record<string, unknown>));
+        const detail = data.error || data.detail;
+        setErr(
+          typeof detail === "string" && detail
+            ? detail
+            : res.status === 401
+              ? "Not authorised — check the admin key in Settings."
+              : `Couldn't add (error ${res.status}). Please try again.`,
+        );
       }
     } catch {
-      setErr("Couldn't add.");
+      setErr("Couldn't reach the server. Check your connection, then try again.");
     } finally {
       setSaving(false);
+    }
+    // Reload AFTER the try: a hiccup here must never make a successful save look failed.
+    if (saved) {
+      setShowForm(false);
+      setForm(emptyForm);
+      await load();
     }
   }
 

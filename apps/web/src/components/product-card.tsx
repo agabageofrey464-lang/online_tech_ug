@@ -24,10 +24,6 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export function ProductCard({ product }: { product: Product }) {
-  const discount =
-    product.oldPrice && product.oldPrice > product.price
-      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-      : 0;
   const inStock = product.inStock !== false;
 
   return (
@@ -38,21 +34,18 @@ export function ProductCard({ product }: { product: Product }) {
       />
 
       <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col">
-        <div className="relative aspect-[4/3] overflow-hidden bg-white">
+        {/* Square frame gives the photo noticeably more room than 4:3, and a
+            small even inset keeps it off the card edges. object-contain stays —
+            cropping would cut the ends off laptops and towers. */}
+        <div className="relative aspect-square overflow-hidden bg-white">
           <SafeImage
             src={productImage(product)}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-            className={`object-contain p-1 transition duration-200 group-hover:scale-[1.03] ${inStock ? "" : "opacity-50"}`}
+            className={`object-contain p-2 transition duration-200 group-hover:scale-[1.03] ${inStock ? "" : "opacity-50"}`}
           />
-          {/* Jumia-style solid discount tag */}
-          {discount > 0 && (
-            <span className="absolute right-2 top-2 rounded bg-brand-500 px-1.5 py-0.5 text-[12px] font-bold text-white shadow-sm">
-              -{discount}%
-            </span>
-          )}
-          {product.badge && discount === 0 && (
+          {product.badge && (
             <span className="absolute right-2 top-2 rounded bg-ink-600/90 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
               {product.badge}
             </span>
@@ -69,14 +62,8 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name}
           </h3>
 
-          {/* Price row — bold current price, struck old price, discount % */}
+          {/* Price — full price, no discount markdown. */}
           <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</p>
-          {product.oldPrice && product.oldPrice > product.price && (
-            <p className="flex items-center gap-1.5 text-[11px] leading-tight">
-              <span className="text-ink-700/40 line-through">{ugx(product.oldPrice, false)}</span>
-              {discount > 0 && <span className="font-semibold text-brand-600">-{discount}%</span>}
-            </p>
-          )}
 
           {/* Rating bar */}
           <div className="mt-1 flex items-center gap-1">

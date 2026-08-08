@@ -56,12 +56,17 @@ export default async function ProductsPage() {
                         <th className="p-4">Condition</th>
                         <th className="p-4 text-right">Price</th>
                         <th className="p-4 text-center">Stock</th>
+                        <th className="p-4 text-right">Edit</th>
                       </tr>
                     </thead>
                     <tbody>
                       {items.map((p) => (
                         <tr key={p.id} className="border-b border-ink-600/5 last:border-0 hover:bg-ink-50/50">
-                          <td className="p-4 font-semibold text-ink-600">{p.name}</td>
+                          <td className="p-4 font-semibold text-ink-600">
+                            <Link href={`/products/${p.slug}`} className="hover:text-brand-600 hover:underline">
+                              {p.name}
+                            </Link>
+                          </td>
                           <td className="p-4 text-ink-600/70">{p.brand}</td>
                           <td className="p-4 text-ink-600/70">{p.condition}</td>
                           <td className="p-4 text-right font-semibold text-ink-600">{ugx(p.price_ugx)}</td>
@@ -69,6 +74,11 @@ export default async function ProductsPage() {
                             <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${p.in_stock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                               {p.in_stock ? "In stock" : "Out"}
                             </span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <Link href={`/products/${p.slug}`} className="rounded-md border border-ink-600/20 px-3 py-1 text-xs font-bold text-ink-600 hover:border-brand-500 hover:text-brand-600">
+                              Edit
+                            </Link>
                           </td>
                         </tr>
                       ))}

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.session import get_db
-from app.schemas.product import ProductCreate, ProductOut
+from app.schemas.product import ProductCreate, ProductOut, ProductUpdate
 from app.services import catalog
 
 router = APIRouter()
@@ -70,3 +70,25 @@ def get_product(slug: str, db: Session = Depends(get_db)) -> dict:
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
+
+
+@router.put("/{slug}", response_model=ProductOut, dependencies=[Depends(require_admin)])
+def edit_product(slug: str, payload: ProductUpdate, db: Session = Depends(get_db)) -> dict:
+    """Admin: update an existing product. Only sent fields change."""
+    data = payload.model_dump(exclude_unset=True)
+    if "specs" in data and data["specs"] and not any((data["specs"] or {}).values()):
+        data["specs"] = None
+    try:
+        updated = catalog.update_product(db, slug, data)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    if not updated:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return updated
+
+
+@router.delete("/{slug}", status_code=204, dependencies=[Depends(require_admin)])
+def remove_product(slug: str, db: Session = Depends(get_db)) -> None:
+    """Admin: delete a product. Seed products (not in the DB) cannot be deleted."""
+    if not catalog.delete_product(db, slug):
+        raise HTTPException(status_code=404, detail="Product not found in database")

@@ -27,7 +27,16 @@ export const metadata: Metadata = {
 
 const flow = ["Register", "Pay", "Unlock videos", "Learn", "Certificate"];
 
+// Regenerate hourly so a class that has already run drops off the page by
+// itself — otherwise a static build would keep advertising it until the next
+// deploy, and people could register for a session that already happened.
+export const revalidate = 3600;
+
 export default function LearnPage() {
+  const upcoming = liveClasses
+    .filter((lc) => new Date(lc.date).getTime() > Date.now())
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
   return (
     <>
       <PageHeader
@@ -73,8 +82,26 @@ export default function LearnPage() {
             <p className="text-sm text-ink-700/60">Instructor-led sessions — register to get the joining link.</p>
           </div>
         </div>
+        {upcoming.length === 0 ? (
+          /* Never leave an empty grid — give people a way to ask for the next date. */
+          <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-6 text-center">
+            <p className="text-sm font-semibold text-ink-800">No live classes scheduled right now.</p>
+            <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/65">
+              New dates are announced regularly. Message us and we&apos;ll tell you when the next session runs — or
+              start any course below straight away.
+            </p>
+            <a
+              href={whatsappLink("Hi, when is the next live class?")}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-block rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600"
+            >
+              Ask about the next class
+            </a>
+          </div>
+        ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {liveClasses.map((lc) => (
+          {upcoming.map((lc) => (
             <div key={lc.id} className="flex flex-col rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-bold uppercase text-red-600">
@@ -106,6 +133,7 @@ export default function LearnPage() {
             </div>
           ))}
         </div>
+        )}
       </section>
 
       {/* Courses */}

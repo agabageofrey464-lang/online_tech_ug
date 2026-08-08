@@ -43,6 +43,12 @@ class Settings(BaseSettings):
     gmail_user: str = "onlinetechug@gmail.com"
     gmail_app_password: str = ""
 
+    # Online payments (Flutterwave) — MTN + Airtel + cards. Empty = disabled.
+    flutterwave_secret_key: str = ""
+    flutterwave_public_key: str = ""
+    # Public site URL used to build the payment redirect (success) URL.
+    site_url: str = "https://www.onlinetechug.com"
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

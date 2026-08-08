@@ -28,6 +28,12 @@ export async function POST(req: Request) {
     rating: body.rating ? Number(body.rating) : 4.5,
     in_stock: body.in_stock !== false,
     image_url: body.image_url || "",
+    // Structured computer specs (null for accessories). Only send it when at
+    // least one field is filled, so accessories stay clean.
+    specs:
+      body.specs && Object.values(body.specs).some((v) => String(v ?? "").trim())
+        ? body.specs
+        : null,
   };
 
   const res = await fetch(`${API}/api/v1/products`, {

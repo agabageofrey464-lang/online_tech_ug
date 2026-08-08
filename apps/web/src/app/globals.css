@@ -118,6 +118,9 @@ h1, h2, h3, p, li, dd, a {
   to { transform: scale(1.08); }
 }
 .animate-kenburns { animation: kenburns 7s ease-out both; }
+/* Looping variant: keeps a single advert feeling alive when there is nothing
+   to rotate to. Slow and alternating so it reads as drift, not motion. */
+.animate-kenburns-loop { animation: kenburns 18s ease-in-out infinite alternate; }
 
 @keyframes blob {
   0%, 100% { transform: translate(0, 0) scale(1); }
@@ -136,7 +139,7 @@ h1, h2, h3, p, li, dd, a {
 .marquee-group:hover .animate-marquee { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-kenburns, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
+  .animate-kenburns, .animate-kenburns-loop, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
   .animate-marquee { animation: none; }
 }
 

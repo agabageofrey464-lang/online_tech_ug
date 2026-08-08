@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BrandLogo } from "@/components/brand-logo";
+import { BrandLogoFull } from "@/components/brand-logo-full";
 import { Store, User } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { site } from "@/lib/site";
@@ -55,9 +55,8 @@ function SignupInner() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-4 py-12">
-      <Link href="/" className="mb-5 flex items-center gap-2">
-        <BrandLogo className="h-10 w-10 text-ink-600" />
-        <span className="font-display text-lg font-extrabold text-ink-900">Online Tech Uganda</span>
+      <Link href="/" className="mb-5 flex items-center gap-2 text-ink-900">
+        <BrandLogoFull size="sm" flag={false} />
       </Link>
 
       <div className="w-full rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">

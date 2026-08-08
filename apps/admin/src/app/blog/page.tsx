@@ -81,20 +81,33 @@ export default function BlogAdminPage() {
     e.preventDefault();
     setBusy(true);
     setErr("");
+    let saved = false;
     try {
       const res = editing
         ? await fetch(`/api/posts/${editing}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) })
         : await fetch("/api/posts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      if (!res.ok) {
-        setErr("Couldn't save. Check the admin key in Settings.");
+      if (res.ok) {
+        saved = true;
       } else {
-        setShowForm(false);
-        await load();
+        const data = await res.json().catch(() => ({} as Record<string, unknown>));
+        const detail = data.error || data.detail;
+        setErr(
+          typeof detail === "string" && detail
+            ? detail
+            : res.status === 401
+              ? "Not authorised — check the admin key in Settings."
+              : `Couldn't save (error ${res.status}). Please try again.`,
+        );
       }
     } catch {
-      setErr("Couldn't save.");
+      setErr("Couldn't reach the server. Check your connection, then try again.");
     } finally {
       setBusy(false);
+    }
+    // Reload AFTER the try: a hiccup here must never make a successful save look failed.
+    if (saved) {
+      setShowForm(false);
+      await load();
     }
   }
 

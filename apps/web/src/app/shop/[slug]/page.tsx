@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, Truck, MapPin, RotateCcw, ShieldCheck } from "lucide-react";
+import { Check, Truck, MapPin, RotateCcw, ShieldCheck, Package, Phone } from "lucide-react";
 import { products, productImage } from "@/lib/data";
-import { ugx, whatsappLink } from "@/lib/site";
+import { ugx, whatsappLink, site } from "@/lib/site";
 import { Badge, Stars, Button } from "@/components/ui";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { WishlistButton } from "@/components/wishlist-button";
@@ -13,6 +13,8 @@ import { ProductGallery } from "@/components/product-gallery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { RecentlyViewedTracker, RecentlyViewed } from "@/components/recently-viewed";
 import { productImages } from "@/lib/product-images";
+import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
+import { ShareProduct } from "@/components/share-product";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.id }));
@@ -68,10 +70,7 @@ export default async function ProductDetailPage({
   );
   const related = [...sameBrand, ...sameCat].slice(0, 4);
   const inStock = product.inStock !== false;
-  const discount =
-    product.oldPrice && product.oldPrice > product.price
-      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-      : 0;
+  const copy = productCopy[product.id];
   // Deterministic “social proof” figures so every product feels stocked/reviewed.
   const reviews = Math.max(5, Math.round(product.rating * 11) + (product.name.length % 8) * 4);
   const itemsLeft = 3 + (product.name.length % 12);
@@ -95,7 +94,6 @@ export default async function ProductDetailPage({
         <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
           <div className="absolute left-4 top-4 z-10 flex gap-2">
             {product.badge && <Badge>{product.badge}</Badge>}
-            {discount > 0 && <Badge tone="ink">-{discount}%</Badge>}
           </div>
         </ProductGallery>
 
@@ -103,9 +101,6 @@ export default async function ProductDetailPage({
         <div className="order-3 lg:order-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded bg-ink-600 px-2 py-0.5 text-[11px] font-bold text-white">Official Store</span>
-            {discount > 0 && (
-              <span className="rounded bg-brand-500 px-2 py-0.5 text-[11px] font-bold text-white">discount @ checkout</span>
-            )}
           </div>
           <h1 className="mt-2 text-xl font-bold text-ink-900 sm:text-2xl">{product.name}</h1>
           <p className="mt-1 text-sm text-ink-700/70">
@@ -121,19 +116,9 @@ export default async function ProductDetailPage({
 
           {/* Price box */}
           <div className="mt-4 overflow-hidden rounded-lg border border-ink-600/10">
-            {discount > 0 && (
-              <div className="flex items-center justify-between bg-[#c41c2e] px-4 py-2 text-white">
-                <span className="text-sm font-bold">⚡ Flash Sale</span>
-                <span className="text-xs font-semibold">While stocks last</span>
-              </div>
-            )}
             <div className="p-4">
               <div className="flex flex-wrap items-baseline gap-2">
                 <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
-                {product.oldPrice && <span className="text-sm text-ink-700/40 line-through">{ugx(product.oldPrice)}</span>}
-                {discount > 0 && (
-                  <span className="rounded-sm bg-brand-50 px-1.5 py-0.5 text-xs font-bold text-brand-600">-{discount}%</span>
-                )}
               </div>
               {inStock ? (
                 <div className="mt-2 max-w-xs">
@@ -183,17 +168,60 @@ export default async function ProductDetailPage({
               </Button>
               <WishlistButton slug={product.id} variant="full" />
             </div>
+
+            {/* Promotions — real offers only, no invented ones. */}
+            <div className="mt-5 border-t border-ink-600/10 pt-4">
+              <p className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Promotions</p>
+              <ul className="mt-2.5 space-y-2">
+                <li className="flex items-start gap-2.5 text-sm">
+                  <Truck size={17} className="mt-0.5 shrink-0 text-brand-500" />
+                  <span className="text-ink-700/85">
+                    Free delivery in Kampala on orders over <b className="text-ink-900">{ugx(1500000)}</b>
+                  </span>
+                </li>
+                <li className="flex items-start gap-2.5 text-sm">
+                  <Phone size={17} className="mt-0.5 shrink-0 text-brand-500" />
+                  <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
+                    Call {site.phoneDisplay} to order
+                  </a>
+                </li>
+                <li className="flex items-start gap-2.5 text-sm">
+                  <ShieldCheck size={17} className="mt-0.5 shrink-0 text-brand-500" />
+                  <span className="text-ink-700/85">
+                    {warrantyFor(product)} · Tested before dispatch
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Share this product */}
+            <ShareProduct
+              className="mt-5 border-t border-ink-600/10 pt-4"
+              title={product.name}
+              path={`/shop/${product.id}`}
+            />
           </div>
 
+          {/* Key features — derived from the spec table, so the two always agree. */}
           {product.details && (
             <div className="mt-5 rounded-card bg-brand-50 p-4">
-              <p className="text-sm font-bold text-ink-600">Overview</p>
-              <p className="mt-1 text-sm text-ink-700/80">
-                {product.brand} {product.name} — a {product.details.type.toLowerCase()} powered by an{" "}
-                {product.details.processor} ({product.details.generation}) with {product.details.ram} and{" "}
-                {product.details.storage}. Runs {product.details.os} on a {product.details.display} display.{" "}
-                {product.details.purpose}.
-              </p>
+              <p className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Key Features</p>
+              <ul className="mt-2 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+                {keyFeatures(product).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-ink-700/85">
+                    <span className="mt-0.5 shrink-0 text-brand-500">✓</span>
+                    <span className="min-w-0">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Written description */}
+          {copy?.description && (
+            <div className="mt-5 rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
+              <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Product Details</h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-700/85">{copy.description}</p>
             </div>
           )}
 
@@ -218,6 +246,33 @@ export default async function ProductDetailPage({
               </ul>
             )}
           </div>
+
+          {/* What's in the box + warranty — stacks on phones, side by side on tablets up. */}
+          {product.details && (
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
+                <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">What&apos;s in the box</h2>
+                <ul className="mt-2 space-y-1.5">
+                  {boxContents(product).map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-sm text-ink-700/85">
+                      <Package size={15} className="mt-0.5 shrink-0 text-brand-600" />
+                      <span className="min-w-0">{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
+                <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Warranty</h2>
+                <p className="mt-2 flex items-start gap-2 text-sm text-ink-700/85">
+                  <ShieldCheck size={15} className="mt-0.5 shrink-0 text-brand-600" />
+                  <span className="min-w-0">
+                    {warrantyFor(product)} — covers hardware faults under normal use. Bring the machine to our
+                    Kampala workshop and we will repair or replace it.
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Delivery & Returns (Jumia-style) */}
@@ -254,6 +309,44 @@ export default async function ProductDetailPage({
               <div>
                 <p className="font-bold text-ink-900">Genuine &amp; Warranted</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">Quality-checked. Pay via MTN/Airtel MoMo or cash on delivery.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Seller information — we are the seller on our own storefront. */}
+          <div className="border-t-4 border-ink-50">
+            <div className="border-b border-ink-600/10 px-4 py-2.5">
+              <p className="text-sm font-extrabold tracking-wide text-ink-900">SELLER INFORMATION</p>
+            </div>
+            <div className="p-4">
+              <p className="text-sm font-extrabold text-ink-900">{site.name}</p>
+              <p className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-bold text-green-700">
+                <Check size={11} /> Official Store
+              </p>
+              <ul className="mt-3 space-y-1.5 text-xs text-ink-700/75">
+                <li className="flex items-center gap-1.5">
+                  <MapPin size={13} className="shrink-0 text-brand-600" /> {site.address}
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Phone size={13} className="shrink-0 text-brand-600" />
+                  <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="hover:underline">
+                    {site.phoneDisplay}
+                  </a>
+                </li>
+              </ul>
+              <div className="mt-3 flex gap-2">
+                <Link
+                  href="/about"
+                  className="flex-1 rounded-md border border-ink-600/20 px-3 py-2 text-center text-xs font-bold text-ink-800 transition hover:bg-ink-50"
+                >
+                  About us
+                </Link>
+                <Link
+                  href="/contact"
+                  className="flex-1 rounded-md bg-ink-700 px-3 py-2 text-center text-xs font-bold text-white transition hover:bg-ink-800"
+                >
+                  Contact
+                </Link>
               </div>
             </div>
           </div>

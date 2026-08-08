@@ -16,18 +16,6 @@ import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
 
-const MOBILE_CATS = [
-  { label: "Laptops", icon: "laptop", href: "/shop?cat=Laptops" },
-  { label: "Desktops", icon: "desktop", href: "/shop?cat=Desktops" },
-  { label: "Components", icon: "ram", href: "/shop?cat=Components" },
-  { label: "Power", icon: "power", href: "/shop?cat=Power" },
-  { label: "Accessories", icon: "mouse", href: "/shop?cat=Accessories" },
-  { label: "Networking", icon: "wifi", href: "/shop?cat=Networking" },
-  { label: "Storage", icon: "storage", href: "/shop?cat=Storage" },
-  { label: "Repairs", icon: "repair", href: "/services#repairs-support" },
-  { label: "Courses", icon: "learn", href: "/learn" },
-];
-
 function byCat(cat: Product["category"]) {
   return products.filter((p) => p.category === cat);
 }
@@ -161,21 +149,9 @@ export default function HomePage() {
         <HeroRotator />
       </div>
 
-      {/* Mobile category quick-nav (sidebar is desktop-only) */}
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar lg:hidden">
-        {MOBILE_CATS.map((c) => (
-          <Link
-            key={c.label}
-            href={c.href}
-            className="flex w-[74px] shrink-0 flex-col items-center gap-1.5 rounded-lg bg-white px-2 py-2.5 shadow-sm"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-              <Icon name={c.icon} size={18} />
-            </span>
-            <span className="text-[10px] font-medium text-ink-800">{c.label}</span>
-          </Link>
-        ))}
-      </div>
+      {/* Category quick-nav removed below desktop: 9 tiles left an orphan card
+          on its own row and ate the first screen. Desktop keeps the sidebar,
+          and "Explore our top categories" covers browsing for everyone. */}
 
       {/* Sponsored adverts (admin-managed, placement=home) */}
       <HomeAdverts />

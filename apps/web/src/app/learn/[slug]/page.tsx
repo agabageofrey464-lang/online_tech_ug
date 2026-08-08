@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Lock, FileText, Download } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -98,6 +99,28 @@ export default async function CourseDetailPage({
       {/* Lessons */}
       <h2 className="mt-8 text-lg font-extrabold text-ink-600">Video lessons</h2>
       <LessonList course={course} />
+
+      {/* Course notes (premium — unlocked with the course code) */}
+      {course.notes && course.notes.length > 0 && (
+        <Link
+          href={`/learn/${course.slug}/notes`}
+          className="mt-8 flex items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-5 shadow-sm transition hover:shadow-md"
+        >
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white">
+              <FileText size={22} />
+            </span>
+            <div>
+              <p className="flex items-center gap-1.5 text-base font-extrabold text-ink-900">
+                📚 Course notes <span className="text-sm font-semibold text-ink-700/50">({course.notes.length} chapters)</span>
+                <Lock size={13} className="text-ink-700/40" />
+              </p>
+              <p className="text-sm text-ink-700/65">Read the full written notes online — unlocked with your course code.</p>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">Read notes →</span>
+        </Link>
+      )}
 
       {/* Materials / downloads */}
       {course.materials && course.materials.length > 0 && (

@@ -17,7 +17,7 @@ type Slide = {
 // Sharp, high-resolution hero photos (w=1920) so the Ken Burns zoom stays crisp.
 const SLIDES: Slide[] = [
   {
-    img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Online Tech Uganda",
     title: "Powering Uganda, One Device at a Time",
     sub: "Genuine laptops, desktops & accessories — warranty included, countrywide delivery and easy Mobile Money.",
@@ -25,7 +25,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Learn computer skills", href: "/learn" },
   },
   {
-    img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Laptops",
     title: "Find the Perfect Laptop for You",
     sub: "Work, school or gaming — quality UK-used and brand-new machines to fit every budget.",
@@ -33,7 +33,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Gaming laptops", href: "/shop?q=ROG" },
   },
   {
-    img: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Accessories & Upgrades",
     title: "Level Up Your Setup",
     sub: "Faster SSDs, more RAM, chargers, keyboards, mice & bags — everything to upgrade and personalise your device.",
@@ -71,14 +71,15 @@ export function HeroRotator() {
         </div>
       ))}
 
-      {/* Lighter overlay so the bright accessory photos show through; scrim only where text sits */}
-      <div className="absolute inset-0 bg-gradient-to-br from-ink-900/55 via-ink-900/25 to-brand-900/20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/65 via-transparent to-transparent" />
+      {/* Keep the photos bright: scrim only where the text actually sits, and a
+          light wash elsewhere rather than a full dark blanket. */}
+      <div className="absolute inset-0 bg-gradient-to-r from-ink-900/70 via-ink-900/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/45 via-transparent to-transparent" />
 
       {/* Edge vignette — feathers the outer edges to the navigation colour */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] rounded-lg"
-        style={{ boxShadow: "inset 0 0 70px 20px #131921" }}
+        style={{ boxShadow: "inset 0 0 45px 8px rgba(19,25,33,0.55)" }}
       />
 
       {/* Decorative animated graphics */}

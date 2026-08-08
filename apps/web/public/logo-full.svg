@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" width="640" height="160" role="img" aria-label="Online Tech Uganda">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#312b6b"/>
+      <stop offset="1" stop-color="#1a1740"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon: rounded square + orbit/spark mark -->
+  <g transform="translate(12,16)">
+    <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+    <g transform="translate(64,64)">
+      <circle r="42" fill="none" stroke="#ffffff" stroke-width="9.2" stroke-linecap="round" stroke-dasharray="188 60" transform="rotate(-45)"/>
+      <circle cx="35" cy="-28" r="16" fill="#f15a29"/>
+      <circle r="15" fill="#ffffff"/>
+      <circle r="7.2" fill="#f15a29"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g font-family="Segoe UI, Arial, Helvetica, sans-serif">
+    <text x="164" y="82" font-size="54" font-weight="800" fill="#282363" letter-spacing="-1">Online Tech</text>
+    <text x="166" y="120" font-size="27" font-weight="800" fill="#f15a29" letter-spacing="12">UGANDA</text>
+  </g>
+</svg>
