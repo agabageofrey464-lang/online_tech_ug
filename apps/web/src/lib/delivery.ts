@@ -34,8 +34,6 @@ export const TOWN_DISTANCE_KM: Record<string, number> = {
 
 export const DELIVERY_TOWNS = Object.keys(TOWN_DISTANCE_KM);
 
-export const FREE_DELIVERY_THRESHOLD = 3_000_000;
-
 // Tiered transport cost by road distance.
 export function feeForKm(km: number): number {
   if (km <= 25) return 10_000; // Kampala metro
@@ -45,17 +43,12 @@ export function feeForKm(km: number): number {
   return 75_000; // very far
 }
 
-export function estimateDelivery(
-  town: string,
-  subtotal: number,
-): { fee: number; km: number | null } {
+export function estimateDelivery(town: string): { fee: number; km: number | null } {
   const km = TOWN_DISTANCE_KM[town] ?? null;
   // Unknown town → assume mid-distance upcountry.
   const distance = km ?? 150;
-  let fee = feeForKm(distance);
-  // Free delivery within the Kampala metro for big orders.
-  if (subtotal >= FREE_DELIVERY_THRESHOLD && distance <= 25) fee = 0;
-  return { fee, km };
+  // Delivery is always charged by distance — no free delivery.
+  return { fee: feeForKm(distance), km };
 }
 
 // Estimated delivery time in days by distance — 2 days base, longer upcountry.

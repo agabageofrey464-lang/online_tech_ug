@@ -97,7 +97,7 @@ export const products: Product[] = [
     brand: "Lenovo",
     condition: "UK Used",
     rating: 4.4,
-    inStock: false,
+    inStock: true,
     specs: ["Core i5 4th Gen", "8GB RAM", "128GB SSD", '12.5" HD', "Lightweight"],
     details: {
       type: "Ultraportable Business Laptop",
@@ -672,7 +672,7 @@ export const products: Product[] = [
     brand: "Dell",
     condition: "UK Used",
     rating: 4.3,
-    inStock: false,
+    inStock: true,
     specs: ["Core i5 3rd Gen", "8GB RAM", "500GB HDD", "Compact"],
     details: {
       type: "Desktop Small Form Factor (no monitor)",
@@ -749,7 +749,7 @@ export const products: Product[] = [
     rating: 4.4,
     specs: ["Keyboard + Mouse", "2.4GHz wireless", "Long battery life"],
   },
-  {
+  { image: "/web/photo-1546027658-7aa750153465.jpg",
     id: "logitech-c270-webcam",
     name: "Logitech C270 HD Webcam",
     category: "Accessories",
@@ -790,7 +790,7 @@ export const products: Product[] = [
     rating: 4.7,
     specs: ["Padded laptop compartment", "Durable grey fabric", "Lenovo ThinkBook"],
   },
-  {
+  { image: "/web/photo-1588681664899-f142ff2dc9b1.jpg",
     id: "laptop-charger-universal",
     name: "Universal Laptop Charger",
     category: "Power",
@@ -810,7 +810,7 @@ export const products: Product[] = [
     rating: 4.3,
     specs: ["650VA / 360W", "Surge protection", "Backup for PC + router"],
   },
-  {
+  { image: "/web/photo-1588681664899-f142ff2dc9b1.jpg",
     id: "usb-c-charger-65w",
     name: "USB-C 65W Laptop Charger",
     category: "Power",
@@ -821,7 +821,7 @@ export const products: Product[] = [
     badge: "New",
     specs: ["65W USB-C PD", "Fast charging", "Laptops, tablets & phones"],
   },
-  {
+  { image: "/web/photo-1588681664899-f142ff2dc9b1.jpg",
     id: "laptop-charger-pin-90w",
     name: "90W Pin Laptop Charger (HP/Dell)",
     category: "Power",
@@ -831,7 +831,7 @@ export const products: Product[] = [
     rating: 4.3,
     specs: ["90W output", "HP / Dell / Lenovo tips", "Surge-safe"],
   },
-  {
+  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg",
     id: "power-bank-20000",
     name: "20,000mAh Power Bank",
     category: "Power",
@@ -841,7 +841,7 @@ export const products: Product[] = [
     rating: 4.5,
     specs: ["20,000mAh", "Fast charge", "Dual USB + USB-C"],
   },
-  {
+  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg",
     id: "power-bank-10000",
     name: "10,000mAh Power Bank",
     category: "Power",
@@ -853,7 +853,7 @@ export const products: Product[] = [
   },
 
   // ── Components (RAM & SSD upgrades) ──────────────────────────
-  {
+  { image: "/web/photo-1618410320928-25228d811631.jpg",
     id: "ram-ddr4-8gb-sodimm",
     name: "8GB DDR4 Laptop RAM (SODIMM)",
     category: "Components",
@@ -864,7 +864,7 @@ export const products: Product[] = [
     badge: "Upgrade",
     specs: ["8GB DDR4", "SODIMM (laptop)", "3200MHz"],
   },
-  {
+  { image: "/web/photo-1618410320928-25228d811631.jpg",
     id: "ram-ddr4-16gb-sodimm",
     name: "16GB DDR4 Laptop RAM (SODIMM)",
     category: "Components",
@@ -874,7 +874,7 @@ export const products: Product[] = [
     rating: 4.7,
     specs: ["16GB DDR4", "SODIMM (laptop)", "3200MHz"],
   },
-  {
+  { image: "/web/photo-1618410320928-25228d811631.jpg",
     id: "ram-ddr4-8gb-dimm",
     name: "8GB DDR4 Desktop RAM (DIMM)",
     category: "Components",
@@ -884,7 +884,7 @@ export const products: Product[] = [
     rating: 4.6,
     specs: ["8GB DDR4", "DIMM (desktop)", "3200MHz"],
   },
-  {
+  { image: "/web/photo-1625842268584-8f3296236761.jpg",
     id: "ssd-nvme-500gb",
     name: "500GB NVMe M.2 SSD",
     category: "Components",
@@ -895,7 +895,7 @@ export const products: Product[] = [
     badge: "Fast",
     specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"],
   },
-  {
+  { image: "/web/photo-1625842268584-8f3296236761.jpg",
     id: "ssd-480gb-sata",
     name: "480GB SATA SSD",
     category: "Components",
@@ -907,7 +907,7 @@ export const products: Product[] = [
   },
 
   // ── Networking ──────────────────────────────────────────────
-  {
+  { image: "/web/photo-1601737487795-dab272f52420.jpg",
     id: "tp-link-archer-c6",
     name: "TP-Link Archer C6 Router",
     category: "Networking",
@@ -918,7 +918,7 @@ export const products: Product[] = [
     badge: "New",
     specs: ["AC1200 dual-band", "4 antennas", "MU-MIMO"],
   },
-  {
+  { image: "/web/photo-1601737487795-dab272f52420.jpg",
     id: "tp-link-tl-sg108",
     name: "TP-Link 8-Port Gigabit Switch",
     category: "Networking",
@@ -930,17 +930,17 @@ export const products: Product[] = [
   },
 
   // ── Storage ─────────────────────────────────────────────────
-  {
+  { image: "/web/photo-1625842268584-8f3296236761.jpg",
     id: "sandisk-ssd-1tb",
     name: "SanDisk Extreme 1TB Portable SSD",
     category: "Storage",
-    price: 520000,
+    price: 800000,
     brand: "SanDisk",
     condition: "Brand New",
     rating: 4.8,
     specs: ["1TB", "USB-C", "Up to 1050MB/s"],
   },
-  {
+  { image: "/web/photo-1550009158-9ebf69173e03.jpg",
     id: "wd-elements-1tb-hdd",
     name: "WD Elements 1TB External HDD",
     category: "Storage",
@@ -950,7 +950,7 @@ export const products: Product[] = [
     rating: 4.6,
     specs: ["1TB", "USB 3.0", "Plug & play"],
   },
-  {
+  { image: "/web/photo-1625842268584-8f3296236761.jpg",
     id: "kingston-240gb-ssd",
     name: "Kingston A400 240GB SSD",
     category: "Storage",
@@ -960,7 +960,7 @@ export const products: Product[] = [
     rating: 4.7,
     specs: ["240GB SATA SSD", "Up to 500MB/s", "Speeds up any laptop"],
   },
-  {
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg",
     id: "sandisk-flash-64gb",
     name: "SanDisk 64GB Flash Drive",
     category: "Storage",
@@ -970,7 +970,7 @@ export const products: Product[] = [
     rating: 4.6,
     specs: ["64GB", "USB 3.0", "Plug & play"],
   },
-  {
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg",
     id: "kingston-flash-32gb",
     name: "Kingston 32GB Flash Drive",
     category: "Storage",
@@ -980,7 +980,7 @@ export const products: Product[] = [
     rating: 4.5,
     specs: ["32GB", "USB 2.0", "Compact"],
   },
-  {
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg",
     id: "microsd-64gb",
     name: "64GB MicroSD Card + Adapter",
     category: "Storage",
@@ -993,27 +993,27 @@ export const products: Product[] = [
 
   // ── More brand products ─────────────────────────────────────
   // Kingston
-  { id: "kingston-ssd-480gb", name: "Kingston A400 480GB SSD", category: "Storage", price: 220000, brand: "Kingston", condition: "Brand New", rating: 4.7, specs: ["480GB SATA SSD", "Up to 500MB/s", "2.5\" laptop/desktop"] },
-  { id: "kingston-nvme-500gb", name: "Kingston NV2 500GB NVMe SSD", category: "Components", price: 280000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"] },
-  { id: "kingston-flash-64gb", name: "Kingston 64GB Flash Drive", category: "Storage", price: 38000, brand: "Kingston", condition: "Brand New", rating: 4.5, specs: ["64GB", "USB 3.2", "Compact"] },
+  { image: "/web/photo-1625842268584-8f3296236761.jpg", id: "kingston-ssd-480gb", name: "Kingston A400 480GB SSD", category: "Storage", price: 220000, brand: "Kingston", condition: "Brand New", rating: 4.7, specs: ["480GB SATA SSD", "Up to 500MB/s", "2.5\" laptop/desktop"] },
+  { image: "/web/photo-1625842268584-8f3296236761.jpg", id: "kingston-nvme-500gb", name: "Kingston NV2 500GB NVMe SSD", category: "Components", price: 280000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"] },
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg", id: "kingston-flash-64gb", name: "Kingston 64GB Flash Drive", category: "Storage", price: 38000, brand: "Kingston", condition: "Brand New", rating: 4.5, specs: ["64GB", "USB 3.2", "Compact"] },
   // Logitech
-  { id: "logitech-m170-mouse", name: "Logitech M170 Wireless Mouse", category: "Accessories", price: 45000, brand: "Logitech", condition: "Brand New", rating: 4.5, specs: ["2.4GHz wireless", "Plug & play", "Long battery life"] },
-  { id: "logitech-k380-keyboard", name: "Logitech K380 Bluetooth Keyboard", category: "Accessories", price: 130000, brand: "Logitech", condition: "Brand New", rating: 4.6, specs: ["Bluetooth", "Multi-device", "Compact"] },
+  { image: "/web/photo-1591488320449-011701bb6704.jpg", id: "logitech-m170-mouse", name: "Logitech M170 Wireless Mouse", category: "Accessories", price: 45000, brand: "Logitech", condition: "Brand New", rating: 4.5, specs: ["2.4GHz wireless", "Plug & play", "Long battery life"] },
+  { image: "/web/photo-1563770660941-20978e870e26.jpg", id: "logitech-k380-keyboard", name: "Logitech K380 Bluetooth Keyboard", category: "Accessories", price: 130000, brand: "Logitech", condition: "Brand New", rating: 4.6, specs: ["Bluetooth", "Multi-device", "Compact"] },
   { id: "logitech-h111-headset", name: "Logitech H111 Stereo Headset", category: "Accessories", price: 70000, brand: "Logitech", condition: "Brand New", rating: 4.4, specs: ["3.5mm", "Mic + volume control", "Lightweight"] },
   // Mercury
   { id: "mercury-ups-850va", name: "Mercury 850VA UPS", category: "Power", price: 230000, brand: "Mercury", condition: "Brand New", rating: 4.4, specs: ["850VA / 480W", "Surge protection", "Backup for PC + router"] },
-  { id: "mercury-power-bank", name: "Mercury 10,000mAh Power Bank", category: "Power", price: 95000, brand: "Mercury", condition: "Brand New", rating: 4.3, specs: ["10,000mAh", "Dual USB", "Fast charge"] },
+  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg", id: "mercury-power-bank", name: "Mercury 10,000mAh Power Bank", category: "Power", price: 95000, brand: "Mercury", condition: "Brand New", rating: 4.3, specs: ["10,000mAh", "Dual USB", "Fast charge"] },
   // SanDisk
-  { id: "sandisk-flash-128gb", name: "SanDisk Ultra 128GB Flash Drive", category: "Storage", price: 55000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "USB 3.0", "Up to 130MB/s"] },
-  { id: "sandisk-microsd-128gb", name: "SanDisk 128GB MicroSD Card", category: "Storage", price: 65000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "Class 10 / U1", "SD adapter included"] },
-  { id: "sandisk-ssd-500gb", name: "SanDisk SSD Plus 500GB", category: "Storage", price: 320000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["500GB", "Portable SSD", "USB-C"] },
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg", id: "sandisk-flash-128gb", name: "SanDisk Ultra 128GB Flash Drive", category: "Storage", price: 55000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "USB 3.0", "Up to 130MB/s"] },
+  { image: "/web/photo-1558618666-fcd25c85cd64.jpg", id: "sandisk-microsd-128gb", name: "SanDisk 128GB MicroSD Card", category: "Storage", price: 65000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "Class 10 / U1", "SD adapter included"] },
+  { image: "/web/photo-1625842268584-8f3296236761.jpg", id: "sandisk-ssd-500gb", name: "SanDisk SSD Plus 500GB", category: "Storage", price: 320000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["500GB", "Portable SSD", "USB-C"] },
   // TP-Link
-  { id: "tp-link-archer-c20", name: "TP-Link Archer C20 Router", category: "Networking", price: 110000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["AC750 dual-band", "3 antennas", "Easy setup"] },
-  { id: "tp-link-re200-extender", name: "TP-Link RE200 WiFi Extender", category: "Networking", price: 95000, brand: "TP-Link", condition: "Brand New", rating: 4.5, badge: "New", specs: ["AC750", "Extends Wi-Fi range", "Plug-in"] },
+  { image: "/web/photo-1601737487795-dab272f52420.jpg", id: "tp-link-archer-c20", name: "TP-Link Archer C20 Router", category: "Networking", price: 110000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["AC750 dual-band", "3 antennas", "Easy setup"] },
+  { image: "/web/photo-1601737487795-dab272f52420.jpg", id: "tp-link-re200-extender", name: "TP-Link RE200 WiFi Extender", category: "Networking", price: 95000, brand: "TP-Link", condition: "Brand New", rating: 4.5, badge: "New", specs: ["AC750", "Extends Wi-Fi range", "Plug-in"] },
   // Western Digital
-  { id: "wd-elements-2tb", name: "WD Elements 2TB External HDD", category: "Storage", price: 320000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["2TB", "USB 3.0", "Plug & play"] },
-  { id: "wd-passport-1tb", name: "WD My Passport 1TB", category: "Storage", price: 260000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["1TB", "USB 3.0", "Password protection"] },
-  { id: "wd-blue-ssd-500gb", name: "WD Blue 500GB SSD", category: "Storage", price: 300000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["500GB", "2.5\" SATA", "Reliable upgrade"] },
+  { image: "/web/photo-1550009158-9ebf69173e03.jpg", id: "wd-elements-2tb", name: "WD Elements 2TB External HDD", category: "Storage", price: 320000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["2TB", "USB 3.0", "Plug & play"] },
+  { image: "/web/photo-1550009158-9ebf69173e03.jpg", id: "wd-passport-1tb", name: "WD My Passport 1TB", category: "Storage", price: 260000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["1TB", "USB 3.0", "Password protection"] },
+  { image: "/web/photo-1625842268584-8f3296236761.jpg", id: "wd-blue-ssd-500gb", name: "WD Blue 500GB SSD", category: "Storage", price: 300000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["500GB", "2.5\" SATA", "Reliable upgrade"] },
 
   // ── Extra stock (web images; sync to backend catalog before enabling checkout) ──
   { id: "lenovo-thinkpad-t480", name: "Lenovo ThinkPad T480", category: "Laptops", price: 950000, oldPrice: 1100000, brand: "Lenovo", condition: "UK Used", rating: 4.6, badge: "Popular", image: "/web/photo-1496181133206-80ce9b88a853.jpg", specs: ["Core i5 8th Gen", "8GB RAM", "256GB SSD", "14\" FHD", "Windows 11"] },
@@ -1030,6 +1030,24 @@ export const products: Product[] = [
   { id: "tp-link-archer-c6", name: "TP-Link Archer C6 Router", category: "Networking", price: 165000, brand: "TP-Link", condition: "Brand New", rating: 4.6, image: "/web/photo-1601737487795-dab272f52420.jpg", specs: ["AC1200 dual-band", "4 antennas", "MU-MIMO"] },
   { id: "seagate-expansion-1tb", name: "Seagate Expansion 1TB HDD", category: "Storage", price: 250000, brand: "Seagate", condition: "Brand New", rating: 4.7, image: "/web/photo-1550009158-9ebf69173e03.jpg", specs: ["1TB", "USB 3.0", "Plug & play"] },
   { id: "sandisk-ultra-128gb-flash", name: "SanDisk Ultra 128GB Flash Drive", category: "Storage", price: 60000, brand: "SanDisk", condition: "Brand New", rating: 4.7, image: "/web/photo-1558618666-fcd25c85cd64.jpg", specs: ["128GB", "USB 3.0", "Up to 130MB/s"] },
+
+  // --- Added stock (placeholder details — refine names/prices/photos in admin later) ---
+  { image: "/web/photo-1591488320449-011701bb6704.jpg", id: "hp-z3700-wireless-mouse", name: "HP Z3700 Wireless Mouse", category: "Accessories", price: 45000, brand: "HP", condition: "Brand New", rating: 4.5, badge: "New", specs: ["Wireless 2.4GHz", "Slim design", "USB nano receiver"] },
+  { image: "/web/photo-1563770660941-20978e870e26.jpg", id: "dell-kb216-keyboard", name: "Dell KB216 Wired Keyboard", category: "Accessories", price: 40000, brand: "Dell", condition: "Brand New", rating: 4.4, specs: ["Full-size", "Spill-resistant", "USB"] },
+  { id: "laptop-cooling-pad-5fan", name: "Laptop Cooling Pad (5 Fans)", category: "Accessories", price: 75000, brand: "Generic", condition: "Brand New", rating: 4.3, badge: "New", specs: ["5 quiet fans", "Adjustable height", "Blue LED"] },
+  { id: "usb-c-hub-7in1", name: "7-in-1 USB-C Hub", category: "Accessories", price: 110000, brand: "Generic", condition: "Brand New", rating: 4.5, specs: ["HDMI 4K", "3x USB 3.0", "SD/TF + USB-C PD"] },
+  { id: "hdmi-cable-2m-4k", name: "HDMI Cable 2m (4K)", category: "Accessories", price: 20000, brand: "Generic", condition: "Brand New", rating: 4.6, specs: ["4K @ 60Hz", "Gold-plated", "2 metres"] },
+  { id: "aluminium-laptop-stand", name: "Adjustable Aluminium Laptop Stand", category: "Accessories", price: 95000, brand: "Generic", condition: "Brand New", rating: 4.7, badge: "New", specs: ["Ergonomic", "Foldable", "Fits up to 17\""] },
+  { id: "hp-h100-headset", name: "HP Stereo Headset H100", category: "Accessories", price: 60000, brand: "HP", condition: "Brand New", rating: 4.4, specs: ["Stereo sound", "Inline mic", "3.5mm jack"] },
+  { id: "samsung-24-fhd-monitor", name: "Samsung 24\" Full HD Monitor", category: "Accessories", price: 480000, brand: "Samsung", condition: "Brand New", rating: 4.7, badge: "New", specs: ["24\" IPS", "1920 x 1080", "HDMI / VGA"] },
+  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg", id: "oraimo-20000-powerbank", name: "Oraimo 20,000mAh Power Bank", category: "Power", price: 130000, brand: "Oraimo", condition: "Brand New", rating: 4.5, specs: ["20,000mAh", "Dual USB + Type-C", "Fast charge"] },
+  { id: "apc-650va-ups", name: "APC 650VA UPS Backup", category: "Power", price: 350000, brand: "APC", condition: "Brand New", rating: 4.6, badge: "New", specs: ["650VA battery backup", "Surge protection", "Auto-restart"] },
+  { id: "surge-extension-6way", name: "6-Way Surge Protected Extension", category: "Power", price: 55000, brand: "Generic", condition: "Brand New", rating: 4.4, specs: ["6 sockets", "Surge protection", "1.8m cable"] },
+  { image: "/web/photo-1601737487795-dab272f52420.jpg", id: "tp-link-ac1200-usb", name: "TP-Link AC1200 USB WiFi Adapter", category: "Networking", price: 65000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["Dual-band 1200Mbps", "USB 3.0", "Plug & play"] },
+  { image: "/web/photo-1601737487795-dab272f52420.jpg", id: "netgear-gs308-switch", name: "Netgear 8-Port Gigabit Switch", category: "Networking", price: 150000, brand: "Netgear", condition: "Brand New", rating: 4.6, specs: ["8 ports", "Gigabit", "Metal case"] },
+  { image: "/web/photo-1550009158-9ebf69173e03.jpg", id: "wd-blue-1tb-hdd", name: "WD Blue 1TB Internal HDD", category: "Storage", price: 180000, brand: "WD", condition: "Brand New", rating: 4.6, specs: ["1TB", "7200 RPM", "3.5\" SATA"] },
+  { image: "/web/photo-1618410320928-25228d811631.jpg", id: "crucial-8gb-ddr4-sodimm", name: "Crucial 8GB DDR4 Laptop RAM", category: "Components", price: 130000, brand: "Crucial", condition: "Brand New", rating: 4.7, specs: ["8GB", "DDR4 3200MHz", "SODIMM"] },
+  { image: "/web/photo-1618410320928-25228d811631.jpg", id: "crucial-16gb-ddr4-sodimm", name: "Crucial 16GB DDR4 Laptop RAM", category: "Components", price: 240000, brand: "Crucial", condition: "Brand New", rating: 4.8, badge: "New", specs: ["16GB", "DDR4 3200MHz", "SODIMM"] },
 ];
 
 export const productCategories = [

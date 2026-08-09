@@ -62,7 +62,7 @@
 }
 
 :root {
-  --background: #eef0f4; /* soft light-grey canvas so white cards float (Jumia-style depth) */
+  --background: #e6e8ef; /* light-grey canvas (Jumia-style) so white cards clearly stand out — less overall white */
   --foreground: #1f1f29;
 }
 
@@ -115,9 +115,13 @@ h1, h2, h3, p, li, dd, a {
 
 @keyframes kenburns {
   from { transform: scale(1); }
-  to { transform: scale(1.08); }
+  to { transform: scale(1.035); }
 }
 .animate-kenburns { animation: kenburns 7s ease-out both; }
+
+/* Advert-style attention blink for the "Order now" number/badge. */
+@keyframes softBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.animate-soft-blink { animation: softBlink 1.3s ease-in-out infinite; }
 /* Looping variant: keeps a single advert feeling alive when there is nothing
    to rotate to. Slow and alternating so it reads as drift, not motion. */
 .animate-kenburns-loop { animation: kenburns 18s ease-in-out infinite alternate; }
@@ -140,7 +144,7 @@ h1, h2, h3, p, li, dd, a {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-kenburns, .animate-kenburns-loop, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
-  .animate-marquee { animation: none; }
+  .animate-marquee, .animate-soft-blink { animation: none; }
 }
 
 /* Headings share the same humanist face (Open Sans). It reads best at near-

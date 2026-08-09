@@ -1,5 +1,4 @@
 import { Suspense, type ReactNode } from "react";
-import { Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/components/product-card";
@@ -10,7 +9,7 @@ import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { CategoryCircles } from "@/components/category-circles";
-import { HomeAdverts } from "@/components/home-adverts";
+import { OrderBanner } from "@/components/order-banner";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
@@ -72,31 +71,19 @@ function DealBand({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/5">
-      {/* Distinctive banner: angled gradient + soft diagonal texture, badge, pill CTA */}
-      <div className="relative flex items-center justify-between gap-2 overflow-hidden bg-gradient-to-r from-[#e0451c] to-[#f4632e] px-3.5 py-3 text-white sm:px-5">
-        <span
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 18px)" }}
-        />
-        <span className="pointer-events-none absolute -right-6 -top-8 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        <h2 className="relative flex items-center gap-2.5 text-base font-extrabold tracking-tight sm:text-lg">
-          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 ring-1 ring-white/25">
-            <Zap size={14} className="fill-white text-white" />
-          </span>
+    <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+      {/* Jumia-style flat orange header: "Title | Subtitle" left, "See All ›" right */}
+      <div className="flex items-center justify-between gap-2 bg-brand-500 px-4 py-3 text-white sm:px-5">
+        <h2 className="truncate text-base font-extrabold tracking-tight sm:text-lg">
           {title}
-          {subtitle && (
-            <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] ring-1 ring-white/20 sm:text-[11px]">
-              {subtitle}
-            </span>
-          )}
+          {subtitle && <span className="font-semibold text-white/85"> | {subtitle}</span>}
         </h2>
         {href && (
           <Link
             href={href}
-            className="relative flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-bold ring-1 ring-white/25 backdrop-blur-sm transition hover:bg-white/30 sm:text-sm"
+            className="flex shrink-0 items-center gap-0.5 text-sm font-bold transition hover:opacity-90"
           >
-            See All <span className="text-sm leading-none">›</span>
+            See All <span className="text-base leading-none">›</span>
           </Link>
         )}
       </div>
@@ -153,8 +140,8 @@ export default function HomePage() {
           on its own row and ate the first screen. Desktop keeps the sidebar,
           and "Explore our top categories" covers browsing for everyone. */}
 
-      {/* Sponsored adverts (admin-managed, placement=home) */}
-      <HomeAdverts />
+      {/* Order-now banner — business number, advert-style, for quick orders */}
+      <OrderBanner />
 
       {/* Shop by category (Jumia-style circular tiles on an orange panel) */}
       <CategoryCircles />

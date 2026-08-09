@@ -4,8 +4,7 @@ import { Store, Users, ShieldCheck } from "lucide-react";
 import { ugx } from "@/lib/site";
 import { fallbackImage } from "@/lib/image-fallback";
 import { PageHeader } from "@/components/page-header";
-import { VendorAddToCart } from "@/components/vendor-add-to-cart";
-import { MessageSeller } from "@/components/message-seller";
+import { WhatsAppOrder, vendorOrderMessage } from "@/components/whatsapp-order";
 
 export const metadata: Metadata = {
   title: "Marketplace — Shop from our vendors",
@@ -211,15 +210,18 @@ function VendorCard({ p }: { p: Item }) {
         <h3 className="clamp-2 min-h-[2.25rem] text-[13px] font-medium leading-tight text-ink-800 group-hover:text-brand-600">{p.name}</h3>
         <p className="mt-0.5 truncate text-[11px] text-ink-700/50">by {p.vendor_name}</p>
         <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
-        <VendorAddToCart
-          id={p.id}
-          name={p.name}
-          price={p.price_ugx}
-          category={p.category}
-          vendorName={p.vendor_name}
-          image={p.image_url}
+        {/* Paid (verified) vendors with a linked number receive their own orders;
+            otherwise the order comes to the business owner. */}
+        <WhatsAppOrder
+          className="mt-2"
+          phone={p.vendor_verified && p.vendor_phone ? p.vendor_phone : undefined}
+          message={vendorOrderMessage({
+            name: p.name,
+            priceLabel: ugx(p.price_ugx),
+            vendor: p.vendor_name,
+            category: p.category,
+          })}
         />
-        <MessageSeller vendorId={p.vendor_id} vendorName={p.vendor_name} product={p.name} />
       </div>
     </article>
   );

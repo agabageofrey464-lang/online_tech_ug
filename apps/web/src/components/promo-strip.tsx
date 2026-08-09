@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { site, ugx } from "@/lib/site";
+import { site } from "@/lib/site";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -28,13 +28,13 @@ export function PromoStrip() {
               📞 Call {site.phoneDisplay} to order
             </a>
           ) : (
-            <span>🚚 Free delivery in Kampala on orders over {ugx(1500000)}</span>
+            <span>🚚 Countrywide delivery — fee based on your distance</span>
           )}
         </div>
 
         {/* Desktop — both messages inline */}
         <div className="hidden items-center justify-center gap-2 sm:flex">
-          <span>🚚 Free delivery in Kampala on orders over {ugx(1500000)}</span>
+          <span>🚚 Countrywide delivery — fee based on your distance</span>
           <span className="text-white/60">·</span>
           <a href={telHref(site.phoneDisplay)} className="hover:underline">
             📞 Call {site.phoneDisplay} to order

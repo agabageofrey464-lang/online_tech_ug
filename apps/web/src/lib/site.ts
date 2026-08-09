@@ -9,6 +9,9 @@ export const site = {
   phoneDisplay: "+256 756 839 270",
   phoneAlt: "+256 760 547 211",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "256756839270",
+  // Second line — WhatsApp only (0760 547 211).
+  whatsappAlt: "256760547211",
+  whatsappAltDisplay: "+256 760 547 211",
   address: "Kampala, Uganda",
   ceo: {
     name: "Agaba Geofrey",
@@ -89,6 +92,12 @@ export const nav = [
 
 export function whatsappLink(message?: string) {
   const base = `https://wa.me/${site.whatsapp}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+/** Second WhatsApp line (0760 547 211) — WhatsApp only, no calls. */
+export function whatsappAltLink(message?: string) {
+  const base = `https://wa.me/${site.whatsappAlt}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { MapPin, Phone, Mail, Banknote } from "lucide-react";
-import { site } from "@/lib/site";
+import { MapPin, Phone, Mail, Banknote, MessageCircle } from "lucide-react";
+import { site, whatsappAltLink } from "@/lib/site";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -86,8 +86,8 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
-              <a href={telHref(site.phoneAlt)} className="flex items-center gap-2 hover:text-white">
-                <Phone size={16} className="shrink-0 text-brand-300" /> {site.phoneAlt}
+              <a href={whatsappAltLink()} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white">
+                <MessageCircle size={16} className="shrink-0 text-brand-300" /> {site.whatsappAltDisplay} <span className="text-white/40">(WhatsApp)</span>
               </a>
             </li>
             <li>

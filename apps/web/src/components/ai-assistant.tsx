@@ -18,7 +18,7 @@ const KB: { keys: string[]; answer: string }[] = [
   { keys: ["track", "project", "progress", "status"], answer: "Clients can track their project on the 'Track Project' page using the code we send you." },
   { keys: ["job", "internship", "career", "work", "hire", "vacancy"], answer: "We post IT jobs & internships on the Jobs page — apply on WhatsApp or email your CV." },
   { keys: ["location", "where", "office", "address", "shop"], answer: `We're at ${site.address}. Call ${site.phoneDisplay} or message us on WhatsApp anytime.` },
-  { keys: ["contact", "phone", "call", "number", "email", "whatsapp"], answer: `Call/WhatsApp ${site.phoneDisplay} (also ${site.phoneAlt}), or email ${site.email}.` },
+  { keys: ["contact", "phone", "call", "number", "email", "whatsapp"], answer: `Call or WhatsApp ${site.phoneDisplay}. WhatsApp-only line: ${site.whatsappAltDisplay}. Or email ${site.email}.` },
   { keys: ["warranty", "genuine", "used", "new", "quality"], answer: "All devices are quality-checked. UK-used business laptops are tested (battery, screen, ports, performance); brand-new items come with warranty." },
 ];
 

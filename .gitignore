@@ -52,3 +52,14 @@ coverage/
 local_dev.db
 
 .vercel
+
+# Personal screen recordings / OBS install (never commit)
+My recordings/
+
+# Raw image drops (processed versions live in public/)
+apps/web/public/products/*.webp.jpeg
+apps/web/public/products/1.jpg
+apps/web/public/web/73902.jpg
+apps/web/public/web/KIU4269S.jpg
+apps/web/public/web/hp-1.jpeg
+apps/web/public/web/hp-probook-430-g6.jpeg

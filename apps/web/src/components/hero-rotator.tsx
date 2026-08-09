@@ -17,7 +17,7 @@ type Slide = {
 // Sharp, high-resolution hero photos (w=1920) so the Ken Burns zoom stays crisp.
 const SLIDES: Slide[] = [
   {
-    img: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?auto=format&fit=crop&w=2400&q=85",
     eyebrow: "Online Tech Uganda",
     title: "Powering Uganda, One Device at a Time",
     sub: "Genuine laptops, desktops & accessories — warranty included, countrywide delivery and easy Mobile Money.",
@@ -25,7 +25,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Learn computer skills", href: "/learn" },
   },
   {
-    img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2400&q=85",
     eyebrow: "Laptops",
     title: "Find the Perfect Laptop for You",
     sub: "Work, school or gaming — quality UK-used and brand-new machines to fit every budget.",
@@ -33,7 +33,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Gaming laptops", href: "/shop?q=ROG" },
   },
   {
-    img: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1920&q=80",
+    img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=2400&q=85",
     eyebrow: "Accessories & Upgrades",
     title: "Level Up Your Setup",
     sub: "Faster SSDs, more RAM, chargers, keyboards, mice & bags — everything to upgrade and personalise your device.",

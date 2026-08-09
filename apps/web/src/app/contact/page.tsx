@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { ContactForm } from "@/components/contact-form";
 import { Icon } from "@/components/icon";
-import { site, whatsappLink } from "@/lib/site";
+import { site, whatsappLink, whatsappAltLink } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -26,7 +26,8 @@ export default async function ContactPage({
   const initialSubject = subject ? SUBJECT_MAP[subject] ?? "" : "";
   const channels = [
     { icon: "chat", label: "WhatsApp", value: site.phoneDisplay, href: whatsappLink("Hello Online Tech Uganda") },
-    { icon: "phone", label: "Call us", value: `${site.phoneDisplay} · ${site.phoneAlt}`, href: `tel:${site.phoneDisplay.replace(/\s/g, "")}` },
+    { icon: "chat", label: "WhatsApp (line 2)", value: site.whatsappAltDisplay, href: whatsappAltLink("Hello Online Tech Uganda") },
+    { icon: "phone", label: "Call us", value: site.phoneDisplay, href: `tel:${site.phoneDisplay.replace(/\s/g, "")}` },
     { icon: "mail", label: "Email", value: site.email, href: `mailto:${site.email}` },
     { icon: "pin", label: "Location", value: site.address },
   ];

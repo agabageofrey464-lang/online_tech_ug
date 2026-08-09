@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useCart, type CartItem } from "@/lib/cart";
 
 export function AddToCartButton({
   item,
   className = "",
   label = "Add to cart",
+  addedLabel = "✓ Added",
   pill = false,
 }: {
   item: Omit<CartItem, "quantity">;
   className?: string;
-  label?: string;
+  label?: ReactNode;
+  addedLabel?: ReactNode;
   pill?: boolean;
 }) {
   const { add } = useCart();
@@ -20,7 +22,10 @@ export function AddToCartButton({
   return (
     <button
       type="button"
-      onClick={() => {
+      onClick={(e) => {
+        // When overlaid on a linked card, don't let the click navigate.
+        e.preventDefault();
+        e.stopPropagation();
         add(item);
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);

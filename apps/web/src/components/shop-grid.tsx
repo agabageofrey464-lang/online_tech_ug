@@ -103,7 +103,7 @@ export function ShopGrid() {
 
       {/* Mobile category chips — quick top-to-bottom categories as a scrolling row */}
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar lg:hidden">
-        {(["All", ...productCategories] as string[]).map((c) => (
+        {(productCategories as readonly string[]).map((c) => (
           <button
             key={c}
             onClick={() => setCategory(c)}
@@ -258,7 +258,7 @@ export function ShopGrid() {
         {filtered.length > 0 ? (
           // Flat cards directly on the page — full-bleed to the screen edges on
           // mobile, no panel, no borders, just whitespace.
-          <div className="bleed-wide grid grid-cols-2 gap-x-2 gap-y-5 sm:mx-0 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

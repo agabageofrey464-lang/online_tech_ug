@@ -12,6 +12,7 @@ import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { RecentlyViewedTracker, RecentlyViewed } from "@/components/recently-viewed";
+import { ProductStructuredData } from "@/components/structured-data";
 import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
@@ -28,9 +29,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = products.find((p) => p.id === slug);
   if (!product) return { title: "Product not found" };
+  const desc = `${product.name} — ${product.specs.join(", ")}. ${ugx(product.price)} at Online Tech Uganda. ${product.condition}, warranty & countrywide delivery.`;
   return {
     title: product.name,
-    description: `${product.name} — ${product.specs.join(", ")}. ${ugx(product.price)} at Online Tech Uganda.`,
+    description: desc,
+    alternates: { canonical: `/shop/${product.id}` },
+    openGraph: {
+      title: product.name,
+      description: desc,
+      url: `/shop/${product.id}`,
+      images: [productImage(product)],
+      type: "website",
+    },
   };
 }
 
@@ -77,6 +87,7 @@ export default async function ProductDetailPage({
 
   return (
     <div className="container-page py-10">
+      <ProductStructuredData product={product} />
       <RecentlyViewedTracker slug={product.id} />
       <div className="mb-6">
         <Breadcrumbs
@@ -176,7 +187,7 @@ export default async function ProductDetailPage({
                 <li className="flex items-start gap-2.5 text-sm">
                   <Truck size={17} className="mt-0.5 shrink-0 text-brand-500" />
                   <span className="text-ink-700/85">
-                    Free delivery in Kampala on orders over <b className="text-ink-900">{ugx(1500000)}</b>
+                    Countrywide delivery — <b className="text-ink-900">fee based on your distance</b>
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5 text-sm">

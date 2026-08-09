@@ -26,10 +26,7 @@ export default function CheckoutPage() {
   const [couponMsg, setCouponMsg] = useState("");
   const [applying, setApplying] = useState(false);
 
-  const { fee: deliveryFee, km } = useMemo(
-    () => estimateDelivery(town, subtotal),
-    [town, subtotal],
-  );
+  const { fee: deliveryFee, km } = useMemo(() => estimateDelivery(town), [town]);
   const discount = coupon ? Math.min(coupon.discount, subtotal) : 0;
   const total = Math.max(0, subtotal - discount) + deliveryFee;
 
