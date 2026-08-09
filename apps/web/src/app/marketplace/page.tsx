@@ -220,6 +220,7 @@ function VendorCard({ p }: { p: Item }) {
             priceLabel: ugx(p.price_ugx),
             vendor: p.vendor_name,
             category: p.category,
+            url: p.image_url || undefined,
           })}
         />
       </div>

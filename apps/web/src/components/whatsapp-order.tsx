@@ -48,7 +48,16 @@ export function WhatsAppOrder({
   );
 }
 
-/** Builds a rich order message for the house catalogue (store products). */
+// Shared "your details" block — prompts the buyer for everything the owner needs
+// to fulfil the order: name, phone and delivery location.
+const DETAILS_BLOCK =
+  `\n\n———  MY DETAILS  ———\n` +
+  `👤 Name: \n` +
+  `📞 Phone: \n` +
+  `📍 Delivery location: (tap 📎 → Location to share your exact spot)`;
+
+/** Builds a rich order message for the house catalogue (store products).
+ *  The product link makes WhatsApp show the product photo as a preview. */
 export function storeOrderMessage(p: {
   name: string;
   priceLabel: string;
@@ -58,8 +67,9 @@ export function storeOrderMessage(p: {
 }): string {
   return (
     `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this product:\n\n` +
-    `🛒 ${p.name}\n💰 ${p.priceLabel}\n📦 ${p.condition} · ${p.category}\n🔗 ${p.url}\n\n` +
-    `My name: \nDelivery location (please share your location): `
+    `🛒 ${p.name}\n💰 ${p.priceLabel}\n📦 ${p.condition} · ${p.category}\n` +
+    `🔗 ${p.url}` +
+    DETAILS_BLOCK
   );
 }
 
@@ -69,10 +79,12 @@ export function vendorOrderMessage(p: {
   priceLabel: string;
   vendor: string;
   category: string;
+  url?: string;
 }): string {
   return (
     `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this marketplace product:\n\n` +
-    `🛒 ${p.name}\n💰 ${p.priceLabel}\n🏪 Sold by: ${p.vendor}\n📦 ${p.category}\n\n` +
-    `My name: \nDelivery location (please share your location): `
+    `🛒 ${p.name}\n💰 ${p.priceLabel}\n🏪 Sold by: ${p.vendor}\n📦 ${p.category}` +
+    (p.url ? `\n🔗 ${p.url}` : "") +
+    DETAILS_BLOCK
   );
 }

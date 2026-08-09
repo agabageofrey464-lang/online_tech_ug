@@ -14,10 +14,11 @@ type Slide = {
   cta2?: { label: string; href: string };
 };
 
-// Sharp, high-resolution hero photos (w=1920) so the Ken Burns zoom stays crisp.
+// Local high-resolution photos — sharp edge-to-edge (no shallow-DoF blur behind
+// the text), served instantly with no external dependency.
 const SLIDES: Slide[] = [
   {
-    img: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?auto=format&fit=crop&w=2400&q=85",
+    img: "/hero/hero-4.jpg", // bright office team on computers
     eyebrow: "Online Tech Uganda",
     title: "Powering Uganda, One Device at a Time",
     sub: "Genuine laptops, desktops & accessories — warranty included, countrywide delivery and easy Mobile Money.",
@@ -25,7 +26,7 @@ const SLIDES: Slide[] = [
     cta2: { label: "Learn computer skills", href: "/learn" },
   },
   {
-    img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2400&q=85",
+    img: "/hero/hero-1.jpg", // bright laptop on marble
     eyebrow: "Laptops",
     title: "Find the Perfect Laptop for You",
     sub: "Work, school or gaming — quality UK-used and brand-new machines to fit every budget.",
@@ -33,12 +34,28 @@ const SLIDES: Slide[] = [
     cta2: { label: "Gaming laptops", href: "/shop?q=ROG" },
   },
   {
-    img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=2400&q=85",
+    img: "/hero/hero-5.jpg", // two people, bright office
+    eyebrow: "Learn & Grow",
+    title: "Build Real Computer Skills",
+    sub: "Hands-on online courses — computer basics, Microsoft Office, internet & typing, with certificates.",
+    cta: { label: "Start learning", href: "/learn" },
+    cta2: { label: "Browse courses", href: "/learn" },
+  },
+  {
+    img: "/hero/hero-3.jpg", // bright accessories flat-lay
     eyebrow: "Accessories & Upgrades",
     title: "Level Up Your Setup",
     sub: "Faster SSDs, more RAM, chargers, keyboards, mice & bags — everything to upgrade and personalise your device.",
     cta: { label: "Shop accessories", href: "/shop?cat=Accessories" },
     cta2: { label: "RAM & SSD", href: "/shop?cat=Components" },
+  },
+  {
+    img: "/hero/hero-6.jpg", // team working on laptops
+    eyebrow: "IT Services & Support",
+    title: "We Keep You Running",
+    sub: "Repairs, networking, websites & software — expert IT support for homes, schools and businesses.",
+    cta: { label: "Our services", href: "/services" },
+    cta2: { label: "Get support", href: "/contact" },
   },
 ];
 
@@ -52,7 +69,7 @@ export function HeroRotator() {
   }, []);
 
   return (
-    <div className="group/hero relative min-h-[260px] overflow-hidden rounded-lg text-white shadow-md ring-1 ring-black/5 sm:min-h-[320px] lg:h-[400px]">
+    <div className="group/hero relative min-h-[300px] overflow-hidden text-white sm:min-h-[320px] sm:rounded-lg sm:shadow-md sm:ring-1 sm:ring-black/5 lg:h-[400px]">
       {/* Slides */}
       {SLIDES.map((s, idx) => (
         <div
@@ -71,20 +88,26 @@ export function HeroRotator() {
         </div>
       ))}
 
-      {/* Keep the photos bright: scrim only where the text actually sits, and a
-          light wash elsewhere rather than a full dark blanket. */}
-      <div className="absolute inset-0 bg-gradient-to-r from-ink-900/70 via-ink-900/30 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-900/45 via-transparent to-transparent" />
-
-      {/* Edge vignette — feathers the outer edges to the navigation colour */}
+      {/* Bright by default — only a soft pool behind the centred text is darkened,
+          so the photo stays bright and clear everywhere else. */}
+      <div className="absolute inset-0 bg-ink-900/20" />
       <div
-        className="pointer-events-none absolute inset-0 z-[1] rounded-lg"
-        style={{ boxShadow: "inset 0 0 45px 8px rgba(19,25,33,0.55)" }}
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 65% at 50% 48%, rgba(12,10,26,0.6) 0%, rgba(12,10,26,0.14) 55%, transparent 76%)",
+        }}
       />
 
-      {/* Decorative animated graphics */}
-      <span className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 animate-blob rounded-full bg-brand-500/30 blur-3xl" />
-      <span className="pointer-events-none absolute -left-10 bottom-[-30px] h-44 w-44 animate-blob-slow rounded-full bg-brand-400/20 blur-3xl" />
+      {/* Light edge feather */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] rounded-lg"
+        style={{ boxShadow: "inset 0 0 30px 4px rgba(19,25,33,0.32)" }}
+      />
+
+      {/* Subtle brand glow at the corners (kept faint so it doesn't haze the photo) */}
+      <span className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 animate-blob rounded-full bg-brand-500/15 blur-3xl" />
+      <span className="pointer-events-none absolute -left-10 bottom-[-30px] h-40 w-40 animate-blob-slow rounded-full bg-brand-400/10 blur-3xl" />
 
       {/* Floating tech illustrations */}
       <Laptop className="pointer-events-none absolute left-6 top-10 hidden h-10 w-10 animate-blob-slow text-white/15 lg:block" />
@@ -97,17 +120,19 @@ export function HeroRotator() {
       <span className="pointer-events-none absolute left-12 bottom-16 hidden h-2 w-2 animate-pulse rounded-full bg-white/70 lg:block" />
 
       {/* Prev / Next arrows (appear on hover, always tappable on touch) */}
+      {/* Arrows on desktop only (hover) — on mobile the dots + auto-rotate handle
+          navigation, and arrows would overlap the text. */}
       <button
         onClick={() => go(-1)}
         aria-label="Previous slide"
-        className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:opacity-0 lg:group-hover/hero:opacity-100"
+        className="absolute left-3 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:flex lg:opacity-0 lg:group-hover/hero:opacity-100"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={() => go(1)}
         aria-label="Next slide"
-        className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:opacity-0 lg:group-hover/hero:opacity-100"
+        className="absolute right-3 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 lg:flex lg:opacity-0 lg:group-hover/hero:opacity-100"
       >
         <ChevronRight size={20} />
       </button>

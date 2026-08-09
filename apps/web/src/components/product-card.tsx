@@ -101,11 +101,13 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="mt-0.5 truncate text-[10.5px] font-medium text-ink-700/55">{keySpec(product)}</p>
         )}
 
-        {/* Condition + brand row. */}
+        {/* Condition + brand row. Refurbished isn't labelled on the card. */}
         <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <span className={`rounded px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wide ${conditionStyle(product.condition)}`}>
-            {product.condition}
-          </span>
+          {product.condition !== "Refurbished" && (
+            <span className={`rounded px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wide ${conditionStyle(product.condition)}`}>
+              {product.condition}
+            </span>
+          )}
           {product.brand && product.brand !== "Generic" && (
             <span className="text-[10px] font-semibold text-ink-700/50">{product.brand}</span>
           )}

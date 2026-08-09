@@ -123,8 +123,10 @@ export default function HomePage() {
 
   return (
     <div className="container-wide space-y-3 py-3">
-      {/* Hero row: sidebar + banner (hidden on mobile — looks cramped on small screens) */}
-      <div className="hidden gap-3 lg:grid lg:grid-cols-[230px_1fr]">
+      {/* Hero row: the banner shows on every screen; the category mega-menu
+          sidebar is desktop-only. On phones the hero goes full-bleed (edge to
+          edge), not a boxed card. */}
+      <div className="bleed-wide grid gap-3 sm:mx-0 lg:grid-cols-[230px_1fr]">
         {/* Left column: category mega-menu (flyout expands to the right) */}
         <aside className="hidden lg:block lg:h-[400px]">
           <div className="relative h-full rounded bg-white shadow-sm">
