@@ -1,11 +1,8 @@
-import { whatsappLink } from "@/lib/site";
+"use client";
 
-/**
- * Compact "Order on WhatsApp" button used across every product listing (store,
- * marketplace, vendors). The pre-filled `message` should carry the exact
- * product + details so the owner sees what was ordered and where to deliver.
- * Always targets the business WhatsApp number via whatsappLink().
- */
+import { whatsappLink } from "@/lib/site";
+import { useAuth } from "@/lib/auth";
+
 // Build a wa.me link to a specific number (raw, e.g. "0756..."), else fall back
 // to the business WhatsApp via whatsappLink().
 function orderHref(message: string, phone?: string): string {
@@ -16,6 +13,33 @@ function orderHref(message: string, phone?: string): string {
   return whatsappLink(message);
 }
 
+// The buyer-details block. When the customer is signed in, their registered
+// name / email / phone (from our website or their Google account) are filled in
+// automatically; otherwise it prompts them to type it.
+function detailsBlock(user: { name: string; email: string; phone?: string } | null): string {
+  if (user) {
+    return (
+      `\n\n———  MY DETAILS  ———\n` +
+      `👤 Name: ${user.name}\n` +
+      `📧 Email: ${user.email}\n` +
+      `📞 Phone: ${user.phone || ""}\n` +
+      `📍 Delivery location: (tap 📎 → Location to share your exact spot)\n` +
+      `\n(Registered customer on onlinetechug.com)`
+    );
+  }
+  return (
+    `\n\n———  MY DETAILS  ———\n` +
+    `👤 Name: \n` +
+    `📞 Phone: \n` +
+    `📍 Delivery location: (tap 📎 → Location to share your exact spot)`
+  );
+}
+
+/**
+ * Compact "Order on WhatsApp" button used across every product listing. The
+ * `message` is the product part; the buyer's details are appended here, filled
+ * from their signed-in account when available.
+ */
 export function WhatsAppOrder({
   message,
   phone,
@@ -28,9 +52,12 @@ export function WhatsAppOrder({
   disabled?: boolean;
   className?: string;
 }) {
+  const { user } = useAuth();
+  const full = message + detailsBlock(user);
+
   return (
     <a
-      href={disabled ? undefined : orderHref(message, phone)}
+      href={disabled ? undefined : orderHref(full, phone)}
       target="_blank"
       rel="noreferrer"
       aria-disabled={disabled}
@@ -45,46 +72,5 @@ export function WhatsAppOrder({
       </svg>
       Order on WhatsApp
     </a>
-  );
-}
-
-// Shared "your details" block — prompts the buyer for everything the owner needs
-// to fulfil the order: name, phone and delivery location.
-const DETAILS_BLOCK =
-  `\n\n———  MY DETAILS  ———\n` +
-  `👤 Name: \n` +
-  `📞 Phone: \n` +
-  `📍 Delivery location: (tap 📎 → Location to share your exact spot)`;
-
-/** Builds a rich order message for the house catalogue (store products).
- *  The product link makes WhatsApp show the product photo as a preview. */
-export function storeOrderMessage(p: {
-  name: string;
-  priceLabel: string;
-  condition: string;
-  category: string;
-  url: string;
-}): string {
-  return (
-    `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this product:\n\n` +
-    `🛒 ${p.name}\n💰 ${p.priceLabel}\n📦 ${p.condition} · ${p.category}\n` +
-    `🔗 ${p.url}` +
-    DETAILS_BLOCK
-  );
-}
-
-/** Builds a rich order message for a marketplace/vendor product. */
-export function vendorOrderMessage(p: {
-  name: string;
-  priceLabel: string;
-  vendor: string;
-  category: string;
-  url?: string;
-}): string {
-  return (
-    `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this marketplace product:\n\n` +
-    `🛒 ${p.name}\n💰 ${p.priceLabel}\n🏪 Sold by: ${p.vendor}\n📦 ${p.category}` +
-    (p.url ? `\n🔗 ${p.url}` : "") +
-    DETAILS_BLOCK
   );
 }

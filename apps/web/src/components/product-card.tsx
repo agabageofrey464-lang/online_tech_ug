@@ -3,7 +3,8 @@ import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { SafeImage } from "@/components/safe-image";
-import { WhatsAppOrder, storeOrderMessage } from "@/components/whatsapp-order";
+import { WhatsAppOrder } from "@/components/whatsapp-order";
+import { storeOrderMessage } from "@/lib/order-message";
 
 // One-line key spec for the card: for computers, CPU · RAM · Storage; otherwise
 // the product's first short spec bullet.

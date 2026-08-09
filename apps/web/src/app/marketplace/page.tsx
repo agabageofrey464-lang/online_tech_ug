@@ -4,7 +4,8 @@ import { Store, Users, ShieldCheck } from "lucide-react";
 import { ugx } from "@/lib/site";
 import { fallbackImage } from "@/lib/image-fallback";
 import { PageHeader } from "@/components/page-header";
-import { WhatsAppOrder, vendorOrderMessage } from "@/components/whatsapp-order";
+import { WhatsAppOrder } from "@/components/whatsapp-order";
+import { vendorOrderMessage } from "@/lib/order-message";
 
 export const metadata: Metadata = {
   title: "Marketplace — Shop from our vendors",

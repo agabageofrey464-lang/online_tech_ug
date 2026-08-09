@@ -142,9 +142,13 @@ h1, h2, h3, p, li, dd, a {
 .animate-marquee { animation: marquee-x 40s linear infinite; }
 .marquee-group:hover .animate-marquee { animation-play-state: paused; }
 
+/* Hero image band — scrolls continuously; two copies loop at -50%. */
+@keyframes heroMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-hero-marquee { animation: heroMarquee 32s linear infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-kenburns, .animate-kenburns-loop, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
-  .animate-marquee, .animate-soft-blink { animation: none; }
+  .animate-marquee, .animate-soft-blink, .animate-hero-marquee { animation: none; }
 }
 
 /* Headings share the same humanist face (Open Sans). It reads best at near-
