@@ -30,7 +30,12 @@ export function SiteStructuredData() {
       addressRegion: "Central",
       addressCountry: "UG",
     },
+    // Kampala city centre — keep in sync with the pin on your Google Business Profile.
+    geo: { "@type": "GeoCoordinates", latitude: 0.3476, longitude: 32.5825 },
+    founder: { "@type": "Person", name: site.ceo.name },
     areaServed: { "@type": "Country", name: "Uganda" },
+    currenciesAccepted: "UGX",
+    paymentAccepted: "Mobile Money, Cash",
     sameAs: [site.socials.facebook, site.socials.instagram, site.socials.tiktok].filter(
       Boolean,
     ) as string[],
