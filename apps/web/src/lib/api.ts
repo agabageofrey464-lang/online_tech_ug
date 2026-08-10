@@ -120,6 +120,51 @@ export async function registerForCourse(input: {
   return res.json();
 }
 
+// Is online payment (Flutterwave) enabled? Used to show/hide the "Pay online"
+// button. Fails safe to false if the API can't be reached.
+export async function onlinePaymentEnabled(): Promise<boolean> {
+  try {
+    const res = await fetch(`${base()}/payments/online/status`, { cache: "no-store" });
+    if (!res.ok) return false;
+    return !!(await res.json())?.enabled;
+  } catch {
+    return false;
+  }
+}
+
+// Start an online payment for a course. Returns the Flutterwave checkout link
+// to redirect the learner to (MTN, Airtel or card).
+export async function initCoursePayment(input: {
+  course_slug: string;
+  name: string;
+  email: string;
+  phone?: string;
+}): Promise<{ link: string }> {
+  const res = await fetch(`${base()}/payments/course/init`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail || `Couldn't start payment (${res.status})`);
+  }
+  return res.json();
+}
+
+// Verify a course payment on return from Flutterwave. On success the server
+// returns the now-active unlock code for the course.
+export async function verifyCoursePayment(
+  transactionId: string,
+): Promise<{ status: string; code: string; course_slug: string; course_title?: string }> {
+  const res = await fetch(
+    `${base()}/payments/course/verify?transaction_id=${encodeURIComponent(transactionId)}`,
+    { cache: "no-store" },
+  );
+  if (!res.ok) throw new Error(`Verify failed (${res.status})`);
+  return res.json();
+}
+
 // Verify a learner's course unlock code against the backend. Throws on a
 // network/server error so callers can fall back to a local check if offline.
 export async function verifyUnlockCode(courseSlug: string, code: string): Promise<boolean> {
