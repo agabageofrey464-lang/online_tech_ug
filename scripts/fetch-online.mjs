@@ -1,4 +1,4 @@
-// Fetch candidate product images from Wikimedia Commons for SKUs we lack photos for.
+]// Fetch candidate product images from Wikimedia Commons for SKUs we lack photos for.
 // Downloads up to N candidates per slug into images/_online/<slug>/ and builds a contact sheet.
 import { createRequire } from "node:module";
 import fs from "node:fs";

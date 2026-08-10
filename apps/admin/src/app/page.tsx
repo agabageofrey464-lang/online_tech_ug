@@ -81,11 +81,11 @@ export default async function DashboardPage() {
         </span>
       </header>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
-            <p className="text-sm text-ink-600/60">{c.label}</p>
-            <p className={`mt-2 whitespace-nowrap text-lg font-extrabold leading-tight tabular-nums sm:text-xl ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
+          <div key={c.label} className="min-w-0 rounded-2xl border border-ink-600/10 bg-white p-4 shadow-sm">
+            <p className="text-xs text-ink-600/60">{c.label}</p>
+            <p className={`mt-1.5 break-words text-lg font-extrabold leading-tight tabular-nums ${c.tone === "brand" ? "text-brand-600" : "text-ink-600"}`}>{c.value}</p>
             <p className="mt-1 text-xs text-ink-600/50">{c.hint}</p>
           </div>
         ))}

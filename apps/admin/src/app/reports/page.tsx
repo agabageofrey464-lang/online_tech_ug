@@ -65,11 +65,11 @@ export default function ReportsPage() {
         <p className="rounded-2xl border border-ink-600/10 bg-white p-8 text-center text-ink-600/50">Loading…</p>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {cards.map((c) => (
-              <div key={c.label} className={`rounded-2xl border p-5 shadow-sm ${c.accent ? "border-brand-300 bg-brand-500 text-white" : "border-ink-600/10 bg-white"}`}>
-                <p className={`whitespace-nowrap text-lg font-extrabold leading-tight tabular-nums sm:text-xl ${c.accent ? "text-white" : "text-ink-600"}`}>{c.value}</p>
-                <p className={`text-xs font-semibold ${c.accent ? "text-white/80" : "text-ink-600/60"}`}>{c.label}</p>
+              <div key={c.label} className={`min-w-0 rounded-2xl border p-4 shadow-sm ${c.accent ? "border-brand-300 bg-brand-500 text-white" : "border-ink-600/10 bg-white"}`}>
+                <p className={`break-words text-base font-extrabold leading-tight tabular-nums sm:text-lg ${c.accent ? "text-white" : "text-ink-600"}`}>{c.value}</p>
+                <p className={`mt-0.5 text-[11px] font-semibold leading-snug ${c.accent ? "text-white/80" : "text-ink-600/60"}`}>{c.label}</p>
               </div>
             ))}
           </div>
