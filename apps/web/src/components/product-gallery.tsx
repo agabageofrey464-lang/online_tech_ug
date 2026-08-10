@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import { SafeImage } from "@/components/safe-image";
 
 export function ProductGallery({
   images,
@@ -30,7 +30,7 @@ export function ProductGallery({
                 i === active ? "border-brand-500" : "border-ink-600/10 hover:border-brand-300"
               }`}
             >
-              <Image src={src} alt={`${alt} view ${i + 1}`} fill sizes="64px" className="object-contain p-1" />
+              <SafeImage src={src} alt={`${alt} view ${i + 1}`} fill sizes="64px" className="object-contain p-1" />
             </button>
           ))}
         </div>
@@ -38,7 +38,7 @@ export function ProductGallery({
 
       {/* Main image */}
       <div className="relative aspect-[4/3] max-h-[420px] flex-1 overflow-hidden rounded-card bg-white shadow-sm">
-        <Image
+        <SafeImage
           src={list[active]}
           alt={alt}
           fill

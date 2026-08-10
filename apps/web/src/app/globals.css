@@ -142,6 +142,17 @@ h1, h2, h3, p, li, dd, a {
 .animate-marquee { animation: marquee-x 40s linear infinite; }
 .marquee-group:hover .animate-marquee { animation-play-state: paused; }
 
+/* Written course notes — readable typography for the units content. */
+.notes-prose { color: #2b2b3a; line-height: 1.7; font-size: 0.95rem; }
+.notes-prose h3 { color: var(--color-ink-700); font-weight: 800; font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
+.notes-prose h3:first-child { margin-top: 0; }
+.notes-prose p { margin: 0.5rem 0; }
+.notes-prose ul { margin: 0.5rem 0 0.5rem 0; padding-left: 1.25rem; list-style: disc; }
+.notes-prose li { margin: 0.3rem 0; }
+.notes-prose b { color: var(--color-ink-800); }
+.notes-prose code { background: #f1f3f6; border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.85em; color: var(--color-brand-600); }
+.notes-prose .note-key { margin-top: 1.25rem; border-left: 4px solid var(--color-brand-500); background: var(--color-brand-50); padding: 0.75rem 1rem; border-radius: 0 0.5rem 0.5rem 0; font-size: 0.9rem; }
+
 /* Hero image band — scrolls continuously; two copies loop at -50%. */
 @keyframes heroMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .animate-hero-marquee { animation: heroMarquee 32s linear infinite; }

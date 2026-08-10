@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Lock, Download, FileText, ChevronLeft, CheckCircle2 } from "lucide-react";
 import { courses } from "@/lib/data";
+import { courseNotes } from "@/lib/course-notes";
 import { isUnlocked, tryUnlock, markUnlocked } from "@/lib/learning";
 import { verifyUnlockCode } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { ugx, whatsappLink } from "@/lib/site";
 import { BrandLogoFull } from "@/components/brand-logo-full";
 
@@ -18,6 +20,9 @@ export default function CourseNotesPage() {
   const slug = String(useParams().slug || "");
   const course = courses.find((c) => c.slug === slug);
 
+  const { user } = useAuth();
+  const isOwner = user?.role === "admin"; // the business owner sees notes freely
+
   const [unlocked, setUnlocked] = useState(false);
   const [active, setActive] = useState(0);
   const [code, setCode] = useState("");
@@ -25,8 +30,9 @@ export default function CourseNotesPage() {
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
-    setUnlocked(isUnlocked(slug));
-  }, [slug]);
+    // End users must pay to unlock; the owner (admin account) bypasses the gate.
+    setUnlocked(isUnlocked(slug) || isOwner);
+  }, [slug, isOwner]);
 
   if (!course) {
     return (
@@ -37,7 +43,12 @@ export default function CourseNotesPage() {
     );
   }
 
-  const notes = course.notes ?? [];
+  // Prefer written in-site units when available; else fall back to docx files.
+  const units = courseNotes[slug];
+  const chapters: { title: string; html?: string; file?: string }[] = units
+    ? units.map((u) => ({ title: `Unit ${u.n} — ${u.title}`, html: u.html }))
+    : (course.notes ?? []).map((n) => ({ title: n.title, file: n.file }));
+  const notes = chapters;
 
   async function unlock(e: React.FormEvent) {
     e.preventDefault();
@@ -120,7 +131,7 @@ export default function CourseNotesPage() {
           {/* Preview: chapter titles (locked) */}
           <ul className="mt-5 space-y-1.5 text-left text-sm">
             {notes.map((n) => (
-              <li key={n.file} className="flex items-center gap-2 text-ink-700/60">
+              <li key={n.title} className="flex items-center gap-2 text-ink-700/60">
                 <Lock size={13} className="shrink-0 text-ink-700/40" /> {n.title}
               </li>
             ))}
@@ -130,14 +141,15 @@ export default function CourseNotesPage() {
         /* ── Unlocked: read the chapters ── */
         <>
           <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-green-700">
-            <CheckCircle2 size={16} /> Unlocked — enjoy your course notes.
+            <CheckCircle2 size={16} />
+            {isOwner ? "Owner access — all units open." : "Unlocked — enjoy your course notes."}
           </p>
           <div className="mt-5 grid gap-4 lg:grid-cols-[240px_1fr]">
             {/* Chapter list */}
             <aside className="h-fit rounded-card border border-ink-600/10 bg-white p-2 shadow-sm">
               {notes.map((n, idx) => (
                 <button
-                  key={n.file}
+                  key={n.title}
                   onClick={() => setActive(idx)}
                   className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition ${
                     idx === active ? "bg-brand-50 text-brand-700" : "text-ink-700 hover:bg-ink-50"
@@ -152,23 +164,36 @@ export default function CourseNotesPage() {
             <div className="min-w-0">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-base font-extrabold text-ink-900">{notes[active].title}</h2>
-                <a
-                  href={notes[active].file}
-                  download
-                  className="inline-flex items-center gap-1.5 rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-50"
-                >
-                  <Download size={14} /> Download
-                </a>
+                {notes[active].file && (
+                  <a
+                    href={notes[active].file}
+                    download
+                    className="inline-flex items-center gap-1.5 rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-50"
+                  >
+                    <Download size={14} /> Download
+                  </a>
+                )}
               </div>
-              <iframe
-                key={notes[active].file}
-                src={officeSrc(notes[active].file)}
-                title={notes[active].title}
-                className="h-[72vh] w-full rounded-card border border-ink-600/10 bg-white shadow-sm"
-              />
-              <p className="mt-2 text-xs text-ink-700/50">
-                Reading online via Microsoft&apos;s viewer. Prefer offline? Use the Download button.
-              </p>
+
+              {notes[active].html ? (
+                /* Written in-site notes */
+                <article
+                  className="notes-prose rounded-card border border-ink-600/10 bg-white p-5 shadow-sm sm:p-7"
+                  dangerouslySetInnerHTML={{ __html: notes[active].html! }}
+                />
+              ) : (
+                <>
+                  <iframe
+                    key={notes[active].file}
+                    src={officeSrc(notes[active].file!)}
+                    title={notes[active].title}
+                    className="h-[72vh] w-full rounded-card border border-ink-600/10 bg-white shadow-sm"
+                  />
+                  <p className="mt-2 text-xs text-ink-700/50">
+                    Reading online via Microsoft&apos;s viewer. Prefer offline? Use the Download button.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </>

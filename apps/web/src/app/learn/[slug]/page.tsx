@@ -10,6 +10,7 @@ import { Quiz } from "@/components/quiz";
 import { CourseRegister } from "@/components/course-register";
 import { CourseProgress } from "@/components/course-progress";
 import { courses } from "@/lib/data";
+import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -38,6 +39,9 @@ export default async function CourseDetailPage({
   const { slug } = await params;
   const course = courses.find((c) => c.slug === slug);
   if (!course) notFound();
+
+  // Written units take priority; else fall back to any docx notes.
+  const noteCount = courseNotes[course.slug]?.length ?? course.notes?.length ?? 0;
 
   return (
     <div className="container-page py-10">
@@ -101,7 +105,7 @@ export default async function CourseDetailPage({
       <LessonList course={course} />
 
       {/* Course notes (premium — unlocked with the course code) */}
-      {course.notes && course.notes.length > 0 && (
+      {noteCount > 0 && (
         <Link
           href={`/learn/${course.slug}/notes`}
           className="mt-8 flex items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-5 shadow-sm transition hover:shadow-md"
@@ -112,7 +116,7 @@ export default async function CourseDetailPage({
             </span>
             <div>
               <p className="flex items-center gap-1.5 text-base font-extrabold text-ink-900">
-                📚 Course notes <span className="text-sm font-semibold text-ink-700/50">({course.notes.length} chapters)</span>
+                📚 Course notes <span className="text-sm font-semibold text-ink-700/50">({noteCount} units)</span>
                 <Lock size={13} className="text-ink-700/40" />
               </p>
               <p className="text-sm text-ink-700/65">Read the full written notes online — unlocked with your course code.</p>

@@ -8,7 +8,6 @@ import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
-import { CategoryCircles } from "@/components/category-circles";
 import { OrderBanner } from "@/components/order-banner";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
@@ -145,10 +144,9 @@ export default function HomePage() {
       {/* Order-now banner — business number, advert-style, for quick orders */}
       <OrderBanner />
 
-      {/* Shop by category (Jumia-style circular tiles on an orange panel) */}
-      <CategoryCircles />
-
-      {/* Browse all products with filters (same experience as the Shop page) */}
+      {/* Products first — Browse all products sits right under the hero/banner
+          (the circular "top categories" panel was removed; the header sidebar,
+          top nav and mobile menu already cover category navigation). */}
       <section>
         <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
           <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Browse all products
