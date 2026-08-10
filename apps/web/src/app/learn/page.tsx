@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 import { Radio, CalendarClock, GraduationCap } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -146,7 +146,7 @@ export default function LearnPage() {
               className="flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:shadow-md"
             >
               <div className="relative h-40 w-full overflow-hidden">
-                <Image
+                <SafeImage
                   src={`/courses/${c.slug}.webp`}
                   alt={c.title}
                   fill
