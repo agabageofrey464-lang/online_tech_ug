@@ -132,7 +132,7 @@ export function ProductCard({ product }: { product: Product }) {
         {/* Trust line: delivery by distance + warranty by condition. */}
         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-medium text-ink-700/55">
           <span className="inline-flex items-center gap-1">🚚 Delivery by distance</span>
-          <span className="inline-flex items-center gap-1 text-green-700/80">
+          <span className="inline-flex items-center gap-1 text-brand-600/90">
             🛡 {product.condition === "Brand New" ? "12mo" : product.condition === "Refurbished" ? "6mo" : "3mo"} warranty
           </span>
         </div>
