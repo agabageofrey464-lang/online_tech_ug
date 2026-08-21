@@ -107,12 +107,13 @@ export function SiteHeader() {
           in the bottom tab bar, so the top stays clean (no boxes). */}
       <div className="bg-white shadow-sm">
         <div className="container-wide flex items-center gap-3 py-2.5 md:gap-5">
-          {/* Logo — desktop only */}
-          <Link href="/" className="hidden shrink-0 items-center text-ink-900 md:flex">
-            <BrandLogoFull size="md" onLight />
+          {/* Logo — compact on mobile (left), full on desktop */}
+          <Link href="/" className="flex shrink-0 items-center text-ink-900">
+            <span className="md:hidden"><BrandLogoFull size="sm" onLight /></span>
+            <span className="hidden md:inline-flex"><BrandLogoFull size="md" onLight /></span>
           </Link>
 
-          {/* Search — fills the row on mobile, capped on desktop */}
+          {/* Search — sits beside the logo on mobile (narrower), capped on desktop */}
           <div className="min-w-0 flex-1 md:max-w-2xl">
             <SearchBar className="border border-ink-600/20 shadow-sm" />
           </div>
