@@ -343,7 +343,7 @@ export default async function ProductDetailPage({
             </div>
             <div className="p-4">
               <p className="text-sm font-extrabold text-ink-900">{site.name}</p>
-              <p className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-bold text-green-700">
+              <p className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-700">
                 <Check size={11} /> Official Store
               </p>
               <ul className="mt-3 space-y-1.5 text-xs text-ink-700/75">

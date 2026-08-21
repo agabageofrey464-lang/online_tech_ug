@@ -5,11 +5,28 @@ import { FeaturedProducts } from "@/components/featured-products";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { products } from "@/lib/data";
 
-export const metadata: Metadata = {
-  title: "Shop Computers & Accessories",
-  description:
-    "Buy laptops, desktops, accessories, networking and storage in Uganda. Quality-checked, with delivery and flexible payment options.",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ cat?: string; brand?: string; q?: string; deals?: string; sort?: string }>;
+}): Promise<Metadata> {
+  const sp = await searchParams;
+  const cat = typeof sp.cat === "string" ? sp.cat : "";
+  const brand = typeof sp.brand === "string" ? sp.brand : "";
+  const q = typeof sp.q === "string" ? sp.q : "";
+  const focus = q ? `“${q}”` : brand || cat || "";
+  const title = focus ? `${focus} — Shop` : "Shop Computers & Accessories";
+  const description = focus
+    ? `Buy ${focus} in Uganda at Online Tech Uganda — quality-checked, warranty included, countrywide delivery & flexible payment.`
+    : "Buy laptops, desktops, accessories, networking and storage in Uganda. Quality-checked, with delivery and flexible payment options.";
+  return {
+    title,
+    description,
+    // Canonical points to the base shop page so query-filtered views don't create
+    // duplicate-content pages in search.
+    alternates: { canonical: "/shop" },
+  };
+}
 
 export default async function ShopPage({
   searchParams,

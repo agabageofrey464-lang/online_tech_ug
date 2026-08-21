@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ProductCard } from "@/components/product-card";
+import { ProductRail } from "@/components/product-rail";
 import { ShopGrid } from "@/components/shop-grid";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
@@ -47,16 +47,10 @@ function Panel({
   );
 }
 
-// Jumia-style horizontal product rail — fixed-width cards, scrolls sideways.
+// Jumia-style horizontal product rail — fixed-width cards, ‹ › arrows on desktop.
 function Rail({ items }: { items: Product[] }) {
   return (
-    <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
-      {items.map((p) => (
-        <div key={p.id} className="w-[45%] shrink-0 snap-start sm:w-[30%] lg:w-[15.5%]">
-          <ProductCard product={p} />
-        </div>
-      ))}
-    </div>
+    <ProductRail items={items} />
   );
 }
 
