@@ -15,9 +15,14 @@ import {
   Store,
   Gift,
   ChevronRight,
+  ChevronDown,
   MessageCircle,
   Phone,
   HelpCircle,
+  Truck,
+  CheckCircle2,
+  Clock,
+  XCircle,
 } from "lucide-react";
 import { site, whatsappLink, ugx } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -26,6 +31,7 @@ import { useAuth } from "@/lib/auth";
 import { productImage, products } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { SafeImage } from "@/components/safe-image";
+import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 type Profile = {
   name: string;
@@ -285,7 +291,7 @@ export default function AccountPage() {
                     <button onClick={() => setTab("orders")} className="text-sm font-bold text-brand-600 hover:underline">See all →</button>
                   )}
                 </div>
-                <OrderList orders={orders.slice(0, 2)} />
+                <OrderList orders={orders.slice(0, 2)} town={profile?.town} />
               </div>
             </div>
           )}
@@ -315,6 +321,7 @@ export default function AccountPage() {
                 ))}
               </div>
               <OrderList
+                town={profile?.town}
                 orders={orders.filter((o) =>
                   orderFilter === "canceled"
                     ? ["cancelled", "returned"].includes(o.status.toLowerCase())
@@ -526,7 +533,63 @@ function StatusBadge({ status }: { status: string }) {
 const fmtLong = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
 
-function OrderList({ orders }: { orders: SavedOrder[] }) {
+const imgFor = (slug?: string, name?: string) => {
+  const prod = products.find((p) => p.id === slug);
+  return prod ? productImage(prod) : fallbackImage(name ?? "");
+};
+
+// Jumia-style delivery tracking timeline. Highlights progress up to the current
+// status; cancelled/returned orders show a distinct stopped state.
+const TRACK_STEPS = [
+  { key: "placed", label: "Order placed", icon: Package },
+  { key: "confirmed", label: "Confirmed", icon: CheckCircle2 },
+  { key: "processing", label: "Processing", icon: Clock },
+  { key: "shipped", label: "Out for delivery", icon: Truck },
+  { key: "delivered", label: "Delivered", icon: CheckCircle2 },
+] as const;
+const STEP_INDEX: Record<string, number> = { pending: 0, confirmed: 1, processing: 2, shipped: 3, delivered: 4 };
+
+function TrackingTimeline({ status }: { status: string }) {
+  const s = status.toLowerCase();
+  if (s === "cancelled" || s === "returned") {
+    return (
+      <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-bold text-red-600">
+        <XCircle size={18} /> Order {s === "returned" ? "returned" : "cancelled"}
+      </div>
+    );
+  }
+  const current = STEP_INDEX[s] ?? 0;
+  return (
+    <ol className="flex">
+      {TRACK_STEPS.map((step, i) => {
+        const done = i <= current;
+        return (
+          <li key={step.key} className="relative flex flex-1 flex-col items-center text-center">
+            {i > 0 && (
+              <span
+                className={`absolute right-1/2 top-[13px] h-0.5 w-full ${i <= current ? "bg-brand-500" : "bg-ink-600/15"}`}
+              />
+            )}
+            <span
+              className={`relative z-10 flex h-7 w-7 items-center justify-center rounded-full ring-4 ring-white ${
+                done ? "bg-brand-500 text-white" : "bg-ink-100 text-ink-700/40"
+              }`}
+            >
+              <step.icon size={14} />
+            </span>
+            <span className={`mt-1.5 text-[10px] font-semibold leading-tight ${done ? "text-ink-900" : "text-ink-700/45"}`}>
+              {step.label}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
+  const [open, setOpen] = useState<string | null>(null);
+
   if (orders.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-8 text-center">
@@ -537,54 +600,101 @@ function OrderList({ orders }: { orders: SavedOrder[] }) {
       </div>
     );
   }
+
   return (
-    <div className="divide-y divide-ink-600/10 overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
+    <div className="space-y-3">
       {orders.map((o) => {
         const first = o.items[0];
         const more = o.items.length - 1;
-        // Look up the full product so we use its real image (not just the slug path).
-        const prod = products.find((p) => p.id === first?.product_slug);
-        const imgSrc = prod ? productImage(prod) : fallbackImage(first?.name ?? "");
+        const isOpen = open === o.reference;
+        const s = o.status.toLowerCase();
+        const eta =
+          town && !["delivered", "cancelled", "returned"].includes(s)
+            ? formatDeliveryDate(estimatedDeliveryDate(town))
+            : null;
         return (
-          <div key={o.reference} className="flex gap-3 p-4 transition hover:bg-ink-50/50">
-            {/* Product image (Jumia-style) */}
-            <span className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md border border-ink-600/10 bg-white">
-              <SafeImage
-                src={imgSrc}
-                alt={first?.name ?? "Item"}
-                fill
-                sizes="96px"
-                className="object-contain p-1"
-              />
-            </span>
-
-            {/* Details */}
-            <div className="flex min-w-0 flex-1 flex-col">
-              <p className="clamp-2 text-sm font-semibold text-ink-900">
-                {first?.name ?? "Order"}
-                {more > 0 && <span className="font-normal text-ink-700/60"> +{more} more item{more > 1 ? "s" : ""}</span>}
-              </p>
-              <p className="mt-0.5 text-xs text-ink-700/50">Order #{o.reference}</p>
-              <div className="mt-1.5">
-                <StatusBadge status={o.status} />
+          <div
+            key={o.reference}
+            className="overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:shadow-md"
+          >
+            {/* Header — click to expand order details */}
+            <button
+              onClick={() => setOpen(isOpen ? null : o.reference)}
+              className="flex w-full items-center gap-3 p-4 text-left transition hover:bg-ink-50/50"
+            >
+              <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-ink-600/10 bg-white">
+                <SafeImage src={imgFor(first?.product_slug, first?.name)} alt={first?.name ?? "Item"} fill sizes="80px" className="object-contain p-1" />
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col">
+                <p className="clamp-2 text-sm font-semibold text-ink-900">
+                  {first?.name ?? "Order"}
+                  {more > 0 && <span className="font-normal text-ink-700/60"> +{more} more item{more > 1 ? "s" : ""}</span>}
+                </p>
+                <p className="mt-0.5 text-xs text-ink-700/50">Order #{o.reference} · {fmtLong(o.createdAt)}</p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <StatusBadge status={o.status} />
+                  <span className="text-sm font-extrabold text-ink-900">{ugx(o.total)}</span>
+                </div>
               </div>
-              <p className="mt-1 text-xs text-ink-700/50">On {fmtLong(o.createdAt)}</p>
+              <ChevronDown size={20} className={`shrink-0 text-ink-700/40 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+            </button>
 
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="font-extrabold text-ink-900">{ugx(o.total)}</span>
-                <a
-                  href={whatsappLink(`Hi, I'd like an update on my order ${o.reference}.`)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-md border border-ink-600/20 px-3 py-1 text-xs font-semibold text-ink-700 hover:bg-ink-50"
-                >
-                  Track order
-                </a>
-                <Link href="/shop" className="rounded-md bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600 hover:bg-brand-100">
-                  Buy again
-                </Link>
+            {/* Expanded detail — tracking timeline, all items, actions */}
+            {isOpen && (
+              <div className="border-t border-ink-600/10 bg-ink-50/40 p-4">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-700/50">Delivery status</p>
+                <TrackingTimeline status={o.status} />
+                {eta && (
+                  <p className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-ink-700/70">
+                    <Truck size={14} className="text-brand-500" /> Estimated delivery: <b className="text-ink-900">{eta}</b>
+                  </p>
+                )}
+
+                {/* Items in this order */}
+                <div className="mt-4 divide-y divide-ink-600/10 rounded-lg border border-ink-600/10 bg-white">
+                  {o.items.map((it, i) => (
+                    <div key={i} className="flex items-center gap-3 p-2.5">
+                      <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-ink-600/10 bg-white">
+                        <SafeImage src={imgFor(it.product_slug, it.name)} alt={it.name} fill sizes="48px" className="object-contain p-0.5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="clamp-2 text-xs font-semibold text-ink-900">{it.name}</p>
+                        <p className="text-[11px] text-ink-700/50">Qty: {it.quantity}</p>
+                      </div>
+                      <span className="text-xs font-bold text-ink-900">{ugx(it.line_total)}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Summary */}
+                <div className="mt-3 space-y-1 text-xs">
+                  <div className="flex justify-between text-ink-700/70">
+                    <span>Payment</span>
+                    <span className="font-semibold text-ink-900">
+                      {o.payment_method || "Pay on delivery"} · {o.payment_status === "paid" ? "Paid" : "Not paid"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-ink-700/70">
+                    <span>Order total</span>
+                    <span className="font-extrabold text-ink-900">{ugx(o.total)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a
+                    href={whatsappLink(`Hi, I'd like an update on my order ${o.reference}.`)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="press inline-flex items-center gap-1.5 rounded-md bg-[#25D366] px-4 py-2 text-xs font-bold text-white hover:brightness-95"
+                  >
+                    <MessageCircle size={14} /> Track on WhatsApp
+                  </a>
+                  <Link href="/shop" className="press rounded-md border border-brand-300 bg-brand-50 px-4 py-2 text-xs font-bold text-brand-600 hover:bg-brand-100">
+                    Buy again
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}
