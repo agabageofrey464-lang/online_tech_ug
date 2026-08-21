@@ -203,6 +203,8 @@ function VendorCard({ p }: { p: Item }) {
         <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
         <WhatsAppOrder
           className="mt-2"
+          label="Order now"
+          brand
           phone={p.vendor_verified && p.vendor_phone ? p.vendor_phone : undefined}
           message={vendorOrderMessage({
             name: p.name,

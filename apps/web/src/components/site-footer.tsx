@@ -57,10 +57,10 @@ export function SiteFooter() {
       {/* Newsletter + socials (Jumia-style top) */}
       <div className="border-b border-ink-600/10 bg-ink-50">
         <div className="container-wide grid items-center gap-5 py-6 sm:grid-cols-2">
-          <form action="/contact" method="get">
+          <form action="/contact" method="get" className="text-center sm:text-left">
             <p className="text-base font-extrabold text-ink-900">New to {site.name}?</p>
             <p className="mt-0.5 text-sm text-ink-700/60">Sign up for our newsletter — deals, new arrivals & tech tips.</p>
-            <div className="mt-3 flex max-w-md gap-2">
+            <div className="mx-auto mt-3 flex max-w-md gap-2 sm:mx-0">
               <input
                 type="email"
                 name="email"
@@ -76,9 +76,9 @@ export function SiteFooter() {
             </div>
           </form>
 
-          <div className="sm:justify-self-end">
+          <div className="text-center sm:justify-self-end sm:text-left">
             <p className="text-sm font-bold uppercase tracking-wider text-ink-700/50">Follow us</p>
-            <div className="mt-3 flex items-center gap-2.5">
+            <div className="mt-3 flex items-center justify-center gap-2.5 sm:justify-start">
               <a
                 href={site.socials.facebook}
                 target="_blank"
@@ -125,22 +125,24 @@ export function SiteFooter() {
       </div>
 
       {/* Columns */}
-      <div className="container-wide grid grid-cols-2 gap-x-6 gap-y-8 py-10 lg:grid-cols-5">
-        {/* Brand + contact */}
-        <div className="col-span-2 lg:col-span-1">
-          <BrandLogoFull size="sm" onLight />
+      <div className="container-wide grid grid-cols-2 gap-x-6 gap-y-7 py-8 sm:gap-y-8 sm:py-10 lg:grid-cols-5">
+        {/* Brand + contact — full-width, centered & separated on mobile */}
+        <div className="col-span-2 border-b border-ink-600/10 pb-6 text-center sm:border-0 sm:pb-0 sm:text-left lg:col-span-1">
+          <div className="flex justify-center sm:justify-start">
+            <BrandLogoFull size="sm" onLight />
+          </div>
           <p className="mt-3 text-sm text-ink-700/70">{site.tagline}</p>
           <ul className="mt-4 space-y-2 text-sm text-ink-700/80">
-            <li className="flex items-center gap-2">
+            <li className="flex items-center justify-center gap-2 sm:justify-start">
               <MapPin size={16} className="shrink-0 text-brand-500" /> {site.address}
             </li>
             <li>
-              <a href={telHref(site.phoneDisplay)} className="flex items-center gap-2 hover:text-brand-600">
+              <a href={telHref(site.phoneDisplay)} className="flex items-center justify-center gap-2 hover:text-brand-600 sm:justify-start">
                 <Phone size={16} className="shrink-0 text-brand-500" /> {site.phoneDisplay}
               </a>
             </li>
             <li>
-              <a href={`mailto:${site.email}`} className="flex items-center gap-2 hover:text-brand-600">
+              <a href={`mailto:${site.email}`} className="flex items-center justify-center gap-2 hover:text-brand-600 sm:justify-start">
                 <Mail size={16} className="shrink-0 text-brand-500" /> {site.email}
               </a>
             </li>
