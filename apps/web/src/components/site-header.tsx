@@ -106,9 +106,10 @@ export function SiteHeader() {
       {/* Main bar — WHITE (Jumia) */}
       <div className="bg-white shadow-sm">
         <div className="container-wide flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 md:flex-nowrap md:gap-5">
-          {/* Logo (dark on white) */}
+          {/* Logo (dark on white) — compact on phones, full on desktop */}
           <Link href="/" className="flex shrink-0 items-center text-ink-900">
-            <BrandLogoFull size="md" onLight />
+            <span className="sm:hidden"><BrandLogoFull size="sm" onLight /></span>
+            <span className="hidden sm:inline-flex"><BrandLogoFull size="md" onLight /></span>
           </Link>
 
           {/* Search — own row on mobile, inline & wide on desktop */}
@@ -148,9 +149,9 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Category strip — WHITE with icons (Jumia) */}
-      <nav className="hidden border-b border-ink-600/10 bg-white shadow-sm md:block">
-        <div className="container-wide flex items-center gap-x-6 overflow-x-auto py-2.5 text-sm font-semibold no-scrollbar">
+      {/* Category strip — WHITE with icons (Jumia). Scrolls sideways on mobile. */}
+      <nav className="border-b border-ink-600/10 bg-white shadow-sm">
+        <div className="container-wide flex items-center gap-x-5 overflow-x-auto py-2.5 text-sm font-semibold no-scrollbar sm:gap-x-6">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;
             return (

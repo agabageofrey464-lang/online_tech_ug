@@ -87,7 +87,13 @@ export function HeroRotator() {
           }`}
           aria-hidden={idx !== i}
         >
-          <div className="grid h-full grid-cols-1 items-center gap-4 p-6 sm:grid-cols-2 sm:p-10">
+          {/* Mobile: full-bleed photo with a dark scrim (desktop uses the framed photo). */}
+          <div className="absolute inset-0 sm:hidden">
+            <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/40" />
+          </div>
+
+          <div className="relative z-10 grid h-full grid-cols-1 items-center gap-4 p-6 sm:grid-cols-2 sm:p-10">
             {/* Text */}
             <div className="max-w-md text-white">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20">
