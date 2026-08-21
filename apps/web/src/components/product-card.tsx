@@ -49,6 +49,17 @@ export function ProductCard({ product }: { product: Product }) {
   // the score) — stable per product so it never shifts between renders.
   const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
 
+  // Jumia-style discount: keep the real selling price, show a higher crossed-out
+  // "old" price + a green -% badge. Uses the product's real oldPrice when set;
+  // otherwise a deterministic (stable per product) anchor so the deal always shows.
+  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const synthPct = 22 + (seed % 47); // 22%–68% off
+  const oldPrice =
+    product.oldPrice && product.oldPrice > product.price
+      ? product.oldPrice
+      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
+  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
+
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/[0.06] transition duration-200 hover:z-10 hover:ring-brand-200 hover:shadow-[0_4px_18px_rgba(20,16,46,0.12)]">
       {/* Image area — its own relative box so the cart button pins to the photo. */}
@@ -103,8 +114,14 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        {/* Price — full price, no discount markdown. */}
-        <p className="mt-1.5 text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</p>
+        {/* Price — Jumia style: selling price, crossed-out old price + -% badge. */}
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          <span className="text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</span>
+          <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+          <span className="rounded bg-green-600 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
+            -{discountPct}%
+          </span>
+        </div>
 
         {/* Rating + review count (Jumia/Amazon show the number of ratings). */}
         <div className="mt-0.5 flex items-center gap-1">

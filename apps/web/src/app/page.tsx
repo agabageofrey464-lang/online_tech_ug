@@ -59,7 +59,17 @@ function Rail({ items }: { items: Product[] }) {
   );
 }
 
-// Coloured banner section that separates product batches (brand orange).
+// Jumia-style deal-band colours — cycled per band so rails look varied.
+const BAND_COLORS = [
+  "from-brand-500 to-brand-600",
+  "from-[#6d28d9] to-[#5b21b6]", // purple
+  "from-ink-600 to-ink-700", // indigo
+  "from-green-600 to-green-700",
+  "from-[#c41c2e] to-[#a01722]", // red
+  "from-[#0e7490] to-[#155e75]", // teal
+];
+
+// Coloured banner section that separates product batches (Jumia deal band).
 function DealBand({
   title,
   subtitle,
@@ -71,20 +81,24 @@ function DealBand({
   href?: string;
   children: ReactNode;
 }) {
+  // Jumia-style: a SOLID colour band with white cards. Colour varies per band
+  // (by title) so consecutive rails look distinct, like Jumia's deal bands.
+  const seed = [...title].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const band = BAND_COLORS[seed % BAND_COLORS.length];
+
   return (
-    <Reveal as="section" className="overflow-hidden rounded-lg bg-white shadow-sm">
-      {/* Jumia-style flat orange header: "Title | Subtitle" left, "See All ›" right */}
-      <div className="flex items-center justify-between gap-2 bg-brand-500 px-4 py-3 text-white sm:px-5">
-        <h2 className="truncate text-base font-extrabold tracking-tight sm:text-lg">
-          {title}
-          {subtitle && <span className="font-semibold text-white/85"> | {subtitle}</span>}
-        </h2>
+    <Reveal as="section" className={`overflow-hidden rounded-lg bg-gradient-to-br shadow-sm ${band}`}>
+      <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+        <div className="min-w-0">
+          <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
+          {subtitle && <p className="text-xs font-semibold text-white/85 sm:text-sm">{subtitle}</p>}
+        </div>
         {href && (
           <Link
             href={href}
-            className="flex shrink-0 items-center gap-0.5 text-sm font-bold transition hover:opacity-90"
+            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
           >
-            See All <span className="text-base leading-none">›</span>
+            See All →
           </Link>
         )}
       </div>
