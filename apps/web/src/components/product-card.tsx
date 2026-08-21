@@ -1,10 +1,10 @@
 import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { SafeImage } from "@/components/safe-image";
-import { WhatsAppOrder } from "@/components/whatsapp-order";
-import { storeOrderMessage } from "@/lib/order-message";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 // One-line key spec for the card: for computers, CPU · RAM · Storage; otherwise
 // the product's first short spec bullet.
@@ -50,15 +50,6 @@ export function ProductCard({ product }: { product: Product }) {
   // Deterministic rating count (Jumia/Amazon show the number of ratings, not
   // the score) — stable per product so it never shifts between renders.
   const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
-  // WhatsApp order — carries the exact product, its details and a link so the
-  // owner sees precisely what was ordered, and asks the buyer for their location.
-  const orderMsg = storeOrderMessage({
-    name: product.name,
-    priceLabel: ugx(product.price),
-    condition: product.condition,
-    category: product.category,
-    url: `https://www.onlinetechug.com/shop/${product.id}`,
-  });
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/[0.06] transition duration-200 hover:z-10 hover:ring-brand-200 hover:shadow-[0_4px_18px_rgba(20,16,46,0.12)]">
@@ -132,8 +123,29 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {/* Order on WhatsApp — compact, carries the product + details to the owner. */}
-      <WhatsAppOrder message={orderMsg} disabled={!inStock} className="mx-2.5 mb-2.5 mt-2" />
+      {/* Add to cart — Jumia-style orange button */}
+      <div className="px-2.5 pb-2.5 pt-2">
+        {inStock ? (
+          <AddToCartButton
+            className="w-full justify-center !py-2 text-xs"
+            label={<span className="inline-flex items-center gap-1.5"><ShoppingCart size={14} /> Add to cart</span>}
+            item={{
+              slug: product.id,
+              name: product.name,
+              price: product.price,
+              category: product.category,
+              condition: product.condition,
+            }}
+          />
+        ) : (
+          <button
+            disabled
+            className="w-full cursor-not-allowed rounded-lg bg-ink-100 py-2 text-xs font-bold text-ink-700/50"
+          >
+            Out of stock
+          </button>
+        )}
+      </div>
     </article>
   );
 }
