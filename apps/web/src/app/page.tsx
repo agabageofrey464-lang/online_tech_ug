@@ -12,6 +12,7 @@ import { OrderBanner } from "@/components/order-banner";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
+import { CategoryCircles } from "@/components/category-circles";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -159,6 +160,9 @@ export default function HomePage() {
 
       {/* Order-now banner — business number, advert-style, for quick orders */}
       <OrderBanner />
+
+      {/* Category & services circles (Jumia "find your essentials") — all devices */}
+      <CategoryCircles />
 
       {/* Products first — Browse all products sits right under the hero/banner
           (the circular "top categories" panel was removed; the header sidebar,

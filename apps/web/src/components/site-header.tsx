@@ -103,55 +103,51 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Main bar — WHITE (Jumia) */}
+      {/* Main bar — WHITE (Jumia). Mobile leads with the search bar; nav lives
+          in the bottom tab bar, so the top stays clean (no boxes). */}
       <div className="bg-white shadow-sm">
-        <div className="container-wide flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 md:flex-nowrap md:gap-5">
-          {/* Logo (dark on white) — compact on phones, full on desktop */}
-          <Link href="/" className="flex shrink-0 items-center text-ink-900">
-            <span className="sm:hidden"><BrandLogoFull size="sm" onLight /></span>
-            <span className="hidden sm:inline-flex"><BrandLogoFull size="md" onLight /></span>
+        <div className="container-wide flex items-center gap-3 py-2.5 md:gap-5">
+          {/* Logo — desktop only */}
+          <Link href="/" className="hidden shrink-0 items-center text-ink-900 md:flex">
+            <BrandLogoFull size="md" onLight />
           </Link>
 
-          {/* Search — own row on mobile, inline & wide on desktop */}
-          <div className="order-last w-full md:order-none md:w-auto md:max-w-2xl md:flex-1">
+          {/* Search — fills the row on mobile, capped on desktop */}
+          <div className="min-w-0 flex-1 md:max-w-2xl">
             <SearchBar className="border border-ink-600/20 shadow-sm" />
           </div>
 
-          {/* Right-side actions */}
-          <div className="ml-auto flex items-center gap-1 sm:gap-3 md:gap-5">
-            <div className="hidden md:block">
-              <HeaderAccount onLight />
-            </div>
-
-            {/* Help — desktop */}
+          {/* Desktop actions */}
+          <div className="ml-auto hidden items-center gap-5 md:flex">
+            <HeaderAccount onLight />
             <Link
               href="/help"
-              className="hidden items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600 md:flex"
+              className="flex items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600"
             >
               <HelpCircle size={22} strokeWidth={1.9} />
               <span className="hidden text-sm font-bold lg:inline">Help</span>
               <ChevronDown size={14} className="hidden lg:inline" />
             </Link>
-
             <HeaderWishlist />
             <HeaderCart />
-
-            {/* Mobile menu toggle */}
-            <button
-              type="button"
-              aria-label="Menu"
-              onClick={() => setOpen((v) => !v)}
-              className="rounded-md p-2 text-ink-800 hover:bg-ink-50 md:hidden"
-            >
-              <Menu size={24} />
-            </button>
           </div>
+
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => setOpen((v) => !v)}
+            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50 md:hidden"
+          >
+            <Menu size={24} />
+          </button>
         </div>
       </div>
 
-      {/* Category strip — WHITE with icons (Jumia). Scrolls sideways on mobile. */}
-      <nav className="border-b border-ink-600/10 bg-white shadow-sm">
-        <div className="container-wide flex items-center gap-x-5 overflow-x-auto py-2.5 text-sm font-semibold no-scrollbar sm:gap-x-6">
+      {/* Category strip — WHITE with icons (Jumia). Desktop only; mobile shows the
+          circular category/services row on the home page instead. */}
+      <nav className="hidden border-b border-ink-600/10 bg-white shadow-sm md:block">
+        <div className="container-wide flex items-center gap-x-6 overflow-x-auto py-2.5 text-sm font-semibold no-scrollbar">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;
             return (
