@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
 import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { SafeImage } from "@/components/safe-image";
-import { AddToCartButton } from "@/components/add-to-cart-button";
 
 // One-line key spec for the card: for computers, CPU · RAM · Storage; otherwise
 // the product's first short spec bullet.
@@ -121,31 +119,9 @@ export function ProductCard({ product }: { product: Product }) {
             🛡 {product.condition === "Brand New" ? "12mo" : product.condition === "Refurbished" ? "6mo" : "3mo"} warranty
           </span>
         </div>
+        {/* Bottom padding so the price/rating never sits flush to the card edge. */}
+        <div className="pb-2.5" />
       </Link>
-
-      {/* Add to cart — Jumia-style orange button */}
-      <div className="px-2.5 pb-2.5 pt-2">
-        {inStock ? (
-          <AddToCartButton
-            className="w-full justify-center !py-2 text-xs"
-            label={<span className="inline-flex items-center gap-1.5"><ShoppingCart size={14} /> Add to cart</span>}
-            item={{
-              slug: product.id,
-              name: product.name,
-              price: product.price,
-              category: product.category,
-              condition: product.condition,
-            }}
-          />
-        ) : (
-          <button
-            disabled
-            className="w-full cursor-not-allowed rounded-lg bg-ink-100 py-2 text-xs font-bold text-ink-700/50"
-          >
-            Out of stock
-          </button>
-        )}
-      </div>
     </article>
   );
 }
