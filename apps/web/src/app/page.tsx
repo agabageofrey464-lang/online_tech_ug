@@ -167,9 +167,30 @@ export default function HomePage() {
         <CategoryCircles />
       </div>
 
-      {/* Products first — Browse all products sits right under the hero/banner
-          (the circular "top categories" panel was removed; the header sidebar,
-          top nav and mobile menu already cover category navigation). */}
+      {/* Flash sales (Jumia-style) — leads the home on every device */}
+      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+        <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
+          <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
+            <Icon name="zap" size={18} /> Flash Sales
+          </h2>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="hidden font-medium sm:inline">Time Left:</span>
+            <FlashCountdown />
+          </div>
+          <Link href="/shop" className="flex shrink-0 items-center gap-0.5 text-sm font-semibold hover:underline">
+            See All ›
+          </Link>
+        </div>
+        <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
+          {flash.map(({ p, sold }) => (
+            <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-1/4 lg:w-1/6">
+              <FlashSaleCard product={p} sold={sold} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Browse all products */}
       <section>
         <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
           <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Browse all products
@@ -225,29 +246,6 @@ export default function HomePage() {
           </span>
         </Link>
       </div>
-
-      {/* Flash sales (Jumia-style) */}
-      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-        <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
-          <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
-            <Icon name="zap" size={18} /> Flash Sales
-          </h2>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="hidden font-medium sm:inline">Time Left:</span>
-            <FlashCountdown />
-          </div>
-          <Link href="/shop" className="flex shrink-0 items-center gap-0.5 text-sm font-semibold hover:underline">
-            See All ›
-          </Link>
-        </div>
-        <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
-          {flash.map(({ p, sold }) => (
-            <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-1/4 lg:w-1/6">
-              <FlashSaleCard product={p} sold={sold} />
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* Top selling — teal banded separator */}
       <DealBand title="Top Selling" subtitle="Best Rated" href="/shop?sort=popular">
