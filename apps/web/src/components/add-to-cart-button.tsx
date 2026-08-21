@@ -30,11 +30,17 @@ export function AddToCartButton({
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);
       }}
-      className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition bg-brand-500 hover:bg-brand-600 ${
-        pill ? "rounded-full" : "rounded-lg"
-      } ${className}`}
+      className={`press inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition ${
+        added ? "bg-green-600 hover:bg-green-600" : "bg-brand-500 hover:bg-brand-600"
+      } ${pill ? "rounded-full" : "rounded-lg"} ${className}`}
     >
-      {added ? "✓ Added" : label}
+      {added ? (
+        <span key="added" className="animate-cart-pop inline-flex items-center gap-1">
+          ✓ Added
+        </span>
+      ) : (
+        label
+      )}
     </button>
   );
 }

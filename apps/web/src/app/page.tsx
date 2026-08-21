@@ -10,6 +10,8 @@ import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { RecentlyViewed } from "@/components/recently-viewed";
+import { Reveal } from "@/components/reveal";
+import { ProductGridSkeleton } from "@/components/skeleton";
 import { products, services, courses, whyUs, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -28,7 +30,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+    <Reveal as="section" className="overflow-hidden rounded-lg bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-ink-600/5 px-4 py-3">
         <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
           <span className="h-4 w-1 rounded-full bg-brand-500" /> {title}
@@ -40,7 +42,7 @@ function Panel({
         )}
       </div>
       {children}
-    </section>
+    </Reveal>
   );
 }
 
@@ -70,7 +72,7 @@ function DealBand({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+    <Reveal as="section" className="overflow-hidden rounded-lg bg-white shadow-sm">
       {/* Jumia-style flat orange header: "Title | Subtitle" left, "See All ›" right */}
       <div className="flex items-center justify-between gap-2 bg-brand-500 px-4 py-3 text-white sm:px-5">
         <h2 className="truncate text-base font-extrabold tracking-tight sm:text-lg">
@@ -87,7 +89,7 @@ function DealBand({
         )}
       </div>
       {children}
-    </section>
+    </Reveal>
   );
 }
 
@@ -151,7 +153,7 @@ export default function HomePage() {
         <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
           <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Browse all products
         </h2>
-        <Suspense fallback={<div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">Loading…</div>}>
+        <Suspense fallback={<ProductGridSkeleton />}>
           <ShopGrid />
         </Suspense>
       </section>

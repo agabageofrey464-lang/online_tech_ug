@@ -78,7 +78,16 @@ html {
 }
 
 body {
-  background: var(--background);
+  /* Soft brand-tinted wash over the grey canvas so the page never looks like a
+     narrow column floating in dull empty margins on large / wide monitors. The
+     radials are anchored (fixed) so they stay put as the content scrolls. */
+  background:
+    radial-gradient(1100px 480px at 50% -170px, rgba(241, 90, 41, 0.07), transparent 60%),
+    radial-gradient(1000px 560px at 106% 2%, rgba(40, 35, 99, 0.06), transparent 55%),
+    radial-gradient(900px 560px at -8% 6%, rgba(0, 166, 81, 0.045), transparent 55%),
+    var(--background);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -157,9 +166,55 @@ h1, h2, h3, p, li, dd, a {
 @keyframes heroMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .animate-hero-marquee { animation: heroMarquee 32s linear infinite; }
 
+/* ─── Motion & micro-interactions ─────────────────────────────────── */
+
+/* Scroll reveal — content fades + rises as it enters the viewport. The
+   <Reveal> component adds `.in` via IntersectionObserver. A per-item
+   --reveal-delay lets grids stagger their children. */
+@keyframes revealIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal { opacity: 0; will-change: opacity, transform; }
+.reveal.in {
+  animation: revealIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Hover-lift — cards float up slightly with a soft shadow on hover. */
+.hover-lift { transition: transform 0.22s ease, box-shadow 0.22s ease; }
+.hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(20, 16, 46, 0.16); }
+
+/* Tactile press feedback for buttons/links. */
+.press { transition: transform 0.09s ease; }
+.press:active { transform: scale(0.96); }
+
+/* Add-to-cart confirmation pop. */
+@keyframes cartPop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.animate-cart-pop { animation: cartPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Skeleton shimmer for loading states. */
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.skeleton {
+  background: linear-gradient(100deg, #e7e9f0 30%, #f4f5f8 50%, #e7e9f0 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-kenburns, .animate-kenburns-loop, .animate-blob, .animate-blob-slow, .hero-fade { animation: none; }
   .animate-marquee, .animate-soft-blink, .animate-hero-marquee { animation: none; }
+  /* Show revealed content immediately; drop decorative motion. */
+  .reveal { opacity: 1; }
+  .reveal.in { animation: none; }
+  .hover-lift:hover { transform: none; }
+  .animate-cart-pop { animation: none; }
+  .skeleton { animation: none; }
 }
 
 /* Headings share the same humanist face (Open Sans). It reads best at near-
@@ -192,13 +247,17 @@ h1, h2, h3, .font-display {
   text-wrap: balance;
 }
 
-/* Wider container for the marketplace layout */
+/* Wider container for the marketplace layout. Grows on very large monitors so
+   the storefront fills the screen instead of sitting in a narrow centre column. */
 @utility container-wide {
   width: 100%;
   margin-inline: auto;
-  max-width: 84rem;
+  max-width: 88rem;
   /* Responsive gutter so content keeps clear of the screen edge on all sizes */
   padding-inline: clamp(0.875rem, 3vw, 1.5rem);
+}
+@media (min-width: 1700px) {
+  .container-wide { max-width: 96rem; }
 }
 
 /* Full-bleed on mobile: cancel a container's side gutter so a grid reaches the

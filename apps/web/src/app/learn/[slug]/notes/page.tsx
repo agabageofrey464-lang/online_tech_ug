@@ -9,6 +9,7 @@ import { courseNotes } from "@/lib/course-notes";
 import { useAuth } from "@/lib/auth";
 import { ugx, whatsappLink } from "@/lib/site";
 import { BrandLogoFull } from "@/components/brand-logo-full";
+import { Skeleton } from "@/components/skeleton";
 
 // The full note content is gated on the SERVER — it is fetched (with the paid
 // code) through the same-origin proxy and is never shipped in the browser bundle.
@@ -241,9 +242,14 @@ export default function CourseNotesPage() {
                   </p>
                 </>
               ) : (
-                <p className="rounded-card border border-ink-600/10 bg-white p-6 text-center text-sm text-ink-700/60">
-                  Loading this unit…
-                </p>
+                <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm sm:p-7">
+                  <Skeleton className="h-5 w-1/2 rounded" />
+                  <Skeleton className="mt-4 h-3 w-full rounded" />
+                  <Skeleton className="mt-2 h-3 w-11/12 rounded" />
+                  <Skeleton className="mt-2 h-3 w-10/12 rounded" />
+                  <Skeleton className="mt-5 h-3 w-full rounded" />
+                  <Skeleton className="mt-2 h-3 w-9/12 rounded" />
+                </div>
               )}
             </div>
           </div>
