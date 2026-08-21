@@ -19,7 +19,7 @@ function keySpec(product: Product): string {
 
 // Colour the condition tag by how new the item is.
 function conditionStyle(c: string): string {
-  if (c === "Brand New") return "bg-green-100 text-green-700";
+  if (c === "Brand New") return "bg-brand-100 text-brand-700";
   if (c === "Refurbished") return "bg-amber-100 text-amber-700";
   return "bg-ink-100 text-ink-700"; // UK Used / other
 }
@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
   // "old" price + a green -% badge. Uses the product's real oldPrice when set;
   // otherwise a deterministic (stable per product) anchor so the deal always shows.
   const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const synthPct = 22 + (seed % 47); // 22%–68% off
+  const synthPct = 6 + (seed % 15); // modest, design-only: 6%–20%
   const oldPrice =
     product.oldPrice && product.oldPrice > product.price
       ? product.oldPrice
@@ -118,7 +118,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
           <span className="text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</span>
           <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-green-600 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
+          <span className="rounded bg-brand-500 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
             -{discountPct}%
           </span>
         </div>

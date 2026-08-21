@@ -86,7 +86,7 @@ export default async function ProductDetailPage({
   const itemsLeft = 3 + (product.name.length % 12);
   // Jumia-style anchor pricing (DESIGN only — real selling price unchanged).
   const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const synthPct = 22 + (seed % 47);
+  const synthPct = 6 + (seed % 15); // modest, design-only: 6%–20%
   const oldPrice =
     product.oldPrice && product.oldPrice > product.price
       ? product.oldPrice
@@ -139,7 +139,7 @@ export default async function ProductDetailPage({
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
                 <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                <span className="rounded bg-green-600 px-1.5 py-0.5 text-xs font-extrabold text-white">
+                <span className="rounded bg-brand-500 px-1.5 py-0.5 text-xs font-extrabold text-white">
                   -{discountPct}%
                 </span>
               </div>
