@@ -139,10 +139,9 @@ export default function HomePage() {
 
   return (
     <div className="container-wide space-y-3 py-3">
-      {/* Hero row: the banner shows on every screen; the category mega-menu
-          sidebar is desktop-only. On phones the hero goes full-bleed (edge to
-          edge), not a boxed card. */}
-      <div className="bleed-wide grid gap-3 sm:mx-0 lg:grid-cols-[230px_1fr]">
+      {/* Hero row — DESKTOP only. On mobile we skip straight to the products
+          (Jumia-style), so the hero, call banner and category circles are hidden. */}
+      <div className="bleed-wide hidden gap-3 sm:mx-0 md:grid lg:grid-cols-[230px_1fr]">
         {/* Left column: category mega-menu (flyout expands to the right) */}
         <aside className="hidden lg:block lg:h-[400px]">
           <div className="relative h-full rounded bg-white shadow-sm">
@@ -158,11 +157,15 @@ export default function HomePage() {
           on its own row and ate the first screen. Desktop keeps the sidebar,
           and "Explore our top categories" covers browsing for everyone. */}
 
-      {/* Order-now banner — business number, advert-style, for quick orders */}
-      <OrderBanner />
+      {/* Order-now banner — desktop only (mobile starts with products) */}
+      <div className="hidden md:block">
+        <OrderBanner />
+      </div>
 
-      {/* Category & services circles (Jumia "find your essentials") — all devices */}
-      <CategoryCircles />
+      {/* Category & services circles — desktop only (mobile starts with products) */}
+      <div className="hidden md:block">
+        <CategoryCircles />
+      </div>
 
       {/* Products first — Browse all products sits right under the hero/banner
           (the circular "top categories" panel was removed; the header sidebar,
