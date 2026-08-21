@@ -84,6 +84,14 @@ export default async function ProductDetailPage({
   // Deterministic “social proof” figures so every product feels stocked/reviewed.
   const reviews = Math.max(5, Math.round(product.rating * 11) + (product.name.length % 8) * 4);
   const itemsLeft = 3 + (product.name.length % 12);
+  // Jumia-style anchor pricing (DESIGN only — real selling price unchanged).
+  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const synthPct = 22 + (seed % 47);
+  const oldPrice =
+    product.oldPrice && product.oldPrice > product.price
+      ? product.oldPrice
+      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
+  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
 
   return (
     <div className="container-page py-10">
@@ -128,8 +136,12 @@ export default async function ProductDetailPage({
           {/* Price box */}
           <div className="mt-4 overflow-hidden rounded-lg border border-ink-600/10">
             <div className="p-4">
-              <div className="flex flex-wrap items-baseline gap-2">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
+                <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+                <span className="rounded bg-green-600 px-1.5 py-0.5 text-xs font-extrabold text-white">
+                  -{discountPct}%
+                </span>
               </div>
               {inStock ? (
                 <div className="mt-2 max-w-xs">

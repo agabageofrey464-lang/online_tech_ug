@@ -3,8 +3,17 @@ import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { SafeImage } from "@/components/safe-image";
 
-// Featured card: bold price + "items left" bar. No discount markdown.
+// Featured card: bold price + crossed-out old price + -% badge + "items left" bar.
 export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?: number }) {
+  // Jumia-style anchor pricing (DESIGN only — the real selling price is unchanged).
+  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const synthPct = 30 + (seed % 45); // flash deals show a bigger cut: 30%–74%
+  const oldPrice =
+    product.oldPrice && product.oldPrice > product.price
+      ? product.oldPrice
+      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
+  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
+
   return (
     <Link href={`/shop/${product.id}`} className="group block h-full rounded-xl bg-white pb-2.5 transition duration-200 hover:shadow-[0_6px_22px_rgba(20,16,46,0.13)] hover:ring-1 hover:ring-ink-600/10">
       <div className="relative aspect-[4/3] overflow-hidden bg-white">
@@ -22,7 +31,13 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
           {product.name}
         </h3>
 
-        <p className="mt-1 text-base font-extrabold text-ink-900">{ugx(product.price)}</p>
+        <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          <span className="text-base font-extrabold text-ink-900">{ugx(product.price)}</span>
+          <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+          <span className="rounded bg-green-600 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
+            -{discountPct}%
+          </span>
+        </div>
 
         {/* Items-left progress bar */}
         <div className="mt-2">
