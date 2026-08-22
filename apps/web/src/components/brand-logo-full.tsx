@@ -1,9 +1,7 @@
-import { BrandLogo } from "./brand-logo";
-
 /**
- * The complete Online Tech Uganda logo — a solid indigo badge (white orbit +
- * orange spark) locked up with the "Online Tech" wordmark and a Uganda
- * flag-dot tagline. Reads cleanly on both light and dark surfaces.
+ * Online Tech Uganda logo — Option 2 "Orange Monogram": a bold orange tile with
+ * an "OT" monogram + gold spark, locked up with the "Online Tech" wordmark and a
+ * spaced "Uganda" tagline. Reads cleanly on light and dark surfaces.
  */
 export function BrandLogoFull({
   className = "",
@@ -17,6 +15,7 @@ export function BrandLogoFull({
   onLight?: boolean;
 }) {
   const badge = size === "lg" ? "h-14 w-14 rounded-2xl" : size === "sm" ? "h-9 w-9 rounded-lg" : "h-12 w-12 rounded-xl";
+  const mono = size === "lg" ? "text-2xl" : size === "sm" ? "text-base" : "text-xl";
   const name = size === "lg" ? "text-2xl sm:text-3xl" : size === "sm" ? "text-base" : "text-xl sm:text-[1.35rem]";
   const sub = size === "lg" ? "text-[11px] tracking-[0.42em]" : size === "sm" ? "text-[8px] tracking-[0.3em]" : "text-[9.5px] tracking-[0.38em]";
   const dot = size === "lg" ? "h-1.5 w-1.5" : "h-1 w-1";
@@ -27,22 +26,25 @@ export function BrandLogoFull({
 
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      {/* Solid brand badge — orbit reads as white, the spark stays orange */}
+      {/* Orange monogram tile */}
       <span
-        className={`relative flex ${badge} shrink-0 items-center justify-center bg-gradient-to-br from-ink-500 via-ink-600 to-ink-800 text-white shadow-md ring-1 ring-white/10`}
+        className={`relative flex ${badge} shrink-0 items-center justify-center bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-md ring-1 ring-black/5`}
       >
-        <BrandLogo className="h-[64%] w-[64%]" />
+        <span className={`inline-flex items-start font-display font-black leading-none tracking-tight text-white ${mono}`}>
+          OT
+          <span className={`ml-[1px] mt-[3px] ${dot} rounded-full`} style={{ background: "#FCDC04" }} />
+        </span>
       </span>
 
-      {/* Wordmark + Uganda flag-dot tagline */}
+      {/* Wordmark + Uganda tagline */}
       <span className="flex flex-col leading-none">
-        <span className={`font-display font-black uppercase leading-none tracking-[-0.01em] ${name} ${wordColor}`}>
+        <span className={`font-display font-black tracking-tight ${name} ${wordColor}`}>
           Online<span className={techColor}>&nbsp;Tech</span>
         </span>
         <span className="mt-1.5 flex items-center gap-1.5">
           {flag && (
             <span className="flex items-center gap-[3px]">
-              <span className={`${dot} rounded-full`} style={{ background: "#111827" }} />
+              <span className={`${dot} rounded-full`} style={{ background: onLight ? "#111827" : "#ffffff" }} />
               <span className={`${dot} rounded-full`} style={{ background: "#FCDC04" }} />
               <span className={`${dot} rounded-full`} style={{ background: "#D90000" }} />
             </span>
