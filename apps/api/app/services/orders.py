@@ -316,7 +316,7 @@ def list_orders(db: Session, limit: int = 100) -> list[Order]:
 
 
 _ALLOWED_STATUS = {"pending", "confirmed", "processing", "shipped", "delivered", "cancelled"}
-_ALLOWED_PAYMENT = {"pending", "unpaid", "paid", "refunded"}
+_ALLOWED_PAYMENT = {"pending", "unpaid", "paid", "refunded", "failed", "cancelled", "reversed"}
 
 
 def update_order(

@@ -5,7 +5,7 @@ from app.models.coupon import Coupon
 from app.models.freelancer import Freelancer
 from app.models.course import Course
 from app.models.job import Job
-from app.models.order import Order, OrderItem
+from app.models.order import Order, OrderItem, PaymentTransaction
 from app.models.payment import Payment
 from app.models.post import Post
 from app.models.product import Product
@@ -27,6 +27,7 @@ __all__ = [
     "Job",
     "Order",
     "OrderItem",
+    "PaymentTransaction",
     "Post",
     "Product",
     "Referral",

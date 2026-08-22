@@ -36,9 +36,33 @@ class Order(Base):
     payment_status: Mapped[str] = mapped_column(String(20), default="unpaid")
     status: Mapped[str] = mapped_column(String(20), default="pending")
 
+    # Money currency (Ugandan store = UGX). Kept for correct provider requests.
+    currency: Mapped[str] = mapped_column(String(8), default="UGX")
+
+    # Pesapal linkage — set when an online payment is started for this order.
+    pesapal_tracking_id: Mapped[str] = mapped_column(String(80), default="", index=True)
+    pesapal_merchant_reference: Mapped[str] = mapped_column(String(40), default="")
+
     items: Mapped[list["OrderItem"]] = relationship(
         back_populates="order", cascade="all, delete-orphan", lazy="selectin"
     )
+
+
+class PaymentTransaction(Base):
+    """Audit trail of Pesapal transactions for an order. The IPN/callback upsert
+    this by tracking_id so repeated notifications are idempotent."""
+
+    __tablename__ = "payment_transactions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), index=True)
+    merchant_reference: Mapped[str] = mapped_column(String(40), index=True)
+    tracking_id: Mapped[str] = mapped_column(String(80), unique=True, index=True)
+    amount: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
+    currency: Mapped[str] = mapped_column(String(8), default="UGX")
+    payment_method: Mapped[str] = mapped_column(String(60), default="")
+    payment_status: Mapped[str] = mapped_column(String(20), default="PENDING")
+    pesapal_response: Mapped[str] = mapped_column(Text, default="")  # raw status JSON (no secrets)
 
 
 class OrderItem(Base):

@@ -49,6 +49,17 @@ class Settings(BaseSettings):
     # Public site URL used to build the payment redirect (success) URL.
     site_url: str = "https://www.onlinetechug.com"
 
+    # Online payments (Pesapal API 3.0) — MTN, Airtel & cards (Uganda). Empty = disabled.
+    # An order is marked paid ONLY after Pesapal's IPN/GetTransactionStatus reports
+    # "Completed" — never on redirect back to the site.
+    pesapal_consumer_key: str = ""
+    pesapal_consumer_secret: str = ""
+    pesapal_env: str = "live"  # "live" or "sandbox"
+    # Optional: a pre-registered IPN id. If empty, the app registers one on first use.
+    pesapal_ipn_id: str = ""
+    # Public base URL of THIS API (used to build the IPN callback Pesapal calls).
+    api_public_url: str = "https://api.onlinetechug.com"
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
