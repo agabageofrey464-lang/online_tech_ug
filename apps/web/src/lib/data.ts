@@ -1119,6 +1119,8 @@ export const products: Product[] = [
   { image: "/products/86226c98cf634a6c9d4019cddf9f6626.jpg", id: "macbook-pro-14-m5-86226c", name: "Apple MacBook Pro 14\" (M5, 1TB)", category: "Laptops", price: 7500000, brand: "Apple", condition: "Brand New", rating: 4.9, badge: "Sealed", specs: ["Apple M5 chip", "16GB RAM", "1TB SSD", "14\" Liquid Retina XDR", "macOS"] },
   { image: "/products/8da4d3576f9d4f5fa54321d4fcad4878.jpg", id: "hp-probook-x360-11-8da4d3", name: "HP ProBook x360 11 (Convertible)", category: "Laptops", price: 800000, brand: "HP", condition: "UK Used", rating: 4.3, badge: "2-in-1", specs: ["Intel Celeron / Pentium", "8GB RAM", "128GB SSD", "11.6\" HD touch", "Rugged 2-in-1"] },
   { image: "/products/90f399ac34ea4335b458585ccdd6572c.jpg", id: "hp-omen-16-hyperx-90f399", name: "HP OMEN 16 (HyperX Edition)", category: "Laptops", price: 3400000, brand: "HP", condition: "UK Used", rating: 4.8, badge: "Gaming", specs: ["Core i7 / Ryzen 7", "16GB RAM", "512GB SSD", "GeForce RTX", "16.1\" 165Hz"] },
+  { image: "/products/IMG-20260821-WA0004.jpg", id: "macbook-air-m2-wa0004", name: "Apple MacBook Air (M2)", category: "Laptops", price: 3200000, brand: "Apple", condition: "UK Used", rating: 4.8, badge: "Premium", specs: ["Apple M2 chip", "8GB RAM", "256GB SSD", "13.6\" Liquid Retina", "macOS"] },
+  { image: "/products/a123b201790444e2bd26dfd6b38e9092.jpg", id: "touchmate-156-a123b2", name: "Touchmate 15.6\" Laptop", category: "Laptops", price: 900000, brand: "Touchmate", condition: "Brand New", rating: 4.2, badge: "New", specs: ["Intel Celeron", "8GB RAM", "256GB SSD", "15.6\" FHD", "Windows 11"] },
 ];
 
 export const productCategories = [
