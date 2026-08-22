@@ -1117,6 +1117,8 @@ export const products: Product[] = [
   { image: "/products/75642e3331d34d9e8932c97be9d3a9e2.jpg", id: "transcend-esd310-1tb-75642e", name: "Transcend ESD310 1TB Portable SSD", category: "Storage", price: 740000, brand: "Transcend", condition: "Brand New", rating: 4.8, badge: "1TB", specs: ["1TB", "USB-C + USB-A", "Up to 1050MB/s"] },
   { image: "/products/84153a42eb5c42d89a1d7ab7bbc2f44c.jpg", id: "hp-elitebook-845-g10-84153a", name: "HP EliteBook 845 G10 (Ryzen 5 PRO)", category: "Laptops", price: 2100000, brand: "HP", condition: "UK Used", rating: 4.7, specs: ["AMD Ryzen 5 PRO 7540U", "16GB RAM", "512GB SSD", "14\" FHD", "Windows 11"] },
   { image: "/products/86226c98cf634a6c9d4019cddf9f6626.jpg", id: "macbook-pro-14-m5-86226c", name: "Apple MacBook Pro 14\" (M5, 1TB)", category: "Laptops", price: 7500000, brand: "Apple", condition: "Brand New", rating: 4.9, badge: "Sealed", specs: ["Apple M5 chip", "16GB RAM", "1TB SSD", "14\" Liquid Retina XDR", "macOS"] },
+  { image: "/products/8da4d3576f9d4f5fa54321d4fcad4878.jpg", id: "hp-probook-x360-11-8da4d3", name: "HP ProBook x360 11 (Convertible)", category: "Laptops", price: 800000, brand: "HP", condition: "UK Used", rating: 4.3, badge: "2-in-1", specs: ["Intel Celeron / Pentium", "8GB RAM", "128GB SSD", "11.6\" HD touch", "Rugged 2-in-1"] },
+  { image: "/products/90f399ac34ea4335b458585ccdd6572c.jpg", id: "hp-omen-16-hyperx-90f399", name: "HP OMEN 16 (HyperX Edition)", category: "Laptops", price: 3400000, brand: "HP", condition: "UK Used", rating: 4.8, badge: "Gaming", specs: ["Core i7 / Ryzen 7", "16GB RAM", "512GB SSD", "GeForce RTX", "16.1\" 165Hz"] },
 ];
 
 export const productCategories = [
