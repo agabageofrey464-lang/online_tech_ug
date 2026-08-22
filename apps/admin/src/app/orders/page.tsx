@@ -17,7 +17,28 @@ const riskTone: Record<string, string> = {
   low: "bg-ink-100 text-ink-600/70",
 };
 
-const FILTERS = ["all", "pending", "confirmed", "shipped", "delivered", "cancelled"];
+// Filters cover BOTH payment status (paid/failed/…) and order status
+// (processing/shipped/…), matching the Pesapal payment flow.
+const FILTERS: { key: string; label: string; match: (o: AdminOrder) => boolean }[] = [
+  { key: "all", label: "All", match: () => true },
+  { key: "pending_payment", label: "Pending payment", match: (o) => ["pending", "unpaid"].includes(o.payment_status) },
+  { key: "paid", label: "Paid", match: (o) => o.payment_status === "paid" },
+  { key: "failed", label: "Failed", match: (o) => o.payment_status === "failed" },
+  { key: "cancelled", label: "Cancelled", match: (o) => o.status === "cancelled" || o.payment_status === "cancelled" },
+  { key: "processing", label: "Processing", match: (o) => o.status === "processing" || o.status === "confirmed" },
+  { key: "shipped", label: "Shipped", match: (o) => o.status === "shipped" },
+  { key: "delivered", label: "Delivered", match: (o) => o.status === "delivered" },
+];
+
+const payTone: Record<string, string> = {
+  paid: "bg-green-100 text-green-700",
+  pending: "bg-yellow-100 text-yellow-700",
+  unpaid: "bg-ink-100 text-ink-600/70",
+  failed: "bg-red-100 text-red-700",
+  cancelled: "bg-red-100 text-red-700",
+  reversed: "bg-amber-100 text-amber-700",
+  refunded: "bg-amber-100 text-amber-700",
+};
 
 export default async function OrdersPage({
   searchParams,
@@ -25,11 +46,12 @@ export default async function OrdersPage({
   searchParams: Promise<{ status?: string }>;
 }) {
   const { status } = await searchParams;
-  const active = status && FILTERS.includes(status) ? status : "all";
+  const activeDef = FILTERS.find((f) => f.key === status) ?? FILTERS[0];
+  const active = activeDef.key;
   const all = (await apiGet<AdminOrder[]>("/api/v1/orders")) ?? [];
-  const orders = active === "all" ? all : all.filter((o) => o.status === active);
+  const orders = all.filter(activeDef.match);
   const revenue = orders.reduce((s, o) => s + o.total, 0);
-  const countFor = (f: string) => (f === "all" ? all.length : all.filter((o) => o.status === f).length);
+  const countFor = (f: (o: AdminOrder) => boolean) => all.filter(f).length;
   const highRisk = all.filter((o) => o.risk_level === "high").length;
 
   return (
@@ -50,17 +72,17 @@ export default async function OrdersPage({
         </div>
       )}
 
-      {/* Status filter tabs */}
+      {/* Payment + order status filter tabs */}
       <div className="mb-6 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
           <Link
-            key={f}
-            href={f === "all" ? "/orders" : `/orders?status=${f}`}
-            className={`rounded-full px-3.5 py-1.5 text-sm font-semibold capitalize transition ${
-              active === f ? "bg-brand-500 text-white" : "bg-white text-ink-600 shadow-sm hover:bg-brand-50"
+            key={f.key}
+            href={f.key === "all" ? "/orders" : `/orders?status=${f.key}`}
+            className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
+              active === f.key ? "bg-brand-500 text-white" : "bg-white text-ink-600 shadow-sm hover:bg-brand-50"
             }`}
           >
-            {f} <span className={active === f ? "text-white/80" : "text-ink-600/40"}>({countFor(f)})</span>
+            {f.label} <span className={active === f.key ? "text-white/80" : "text-ink-600/40"}>({countFor(f.match)})</span>
           </Link>
         ))}
       </div>
@@ -79,6 +101,7 @@ export default async function OrdersPage({
                 <th className="p-4">Customer</th>
                 <th className="p-4">Phone</th>
                 <th className="p-4">Payment</th>
+                <th className="p-4 text-center">Paid?</th>
                 <th className="p-4 text-right">Total</th>
                 <th className="p-4 text-center">Risk</th>
                 <th className="p-4 text-center">Status</th>
@@ -106,8 +129,17 @@ export default async function OrdersPage({
                   <td className="p-4 font-semibold text-ink-600">{o.customer_name}</td>
                   <td className="p-4 text-ink-600/70">{o.phone}</td>
                   <td className="p-4 text-ink-600/70">
-                    {o.payment_method.replace(/_/g, " ")}
-                    <span className="ml-1 text-xs text-ink-600/40">({o.payment_status})</span>
+                    <span className="capitalize">{o.payment_method.replace(/_/g, " ")}</span>
+                    {o.pesapal_tracking_id && (
+                      <span className="mt-0.5 block font-mono text-[10px] text-ink-600/40" title="Pesapal tracking ID">
+                        {o.pesapal_tracking_id.slice(0, 18)}…
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold capitalize ${payTone[o.payment_status] ?? "bg-ink-50 text-ink-600"}`}>
+                      {o.payment_status === "paid" ? "✓ Paid" : o.payment_status}
+                    </span>
                   </td>
                   <td className="p-4 text-right font-semibold text-ink-600">{ugx(o.total)}</td>
                   <td className="p-4 text-center">

@@ -9,8 +9,9 @@ import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 function SuccessInner() {
   const params = useSearchParams();
-  const ref = params.get("ref");
+  const ref = params.get("ref") || params.get("OrderMerchantReference");
   const txId = params.get("transaction_id"); // present when returning from Flutterwave
+  const trackingId = params.get("OrderTrackingId"); // present when returning from Pesapal
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [payStatus, setPayStatus] = useState<null | "checking" | "successful" | "failed">(null);
@@ -26,18 +27,31 @@ function SuccessInner() {
       .finally(() => setLoading(false));
   }, [ref]);
 
-  // Verify an online payment when returning from the Flutterwave checkout.
+  // Verify the online payment on return. The SERVER re-checks the transaction with
+  // the provider (GetTransactionStatus / verify) — the redirect itself proves nothing.
   useEffect(() => {
-    if (!txId) return;
-    setPayStatus("checking");
-    fetch(`/_api/payments/online/verify?transaction_id=${encodeURIComponent(txId)}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setPayStatus(d?.status === "successful" ? "successful" : "failed");
-        if (ref) getOrder(ref).then(setOrder).catch(() => {});
-      })
-      .catch(() => setPayStatus("failed"));
-  }, [txId, ref]);
+    if (trackingId) {
+      // Pesapal
+      setPayStatus("checking");
+      fetch(`/_api/payments/pesapal/status?order_tracking_id=${encodeURIComponent(trackingId)}&reference=${encodeURIComponent(ref || "")}`)
+        .then((r) => r.json())
+        .then((d) => {
+          setPayStatus(d?.status === "completed" ? "successful" : "failed");
+          if (ref) getOrder(ref).then(setOrder).catch(() => {});
+        })
+        .catch(() => setPayStatus("failed"));
+    } else if (txId) {
+      // Flutterwave (legacy)
+      setPayStatus("checking");
+      fetch(`/_api/payments/online/verify?transaction_id=${encodeURIComponent(txId)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          setPayStatus(d?.status === "successful" ? "successful" : "failed");
+          if (ref) getOrder(ref).then(setOrder).catch(() => {});
+        })
+        .catch(() => setPayStatus("failed"));
+    }
+  }, [txId, trackingId, ref]);
 
   return (
     <div className="container-page py-16">

@@ -8,6 +8,7 @@ class PaymentMethod(str, Enum):
     cash_on_delivery = "cash_on_delivery"
     mtn_momo = "mtn_momo"
     airtel_money = "airtel_money"
+    pesapal = "pesapal"  # secure online payment (MTN/Airtel/card via Pesapal)
 
 
 class OrderItemIn(BaseModel):
@@ -57,6 +58,8 @@ class OrderOut(BaseModel):
     payment_method: str
     payment_status: str
     status: str
+    currency: str = "UGX"
+    pesapal_tracking_id: str = ""
     created_at: datetime | None = None
     items: list[OrderItemOut]
 
@@ -74,6 +77,7 @@ class OrderSummary(BaseModel):
     payment_method: str
     payment_status: str
     status: str
+    pesapal_tracking_id: str = ""
     created_at: datetime | None = None
     # Fraud/risk signals (computed, not stored)
     risk_level: str = "none"

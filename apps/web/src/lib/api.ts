@@ -47,7 +47,7 @@ export type OrderPayload = {
   delivery_town: string;
   delivery_address: string;
   notes?: string;
-  payment_method: "cash_on_delivery" | "mtn_momo" | "airtel_money";
+  payment_method: "cash_on_delivery" | "mtn_momo" | "airtel_money" | "pesapal";
   coupon_code?: string;
   referral_code?: string;
   items: OrderItemPayload[];
@@ -120,8 +120,7 @@ export async function registerForCourse(input: {
   return res.json();
 }
 
-// Is online payment (Flutterwave) enabled? Used to show/hide the "Pay online"
-// button. Fails safe to false if the API can't be reached.
+// Is online payment enabled? Returns which providers are live. Fails safe.
 export async function onlinePaymentEnabled(): Promise<boolean> {
   try {
     const res = await fetch(`${base()}/payments/online/status`, { cache: "no-store" });
@@ -130,6 +129,42 @@ export async function onlinePaymentEnabled(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// Detailed online-payment status (which providers are configured).
+export async function onlinePaymentStatus(): Promise<{ enabled: boolean; pesapal: boolean; flutterwave: boolean }> {
+  try {
+    const res = await fetch(`${base()}/payments/online/status`, { cache: "no-store" });
+    if (!res.ok) return { enabled: false, pesapal: false, flutterwave: false };
+    const d = await res.json();
+    return { enabled: !!d.enabled, pesapal: !!d.pesapal, flutterwave: !!d.flutterwave };
+  } catch {
+    return { enabled: false, pesapal: false, flutterwave: false };
+  }
+}
+
+// Start a Pesapal payment for an existing order → returns Pesapal's checkout URL.
+export async function initPesapalPayment(reference: string): Promise<{ redirect_url: string; order_tracking_id: string }> {
+  const res = await fetch(`${base()}/payments/pesapal/init`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reference }),
+  });
+  if (!res.ok) {
+    const d = await res.json().catch(() => null);
+    throw new Error(d?.detail || `Couldn't start payment (${res.status})`);
+  }
+  return res.json();
+}
+
+// Verify a Pesapal transaction on return (server checks GetTransactionStatus).
+export async function verifyPesapalPayment(orderTrackingId: string, reference: string): Promise<{ status: string; reference: string }> {
+  const res = await fetch(
+    `${base()}/payments/pesapal/status?order_tracking_id=${encodeURIComponent(orderTrackingId)}&reference=${encodeURIComponent(reference)}`,
+    { cache: "no-store" },
+  );
+  if (!res.ok) throw new Error(`Verify failed (${res.status})`);
+  return res.json();
 }
 
 // Start an online payment for a course. Returns the Flutterwave checkout link

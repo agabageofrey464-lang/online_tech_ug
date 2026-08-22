@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Ticket } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Ticket, ShieldCheck, Lock } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { ugx, site } from "@/lib/site";
-import { createOrder, validateCoupon, type OrderPayload } from "@/lib/api";
+import { createOrder, validateCoupon, initPesapalPayment, onlinePaymentStatus, type OrderPayload } from "@/lib/api";
 import { DELIVERY_TOWNS, estimateDelivery, STORE_LOCATION, deliveryDays, estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
@@ -19,6 +19,22 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState<OrderPayload["payment_method"]>("cash_on_delivery");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // When Pesapal is live, checkout is pay-online-only (no Pay on Delivery). Until
+  // keys are set, the existing manual Mobile Money / PoD flow stays as fallback.
+  const [pesapalReady, setPesapalReady] = useState(false);
+
+  useEffect(() => {
+    let live = true;
+    onlinePaymentStatus().then((s) => {
+      if (live && s.pesapal) {
+        setPesapalReady(true);
+        setPayment("pesapal");
+      }
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   // Coupon / discount
   const [promo, setPromo] = useState("");
@@ -96,25 +112,18 @@ export default function CheckoutPage() {
         localStorage.setItem(key, JSON.stringify(list));
       } catch {}
       clear();
-      // Merchant payment is the live method: the customer pays our MoMo/Airtel
-      // merchant, then confirms. The Flutterwave hop is skipped entirely unless
-      // NEXT_PUBLIC_ONLINE_PAYMENTS=1, so nobody waits on a call that cannot
-      // succeed while the API keys are unset. Flip that env var to enable it.
-      const onlineEnabled = process.env.NEXT_PUBLIC_ONLINE_PAYMENTS === "1";
-      if (onlineEnabled && (payment === "mtn_momo" || payment === "airtel_money")) {
+      // Pesapal (live): pay BEFORE the order is processed. The order was created
+      // as pending; we hand off to Pesapal's secure checkout and only mark it paid
+      // once the server verifies the transaction (never on redirect back).
+      if (pesapalReady) {
         try {
-          const res = await fetch("/_api/payments/online/init", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reference: order.reference }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (res.ok && data.link) {
-            window.location.href = data.link;
-            return;
-          }
-        } catch {
-          /* fall through to the manual-pay success page */
+          const { redirect_url } = await initPesapalPayment(order.reference);
+          window.location.href = redirect_url;
+          return;
+        } catch (e) {
+          setError(e instanceof Error ? e.message : "Couldn't start the secure payment. Please try again.");
+          setSubmitting(false);
+          return;
         }
       }
       router.push(`/checkout/success?ref=${order.reference}`);
@@ -213,22 +222,42 @@ export default function CheckoutPage() {
             <section className="overflow-hidden rounded-lg bg-white shadow-sm">
               <StepHeader n={3} title="PAYMENT METHOD" />
               <div className="p-5">
-                <p className="mb-2 text-sm font-bold text-ink-900">Pre-pay Now</p>
-                <div className="space-y-2.5">
-                  {prepay.map((opt) => (
-                    <PayOption key={opt.v} opt={opt} payment={payment} setPayment={setPayment} />
-                  ))}
-                </div>
+                {pesapalReady ? (
+                  /* Pesapal live — secure online payment only (pay before processing) */
+                  <div className="rounded-lg border-2 border-brand-500 bg-brand-50 p-4">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
+                        <ShieldCheck size={20} />
+                      </span>
+                      <div>
+                        <p className="text-sm font-extrabold text-ink-900">Secure Online Payment — Pesapal</p>
+                        <p className="text-xs text-ink-700/70">Pay with MTN, Airtel Money or card. Your order is processed once payment is confirmed.</p>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2 text-xs text-ink-700/60">
+                      <Lock size={13} className="text-green-600" /> Encrypted checkout powered by Pesapal — we never see your PIN or card.
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="mb-2 text-sm font-bold text-ink-900">Pre-pay Now</p>
+                    <div className="space-y-2.5">
+                      {prepay.map((opt) => (
+                        <PayOption key={opt.v} opt={opt} payment={payment} setPayment={setPayment} />
+                      ))}
+                    </div>
 
-                <p className="mb-2 mt-5 text-sm font-bold text-ink-900">Payment on delivery</p>
-                <PayOption
-                  opt={{ v: "cash_on_delivery", label: "Pay on Delivery", hint: "Pay with cash or Mobile Money when your order arrives." }}
-                  payment={payment}
-                  setPayment={setPayment}
-                />
+                    <p className="mb-2 mt-5 text-sm font-bold text-ink-900">Payment on delivery</p>
+                    <PayOption
+                      opt={{ v: "cash_on_delivery", label: "Pay on Delivery", hint: "Pay with cash or Mobile Money when your order arrives." }}
+                      payment={payment}
+                      setPayment={setPayment}
+                    />
+                  </>
+                )}
 
                 {/* How-to-pay steps for the chosen mobile-money method */}
-                {(payment === "airtel_money" || payment === "mtn_momo") && (
+                {!pesapalReady && (payment === "airtel_money" || payment === "mtn_momo") && (
                   <div className="mt-4 rounded-lg border border-brand-200 bg-brand-50 p-4 text-sm">
                     <p className="font-extrabold text-ink-900">
                       How to pay — {payment === "airtel_money" ? "Airtel Money" : "MTN Mobile Money"}
@@ -316,7 +345,9 @@ export default function CheckoutPage() {
               disabled={submitting}
               className="mt-4 w-full rounded-md bg-brand-500 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600 disabled:opacity-60"
             >
-              {submitting ? "Placing order…" : "Confirm order"}
+              {submitting
+                ? (pesapalReady ? "Opening secure payment…" : "Placing order…")
+                : (pesapalReady ? `PAY NOW · ${ugx(total)}` : "Confirm order")}
             </button>
             <p className="mt-3 text-center text-[11px] text-ink-700/50">
               By proceeding, you accept our Terms &amp; Conditions and privacy policy.

@@ -59,6 +59,7 @@ export type AdminOrder = {
   payment_method: string;
   payment_status: string;
   status: string;
+  pesapal_tracking_id?: string;
   created_at?: string;
   risk_level?: "none" | "low" | "medium" | "high";
   risk_reasons?: string[];
