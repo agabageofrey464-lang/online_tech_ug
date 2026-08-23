@@ -1150,7 +1150,6 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "web-development",
-    cover: "/courses/web-development.jpg",
     icon: "web",
     title: "Website Development",
     summary:
@@ -1667,6 +1666,7 @@ export const courses: Course[] = [
   {
     slug: "web-development",
     title: "Web Development (HTML, CSS, JavaScript & WordPress)",
+    cover: "/courses/web-development.jpg",
     level: "Intermediate",
     lessons: 14,
     hours: 12,
