@@ -1121,6 +1121,9 @@ export const products: Product[] = [
   { image: "/products/90f399ac34ea4335b458585ccdd6572c.jpg", id: "hp-omen-16-hyperx-90f399", name: "HP OMEN 16 (HyperX Edition)", category: "Laptops", price: 3400000, brand: "HP", condition: "UK Used", rating: 4.8, badge: "Gaming", specs: ["Core i7 / Ryzen 7", "16GB RAM", "512GB SSD", "GeForce RTX", "16.1\" 165Hz"] },
   { image: "/products/IMG-20260821-WA0004.jpg", id: "macbook-air-m2-wa0004", name: "Apple MacBook Air (M2)", category: "Laptops", price: 3200000, brand: "Apple", condition: "UK Used", rating: 4.8, badge: "Premium", specs: ["Apple M2 chip", "8GB RAM", "256GB SSD", "13.6\" Liquid Retina", "macOS"] },
   { image: "/products/a123b201790444e2bd26dfd6b38e9092.jpg", id: "touchmate-156-a123b2", name: "Touchmate 15.6\" Laptop", category: "Laptops", price: 900000, brand: "Touchmate", condition: "Brand New", rating: 4.2, badge: "New", specs: ["Intel Celeron", "8GB RAM", "256GB SSD", "15.6\" FHD", "Windows 11"] },
+  { image: "/products/ad207c372dbb43ef8cfa836f9a0695dd.jpg", id: "hp-elitebook-1040-g10-gold-ad207c", name: "HP EliteBook 1040 G10 (Gold)", category: "Laptops", price: 2300000, brand: "HP", condition: "UK Used", rating: 4.7, badge: "Premium", specs: ["Core i7 13th Gen", "16GB RAM", "512GB SSD", "14\" WUXGA", "Windows 11"] },
+  { image: "/products/b18ad97904424a13a5238e2eeaa8713a.jpg", id: "macbook-air-colour-sealed-b18ad9", name: "Apple MacBook Air (Sealed, Colour)", category: "Laptops", price: 3500000, brand: "Apple", condition: "Brand New", rating: 4.9, badge: "Sealed", specs: ["Apple M-series", "8GB RAM", "256GB SSD", "13.6\" Liquid Retina", "macOS"] },
+  { image: "/products/c68158d48a4d4307a2e955c9bf42f822.jpg", id: "hp-elitebook-840-g4-c68158", name: "HP EliteBook 840 G4 (Core i5)", category: "Laptops", price: 1100000, brand: "HP", condition: "UK Used", rating: 4.4, specs: ["Core i5 7th Gen", "8GB RAM", "256GB SSD", "14\" FHD", "Windows 11"] },
 ];
 
 export const productCategories = [
