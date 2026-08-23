@@ -4,28 +4,34 @@ import { useEffect, useState } from "react";
 import { Lock, Clock, Play, X, Check } from "lucide-react";
 import { lessonPrice, type Course, type Lesson } from "@/lib/data";
 import { ugx, whatsappLink, site } from "@/lib/site";
-import { doneLessons, toggleLesson, isUnlocked, tryUnlock, markUnlocked } from "@/lib/learning";
+import { doneLessons, toggleLesson, isUnlocked, lessonUnlocks, applyCourseCode, markUnlocked } from "@/lib/learning";
 import { verifyUnlockCode } from "@/lib/api";
 
 export function LessonList({ course }: { course: Course }) {
   const { slug, title: courseTitle, syllabus } = course;
   const [playing, setPlaying] = useState<{ title: string; video?: string; youtube?: string } | null>(null);
   const [done, setDone] = useState<number[]>([]);
-  const [unlocked, setUnlocked] = useState(false);
-  const [showUnlock, setShowUnlock] = useState(false);
+  const [full, setFull] = useState(false); // whole course unlocked
+  const [openSet, setOpenSet] = useState<number[]>([]); // individually unlocked lesson idxs
+  const [target, setTarget] = useState<number | null>(null); // lesson the unlock modal is for
   const [code, setCode] = useState("");
   const [err, setErr] = useState("");
+  const [okMsg, setOkMsg] = useState("");
   const [checking, setChecking] = useState(false);
 
-  useEffect(() => {
+  function refresh() {
     setDone(doneLessons(slug));
-    setUnlocked(isUnlocked(slug));
-  }, [slug]);
+    setFull(isUnlocked(slug));
+    setOpenSet(lessonUnlocks(slug));
+  }
+  useEffect(refresh, [slug]);
 
   function mark(idx: number, value: boolean) {
     toggleLesson(slug, idx, value);
     setDone(doneLessons(slug));
   }
+
+  const canWatch = (i: number, free: boolean) => free || full || openSet.includes(i);
 
   async function submitCode(e: React.FormEvent) {
     e.preventDefault();
@@ -33,29 +39,52 @@ export function LessonList({ course }: { course: Course }) {
     if (!entered) return;
     setChecking(true);
     setErr("");
+    setOkMsg("");
     try {
+      // Client-side, deterministic: base code unlocks the course, CODE-<n> unlocks lesson n.
+      const result = applyCourseCode(slug, entered, course.unlockCode || "");
+      if (result === "course") {
+        setFull(true);
+        setOkMsg("Whole course unlocked! Enjoy all lessons.");
+        finishUnlock();
+        return;
+      }
+      if (typeof result === "number") {
+        setOpenSet(lessonUnlocks(slug));
+        setOkMsg(`Lesson ${result + 1} unlocked!`);
+        finishUnlock();
+        return;
+      }
+      // Fallback: a per-payment course code issued by the backend (unlocks the course).
       let ok = false;
       try {
-        // Preferred: verify the per-payment code against the backend.
         ok = await verifyUnlockCode(slug, entered);
       } catch {
-        // API unreachable — ignore, we still try the static code below.
+        /* API unreachable — treated as invalid below */
       }
-      // Always also accept the course's static code (e.g. CB-2026), so both the
-      // dynamic per-payment codes and the fixed course codes unlock the course.
-      if (!ok) ok = tryUnlock(slug, entered, course.unlockCode || "");
       if (ok) {
         markUnlocked(slug);
-        setUnlocked(true);
-        setShowUnlock(false);
-        setCode("");
-      } else {
-        setErr("That code isn't correct. Check the code we sent you on WhatsApp.");
+        setFull(true);
+        setOkMsg("Whole course unlocked! Enjoy all lessons.");
+        finishUnlock();
+        return;
       }
+      setErr("That code isn't correct. Check the code we sent you on WhatsApp.");
     } finally {
       setChecking(false);
     }
   }
+
+  function finishUnlock() {
+    setCode("");
+    setTimeout(() => {
+      setTarget(null);
+      setOkMsg("");
+    }, 1200);
+  }
+
+  const targetLesson = target !== null ? syllabus[target] : null;
+  const targetPrice = targetLesson ? lessonPrice(targetLesson.minutes) : 0;
 
   return (
     <>
@@ -63,7 +92,7 @@ export function LessonList({ course }: { course: Course }) {
         {syllabus.map((lesson: Lesson, i) => {
           const price = lessonPrice(lesson.minutes);
           const free = !!lesson.free;
-          const canWatch = free || unlocked;
+          const watchable = canWatch(i, free);
           const isDone = done.includes(i);
           return (
             <li key={lesson.title} className={`flex items-start gap-3 p-3.5 transition sm:items-center sm:p-4 ${isDone ? "bg-green-50/40" : "hover:bg-ink-50/50"}`}>
@@ -77,18 +106,17 @@ export function LessonList({ course }: { course: Course }) {
                 {isDone ? <Check size={16} /> : i + 1}
               </button>
               <div className="min-w-0 flex-1">
-                {/* Full title — wraps instead of truncating so long lesson names stay readable on mobile. */}
                 <p className="text-sm font-semibold leading-snug text-ink-800">
                   {lesson.title}
                   {free && <span className="ml-2 align-middle rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-green-700">Free</span>}
-                  {!free && unlocked && <span className="ml-2 align-middle rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-brand-700">Unlocked</span>}
+                  {!free && watchable && <span className="ml-2 align-middle rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-brand-700">Unlocked</span>}
                 </p>
                 <p className="mt-1 flex items-center gap-1 text-xs text-ink-700/60">
                   <Clock size={12} /> {lesson.minutes} min
                 </p>
               </div>
 
-              {canWatch ? (
+              {watchable ? (
                 <button
                   onClick={() => {
                     setPlaying({ title: lesson.title, video: lesson.preview || course.sampleVideo, youtube: lesson.youtube });
@@ -100,7 +128,11 @@ export function LessonList({ course }: { course: Course }) {
                 </button>
               ) : (
                 <button
-                  onClick={() => setShowUnlock(true)}
+                  onClick={() => {
+                    setTarget(i);
+                    setErr("");
+                    setOkMsg("");
+                  }}
                   className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-brand-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
                 >
                   <Lock size={13} /> {ugx(price)}
@@ -138,28 +170,34 @@ export function LessonList({ course }: { course: Course }) {
         </div>
       )}
 
-      {/* Unlock modal — pay via MoMo, then enter the code we send */}
-      {showUnlock && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setShowUnlock(false)}>
+      {/* Unlock modal — pay per lesson (or the whole course), then enter the code */}
+      {target !== null && targetLesson && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setTarget(null)}>
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-start justify-between">
-              <h3 className="text-lg font-extrabold text-ink-600">Unlock this course</h3>
-              <button onClick={() => setShowUnlock(false)} aria-label="Close" className="text-ink-600/50 hover:text-ink-600">
+              <h3 className="text-lg font-extrabold text-ink-600">Unlock this lesson</h3>
+              <button onClick={() => setTarget(null)} aria-label="Close" className="text-ink-600/50 hover:text-ink-600">
                 <X size={20} />
               </button>
             </div>
-            <ol className="space-y-2 text-sm text-ink-700/80">
-              <li><b>1.</b> Send payment via Mobile Money to <b className="text-ink-800">{site.phoneDisplay}</b> (Airtel) or {site.phoneAlt}.</li>
+
+            <div className="rounded-lg bg-brand-50 p-3">
+              <p className="text-sm font-bold text-ink-900">Lesson {target + 1}: {targetLesson.title}</p>
+              <p className="mt-0.5 text-sm text-ink-700/70">Price: <b className="text-brand-600">{ugx(targetPrice)}</b> · or unlock the <b>whole course</b> for {ugx(course.price)}.</p>
+            </div>
+
+            <ol className="mt-3 space-y-2 text-sm text-ink-700/80">
+              <li><b>1.</b> Pay via Mobile Money to <b className="text-ink-800">{site.phoneDisplay}</b> (Airtel) or {site.phoneAlt}.</li>
               <li><b>2.</b> Send the confirmation on WhatsApp — we&apos;ll reply with your <b>unlock code</b>.</li>
-              <li><b>3.</b> Enter the code below to unlock all lessons & videos.</li>
+              <li><b>3.</b> Enter it below to unlock this lesson (or all lessons).</li>
             </ol>
             <a
-              href={whatsappLink(`Hi, I've paid for the "${courseTitle}" course. Please send my unlock code.`)}
+              href={whatsappLink(`Hi, I'd like to pay for "${courseTitle}" — Lesson ${target + 1}: ${targetLesson.title} (${ugx(targetPrice)}). Please send my unlock code.`)}
               target="_blank"
               rel="noreferrer"
               className="mt-3 block rounded-md bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-green-700"
             >
-              Pay & get code on WhatsApp
+              Pay &amp; get code on WhatsApp
             </a>
             <form onSubmit={submitCode} className="mt-4">
               <input
@@ -169,8 +207,9 @@ export function LessonList({ course }: { course: Course }) {
                 className="w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm uppercase focus:border-brand-500 focus:outline-none"
               />
               {err && <p className="mt-1 text-xs text-red-500">{err}</p>}
+              {okMsg && <p className="mt-1 text-xs font-semibold text-green-600">✓ {okMsg}</p>}
               <button type="submit" disabled={checking} className="mt-2 w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
-                {checking ? "Checking…" : "Unlock course"}
+                {checking ? "Checking…" : "Unlock"}
               </button>
             </form>
           </div>

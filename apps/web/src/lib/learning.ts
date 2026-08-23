@@ -11,10 +11,11 @@ type State = {
   enrolled: string[];
   lessons: Record<string, number[]>; // slug -> completed lesson indexes
   quizzes: Record<string, QuizResult>;
-  unlocked: string[]; // course slugs unlocked via payment code
+  unlocked: string[]; // course slugs unlocked in full via a course code
+  unlockedLessons?: Record<string, number[]>; // slug -> individually unlocked lesson indexes
 };
 
-const empty: State = { enrolled: [], lessons: {}, quizzes: {}, unlocked: [] };
+const empty: State = { enrolled: [], lessons: {}, quizzes: {}, unlocked: [], unlockedLessons: {} };
 
 export function read(): State {
   if (typeof window === "undefined") return { ...empty };
@@ -101,6 +102,54 @@ export function tryUnlock(slug: string, entered: string, code: string): boolean 
   if (!s.enrolled.includes(slug)) s.enrolled.push(slug);
   write(s);
   return true;
+}
+
+// ── Per-lesson unlocking ────────────────────────────────────────────────
+// A lesson counts as unlocked if the whole course is unlocked OR that specific
+// lesson index was unlocked with a per-lesson code.
+export function isLessonUnlocked(slug: string, idx: number): boolean {
+  const s = read();
+  if (s.unlocked.includes(slug)) return true;
+  return (s.unlockedLessons?.[slug] || []).includes(idx);
+}
+
+// Lesson indexes unlocked individually for this course (excludes full-course unlock).
+export function lessonUnlocks(slug: string): number[] {
+  return read().unlockedLessons?.[slug] || [];
+}
+
+export function unlockLesson(slug: string, idx: number) {
+  const s = read();
+  s.unlockedLessons = s.unlockedLessons || {};
+  const set = new Set(s.unlockedLessons[slug] || []);
+  set.add(idx);
+  s.unlockedLessons[slug] = [...set];
+  if (!s.enrolled.includes(slug)) s.enrolled.push(slug);
+  write(s);
+}
+
+// Apply an entered code. Base course code (e.g. "GD-2026") unlocks the whole
+// course; "GD-2026-5" unlocks only lesson 5. Returns what was unlocked:
+//   "course" | <lesson index unlocked> | null (no match)
+export function applyCourseCode(slug: string, entered: string, baseCode: string): "course" | number | null {
+  const e = entered.trim().toUpperCase().replace(/\s+/g, "");
+  const base = (baseCode || "").trim().toUpperCase();
+  if (!base) return null;
+  if (e === base) {
+    markUnlocked(slug);
+    return "course";
+  }
+  const esc = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m = e.match(new RegExp(`^${esc}-(\\d+)$`));
+  if (m) {
+    const n = parseInt(m[1], 10);
+    if (n >= 1) {
+      const idx = n - 1;
+      unlockLesson(slug, idx);
+      return idx;
+    }
+  }
+  return null;
 }
 
 export function saveQuiz(slug: string, score: number, total: number) {
