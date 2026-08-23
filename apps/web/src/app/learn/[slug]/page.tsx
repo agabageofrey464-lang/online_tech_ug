@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Lock, FileText, Download } from "lucide-react";
+import { Lock, FileText, Download, Check, PlayCircle, BadgeCheck, Users } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
+import { SafeImage } from "@/components/safe-image";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { LessonList } from "@/components/lesson-list";
 import { Quiz } from "@/components/quiz";
@@ -49,54 +49,98 @@ export default async function CourseDetailPage({
         <Breadcrumbs items={[{ label: "Learn", href: "/learn" }, { label: course.title }]} />
       </div>
 
-      {/* Header */}
-      <div className="flex flex-col gap-5 rounded-card bg-white p-6 shadow-sm sm:flex-row sm:items-center">
-        <span className="relative h-24 w-full shrink-0 overflow-hidden rounded-xl sm:w-40">
-          <Image
-            src={`/courses/${course.slug}.webp`}
+      {/* Hero */}
+      <div className="overflow-hidden rounded-card bg-white shadow-sm">
+        <div className="relative h-44 w-full sm:h-56">
+          <SafeImage
+            src={course.cover ?? `/courses/${course.slug}.webp`}
             alt={course.title}
             fill
-            sizes="(max-width: 640px) 100vw, 160px"
+            sizes="100vw"
             className="object-cover"
           />
-        </span>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <Badge tone="ink">{course.level}</Badge>
-            <span className="text-xs text-ink-700/60">
-              {course.lessons} lessons · {course.hours} hours
-            </span>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/45 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="ink">{course.level}</Badge>
+              <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white ring-1 ring-white/20">
+                {course.lessons} lessons
+              </span>
+              <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white ring-1 ring-white/20">
+                {course.hours} hours
+              </span>
+              <span className="rounded-full bg-green-500 px-2.5 py-1 text-[11px] font-bold text-white">
+                Certificate
+              </span>
+            </div>
+            <h1 className="mt-2 text-2xl font-black text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)] sm:text-3xl">
+              {course.title}
+            </h1>
           </div>
-          <h1 className="mt-2 text-2xl font-extrabold text-ink-600">{course.title}</h1>
-          <p className="mt-1 text-sm text-ink-700/70">{course.blurb}</p>
         </div>
-        <div className="text-center sm:text-right">
-          <p className="text-xs text-ink-700/50">Full course</p>
-          <p className="text-2xl font-extrabold text-brand-600">{ugx(course.price)}</p>
-          <div className="mt-2 flex flex-col items-stretch gap-2 sm:items-end">
-            <CourseRegister courseSlug={course.slug} courseTitle={course.title} price={course.price} />
-            <Button
-              href={whatsappLink(`Hi, I'd like to buy the full "${course.title}" course (${ugx(course.price)}).`)}
-              external
-              variant="outline"
-              className="px-5 py-2"
-            >
-              Buy full course
-            </Button>
+
+        <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
+          <p className="flex-1 text-sm text-ink-700/75">{course.blurb}</p>
+          <div className="shrink-0 text-center sm:text-right">
+            <p className="text-xs text-ink-700/50">Full course</p>
+            <p className="text-2xl font-extrabold text-brand-600">{ugx(course.price)}</p>
+            <p className="text-[11px] text-ink-700/50">or single lessons from {ugx(5000)}</p>
+            <div className="mt-2 flex flex-col items-stretch gap-2 sm:items-end">
+              <CourseRegister courseSlug={course.slug} courseTitle={course.title} price={course.price} />
+              <Button
+                href={whatsappLink(`Hi, I'd like to buy the full "${course.title}" course (${ugx(course.price)}).`)}
+                external
+                variant="outline"
+                className="px-5 py-2"
+              >
+                Buy full course
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Trust strip */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {[
+          { icon: PlayCircle, title: "Learn at your pace", body: "Watch lessons any time, on phone or laptop." },
+          { icon: BadgeCheck, title: "Certificate included", body: "Pass the quiz and download your certificate." },
+          { icon: Users, title: "Real support", body: "Stuck? Message our trainers on WhatsApp." },
+        ].map((f) => (
+          <div key={f.title} className="flex items-start gap-3 rounded-card border border-ink-600/10 bg-white p-4 shadow-sm">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <f.icon size={18} />
+            </span>
+            <div>
+              <p className="text-sm font-bold text-ink-900">{f.title}</p>
+              <p className="text-xs text-ink-700/65">{f.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Progress (after enrolling) */}
       <CourseProgress slug={course.slug} total={course.syllabus.length} />
+
+      {/* What you'll learn — drawn from the real syllabus */}
+      <h2 className="mt-8 text-lg font-extrabold text-ink-600">What you&apos;ll learn</h2>
+      <ul className="mt-3 grid gap-2 rounded-card border border-ink-600/10 bg-white p-5 shadow-sm sm:grid-cols-2">
+        {course.syllabus.slice(0, 8).map((l) => (
+          <li key={l.title} className="flex items-start gap-2 text-sm text-ink-700/80">
+            <Check size={16} className="mt-0.5 shrink-0 text-green-600" />
+            {l.title}
+          </li>
+        ))}
+      </ul>
 
       {/* Unlock notice */}
       <div className="mt-6 flex items-start gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 text-sm text-ink-700">
         <Lock size={18} className="mt-0.5 shrink-0 text-brand-600" />
         <p>
           The first lesson is <b className="text-green-700">free</b>. Other lessons unlock from{" "}
-          <b className="text-brand-700">{ugx(1000)} to {ugx(5000)}</b> via Mobile Money. Tick lessons as
-          you finish to track your progress, then take the quiz for your certificate.
+          <b className="text-brand-700">{ugx(5000)} to {ugx(15000)}</b> via Mobile Money — pay for just
+          the lesson you need, or the whole course. Tick lessons as you finish, then take the quiz for
+          your certificate.
         </p>
       </div>
 
