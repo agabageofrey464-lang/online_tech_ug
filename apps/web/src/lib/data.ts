@@ -1150,6 +1150,7 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "web-development",
+    cover: "/courses/web-development.jpg",
     icon: "web",
     title: "Website Development",
     summary:
@@ -1288,6 +1289,7 @@ export type Course = {
   quiz?: QuizQuestion[];
   unlockCode?: string; // code sent to the learner after MoMo payment
   sampleVideo?: string; // video played for unlocked paid lessons
+  cover?: string; // explicit cover image; else falls back to /courses/<slug>.webp
 };
 
 // Per-lesson unlock price (UGX), 1,000–5,000 depending on lesson length.
@@ -1630,6 +1632,7 @@ export const courses: Course[] = [
   // ── New skills courses ──────────────────────────────────────────────
   {
     slug: "graphic-design",
+    cover: "/courses/graphic-design.jpg",
     title: "Graphic Design (Photoshop, Illustrator & Canva)",
     level: "Intermediate",
     lessons: 12,
@@ -1698,6 +1701,7 @@ export const courses: Course[] = [
   },
   {
     slug: "digital-marketing",
+    cover: "/courses/digital-marketing.jpg",
     title: "Digital Marketing & Social Media",
     level: "Beginner",
     lessons: 11,
@@ -1730,6 +1734,7 @@ export const courses: Course[] = [
   },
   {
     slug: "data-analysis-excel",
+    cover: "/courses/data-analysis-excel.png",
     title: "Data Analysis with Excel",
     level: "Intermediate",
     lessons: 11,
@@ -1762,6 +1767,7 @@ export const courses: Course[] = [
   },
   {
     slug: "computer-networking",
+    cover: "/courses/computer-networking.jpg",
     title: "Computer Networking (CCNA Foundations)",
     level: "Intermediate",
     lessons: 12,
@@ -1795,6 +1801,7 @@ export const courses: Course[] = [
   },
   {
     slug: "cybersecurity-basics",
+    cover: "/courses/cybersecurity-basics.jpg",
     title: "Cybersecurity Basics",
     level: "Beginner",
     lessons: 10,
@@ -1826,6 +1833,7 @@ export const courses: Course[] = [
   },
   {
     slug: "video-editing",
+    cover: "/courses/video-editing.jpg",
     title: "Video Editing (CapCut & Premiere Pro)",
     level: "Beginner",
     lessons: 10,
@@ -1856,6 +1864,7 @@ export const courses: Course[] = [
   },
   {
     slug: "python-programming",
+    cover: "/courses/python-programming.png",
     title: "Programming with Python",
     level: "Intermediate",
     lessons: 13,

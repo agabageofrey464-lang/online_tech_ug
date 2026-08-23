@@ -147,7 +147,7 @@ export default function LearnPage() {
             >
               <div className="relative h-40 w-full overflow-hidden">
                 <SafeImage
-                  src={`/courses/${c.slug}.webp`}
+                  src={c.cover ?? `/courses/${c.slug}.webp`}
                   alt={c.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 33vw"
