@@ -14,8 +14,12 @@ class UnlockCode(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     code: Mapped[str] = mapped_column(String(40), unique=True, index=True)
     course_slug: Mapped[str] = mapped_column(String(160), index=True)
+    # Which lesson this code unlocks (1-based). NULL = the whole course.
+    lesson: Mapped[int | None] = mapped_column(Integer, nullable=True)
     note: Mapped[str] = mapped_column(String(200), default="")  # customer name/phone
     email: Mapped[str] = mapped_column(String(200), default="")  # learner email for auto-delivery
+    # Bound to the first device that redeems it — prevents code sharing.
+    device_token: Mapped[str] = mapped_column(String(64), default="")
     redeemed_count: Mapped[int] = mapped_column(Integer, default=0)
     revoked: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

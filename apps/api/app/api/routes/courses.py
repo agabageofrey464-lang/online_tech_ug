@@ -60,7 +60,7 @@ def course_notes(
     entered = "".join(code.split()).upper()
     is_owner = bool(settings.admin_api_key) and x_admin_key == settings.admin_api_key
     static_ok = bool(entered) and entered == _STATIC_CODES.get(slug, "").upper()
-    db_ok = bool(entered) and not static_ok and unlock_codes.verify_code(db, slug, code)
+    db_ok = bool(entered) and not static_ok and unlock_codes.verify_code(db, slug, code).get("valid", False)
 
     if is_owner or static_ok or db_ok:
         return {"unlocked": True, "units": units}

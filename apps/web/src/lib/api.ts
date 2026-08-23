@@ -200,15 +200,34 @@ export async function verifyCoursePayment(
   return res.json();
 }
 
-// Verify a learner's course unlock code against the backend. Throws on a
-// network/server error so callers can fall back to a local check if offline.
-export async function verifyUnlockCode(courseSlug: string, code: string): Promise<boolean> {
+// A stable per-device id so an unlock code can be bound to the buyer's device
+// (stops codes being shared). Generated once and kept in localStorage.
+export function deviceToken(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    let t = localStorage.getItem("otu_device");
+    if (!t) {
+      t = (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/-/g, "");
+      localStorage.setItem("otu_device", t);
+    }
+    return t;
+  } catch {
+    return "";
+  }
+}
+
+export type UnlockResult = { valid: boolean; lesson: number | null; reason: string };
+
+// Verify a learner's unlock code against the backend. Device-bound, so a code
+// shared with someone else is rejected. `lesson` is the 1-based lesson it opens
+// (null = the whole course). Throws on network error so callers can fall back.
+export async function verifyUnlockCode(courseSlug: string, code: string): Promise<UnlockResult> {
   const res = await fetch(`${base()}/unlock-codes/verify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ course_slug: courseSlug, code }),
+    body: JSON.stringify({ course_slug: courseSlug, code, device_token: deviceToken() }),
   });
   if (!res.ok) throw new Error(`Verify failed (${res.status})`);
-  const data = (await res.json()) as { valid: boolean };
-  return data.valid;
+  const d = await res.json();
+  return { valid: !!d.valid, lesson: d.lesson ?? null, reason: d.reason ?? "" };
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Lock, Clock, Play, X, Check } from "lucide-react";
 import { lessonPrice, type Course, type Lesson } from "@/lib/data";
 import { ugx, whatsappLink, site } from "@/lib/site";
-import { doneLessons, toggleLesson, isUnlocked, lessonUnlocks, applyCourseCode, markUnlocked } from "@/lib/learning";
+import { doneLessons, toggleLesson, isUnlocked, lessonUnlocks, applyCourseCode, markUnlocked, unlockLesson } from "@/lib/learning";
 import { verifyUnlockCode } from "@/lib/api";
 
 export function LessonList({ course }: { course: Course }) {
@@ -41,7 +41,35 @@ export function LessonList({ course }: { course: Course }) {
     setErr("");
     setOkMsg("");
     try {
-      // Client-side, deterministic: base code unlocks the course, CODE-<n> unlocks lesson n.
+      // Preferred: a personal, single-device code issued to this buyer. The server
+      // binds it to their device, so a shared code fails for everyone else.
+      try {
+        const r = await verifyUnlockCode(slug, entered);
+        if (r.valid) {
+          if (r.lesson && r.lesson >= 1) {
+            unlockLesson(slug, r.lesson - 1);
+            setOpenSet(lessonUnlocks(slug));
+            setOkMsg(`Lesson ${r.lesson} unlocked!`);
+          } else {
+            markUnlocked(slug);
+            setFull(true);
+            setOkMsg("Whole course unlocked! Enjoy all lessons.");
+          }
+          finishUnlock();
+          return;
+        }
+        if (r.reason === "used_on_another_device") {
+          setErr("This code has already been used on another device. Codes are personal — contact us for your own code.");
+          return;
+        }
+        if (r.reason === "revoked") {
+          setErr("This code is no longer active. Please contact us on WhatsApp.");
+          return;
+        }
+      } catch {
+        /* API unreachable — fall through to the offline course code below */
+      }
+      // Fallback (offline / legacy): base course code, or CODE-<n> for one lesson.
       const result = applyCourseCode(slug, entered, course.unlockCode || "");
       if (result === "course") {
         setFull(true);
@@ -52,20 +80,6 @@ export function LessonList({ course }: { course: Course }) {
       if (typeof result === "number") {
         setOpenSet(lessonUnlocks(slug));
         setOkMsg(`Lesson ${result + 1} unlocked!`);
-        finishUnlock();
-        return;
-      }
-      // Fallback: a per-payment course code issued by the backend (unlocks the course).
-      let ok = false;
-      try {
-        ok = await verifyUnlockCode(slug, entered);
-      } catch {
-        /* API unreachable — treated as invalid below */
-      }
-      if (ok) {
-        markUnlocked(slug);
-        setFull(true);
-        setOkMsg("Whole course unlocked! Enjoy all lessons.");
         finishUnlock();
         return;
       }

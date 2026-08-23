@@ -127,6 +127,7 @@ export default function AccountPage() {
     { href: "/wishlist", label: "Saved Items", icon: Heart },
     { href: "/learn/dashboard", label: "My Learning", icon: GraduationCap },
     ...(user?.role === "vendor" ? [{ href: "/vendor", label: "Vendor Dashboard", icon: Store }] : []),
+    ...(user?.role === "admin" ? [{ href: "/learn/codes", label: "Course Unlock Codes", icon: ShieldCheck }] : []),
   ];
 
   return (

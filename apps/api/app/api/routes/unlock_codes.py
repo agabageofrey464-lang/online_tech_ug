@@ -25,8 +25,10 @@ def require_admin(x_admin_key: str = Header(default="")) -> None:
 
 @router.post("/verify", response_model=VerifyOut)
 def verify(payload: VerifyIn, db: Session = Depends(get_db)) -> dict:
-    """Public: verify a learner's unlock code for a course."""
-    return {"valid": unlock_codes.verify_code(db, payload.course_slug, payload.code)}
+    """Public: verify a learner's unlock code. Device-bound — the code locks to the
+    first device that redeems it, so a shared code fails elsewhere. Returns which
+    lesson it unlocks (null = whole course)."""
+    return unlock_codes.verify_code(db, payload.course_slug, payload.code, payload.device_token)
 
 
 @router.post("/register", response_model=RegisterOut, status_code=201)
@@ -63,7 +65,9 @@ async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
 @router.post("", response_model=UnlockCodeOut, status_code=201, dependencies=[Depends(require_admin)])
 def generate(payload: GenerateIn, db: Session = Depends(get_db)) -> dict:
     try:
-        return unlock_codes.generate_code(db, payload.course_slug, payload.note)
+        return unlock_codes.generate_code(
+            db, payload.course_slug, payload.note, lesson=payload.lesson
+        )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
