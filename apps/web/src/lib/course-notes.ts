@@ -202,5 +202,61 @@ export const courseNotes: Record<string, NoteMeta[]> = {
       "title": "Common Publications & Printing",
       "summary": "Design real items and prepare them for print."
     }
+  ],
+  "graphic-design": [
+    {
+      "n": 1,
+      "title": "Design Foundations & Tools",
+      "summary": "What graphic design is, the tools you'll use, and how designers work."
+    },
+    {
+      "n": 2,
+      "title": "Design Principles That Make Work Look Professional",
+      "summary": "Balance, contrast, hierarchy, alignment and whitespace."
+    },
+    {
+      "n": 3,
+      "title": "Colour & Typography",
+      "summary": "Choosing colours that work together and fonts that stay readable."
+    },
+    {
+      "n": 4,
+      "title": "Logos, Branding & Exporting Your Work",
+      "summary": "Designing a real logo and delivering the right files."
+    }
+  ],
+  "digital-marketing": [
+    {
+      "n": 1,
+      "title": "Digital Marketing Foundations",
+      "summary": "What digital marketing is, the main channels, and how to plan."
+    },
+    {
+      "n": 2,
+      "title": "Social Media & Content That Sells",
+      "summary": "Building pages, creating content and growing an audience."
+    },
+    {
+      "n": 3,
+      "title": "Paid Ads & Measuring Results",
+      "summary": "Running ads that make money and reading the numbers."
+    }
+  ],
+  "cybersecurity-basics": [
+    {
+      "n": 1,
+      "title": "Security Foundations & Passwords",
+      "summary": "The threats that matter and how to lock your accounts properly."
+    },
+    {
+      "n": 2,
+      "title": "Phishing, Scams & Malware",
+      "summary": "Spotting the traps and knowing what to do when infected."
+    },
+    {
+      "n": 3,
+      "title": "Protecting Your Data & Business",
+      "summary": "Backups, safe browsing, privacy and securing a small business."
+    }
   ]
 };

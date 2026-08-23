@@ -26,6 +26,9 @@ _STATIC_CODES = {
     "microsoft-publisher": "PUB-2026",
     "internet-email": "NET-2026",
     "typing-skills": "TYPE-2026",
+    "cybersecurity-basics": "CYB-2026",
+    "digital-marketing": "DM-2026",
+    "graphic-design": "GD-2026",
 }
 
 
