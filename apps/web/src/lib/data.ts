@@ -1291,13 +1291,13 @@ export type Course = {
   cover?: string; // explicit cover image; else falls back to /courses/<slug>.webp
 };
 
-// Per-lesson unlock price (UGX), 1,000–5,000 depending on lesson length.
+// Per-lesson unlock price (UGX), 5,000 (short) to 15,000 (long) by lesson length.
 export function lessonPrice(minutes: number): number {
-  if (minutes <= 10) return 1000;
-  if (minutes <= 18) return 2000;
-  if (minutes <= 28) return 3000;
-  if (minutes <= 40) return 4000;
-  return 5000;
+  if (minutes <= 10) return 5000;
+  if (minutes <= 18) return 8000;
+  if (minutes <= 28) return 10000;
+  if (minutes <= 40) return 12000;
+  return 15000;
 }
 
 export const courses: Course[] = [

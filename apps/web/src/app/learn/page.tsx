@@ -58,7 +58,7 @@ export default function LearnPage() {
         </div>
         <p className="mt-4 text-center text-sm text-ink-700/60">
           First lesson <span className="font-semibold text-green-600">free</span>. Pay per lesson to unlock
-          the rest — <span className="font-semibold text-brand-600">from {ugx(1000)} to {ugx(5000)}</span>,
+          the rest — <span className="font-semibold text-brand-600">from {ugx(5000)} to {ugx(15000)}</span>,
           or buy the full course.
         </p>
         <div className="mt-5 flex justify-center">
@@ -168,7 +168,7 @@ export default function LearnPage() {
               </p>
               <p className="mt-1 text-xs font-semibold">
                 <span className="text-green-600">1st lesson free</span>
-                <span className="text-ink-700/50"> · then from {ugx(1000)}</span>
+                <span className="text-ink-700/50"> · then from {ugx(5000)}</span>
               </p>
               <div className="mt-auto flex items-center justify-between pt-5">
                 <span className="text-lg font-extrabold text-brand-600">{ugx(c.price)}</span>

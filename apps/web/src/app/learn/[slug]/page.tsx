@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (!course) return { title: "Course not found" };
   return {
     title: course.title,
-    description: `${course.title} — ${course.lessons} lessons. Unlock lessons from ${ugx(1000)} or buy the full course for ${ugx(course.price)}.`,
+    description: `${course.title} — ${course.lessons} lessons. Unlock lessons from ${ugx(5000)} or buy the full course for ${ugx(course.price)}.`,
   };
 }
 
