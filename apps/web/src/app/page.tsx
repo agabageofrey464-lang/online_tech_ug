@@ -21,6 +21,16 @@ function byCat(cat: Product["category"]) {
   return products.filter((p) => p.category === cat);
 }
 
+// Jumia-style deal-band colours — cycled per band so rails look varied.
+const BAND_COLORS = [
+  "from-brand-500 to-brand-600",
+  "from-[#6d28d9] to-[#5b21b6]", // purple
+  "from-ink-600 to-ink-700", // indigo
+  "from-green-600 to-green-700",
+  "from-[#c41c2e] to-[#a01722]", // red
+  "from-[#0e7490] to-[#155e75]", // teal
+];
+
 function Panel({
   title,
   href,
@@ -30,15 +40,21 @@ function Panel({
   href?: string;
   children: React.ReactNode;
 }) {
+  // Same coloured deal-band treatment as the rails, with a colour picked per
+  // section title so consecutive panels never repeat.
+  const seed = [...title].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const band = BAND_COLORS[seed % BAND_COLORS.length];
+
   return (
-    <Reveal as="section" className="overflow-hidden rounded-lg bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-ink-600/5 px-4 py-3">
-        <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
-          <span className="h-4 w-1 rounded-full bg-brand-500" /> {title}
-        </h2>
+    <Reveal as="section" className={`overflow-hidden rounded-lg bg-gradient-to-br shadow-sm ${band}`}>
+      <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+        <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
         {href && (
-          <Link href={href} className="text-sm font-semibold text-brand-600 hover:underline">
-            See all →
+          <Link
+            href={href}
+            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+          >
+            See All →
           </Link>
         )}
       </div>
@@ -54,15 +70,6 @@ function Rail({ items }: { items: Product[] }) {
   );
 }
 
-// Jumia-style deal-band colours — cycled per band so rails look varied.
-const BAND_COLORS = [
-  "from-brand-500 to-brand-600",
-  "from-[#6d28d9] to-[#5b21b6]", // purple
-  "from-ink-600 to-ink-700", // indigo
-  "from-green-600 to-green-700",
-  "from-[#c41c2e] to-[#a01722]", // red
-  "from-[#0e7490] to-[#155e75]", // teal
-];
 
 // Coloured banner section that separates product batches (Jumia deal band).
 function DealBand({

@@ -80,7 +80,14 @@ export function ShopGrid() {
     if (minRating > 0) list = list.filter((p) => p.rating >= minRating);
     if (query.trim()) {
       const q = query.toLowerCase();
-      list = list.filter((p) => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
+      // Match the whole product, not just its name — shoppers search for specs
+      // like "DIMM", "NVMe", "RTX" or "16GB", not only model names.
+      list = list.filter((p) =>
+        [p.name, p.brand, p.category, p.condition ?? "", ...(p.specs ?? []), ...Object.values(p.details ?? {})]
+          .join(" ")
+          .toLowerCase()
+          .includes(q),
+      );
     }
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);

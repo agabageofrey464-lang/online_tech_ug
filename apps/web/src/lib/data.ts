@@ -760,6 +760,7 @@ export const products: Product[] = [
     specs: ["720p HD", "Built-in mic", "Plug & play"],
   },
   {
+    image: "/web/laptop-backpack.jpg",
     id: "laptop-backpack-grey",
     name: "Slim Laptop Backpack (Grey)",
     category: "Accessories",
@@ -771,6 +772,7 @@ export const products: Product[] = [
     specs: ['Fits up to 15.6"', "Padded laptop compartment", "Water-resistant"],
   },
   {
+    image: "/web/laptop-sleeve.jpg",
     id: "laptop-sleeve-grey",
     name: "Laptop Sleeve Bag (Grey)",
     category: "Accessories",
@@ -781,6 +783,7 @@ export const products: Product[] = [
     specs: ['Fits 14"–15.6"', "Slim carry handles", "Soft protective lining"],
   },
   {
+    image: "/web/laptop-backpack.jpg",
     id: "lenovo-thinkbook-backpack",
     name: "Lenovo ThinkBook Backpack (Grey)",
     category: "Accessories",

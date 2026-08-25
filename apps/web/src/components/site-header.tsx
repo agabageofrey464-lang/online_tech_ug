@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   Menu, User, ShoppingCart, Phone, Heart, Package, Star, HelpCircle, ChevronDown,
   LayoutGrid, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
-  Wrench, GraduationCap, Store,
+  Store,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
@@ -28,8 +28,6 @@ const CATEGORIES = [
   { href: "/shop?cat=Networking", label: "Networking", icon: Wifi },
   { href: "/shop?cat=Storage", label: "Storage", icon: HardDrive },
   { href: "/shop?cat=Power", label: "Power", icon: BatteryCharging },
-  { href: "/services", label: "Services", icon: Wrench },
-  { href: "/learn", label: "Learn", icon: GraduationCap },
   { href: "/marketplace", label: "Marketplace", icon: Store },
 ];
 
