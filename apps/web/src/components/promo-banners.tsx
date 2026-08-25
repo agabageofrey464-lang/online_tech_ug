@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // pill and a photo panel. Colours come from the Online Tech Uganda palette.
 const BANNERS = [
   {
+    program: "Online Tech Festival",
     badge: "Super Saver",
     badgeSub: "Sale",
     dates: "This Month",
@@ -23,6 +24,7 @@ const BANNERS = [
     img: "/hero/hero-1.jpg",
   },
   {
+    program: "Online Tech Storage",
     badge: "Storage",
     badgeSub: "Week",
     dates: "Limited stock",
@@ -37,6 +39,7 @@ const BANNERS = [
     img: "/hero/hero-3.jpg",
   },
   {
+    program: "Online Tech Academy",
     badge: "Learn",
     badgeSub: "& Earn",
     dates: "22 courses",
@@ -51,6 +54,7 @@ const BANNERS = [
     img: "/hero/hero-4.jpg",
   },
   {
+    program: "Online Tech Care",
     badge: "Repairs",
     badgeSub: "& Support",
     dates: "Same day",
@@ -65,6 +69,7 @@ const BANNERS = [
     img: "/hero/hero-5.jpg",
   },
   {
+    program: "Online Tech Marketplace",
     badge: "Sell",
     badgeSub: "With Us",
     dates: "Free to join",
@@ -77,6 +82,81 @@ const BANNERS = [
     bg: "bg-[#00a651]",
     panel: "bg-[#FCDC04]",
     img: "/hero/hero-6.jpg",
+  },
+  {
+    program: "Online Tech Certified",
+    badge: "Certified",
+    badgeSub: "Pre-Owned",
+    dates: "Tested & warranted",
+    title: "Perfect Deals, Proven Tech",
+    pill: "UK-USED FROM UGX 900,000",
+    note: "Every machine battery-, screen- and port-tested before sale",
+    small: "T&Cs apply",
+    cta: "Shop certified",
+    href: "/shop?q=uk used",
+    bg: "bg-[#166534]",
+    panel: "bg-[#86efac]",
+    img: "/hero/hero-1.jpg",
+  },
+  {
+    program: "Online Tech Business",
+    badge: "Business",
+    badgeSub: "Bulk",
+    dates: "For offices & schools",
+    title: "Kit Out Your Whole Team",
+    pill: "BULK PRICING AVAILABLE",
+    note: "Laptops, desktops, networking and setup — one supplier",
+    small: "Ask for a quote",
+    cta: "Get a quote",
+    href: "/contact",
+    bg: "bg-[#1d4ed8]",
+    panel: "bg-[#93c5fd]",
+    img: "/hero/hero-6.jpg",
+  },
+  {
+    program: "Online Tech Student",
+    badge: "Student",
+    badgeSub: "Deals",
+    dates: "Back to campus",
+    title: "Study-Ready Laptops",
+    pill: "CORE i5 · 8GB · SSD",
+    note: "Light, tough machines that survive campus life",
+    small: "Free Office setup",
+    cta: "Shop student picks",
+    href: "/shop?cat=Laptops",
+    bg: "bg-[#7c3aed]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-4.jpg",
+  },
+  {
+    program: "Online Tech Upgrade",
+    badge: "Upgrade",
+    badgeSub: "Week",
+    dates: "Free fitting in shop",
+    title: "Make Your PC Fast Again",
+    pill: "SSD + RAM FROM UGX 130,000",
+    note: "Turn a slow machine into a new one — same day",
+    small: "Data transfer included",
+    cta: "Shop upgrades",
+    href: "/shop?cat=Components",
+    bg: "bg-[#b45309]",
+    panel: "bg-[#fcd34d]",
+    img: "/hero/hero-3.jpg",
+  },
+  {
+    program: "Online Tech Digital",
+    badge: "Websites",
+    badgeSub: "& Apps",
+    dates: "Built in Uganda",
+    title: "Get Your Business Online",
+    pill: "WEBSITES FROM UGX 500,000",
+    note: "Shops, booking systems and business software",
+    small: "Free consultation",
+    cta: "See our work",
+    href: "/portfolio",
+    bg: "bg-[#282363]",
+    panel: "bg-[#f15a29]",
+    img: "/hero/hero-5.jpg",
   },
 ];
 
@@ -106,6 +186,9 @@ export function PromoBanners() {
 
           {/* Copy */}
           <div key={i} className="ad-fade relative z-10 flex flex-1 flex-col justify-center gap-2 p-5 text-white sm:p-8">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/75 sm:text-xs">
+              {b.program}
+            </p>
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded bg-white px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-ink-900 sm:text-xs">
                 {b.badge}
