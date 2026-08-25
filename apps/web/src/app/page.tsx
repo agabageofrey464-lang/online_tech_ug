@@ -9,6 +9,7 @@ import { Icon } from "@/components/icon";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
+import { PromoBanners } from "@/components/promo-banners";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
@@ -170,10 +171,9 @@ export default function HomePage() {
         <OrderBanner />
       </div>
 
-      {/* Category & services circles — desktop only (mobile starts with products) */}
-      <div className="hidden md:block">
-        <CategoryCircles />
-      </div>
+      {/* Category & services circles — shown on every device: on mobile this is
+          the only quick category navigation on the home page. */}
+      <CategoryCircles />
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -198,26 +198,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Browse all products — same coloured deal-band treatment as the rails */}
-      <Reveal as="section" className="overflow-hidden rounded-lg bg-gradient-to-br from-[#6d28d9] to-[#5b21b6] shadow-sm">
-        <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
-          <div className="min-w-0">
-            <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
-            <p className="text-xs font-semibold text-white/85 sm:text-sm">Everything in stock</p>
-          </div>
-          <Link
-            href="/shop"
-            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
-          >
-            See All →
-          </Link>
-        </div>
-        <div className="p-3">
-          <Suspense fallback={<ProductGridSkeleton />}>
-            <ShopGrid />
-          </Suspense>
-        </div>
-      </Reveal>
+      {/* Campaign banners — "Don't Miss Out!" */}
+      <PromoBanners />
+
+
 
       {/* Feature strip (trust badges) — computers only (hidden on phones) */}
       <div className="hidden gap-3 md:grid md:grid-cols-4">
@@ -385,6 +369,27 @@ export default function HomePage() {
           ))}
         </div>
       </Panel>
+
+      {/* Browse all products — same coloured deal-band treatment as the rails */}
+      <Reveal as="section" className="overflow-hidden rounded-lg bg-gradient-to-br from-[#6d28d9] to-[#5b21b6] shadow-sm">
+        <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
+            <p className="text-xs font-semibold text-white/85 sm:text-sm">Everything in stock</p>
+          </div>
+          <Link
+            href="/shop"
+            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+          >
+            See All →
+          </Link>
+        </div>
+        <div className="p-3">
+          <Suspense fallback={<ProductGridSkeleton />}>
+            <ShopGrid />
+          </Suspense>
+        </div>
+      </Reveal>
 
       {/* Your recently viewed items */}
       <RecentlyViewed />

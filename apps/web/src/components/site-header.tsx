@@ -15,6 +15,7 @@ import { SearchBar } from "@/components/search-bar";
 import { HeaderAccount } from "@/components/header-account";
 import { BrandLogoFull } from "@/components/brand-logo-full";
 import { PromoStrip } from "@/components/promo-strip";
+import { MegaMenu } from "@/components/mega-menu";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -146,7 +147,9 @@ export function SiteHeader() {
       {/* Category strip — WHITE with icons (Jumia). Desktop only; mobile shows the
           circular category/services row on the home page instead. */}
       <nav className="hidden border-b border-ink-600/10 bg-white shadow-sm md:block">
-        <div className="container-wide flex items-center gap-x-6 overflow-x-auto py-2.5 text-sm font-semibold no-scrollbar">
+        <div className="container-wide flex items-center gap-x-6 py-1.5 text-sm font-semibold">
+          <MegaMenu />
+          <div className="flex flex-1 items-center gap-x-6 overflow-x-auto no-scrollbar">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;
             return (
@@ -162,6 +165,7 @@ export function SiteHeader() {
               </Link>
             );
           })}
+          </div>
         </div>
       </nav>
 

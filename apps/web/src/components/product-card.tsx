@@ -61,7 +61,7 @@ export function ProductCard({ product }: { product: Product }) {
   const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/[0.06] transition duration-200 hover:z-10 hover:ring-brand-200 hover:shadow-[0_4px_18px_rgba(20,16,46,0.12)]">
+    <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/[0.06] transition duration-200 hover:z-10 hover:shadow-[0_6px_22px_rgba(20,16,46,0.16)] hover:ring-brand-200">
       {/* Image area — its own relative box so the cart button pins to the photo. */}
       <div className="relative aspect-square overflow-hidden bg-white">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">

@@ -17,9 +17,11 @@ export function ProductRail({ items }: { items: Product[] }) {
 
   return (
     <div className="group/rail relative">
-      <div ref={ref} className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
+      {/* items-stretch keeps every card the same height so the row reads level,
+         and the wider gap separates the white cards on the coloured band. */}
+      <div ref={ref} className="flex snap-x items-stretch gap-3 overflow-x-auto p-4 no-scrollbar sm:gap-4">
         {items.map((p) => (
-          <div key={p.id} className="w-[45%] shrink-0 snap-start sm:w-[30%] lg:w-[15.5%]">
+          <div key={p.id} className="flex w-[46%] shrink-0 snap-start sm:w-[31%] lg:w-[16%]">
             <ProductCard product={p} />
           </div>
         ))}
