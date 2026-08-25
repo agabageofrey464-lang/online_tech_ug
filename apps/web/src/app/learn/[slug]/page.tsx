@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Lock, FileText, Download, Check, PlayCircle, BadgeCheck, Users } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 import { SafeImage } from "@/components/safe-image";
+import { CourseStructuredData, BreadcrumbStructuredData } from "@/components/structured-data";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { LessonList } from "@/components/lesson-list";
 import { Quiz } from "@/components/quiz";
@@ -45,6 +46,10 @@ export default async function CourseDetailPage({
 
   return (
     <div className="container-page py-10">
+      <CourseStructuredData course={course} />
+      <BreadcrumbStructuredData
+        items={[{ name: "Learn", href: "/learn" }, { name: course.title, href: `/learn/${course.slug}` }]}
+      />
       <div className="mb-6">
         <Breadcrumbs items={[{ label: "Learn", href: "/learn" }, { label: course.title }]} />
       </div>

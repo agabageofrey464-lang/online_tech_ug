@@ -1,5 +1,6 @@
 import { site } from "@/lib/site";
-import type { Product } from "@/lib/data";
+import type { Course, Product } from "@/lib/data";
+import type { Article } from "@/lib/blog";
 import { productImage } from "@/lib/data";
 
 const jsonLd = (data: object) => (
@@ -100,6 +101,90 @@ export function ProductStructuredData({ product }: { product: Product }) {
       ratingValue: product.rating,
       reviewCount: reviews,
     },
+  };
+  return jsonLd(data);
+}
+
+/**
+ * Course schema — makes each course eligible for Google's course rich results
+ * (title, provider and price shown directly in search).
+ */
+export function CourseStructuredData({ course }: { course: Course }) {
+  const url = `${site.url}/learn/${course.slug}`;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.title,
+    description: course.blurb,
+    url,
+    provider: {
+      "@type": "Organization",
+      name: site.name,
+      sameAs: site.url,
+    },
+    inLanguage: "en",
+    educationalLevel: course.level,
+    teaches: course.syllabus.slice(0, 10).map((l) => l.title),
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: `PT${course.hours}H`,
+      instructor: { "@type": "Organization", name: site.name },
+    },
+    offers: {
+      "@type": "Offer",
+      url,
+      priceCurrency: "UGX",
+      price: course.price,
+      category: "Paid",
+      availability: "https://schema.org/InStock",
+    },
+  };
+  return jsonLd(data);
+}
+
+/**
+ * BlogPosting schema — helps articles surface in Google Discover and news-style
+ * results with the author, date and image attached.
+ */
+export function ArticleStructuredData({ article }: { article: Article }) {
+  const url = `${site.url}/blog/${article.slug}`;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    image: article.image,
+    datePublished: article.date,
+    dateModified: article.date,
+    articleSection: article.category,
+    inLanguage: "en",
+    author: { "@type": "Organization", name: article.author || site.name },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      logo: { "@type": "ImageObject", url: `${site.url}/logo.png` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+  };
+  return jsonLd(data);
+}
+
+/**
+ * BreadcrumbList — Google replaces the raw URL in results with a readable trail
+ * (Home › Shop › Laptops), which lifts click-through.
+ */
+export function BreadcrumbStructuredData({ items }: { items: { name: string; href: string }[] }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [{ name: "Home", href: "/" }, ...items].map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: `${site.url}${it.href === "/" ? "" : it.href}`,
+    })),
   };
   return jsonLd(data);
 }

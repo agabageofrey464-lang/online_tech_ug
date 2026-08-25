@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 
@@ -36,8 +36,9 @@ export function ShopGrid() {
   const [minRating, setMinRating] = useState(0);
   // Render in pages — showing all ~180 products at once fires hundreds of image
   // requests and makes the page crawl on mobile data.
-  const PAGE = 24;
+  const PAGE = 36;
   const [shown, setShown] = useState(PAGE);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   // Initialise from URL (?cat= & ?brand= & ?q=).
   useEffect(() => {
@@ -71,6 +72,20 @@ export function ShopGrid() {
     setShown(PAGE);
   }, [category, brands, conditions, query, sort, priceIdx, minRating]);
 
+  // Infinite scroll: reveal the next batch when the sentinel enters view.
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) setShown((n) => n + PAGE);
+      },
+      { rootMargin: "600px 0px" }, // start loading before it's actually visible
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shown, PAGE]);
+
   const filtered = useMemo(() => {
     const band = PRICE_BANDS[priceIdx];
     let list = products.filter((p) => (category === "All" ? true : p.category === category));
@@ -93,8 +108,38 @@ export function ShopGrid() {
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     if (sort === "popular") list = [...list].sort((a, b) => b.rating - a.rating);
     if (sort === "new") list = [...list].reverse(); // newest products are appended last
+
+    // When someone searches, follow the direct hits with MORE from the same
+    // categories and brands. A search for "ThinkPad" then shows every laptop we
+    // stock, so the shopper always has something to browse instead of 2 results.
+    if (query.trim() && list.length) {
+      const hitIds = new Set(list.map((p) => p.id));
+      const cats = new Set(list.map((p) => p.category));
+      const brandsHit = new Set(list.map((p) => p.brand));
+      const related = products
+        .filter((p) => !hitIds.has(p.id) && (cats.has(p.category) || brandsHit.has(p.brand)))
+        // same-category first, then same-brand, best rated within each
+        .sort(
+          (a, b) =>
+            Number(cats.has(b.category)) - Number(cats.has(a.category)) ||
+            (b.rating ?? 0) - (a.rating ?? 0),
+        );
+      return [...list, ...related];
+    }
     return list;
   }, [category, brands, conditions, query, sort, priceIdx, minRating]);
+
+  // How many of the results are direct matches (the rest are "related").
+  const exactCount = useMemo(() => {
+    if (!query.trim()) return filtered.length;
+    const q = query.toLowerCase();
+    return filtered.filter((p) =>
+      [p.name, p.brand, p.category, p.condition ?? "", ...(p.specs ?? []), ...Object.values(p.details ?? {})]
+        .join(" ")
+        .toLowerCase()
+        .includes(q),
+    ).length;
+  }, [filtered, query]);
 
   return (
     <div className="grid gap-3 lg:grid-cols-[210px_1fr]">
@@ -280,17 +325,11 @@ export function ShopGrid() {
               ))}
             </div>
             {shown < filtered.length && (
-              <div className="mt-5 flex flex-col items-center gap-2">
-                <p className="text-xs text-ink-700/55">
-                  Showing {shown} of {filtered.length} products
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setShown((n) => n + PAGE)}
-                  className="press rounded-full bg-brand-500 px-8 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
-                >
-                  Load more products
-                </button>
+              // Auto-loads the next batch as the shopper scrolls — no button, no
+              // sense of a limit, but the page still starts light and fast.
+              <div ref={sentinelRef} className="mt-5 flex flex-col items-center gap-2 py-4">
+                <span className="h-6 w-6 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+                <p className="text-xs text-ink-700/50">Loading more products…</p>
               </div>
             )}
           </>
