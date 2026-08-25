@@ -81,7 +81,7 @@ async function getAdverts(): Promise<Advert[]> {
   return [];
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 export default async function AdvertisePage() {
   const adverts = await getAdverts();

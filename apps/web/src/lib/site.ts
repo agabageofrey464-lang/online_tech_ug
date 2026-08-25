@@ -60,13 +60,17 @@ export const navGroups = [
   {
     label: "More",
     items: [
+      { href: "/about", label: "About Us" },
+      { href: "/services", label: "Services" },
       { href: "/learn", label: "Learn" },
+      { href: "/blog", label: "Blog" },
       { href: "/news", label: "News" },
-      { href: "/pricing", label: "Pricing & Plans" },
+      { href: "/jobs", label: "Jobs" },
+      { href: "/pricing", label: "Pricing" },
       { href: "/portfolio", label: "Portfolio" },
-      { href: "/request", label: "Request Software" },
       { href: "/track", label: "Track Project" },
       { href: "/help", label: "Help" },
+      { href: "/contact", label: "Contact" },
     ],
   },
 ] as const;

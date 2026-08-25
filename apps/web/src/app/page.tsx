@@ -119,17 +119,19 @@ export default function HomePage() {
   );
 
   // Top sellers (highest rated) and best deals (biggest discounts) for the Jumia-style rails.
-  const topSelling = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 12);
+  const topSelling = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 8);
   const deals = products
     .filter((p) => p.oldPrice && p.oldPrice > p.price)
     .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!)
-    .slice(0, 12);
+    .slice(0, 8);
 
   // A "Brand | Top Deals" band for each brand with enough products (most first).
   const brandSections = Array.from(new Set(products.map((p) => p.brand)))
     .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
     .filter((g) => g.items.length >= 4)
-    .sort((a, b) => b.items.length - a.items.length);
+    .sort((a, b) => b.items.length - a.items.length)
+    // Cap the bands: 13 brand rails meant ~100 extra images on first paint.
+    .slice(0, 4);
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -184,15 +186,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Browse all products */}
-      <section>
-        <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
-          <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Browse all products
-        </h2>
-        <Suspense fallback={<ProductGridSkeleton />}>
-          <ShopGrid />
-        </Suspense>
-      </section>
+      {/* Browse all products — same coloured deal-band treatment as the rails */}
+      <Reveal as="section" className="overflow-hidden rounded-lg bg-gradient-to-br from-[#6d28d9] to-[#5b21b6] shadow-sm">
+        <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
+            <p className="text-xs font-semibold text-white/85 sm:text-sm">Everything in stock</p>
+          </div>
+          <Link
+            href="/shop"
+            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+          >
+            See All →
+          </Link>
+        </div>
+        <div className="p-3">
+          <Suspense fallback={<ProductGridSkeleton />}>
+            <ShopGrid />
+          </Suspense>
+        </div>
+      </Reveal>
 
       {/* Feature strip (trust badges) — computers only (hidden on phones) */}
       <div className="hidden gap-3 md:grid md:grid-cols-4">
@@ -261,7 +274,7 @@ export default function HomePage() {
           subtitle="Top Deals"
           href={`/shop?brand=${encodeURIComponent(g.brand)}`}
         >
-          <Rail items={g.items} />
+          <Rail items={g.items.slice(0, 8)} />
         </DealBand>
       ))}
 
@@ -288,19 +301,19 @@ export default function HomePage() {
 
       {/* Category sections (Jumia-style horizontal rails) */}
       <Panel title="Laptops" href="/shop?cat=Laptops">
-        <Rail items={byCat("Laptops").slice(0, 12)} />
+        <Rail items={byCat("Laptops").slice(0, 8)} />
       </Panel>
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops">
-        <Rail items={byCat("Desktops").slice(0, 12)} />
+        <Rail items={byCat("Desktops").slice(0, 8)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components">
-        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, 12)} />
+        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, 8)} />
       </Panel>
 
       <Panel title="Accessories, Networking & Storage" href="/shop">
-        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 12)} />
+        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 8)} />
       </Panel>
 
       {/* Services */}

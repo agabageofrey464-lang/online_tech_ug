@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "The latest technology news and trends from Uganda, Africa and around the world — gadgets, internet, business, AI and more from Online Tech Uganda.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 type Post = {
   slug: string;

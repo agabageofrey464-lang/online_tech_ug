@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { findArticle } from "@/lib/blog";
 import { whatsappLink } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });

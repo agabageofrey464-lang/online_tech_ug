@@ -34,6 +34,10 @@ export function ShopGrid() {
   const [showFilters, setShowFilters] = useState(false);
   const [priceIdx, setPriceIdx] = useState(0);
   const [minRating, setMinRating] = useState(0);
+  // Render in pages — showing all ~180 products at once fires hundreds of image
+  // requests and makes the page crawl on mobile data.
+  const PAGE = 24;
+  const [shown, setShown] = useState(PAGE);
 
   // Initialise from URL (?cat= & ?brand= & ?q=).
   useEffect(() => {
@@ -62,6 +66,10 @@ export function ShopGrid() {
   function toggleCondition(c: string) {
     setConditions((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   }
+
+  useEffect(() => {
+    setShown(PAGE);
+  }, [category, brands, conditions, query, sort, priceIdx, minRating]);
 
   const filtered = useMemo(() => {
     const band = PRICE_BANDS[priceIdx];
@@ -258,11 +266,27 @@ export function ShopGrid() {
         {filtered.length > 0 ? (
           // Flat cards directly on the page — full-bleed to the screen edges on
           // mobile, no panel, no borders, just whitespace.
-          <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {filtered.slice(0, shown).map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+            {shown < filtered.length && (
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <p className="text-xs text-ink-700/55">
+                  Showing {shown} of {filtered.length} products
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShown((n) => n + PAGE)}
+                  className="press rounded-full bg-brand-500 px-8 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+                >
+                  Load more products
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">
             No products match your search.

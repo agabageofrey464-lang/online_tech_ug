@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 // Always fetch fresh so newly posted jobs appear immediately.
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 type JobItem = {
   id: string | number;

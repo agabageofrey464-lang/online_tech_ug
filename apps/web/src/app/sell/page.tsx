@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Join OnlineTechUg as a vendor. Open your own online store, list products, reach thousands of buyers and get paid after every sale.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 const COMMISSION = 10;
 

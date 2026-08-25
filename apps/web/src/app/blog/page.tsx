@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Buying guides, tech tips, security advice and business insights from Online Tech Uganda. (Looking for headlines? See our News page.)",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
