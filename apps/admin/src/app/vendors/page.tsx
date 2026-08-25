@@ -21,6 +21,16 @@ type Vendor = {
   location: string;
 };
 
+type VendorImpact = {
+  id: number;
+  name: string;
+  email: string;
+  products: number;
+  messages: number;
+  payouts: number;
+  sold_items: number;
+};
+
 type PendingProduct = {
   id: number;
   vendor_name: string;
@@ -49,6 +59,11 @@ export default function VendorsPage() {
   const [prodForm, setProdForm] = useState({ vendor_id: "", name: "", category: "Accessories", price_ugx: "", image_url: "", description: "" });
   const [prodBusy, setProdBusy] = useState(false);
   const [prodMsg, setProdMsg] = useState("");
+  // Delete-vendor flow
+  const [delTarget, setDelTarget] = useState<Vendor | null>(null);
+  const [impact, setImpact] = useState<VendorImpact | null>(null);
+  const [delBusy, setDelBusy] = useState(false);
+  const [delErr, setDelErr] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -90,6 +105,40 @@ export default function VendorsPage() {
       if (res.ok) setVendors((prev) => prev.map((x) => (x.id === v.id ? { ...x, verified } : x)));
     } finally {
       setBusy(null);
+    }
+  }
+
+  // Open the confirm dialog and load exactly what would be removed.
+  async function askDelete(v: Vendor) {
+    setDelTarget(v);
+    setImpact(null);
+    setDelErr("");
+    try {
+      const res = await fetch(`/api/vendors/${v.id}`, { cache: "no-store" });
+      if (res.ok) setImpact(await res.json());
+    } catch {
+      /* dialog still works without the summary */
+    }
+  }
+
+  async function confirmDelete() {
+    if (!delTarget) return;
+    setDelBusy(true);
+    setDelErr("");
+    try {
+      const res = await fetch(`/api/vendors/${delTarget.id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setDelErr(data.detail || "Couldn't delete this vendor.");
+        return;
+      }
+      setVendors((prev) => prev.filter((x) => x.id !== delTarget.id));
+      setPendingProducts((prev) => prev.filter((p) => p.vendor_name !== (delTarget.business_name || delTarget.name)));
+      setDelTarget(null);
+    } catch {
+      setDelErr("Network error — please try again.");
+    } finally {
+      setDelBusy(false);
     }
   }
 
@@ -323,9 +372,68 @@ export default function VendorsPage() {
                     {busy === v.id ? "…" : "Approve"}
                   </button>
                 )}
+                <button
+                  onClick={() => askDelete(v)}
+                  disabled={busy === v.id}
+                  title="Permanently delete this vendor"
+                  className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete vendor — confirmation with exactly what will be removed */}
+      {delTarget && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => !delBusy && setDelTarget(null)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-extrabold text-red-600">Delete this vendor?</h3>
+            <p className="mt-1 text-sm text-ink-600/70">
+              <b className="text-ink-600">{delTarget.business_name || delTarget.name}</b> ({delTarget.email})
+            </p>
+
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm">
+              <p className="font-bold text-red-700">This permanently removes:</p>
+              {impact ? (
+                <ul className="mt-2 space-y-1 text-ink-600/80">
+                  <li>• {impact.products} marketplace product(s)</li>
+                  <li>• {impact.messages} customer message(s)</li>
+                  <li>• {impact.payouts} payout record(s)</li>
+                  <li>• The vendor&apos;s login account</li>
+                </ul>
+              ) : (
+                <p className="mt-2 text-ink-600/60">Checking what will be removed…</p>
+              )}
+              {impact && impact.sold_items > 0 && (
+                <p className="mt-3 rounded-lg bg-white/70 p-2 text-xs text-ink-600/75">
+                  ✔ {impact.sold_items} past sale(s) stay in your order history — only the vendor link is removed.
+                </p>
+              )}
+            </div>
+
+            <p className="mt-3 text-xs text-ink-600/60">This cannot be undone.</p>
+            {delErr && <p className="mt-2 text-sm font-semibold text-red-600">{delErr}</p>}
+
+            <div className="mt-5 flex gap-2">
+              <button
+                onClick={() => setDelTarget(null)}
+                disabled={delBusy}
+                className="flex-1 rounded-md border border-ink-600/20 px-4 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={delBusy}
+                className="flex-1 rounded-md bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:opacity-60"
+              >
+                {delBusy ? "Deleting…" : "Yes, delete vendor"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

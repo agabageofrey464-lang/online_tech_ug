@@ -9,8 +9,11 @@ from sqlalchemy.orm import Session
 from app.api.routes.auth import get_current_user
 from app.core.config import settings
 from app.db.session import get_db
+from app.models.order import OrderItem
+from app.models.referral import Referral
 from app.models.user import User
 from app.models.vendor_message import VendorMessage
+from app.models.vendor_payout import VendorPayout
 from app.models.vendor_product import VendorProduct
 from app.schemas.vendor_product import MarketplaceItem, PayoutIn, VendorProductIn, VendorProductOut
 from app.services import auth as auth_service
@@ -318,6 +321,86 @@ def admin_approve_vendor(vendor_id: int, approved: bool = True, db: Session = De
     u.vendor_approved = approved
     db.commit()
     return {"id": u.id, "vendor_approved": u.vendor_approved}
+
+
+@router.get("/admin/{vendor_id}/impact", dependencies=[Depends(require_admin_key)])
+def admin_vendor_impact(vendor_id: int, db: Session = Depends(get_db)) -> dict:
+    """What would be removed if this vendor is deleted — shown to the admin as a
+    confirmation summary before they commit to it."""
+    u = db.get(User, vendor_id)
+    if not u or u.role != "vendor":
+        raise HTTPException(status_code=404, detail="Vendor not found")
+    products = db.execute(
+        select(func.count()).select_from(VendorProduct).where(VendorProduct.vendor_id == vendor_id)
+    ).scalar_one()
+    messages = db.execute(
+        select(func.count()).select_from(VendorMessage).where(VendorMessage.vendor_id == vendor_id)
+    ).scalar_one()
+    payouts = db.execute(
+        select(func.count()).select_from(VendorPayout).where(VendorPayout.vendor_id == vendor_id)
+    ).scalar_one()
+    sold_items = db.execute(
+        select(func.count()).select_from(OrderItem).where(OrderItem.vendor_id == vendor_id)
+    ).scalar_one()
+    return {
+        "id": u.id,
+        "name": u.business_name or u.name,
+        "email": u.email,
+        "products": products,
+        "messages": messages,
+        "payouts": payouts,
+        "sold_items": sold_items,  # kept for records — order history is never deleted
+    }
+
+
+@router.delete("/admin/{vendor_id}", dependencies=[Depends(require_admin_key)])
+def admin_delete_vendor(vendor_id: int, db: Session = Depends(get_db)) -> dict:
+    """Permanently delete a vendor and everything they own: their marketplace
+    products, customer messages and payout records, then the account itself.
+
+    Past ORDER history is deliberately KEPT (an order is a record of a real sale);
+    those line items are simply detached from the deleted vendor.
+    """
+    u = db.get(User, vendor_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="Vendor not found")
+    if u.role == "admin":
+        raise HTTPException(status_code=400, detail="Cannot delete an admin account")
+    if u.role != "vendor":
+        raise HTTPException(status_code=400, detail="This account is not a vendor")
+
+    name = u.business_name or u.name
+
+    products = db.execute(select(VendorProduct).where(VendorProduct.vendor_id == vendor_id)).scalars().all()
+    for p in products:
+        db.delete(p)
+    messages = db.execute(select(VendorMessage).where(VendorMessage.vendor_id == vendor_id)).scalars().all()
+    for m in messages:
+        db.delete(m)
+    payouts = db.execute(select(VendorPayout).where(VendorPayout.vendor_id == vendor_id)).scalars().all()
+    for p in payouts:
+        db.delete(p)
+    referrals = db.execute(select(Referral).where(Referral.referrer_id == vendor_id)).scalars().all()
+    for r in referrals:
+        db.delete(r)
+
+    # Detach past sales so order history survives without a dangling vendor id.
+    detached = 0
+    for item in db.execute(select(OrderItem).where(OrderItem.vendor_id == vendor_id)).scalars().all():
+        item.vendor_id = None
+        detached += 1
+
+    db.delete(u)
+    db.commit()
+    return {
+        "deleted": True,
+        "id": vendor_id,
+        "name": name,
+        "products_removed": len(products),
+        "messages_removed": len(messages),
+        "payouts_removed": len(payouts),
+        "order_items_kept": detached,
+    }
 
 
 @router.get("/admin/commissions", dependencies=[Depends(require_admin_key)])
