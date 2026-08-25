@@ -120,10 +120,15 @@ export default function HomePage() {
 
   // Top sellers (highest rated) and best deals (biggest discounts) for the Jumia-style rails.
   const topSelling = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 8);
-  const deals = products
+  // Weekend deals: genuine markdowns first, then top-rated stock so the band is
+  // always full — a rail with one lonely card looks broken.
+  const realDeals = products
     .filter((p) => p.oldPrice && p.oldPrice > p.price)
-    .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!)
-    .slice(0, 8);
+    .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!);
+  const dealFillers = products
+    .filter((p) => !realDeals.some((d) => d.id === p.id) && p.inStock !== false)
+    .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  const deals = [...realDeals, ...dealFillers].slice(0, 8);
 
   // A "Brand | Top Deals" band for each brand with enough products (most first).
   const brandSections = Array.from(new Set(products.map((p) => p.brand)))
