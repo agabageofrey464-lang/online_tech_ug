@@ -6,6 +6,7 @@ import { ShopGrid } from "@/components/shop-grid";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
+import { SafeImage } from "@/components/safe-image";
 import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
@@ -171,9 +172,11 @@ export default function HomePage() {
         <OrderBanner />
       </div>
 
-      {/* Category & services circles — shown on every device: on mobile this is
-          the only quick category navigation on the home page. */}
-      <CategoryCircles />
+      {/* Category & services circles — DESKTOP only. On phones the bottom tab bar
+          and header search already cover category browsing, so we skip it. */}
+      <div className="hidden md:block">
+        <CategoryCircles />
+      </div>
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -354,17 +357,30 @@ export default function HomePage() {
             <Link
               key={c.slug}
               href={`/learn/${c.slug}`}
-              className="flex flex-col rounded-lg border border-ink-600/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group/course flex flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                <Icon name={c.emoji} size={24} />
+              {/* Cover photo fills what used to be empty card space */}
+              <span className="relative block h-24 w-full overflow-hidden bg-ink-50 sm:h-28">
+                <SafeImage
+                  src={c.cover ?? `/courses/${c.slug}.webp`}
+                  alt={c.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover transition duration-300 group-hover/course:scale-105"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-ink-900/55 to-transparent" />
+                <span className="absolute bottom-1.5 left-1.5 flex h-7 w-7 items-center justify-center rounded-lg bg-white text-brand-600 shadow">
+                  <Icon name={c.emoji} size={16} />
+                </span>
               </span>
-              <p className="mt-2 text-sm font-bold text-ink-900">{c.title}</p>
-              <p className="mt-0.5 text-[11px] text-ink-700/60">{c.level} · {c.lessons} lessons</p>
-              <p className="mt-2 inline-flex w-fit rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700">
-                Free lessons
-              </p>
-              <p className="mt-auto pt-2 text-sm font-extrabold text-brand-600">{ugx(c.price)}</p>
+              <div className="flex flex-1 flex-col p-3">
+                <p className="clamp-2 text-sm font-bold leading-snug text-ink-900">{c.title}</p>
+                <p className="mt-0.5 text-[11px] text-ink-700/60">{c.level} · {c.lessons} lessons</p>
+                <p className="mt-1.5 inline-flex w-fit rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700">
+                  Free lessons
+                </p>
+                <p className="mt-auto pt-2 text-sm font-extrabold text-brand-600">{ugx(c.price)}</p>
+              </div>
             </Link>
           ))}
         </div>
