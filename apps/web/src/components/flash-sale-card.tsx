@@ -34,7 +34,7 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
           <span className="text-base font-extrabold text-ink-900">{ugx(product.price)}</span>
           <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-brand-500 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
+          <span className="rounded bg-[#e63946] px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
             -{discountPct}%
           </span>
         </div>

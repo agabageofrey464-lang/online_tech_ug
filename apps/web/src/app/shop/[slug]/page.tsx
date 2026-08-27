@@ -139,7 +139,7 @@ export default async function ProductDetailPage({
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
                 <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                <span className="rounded bg-brand-500 px-1.5 py-0.5 text-xs font-extrabold text-white">
+                <span className="rounded bg-[#e63946] px-1.5 py-0.5 text-xs font-extrabold text-white">
                   -{discountPct}%
                 </span>
               </div>
