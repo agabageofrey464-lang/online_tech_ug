@@ -79,25 +79,25 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </div>
 
-      {/* Thumbnail strip — alternate views, like Amazon's card */}
-      {thumbs.length > 0 && (
-        <div className="flex justify-center gap-1.5 px-2.5 pb-1">
-          {thumbs.map((src, i) => (
-            <span
-              key={i}
-              className="relative h-8 w-8 shrink-0 overflow-hidden rounded border border-ink-600/10 bg-white"
-            >
-              <SafeImage
-                src={src}
-                alt={`${product.name} view ${i + 2}`}
-                fill
-                sizes="32px"
-                className="object-contain p-0.5"
-              />
-            </span>
-          ))}
-        </div>
-      )}
+      {/* Thumbnail strip — alternate views. The row is ALWAYS rendered at a fixed
+          height so every card in a grid lines up, whether or not this product has
+          extra angles. */}
+      <div className="flex h-9 items-center justify-center gap-1.5 px-2.5">
+        {thumbs.map((src, i) => (
+          <span
+            key={i}
+            className="relative h-8 w-8 shrink-0 overflow-hidden rounded border border-ink-600/10 bg-white"
+          >
+            <SafeImage
+              src={src}
+              alt={`${product.name} view ${i + 2}`}
+              fill
+              sizes="32px"
+              className="object-contain p-0.5"
+            />
+          </span>
+        ))}
+      </div>
 
       <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pt-1">
         {/* Title — link-blue, two lines */}
