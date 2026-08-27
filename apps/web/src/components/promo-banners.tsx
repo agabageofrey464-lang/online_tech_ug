@@ -160,9 +160,55 @@ const BANNERS = [
   },
 ];
 
+type Banner = {
+  program: string; badge: string; badgeSub: string; dates: string; title: string;
+  pill: string; note: string; small: string; cta: string; href: string;
+  bg: string; panel: string; img: string;
+  slug?: string;          // set for API campaigns (used for click tracking)
+  bgHex?: string;         // API campaigns colour via inline style, not a class
+  panelHex?: string;
+};
+
 export function PromoBanners() {
   const [i, setI] = useState(0);
-  const n = BANNERS.length;
+  // Campaigns created in the admin replace these built-ins the moment any are
+  // live; the hard-coded set stays as a fallback so the slot is never empty.
+  const [banners, setBanners] = useState<Banner[]>(BANNERS as Banner[]);
+  const n = banners.length;
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/_api/campaigns?placement=home", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (!alive || !Array.isArray(rows) || rows.length === 0) return;
+        setBanners(
+          rows.map((c: Record<string, string>) => ({
+            program: c.program || "",
+            badge: c.badge || "",
+            badgeSub: c.badge_sub || "",
+            dates: c.discount_pct ? `-${c.discount_pct}%` : "",
+            title: c.title || "",
+            pill: c.pill || "",
+            note: c.note || "",
+            small: c.small || "",
+            cta: c.cta_label || "Shop now",
+            href: c.link_url || "/shop",
+            img: c.image_url || "/hero/hero-1.jpg",
+            bg: "",
+            panel: "",
+            bgHex: c.bg_color || "#6d28d9",
+            panelHex: c.panel_color || "#FCDC04",
+            slug: c.slug,
+          })),
+        );
+        setI(0);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
   const go = useCallback((d: number) => setI((v) => (v + d + n) % n), [n]);
 
   useEffect(() => {
@@ -170,14 +216,18 @@ export function PromoBanners() {
     return () => clearTimeout(t);
   }, [i, n]);
 
-  const b = BANNERS[i];
+  const b = banners[i];
+  if (!b) return null;
 
   return (
     <section>
       <h2 className="mb-2 text-base font-extrabold text-ink-900 sm:text-lg">Don&apos;t Miss Out!</h2>
 
       <div className="group/promo relative overflow-hidden rounded-lg shadow-sm">
-        <div className={`relative flex min-h-[190px] transition-colors duration-500 sm:min-h-[260px] ${b.bg}`}>
+        <div
+          className={`relative flex min-h-[190px] transition-colors duration-500 sm:min-h-[260px] ${b.bg}`}
+          style={b.bgHex ? { backgroundColor: b.bgHex } : undefined}
+        >
           {/* Soft wave texture, like a printed campaign board */}
           <span
             className="pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -223,7 +273,10 @@ export function PromoBanners() {
           </div>
 
           {/* Photo panel (desktop) */}
-          <div className={`relative hidden w-[38%] shrink-0 sm:block ${b.panel}`}>
+          <div
+            className={`relative hidden w-[38%] shrink-0 sm:block ${b.panel}`}
+            style={b.panelHex ? { backgroundColor: b.panelHex } : undefined}
+          >
             <Image
               src={b.img}
               alt=""
@@ -252,7 +305,7 @@ export function PromoBanners() {
 
         {/* Dots */}
         <div className="absolute bottom-3 left-5 z-20 flex items-center gap-1.5 sm:left-8">
-          {BANNERS.map((_, idx) => (
+          {banners.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setI(idx)}

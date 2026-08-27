@@ -1,5 +1,6 @@
 from app.models.advert import Advert
 from app.models.application import Application
+from app.models.campaign import Campaign
 from app.models.contact import ContactMessage
 from app.models.coupon import Coupon
 from app.models.freelancer import Freelancer
@@ -22,6 +23,7 @@ __all__ = [
     "VendorMessage",
     "Advert",
     "Application",
+    "Campaign",
     "ContactMessage",
     "Coupon",
     "Freelancer",

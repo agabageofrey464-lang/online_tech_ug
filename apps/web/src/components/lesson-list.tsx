@@ -133,7 +133,10 @@ export function LessonList({ course }: { course: Course }) {
               {watchable ? (
                 <button
                   onClick={() => {
-                    setPlaying({ title: lesson.title, video: lesson.preview || course.sampleVideo, youtube: lesson.youtube });
+                    // Only ever play THIS lesson's own video. We deliberately do not fall
+                    // back to a generic course clip — a paid learner must never be
+                    // shown an unrelated video in place of the lesson they bought.
+                    setPlaying({ title: lesson.title, video: lesson.preview, youtube: lesson.youtube });
                     mark(i, true);
                   }}
                   className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
@@ -177,7 +180,18 @@ export function LessonList({ course }: { course: Course }) {
             ) : playing.video ? (
               <video src={playing.video} controls autoPlay playsInline className="w-full rounded-lg bg-black" />
             ) : (
-              <div className="rounded-lg bg-ink-800 p-10 text-center text-white">Lesson video coming soon.</div>
+              <div className="rounded-lg bg-ink-800 p-8 text-center text-white">
+                <p className="text-base font-bold">Video for this lesson is coming soon</p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-white/70">
+                  The written notes for this course are ready now — they cover this lesson in full.
+                </p>
+                <a
+                  href={`/learn/${slug}/notes`}
+                  className="mt-4 inline-block rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+                >
+                  Read the course notes
+                </a>
+              </div>
             )}
             <p className="mt-3 text-center text-sm font-semibold text-white">{playing.title}</p>
           </div>

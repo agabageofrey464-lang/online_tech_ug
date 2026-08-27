@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.routes import (
     adverts,
     auth,
+    campaigns,
     careers,
     contact,
     coupons,
@@ -40,6 +41,7 @@ api_router.include_router(orders.router, prefix="/orders", tags=["orders"])
 api_router.include_router(payments.router, prefix="/payments", tags=["payments"])
 api_router.include_router(newsletter.router, prefix="/newsletter", tags=["newsletter"])
 api_router.include_router(push.router, prefix="/push", tags=["push"])
+api_router.include_router(campaigns.router, prefix="/campaigns", tags=["campaigns"])
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
