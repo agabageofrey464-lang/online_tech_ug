@@ -3,7 +3,7 @@
 Two different rhythms on purpose:
 
 * The storefront BANNER refreshes every hour, so the shop always looks alive.
-* Customers are only ANNOUNCED to (email + push) a maximum of twice a day,
+* Customers are only ANNOUNCED to (email + push) two to three times a day,
   spaced apart. Nobody wants 24 notifications about the same shop.
 """
 
@@ -18,8 +18,11 @@ from app.services import campaigns as campaign_service
 
 logger = logging.getLogger("onlinetech.campaign_auto")
 
-MAX_ANNOUNCEMENTS_PER_DAY = 2
-MIN_HOURS_BETWEEN_ANNOUNCEMENTS = 5
+# Two to three notifications a day, spaced so they never bunch up. Four hours
+# apart means a day realistically fits 2-3 sends (e.g. 09:00, 13:00, 17:00)
+# without any chance of a customer being pinged twice in an afternoon.
+MAX_ANNOUNCEMENTS_PER_DAY = 3
+MIN_HOURS_BETWEEN_ANNOUNCEMENTS = 4
 
 # Campaign shapes built from what the shop actually sells. Each entry is a
 # template; the hourly job rotates which ones are shown.
@@ -126,7 +129,7 @@ def _announced_today(db: Session, now: datetime) -> list[Campaign]:
 
 def due_for_announcement(db: Session, now: datetime | None = None) -> Campaign | None:
     """The campaign to announce right now, or None if we've already said enough
-    today. Caps at 2/day and spaces them at least 5 hours apart."""
+    today. Caps at 3/day and spaces them at least 4 hours apart."""
     now = now or datetime.utcnow()
     sent_today = _announced_today(db, now)
     if len(sent_today) >= MAX_ANNOUNCEMENTS_PER_DAY:
