@@ -35,7 +35,7 @@ const PAY_METHODS = [
 
 type Faq = { cat: string; q: string; a: string };
 const FAQS: Faq[] = [
-  { cat: "ordering", q: "How do I place an order?", a: "Browse the shop, tap Add to cart, then open the cart and press Checkout. Fill in your name, phone and delivery address, choose a payment method, and confirm. You'll get an order reference." },
+  { cat: "ordering", q: "How do I place an order?", a: "Browse the shop, tap Order now, then open the cart and press Checkout. Fill in your name, phone and delivery address, choose a payment method, and confirm. You'll get an order reference." },
   { cat: "ordering", q: "Can I order without an account?", a: "Yes — you can check out as a guest. Creating an account lets you track orders and check out faster next time." },
   { cat: "ordering", q: "How do I cancel an order?", a: "Contact us on WhatsApp with your order reference and we'll cancel it if it hasn't shipped yet." },
   { cat: "payments", q: "What payment methods do you accept?", a: "MTN MoMo, Airtel Money, bank transfer/cards, and Pay on Delivery (cash, Mobile Money or card on arrival)." },

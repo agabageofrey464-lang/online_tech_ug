@@ -6,7 +6,7 @@ import { useCart, type CartItem } from "@/lib/cart";
 export function AddToCartButton({
   item,
   className = "",
-  label = "Add to cart",
+  label = "Order now",
   addedLabel = "✓ Added",
   pill = false,
 }: {

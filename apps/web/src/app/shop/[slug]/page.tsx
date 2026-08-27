@@ -161,12 +161,12 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          {/* Add to cart — Jumia orange, full width */}
+          {/* Order now — Jumia orange, full width */}
           <div className="mt-3 space-y-2">
             {inStock ? (
               <AddToCartButton
                 className="w-full justify-center !py-3.5 !text-base"
-                label="Add to cart"
+                label="Order now"
                 item={{
                   slug: product.id,
                   name: product.name,

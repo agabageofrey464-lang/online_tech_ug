@@ -30,7 +30,7 @@ export function VendorAddToCart({ id, name, price, category, vendorName, image }
       }
       className="mt-auto flex items-center justify-center gap-1.5 rounded bg-brand-500 px-3 py-1.5 text-center text-xs font-bold text-white transition hover:bg-brand-600"
     >
-      <ShoppingCart size={14} /> Add to cart
+      <ShoppingCart size={14} /> Order now
     </button>
   );
 }
