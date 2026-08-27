@@ -108,7 +108,7 @@ export default async function ProductDetailPage({
       </div>
 
       {/* Amazon-style 3 zones: gallery · details · buy box */}
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)_minmax(0,3fr)]">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)_minmax(0,3fr)]">
         {/* Gallery */}
         <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
           <div className="absolute left-4 top-4 z-10 flex gap-2">

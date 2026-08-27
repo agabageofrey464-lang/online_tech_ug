@@ -37,7 +37,7 @@ export function ProductGallery({
       )}
 
       {/* Main image */}
-      <div className="relative aspect-[4/3] max-h-[420px] flex-1 overflow-hidden rounded-card bg-white shadow-sm">
+      <div className="relative aspect-[4/3] max-h-[300px] flex-1 overflow-hidden rounded-card bg-white shadow-sm">
         <SafeImage
           src={list[active]}
           alt={alt}
