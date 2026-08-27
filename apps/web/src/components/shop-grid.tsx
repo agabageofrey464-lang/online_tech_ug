@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 
@@ -37,8 +37,7 @@ export function ShopGrid() {
   // Render in pages — showing all ~180 products at once fires hundreds of image
   // requests and makes the page crawl on mobile data.
   const PAGE = 36;
-  const [shown, setShown] = useState(PAGE);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const [page, setPage] = useState(1);
 
   // Initialise from URL (?cat= & ?brand= & ?q=).
   useEffect(() => {
@@ -69,22 +68,10 @@ export function ShopGrid() {
   }
 
   useEffect(() => {
-    setShown(PAGE);
+    setPage(1);
   }, [category, brands, conditions, query, sort, priceIdx, minRating]);
 
-  // Infinite scroll: reveal the next batch when the sentinel enters view.
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) setShown((n) => n + PAGE);
-      },
-      { rootMargin: "600px 0px" }, // start loading before it's actually visible
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [shown, PAGE]);
+  // Pagination (Jumia-style): the shopper chooses the page — nothing auto-loads.
 
   const filtered = useMemo(() => {
     const band = PRICE_BANDS[priceIdx];
@@ -128,6 +115,26 @@ export function ShopGrid() {
     }
     return list;
   }, [category, brands, conditions, query, sort, priceIdx, minRating]);
+
+  // Page slice + the page numbers to render (with … for long lists).
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE));
+  const current = Math.min(page, totalPages);
+  const pageItems = filtered.slice((current - 1) * PAGE, current * PAGE);
+  const go = (n: number) => {
+    setPage(Math.min(Math.max(1, n), totalPages));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const pageNumbers: (number | "…")[] = (() => {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+    const out: (number | "…")[] = [1];
+    const from = Math.max(2, current - 1);
+    const to = Math.min(totalPages - 1, current + 1);
+    if (from > 2) out.push("…");
+    for (let i = from; i <= to; i++) out.push(i);
+    if (to < totalPages - 1) out.push("…");
+    out.push(totalPages);
+    return out;
+  })();
 
   // How many of the results are direct matches (the rest are "related").
   const exactCount = useMemo(() => {
@@ -320,17 +327,47 @@ export function ShopGrid() {
           // mobile, no panel, no borders, just whitespace.
           <>
             <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {filtered.slice(0, shown).map((p) => (
+              {pageItems.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
-            {shown < filtered.length && (
-              // Auto-loads the next batch as the shopper scrolls — no button, no
-              // sense of a limit, but the page still starts light and fast.
-              <div ref={sentinelRef} className="mt-5 flex flex-col items-center gap-2 py-4">
-                <span className="h-6 w-6 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
-                <p className="text-xs text-ink-700/50">Loading more products…</p>
-              </div>
+            {totalPages > 1 && (
+              <nav className="mt-6 flex flex-wrap items-center justify-center gap-1.5 py-2" aria-label="Pagination">
+                <button
+                  onClick={() => go(page - 1)}
+                  disabled={page === 1}
+                  className="rounded-md border border-ink-600/15 bg-white px-3 py-2 text-sm font-semibold text-ink-700 transition hover:border-brand-400 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  ‹ Prev
+                </button>
+                {pageNumbers.map((n, i) =>
+                  n === "…" ? (
+                    <span key={`gap-${i}`} className="px-1.5 text-sm text-ink-700/40">
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={n}
+                      onClick={() => go(n as number)}
+                      aria-current={n === page ? "page" : undefined}
+                      className={`min-w-9 rounded-md px-3 py-2 text-sm font-bold transition ${
+                        n === page
+                          ? "bg-brand-500 text-white shadow-sm"
+                          : "border border-ink-600/15 bg-white text-ink-700 hover:border-brand-400 hover:text-brand-600"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ),
+                )}
+                <button
+                  onClick={() => go(page + 1)}
+                  disabled={page === totalPages}
+                  className="rounded-md border border-ink-600/15 bg-white px-3 py-2 text-sm font-semibold text-ink-700 transition hover:border-brand-400 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next ›
+                </button>
+              </nav>
             )}
           </>
         ) : (
