@@ -390,6 +390,12 @@ def admin_delete_vendor(vendor_id: int, db: Session = Depends(get_db)) -> dict:
         item.vendor_id = None
         detached += 1
 
+    # These child rows reference users.id by raw ForeignKey with no ORM
+    # relationship, so SQLAlchemy doesn't know it must delete them first. Flush
+    # here to push the child deletes to the database before the user row goes,
+    # otherwise Postgres rejects it with a foreign-key violation.
+    db.flush()
+
     db.delete(u)
     db.commit()
     return {
