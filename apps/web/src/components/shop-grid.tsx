@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 
@@ -38,6 +38,9 @@ export function ShopGrid() {
   // requests and makes the page crawl on mobile data.
   const PAGE = 36;
   const [page, setPage] = useState(1);
+  // Anchor for paging: scroll back to the TOP OF THE GRID, not the whole page —
+  // this grid is also embedded mid-way down the home page.
+  const topRef = useRef<HTMLDivElement | null>(null);
 
   // Initialise from URL (?cat= & ?brand= & ?q=).
   useEffect(() => {
@@ -122,7 +125,8 @@ export function ShopGrid() {
   const pageItems = filtered.slice((current - 1) * PAGE, current * PAGE);
   const go = (n: number) => {
     setPage(Math.min(Math.max(1, n), totalPages));
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    // Bring the shopper to the first product of the new page, not the page top.
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const pageNumbers: (number | "…")[] = (() => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -149,7 +153,7 @@ export function ShopGrid() {
   }, [filtered, query]);
 
   return (
-    <div className="grid gap-3 lg:grid-cols-[210px_1fr]">
+    <div ref={topRef} className="scroll-mt-24 grid gap-3 lg:grid-cols-[210px_1fr]">
       {/* Mobile filter toggle */}
       <button
         onClick={() => setShowFilters((v) => !v)}
