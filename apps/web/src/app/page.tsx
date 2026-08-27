@@ -111,41 +111,63 @@ function DealBand({
   );
 }
 
-const FLASH = [
-  { id: "hp-elitebook-840-g8", sold: 82 },
-  { id: "macbook-air-m1", sold: 67 },
-  { id: "dell-xps-13-9310", sold: 74 },
-  { id: "lenovo-legion-5-15", sold: 90 },
-  { id: "asus-rog-strix-g15", sold: 58 },
-  { id: "sandisk-ssd-1tb", sold: 78 },
-  { id: "ssd-nvme-500gb", sold: 63 },
-  { id: 'macbook-pro-14-m3', sold: 71 },
-];
+// The storefront re-renders on a schedule (see `revalidate` below). Each slot
+// gets a different offset, so the home page leads with different products every
+// time it refreshes — the shop feels alive instead of frozen.
+export const revalidate = 600; // 10 minutes
+
+/** Rotate an array by `by` places — deterministic, no randomness to hydrate. */
+function rotate<T>(arr: T[], by: number): T[] {
+  if (arr.length === 0) return arr;
+  const n = ((by % arr.length) + arr.length) % arr.length;
+  return [...arr.slice(n), ...arr.slice(0, n)];
+}
+
+// "Sold" bar figures — stable per product so the bar doesn't jump around.
+const soldFor = (id: string) => 55 + ([...id].reduce((a, c) => a + c.charCodeAt(0), 0) % 40);
 
 export default function HomePage() {
-  const flash = FLASH.map((f) => ({ p: products.find((x) => x.id === f.id)!, sold: f.sold })).filter(
-    (f) => f.p,
-  );
+  // Which slot of the day we're in — advances every 10 minutes.
+  const slot = Math.floor(Date.now() / (revalidate * 1000));
 
-  // Top sellers (highest rated) and best deals (biggest discounts) for the Jumia-style rails.
-  const topSelling = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 8);
+  const inStock = products.filter((p) => p.inStock !== false);
+
+  // Flash sales: rotate through the well-rated, photographed stock.
+  const flashPool = inStock.filter((p) => (p.rating ?? 0) >= 4.4);
+  const flash = rotate(flashPool, slot * 3)
+    .slice(0, 8)
+    .map((p) => ({ p, sold: soldFor(p.id) }));
+
+  // Trending: top-rated, rotated so a different set leads each refresh.
+  const topPool = [...inStock].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 40);
+  const topSelling = rotate(topPool, slot * 5).slice(0, 8);
+
   // Weekend deals: genuine markdowns first, then top-rated stock so the band is
   // always full — a rail with one lonely card looks broken.
   const realDeals = products
     .filter((p) => p.oldPrice && p.oldPrice > p.price)
     .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!);
-  const dealFillers = products
-    .filter((p) => !realDeals.some((d) => d.id === p.id) && p.inStock !== false)
-    .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  const dealFillers = rotate(
+    inStock.filter((p) => !realDeals.some((d) => d.id === p.id)).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)),
+    slot * 7,
+  );
   const deals = [...realDeals, ...dealFillers].slice(0, 8);
 
-  // A "Brand | Top Deals" band for each brand with enough products (most first).
-  const brandSections = Array.from(new Set(products.map((p) => p.brand)))
+  // Brand bands: rotate WHICH brands get a band, so the page varies by visit.
+  const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
     .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
-    .filter((g) => g.items.length >= 4)
-    .sort((a, b) => b.items.length - a.items.length)
-    // Cap the bands: 13 brand rails meant ~100 extra images on first paint.
-    .slice(0, 4);
+    .filter((g) => g.items.length >= 4 && g.brand !== "Generic")
+    .sort((a, b) => b.items.length - a.items.length);
+  const brandSections = rotate(eligibleBrands, slot).slice(0, 4);
+
+  // Rotating headline so the same rail doesn't always read the same.
+  const TRENDING_TITLES = [
+    { title: "Trending Now", subtitle: "What shoppers are buying" },
+    { title: "Top Selling", subtitle: "Best Rated" },
+    { title: "Hot Right Now", subtitle: "Moving fast" },
+    { title: "Customer Favourites", subtitle: "Highest rated picks" },
+  ];
+  const trending = TRENDING_TITLES[slot % TRENDING_TITLES.length];
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -254,7 +276,7 @@ export default function HomePage() {
       </div>
 
       {/* Top selling — teal banded separator */}
-      <DealBand title="Top Selling" subtitle="Best Rated" href="/shop?sort=popular">
+      <DealBand title={trending.title} subtitle={trending.subtitle} href="/shop?sort=popular">
         <Rail items={topSelling} />
       </DealBand>
 
