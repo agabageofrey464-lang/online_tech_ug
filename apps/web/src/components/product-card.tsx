@@ -12,21 +12,13 @@ function conditionStyle(c: string): string {
   return "bg-ink-100 text-ink-700"; // UK Used / other
 }
 
-/** Rating bar: grey stars with a gold overlay clipped to the rating. */
-function Stars({ rating }: { rating: number }) {
-  const pct = Math.max(0, Math.min(100, (rating / 5) * 100));
+/** Jumia-style rating: a single gold star, the score, then the review count. */
+function Rating({ rating, count }: { rating: number; count: number }) {
   return (
-    <span
-      className="relative inline-block align-middle text-[12px] leading-none tracking-[1px]"
-      aria-label={`Rated ${rating} out of 5`}
-    >
-      <span className="text-ink-600/20">★★★★★</span>
-      <span
-        className="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-[#f68b1e]"
-        style={{ width: `${pct}%` }}
-      >
-        ★★★★★
-      </span>
+    <span className="flex items-center gap-1 text-[11.5px] leading-none">
+      <span className="text-[13px] leading-none text-[#f68b1e]">★</span>
+      <span className="font-bold text-ink-900">{rating.toFixed(1)}</span>
+      <span className="text-ink-700/50">({count.toLocaleString()})</span>
     </span>
   );
 }
@@ -99,9 +91,9 @@ export function ProductCard({ product }: { product: Product }) {
         ))}
       </div>
 
-      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pt-0.5">
+      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-3 pt-1">
         {/* Title — link-blue, two lines */}
-        <h3 className="clamp-2 min-h-[2.3em] text-[12px] leading-tight text-ink-700 group-hover:text-brand-600 group-hover:underline">
+        <h3 className="clamp-2 min-h-[2.5em] text-[12.5px] leading-snug text-ink-800 group-hover:text-brand-600 group-hover:underline">
           {product.name}
         </h3>
 
@@ -118,23 +110,22 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Rating + review count */}
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Stars rating={product.rating} />
-          <span className="text-[11px] text-ink-700/55">{reviews.toLocaleString()}</span>
+        <div className="mt-1">
+          <Rating rating={product.rating} count={reviews} />
         </div>
 
         {/* Price */}
         <div className="mt-0.5">
-          <p className="text-[15px] font-extrabold leading-tight text-ink-900">{ugx(product.price)}</p>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-            <span className="rounded bg-brand-500 px-1 text-[9px] font-extrabold leading-[1.4] text-white">
+          <p className="text-[16.5px] font-extrabold leading-tight tracking-tight text-ink-900">{ugx(product.price)}</p>
+          <div className="mt-1 flex items-center gap-1.5">
+            <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+            <span className="rounded bg-brand-500 px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white">
               -{discountPct}%
             </span>
           </div>
         </div>
 
-        <div className="pb-2" />
+        <div className="pb-3" />
       </Link>
     </article>
   );
