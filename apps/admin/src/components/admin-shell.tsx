@@ -21,6 +21,7 @@ const sections = [
   { href: "/courses", label: "Courses", icon: "🎓", count: "courses" },
   { href: "/enrollments", label: "Enrollments", icon: "🎟️", count: "enrollments", attention: true },
   { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
+  { href: "/newsletter", label: "Notifications", icon: "📣" },
   { href: "/commissions", label: "Commissions", icon: "💰" },
   { href: "/referrals", label: "Referrals", icon: "🎁", count: "referrals", attention: true },
   { href: "/jobs", label: "Jobs", icon: "💼", count: "jobs" },

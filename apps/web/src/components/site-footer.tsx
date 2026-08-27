@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MapPin, Phone, Mail, Banknote, MessageCircle } from "lucide-react";
 import { site, whatsappAltLink } from "@/lib/site";
 import { BrandLogoFull } from "@/components/brand-logo-full";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -57,24 +58,7 @@ export function SiteFooter() {
       {/* Newsletter + socials (Jumia-style top) */}
       <div className="border-b border-ink-600/10 bg-ink-50">
         <div className="container-wide grid items-center gap-5 py-6 sm:grid-cols-2">
-          <form action="/contact" method="get" className="text-center sm:text-left">
-            <p className="text-base font-extrabold text-ink-900">New to {site.name}?</p>
-            <p className="mt-0.5 text-sm text-ink-700/60">Sign up for our newsletter — deals, new arrivals & tech tips.</p>
-            <div className="mx-auto mt-3 flex max-w-md gap-2 sm:mx-0">
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your e-mail address"
-                className="min-w-0 flex-1 rounded-md border border-ink-600/20 bg-white px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-              />
-              <button
-                type="submit"
-                className="press shrink-0 rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600"
-              >
-                Subscribe
-              </button>
-            </div>
-          </form>
+          <NewsletterSignup />
 
           <div className="text-center sm:justify-self-end sm:text-left">
             <p className="text-sm font-bold uppercase tracking-wider text-ink-700/50">Follow us</p>
