@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -16,6 +17,53 @@ from app import models  # noqa: F401
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("onlinetech")
+
+
+
+async def _campaign_worker() -> None:
+    """Every hour: refresh the storefront campaign banner, and — at most twice a
+    day, spaced apart — announce one campaign by email and push.
+
+    The banner changing hourly keeps the shop looking alive; the announcement cap
+    is what stops that becoming spam in a customer's inbox or on their phone.
+    """
+    from datetime import datetime
+
+    from app.db.session import SessionLocal
+    from app.services import campaign_auto, newsletter, push
+
+    while True:
+        try:
+            with SessionLocal() as db:
+                campaign_auto.refresh_auto_campaigns(db)
+
+                due = campaign_auto.due_for_announcement(db)
+                if due is not None:
+                    title, body = campaign_auto.push_copy_for(due)
+                    link = due.link_url or "/shop"
+
+                    if push.configured():
+                        try:
+                            await push.broadcast(db, title, body, link)
+                        except Exception as exc:  # noqa: BLE001
+                            logger.warning("Campaign push failed: %s", exc)
+                    try:
+                        html = (
+                            f"<p><b>{due.title}</b></p>"
+                            f"<p>{due.pill or ''}</p>"
+                            f"<p>{due.note or ''}</p>"
+                        )
+                        await newsletter.broadcast(db, title, html, include_customers=True)
+                    except Exception as exc:  # noqa: BLE001
+                        logger.warning("Campaign email failed: %s", exc)
+
+                    due.notified_at = datetime.utcnow()
+                    db.commit()
+                    logger.info("Announced campaign: %s", due.title)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Campaign worker cycle failed: %s", exc)
+
+        await asyncio.sleep(3600)  # once an hour
 
 
 @asynccontextmanager
@@ -62,7 +110,13 @@ async def lifespan(app: FastAPI):
             logger.warning("Post seeding skipped (%s).", exc)
     except Exception as exc:  # noqa: BLE001
         logger.warning("Database unavailable at startup (%s). Running in degraded mode.", exc)
-    yield
+
+    # Hourly campaign refresh + rationed announcements.
+    task = asyncio.create_task(_campaign_worker())
+    try:
+        yield
+    finally:
+        task.cancel()
 
 
 app = FastAPI(

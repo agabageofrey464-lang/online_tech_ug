@@ -45,4 +45,10 @@ class Campaign(Base):
 
     # Optional: headline discount shown on the banner
     discount_pct: Mapped[int] = mapped_column(Integer, default=0)
+    # True for campaigns the system generated itself on the hourly refresh.
+    # Auto campaigns are replaced each hour; anything you create by hand is kept.
+    auto: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    # When this campaign was pushed/emailed out. Used to cap announcements to a
+    # couple a day so we never spam a customer's inbox or phone.
+    notified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     clicks: Mapped[int] = mapped_column(Integer, default=0)
