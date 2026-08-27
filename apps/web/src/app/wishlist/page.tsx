@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EmptyState } from "@/components/empty-state";
 import { Heart } from "lucide-react";
 import { products } from "@/lib/data";
 import { useWishlist } from "@/lib/wishlist";
@@ -30,19 +31,13 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="rounded bg-white px-6 py-16 text-center shadow-sm">
-          <Heart size={44} className="mx-auto text-ink-600/20" />
-          <p className="mt-3 text-base font-bold text-ink-900">Your list is empty</p>
-          <p className="mt-1 text-sm text-ink-700/60">
-            Tap the heart on any product to save it here for later.
-          </p>
-          <Link
-            href="/shop"
-            className="mt-4 inline-block rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
-          >
-            Start shopping
-          </Link>
-        </div>
+        <EmptyState
+          art="wishlist"
+          title="Your list is empty"
+          message="Tap the heart on any product to save it here for later."
+          actionLabel="Start shopping"
+          actionHref="/shop"
+        />
       ) : (
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
           {items.map((p) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EmptyState } from "@/components/empty-state";
 import { Trash2, Minus, Plus, ShoppingCart } from "lucide-react";
 import { useCart, type CartItem } from "@/lib/cart";
 import { ugx } from "@/lib/site";
@@ -25,14 +26,13 @@ export default function CartPage() {
       <h1 className="mb-5 text-2xl font-extrabold text-ink-900">Your cart {count > 0 && <span className="text-ink-700/50">({count})</span>}</h1>
 
       {items.length === 0 ? (
-        <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-12 text-center">
-          <ShoppingCart className="mx-auto text-ink-700/30" size={40} />
-          <p className="mt-3 font-bold text-ink-800">Your cart is empty</p>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-ink-700/60">Browse the shop and add items to get started.</p>
-          <Link href="/shop" className="mt-5 inline-block rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
-            Start shopping
-          </Link>
-        </div>
+        <EmptyState
+          art="cart"
+          title="Your cart is empty"
+          message="Browse the shop and add items to get started."
+          actionLabel="Start shopping"
+          actionHref="/shop"
+        />
       ) : (
         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
           {/* Items */}

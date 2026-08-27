@@ -31,6 +31,7 @@ import { useAuth } from "@/lib/auth";
 import { productImage, products } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { SafeImage } from "@/components/safe-image";
+import { EmptyState } from "@/components/empty-state";
 import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 type Profile = {
@@ -593,12 +594,13 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
 
   if (orders.length === 0) {
     return (
-      <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-8 text-center">
-        <p className="text-sm font-semibold text-ink-700">You have no orders here yet.</p>
-        <Link href="/shop" className="mt-3 inline-block rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600">
-          Start shopping
-        </Link>
-      </div>
+      <EmptyState
+        art="orders"
+        title="No orders here yet"
+        message="When you place an order it shows up here, with live delivery tracking."
+        actionLabel="Start shopping"
+        actionHref="/shop"
+      />
     );
   }
 

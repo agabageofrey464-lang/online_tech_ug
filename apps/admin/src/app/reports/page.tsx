@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ugx } from "@/lib/api";
+import { RevenueChart, StatusBars, Donut, RankedBars } from "@/components/charts";
 
 type Report = {
   revenue: number;
@@ -77,16 +78,11 @@ export default function ReportsPage() {
           {/* Revenue by day */}
           <section className="mt-6 rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
             <h2 className="mb-4 font-extrabold text-ink-600">Revenue — last {days} days</h2>
-            <div className="flex items-end gap-1.5 overflow-x-auto" style={{ height: 180 }}>
-              {data?.by_day.map((d) => (
-                <div key={d.date} className="flex min-w-[24px] flex-1 flex-col items-center justify-end gap-1" title={`${d.date}: ${ugx(d.revenue)} (${d.orders} orders)`}>
-                  <div
-                    className="w-full rounded-t bg-brand-500/80 transition-all"
-                    style={{ height: `${Math.max(2, (d.revenue / maxRev) * 150)}px` }}
-                  />
-                  <span className="text-[9px] text-ink-600/50">{d.date.slice(5)}</span>
-                </div>
-              ))}
+            <RevenueChart data={data?.by_day ?? []} height={180} />
+            <div className="mt-3 flex flex-wrap gap-4 text-xs text-ink-600/60">
+              <span>Paid: <b className="text-ink-600">{ugx(data?.paid_revenue ?? 0)}</b></span>
+              <span>Pending: <b className="text-ink-600">{ugx(data?.pending_revenue ?? 0)}</b></span>
+              <span>Avg order: <b className="text-ink-600">{ugx(data?.avg_order ?? 0)}</b></span>
             </div>
           </section>
 
@@ -94,38 +90,34 @@ export default function ReportsPage() {
             {/* Top products */}
             <section className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
               <h2 className="mb-4 font-extrabold text-ink-600">Best sellers</h2>
-              {!data || data.top_products.length === 0 ? (
-                <p className="text-sm text-ink-600/60">No sales yet.</p>
-              ) : (
-                <ul className="space-y-2">
-                  {data.top_products.map((p, i) => (
-                    <li key={p.name} className="flex items-center justify-between gap-3 border-b border-ink-600/5 pb-2 text-sm">
-                      <span className="flex items-center gap-2 text-ink-600">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-600">{i + 1}</span>
-                        {p.name} <span className="text-ink-600/50">×{p.qty}</span>
-                      </span>
-                      <span className="font-bold text-ink-600">{ugx(p.revenue)}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <RankedBars
+                data={(data?.top_products ?? []).map((p) => ({ name: `${p.name} ×${p.qty}`, value: p.revenue }))}
+                format={(n) => ugx(n)}
+              />
             </section>
 
             {/* Order status breakdown */}
             <section className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
               <h2 className="mb-4 font-extrabold text-ink-600">Orders by status</h2>
-              {!data || Object.keys(data.status_counts).length === 0 ? (
-                <p className="text-sm text-ink-600/60">No orders yet.</p>
-              ) : (
-                <ul className="space-y-2">
-                  {Object.entries(data.status_counts).map(([status, n]) => (
-                    <li key={status} className="flex items-center justify-between text-sm">
-                      <span className="capitalize text-ink-600">{status}</span>
-                      <span className="font-bold text-ink-600">{n}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <StatusBars
+                data={Object.entries(data?.status_counts ?? {}).map(([label, value]) => ({
+                  label,
+                  value: value as number,
+                  tone:
+                    label === "delivered" ? "#00a651"
+                    : label === "cancelled" ? "#e63946"
+                    : label === "shipped" ? "#5a5cae"
+                    : "#f15a29",
+                }))}
+              />
+              <div className="mt-5 border-t border-ink-600/10 pt-4">
+                <Donut
+                  value={data?.paid_revenue ?? 0}
+                  total={(data?.paid_revenue ?? 0) + (data?.pending_revenue ?? 0)}
+                  label="of revenue collected"
+                  color="#00a651"
+                />
+              </div>
             </section>
           </div>
         </>

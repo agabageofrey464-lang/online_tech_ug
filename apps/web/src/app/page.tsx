@@ -15,7 +15,7 @@ import { RecentlyViewed } from "@/components/recently-viewed";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
 import { CategoryCircles } from "@/components/category-circles";
-import { products, services, courses, whyUs, type Product } from "@/lib/data";
+import { products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
 
@@ -306,17 +306,34 @@ export default function HomePage() {
           <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
         </div>
         <div className="flex gap-2.5 overflow-x-auto px-4 pb-4 no-scrollbar">
-          {["Dell", "HP", "Lenovo", "Apple", "ASUS", "TP-Link", "SanDisk", "Kingston", "Logitech"].map(
-            (b) => (
+          {["Dell", "HP", "Lenovo", "Apple", "ASUS", "TP-Link", "SanDisk", "Kingston", "Logitech"].map((b) => {
+            // Show a real product from that brand so the tile is a picture, not a word.
+            const hero = products.find((p) => p.brand === b && p.inStock !== false) ?? products.find((p) => p.brand === b);
+            const count = products.filter((p) => p.brand === b).length;
+            return (
               <Link
                 key={b}
                 href={`/shop?brand=${encodeURIComponent(b)}`}
-                className="flex h-16 w-28 shrink-0 items-center justify-center rounded-lg border border-ink-600/10 bg-white text-sm font-extrabold text-ink-700 shadow-sm transition hover:border-brand-300 hover:text-brand-600"
+                className="group/brand flex w-32 shrink-0 flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm transition hover:border-brand-300 hover:shadow-md"
               >
-                {b}
+                <span className="relative block h-20 w-full bg-white">
+                  {hero && (
+                    <SafeImage
+                      src={productImage(hero)}
+                      alt={b}
+                      fill
+                      sizes="128px"
+                      className="object-contain p-2 transition duration-200 group-hover/brand:scale-105"
+                    />
+                  )}
+                </span>
+                <span className="border-t border-ink-600/5 px-2 py-1.5 text-center">
+                  <span className="block text-xs font-extrabold text-ink-800 group-hover/brand:text-brand-600">{b}</span>
+                  <span className="block text-[10px] text-ink-700/50">{count} item{count === 1 ? "" : "s"}</span>
+                </span>
               </Link>
-            ),
-          )}
+            );
+          })}
         </div>
       </section>
 

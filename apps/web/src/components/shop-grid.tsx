@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
+import { EmptyState } from "@/components/empty-state";
 
 type Sort = "popular" | "price-asc" | "price-desc" | "new";
 
@@ -375,9 +376,13 @@ export function ShopGrid() {
             )}
           </>
         ) : (
-          <div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">
-            No products match your search.
-          </div>
+          <EmptyState
+            art="search"
+            title="No products match your search"
+            message="Try a different word, or clear a filter or two to see more."
+            actionLabel="Browse everything"
+            actionHref="/shop"
+          />
         )}
       </div>
     </div>
