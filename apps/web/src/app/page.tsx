@@ -216,7 +216,7 @@ export default function HomePage() {
         </div>
         <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
           {flash.map(({ p, sold }) => (
-            <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-1/4 lg:w-1/6">
+            <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-[15rem] lg:w-[13.5rem]">
               <FlashSaleCard product={p} sold={sold} />
             </div>
           ))}
@@ -339,7 +339,7 @@ export default function HomePage() {
 
       {/* Services */}
       <Panel title="Our Services" href="/services">
-        <div className="grid grid-cols-2 gap-3 p-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid-cards-sm gap-3 p-3">
           {services.map((s) => (
             <Link
               key={s.slug}
@@ -374,7 +374,7 @@ export default function HomePage() {
 
       {/* Learn */}
       <Panel title="Learn Computer Skills" href="/learn">
-        <div className="grid grid-cols-2 gap-2.5 p-3 lg:grid-cols-4">
+        <div className="grid-cards-lg gap-2.5 p-3">
           {courses.map((c) => (
             <Link
               key={c.slug}

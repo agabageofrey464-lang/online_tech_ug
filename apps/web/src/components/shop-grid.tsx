@@ -330,7 +330,7 @@ export function ShopGrid() {
           // Flat cards directly on the page — full-bleed to the screen edges on
           // mobile, no panel, no borders, just whitespace.
           <>
-            <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid-cards gap-1">
               {pageItems.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

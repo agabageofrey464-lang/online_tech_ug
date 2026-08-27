@@ -314,6 +314,28 @@ body {
   display: none;
 }
 
+
+/* Auto-fitting card grids — columns are computed from the available width, so a
+   row always fills edge to edge on ANY screen instead of jumping at fixed
+   breakpoints and leaving dead space. auto-fill (not auto-fit) keeps cards a
+   sensible size when there are only a few of them. */
+@utility grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+}
+@utility grid-cards-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+}
+@utility grid-cards-lg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+}
+@media (min-width: 640px) {
+  .grid-cards { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
+  .grid-cards-sm { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+}
+
 /* Line clamp helper (2 lines) for product titles */
 @utility clamp-2 {
   display: -webkit-box;

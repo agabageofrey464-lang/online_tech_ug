@@ -79,7 +79,7 @@ export default function CategoriesPage() {
                   See All
                 </Link>
               </div>
-              <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4 lg:grid-cols-6">
+              <div className="grid-cards-sm gap-x-3 gap-y-4">
                 {g.items.map((p) => (
                   <Link
                     key={p.id}
