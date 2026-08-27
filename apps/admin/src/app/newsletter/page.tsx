@@ -47,14 +47,26 @@ export default function NewsletterPage() {
   const [result, setResult] = useState("");
   const [err, setErr] = useState("");
 
+  // Phone/browser push notification
+  const [pushStats, setPushStats] = useState<{ active: number; enabled: boolean } | null>(null);
+  const [pTitle, setPTitle] = useState("");
+  const [pBody, setPBody] = useState("");
+  const [pUrl, setPUrl] = useState("/shop");
+  const [pImage, setPImage] = useState("");
+  const [pSending, setPSending] = useState(false);
+  const [pResult, setPResult] = useState("");
+  const [pErr, setPErr] = useState("");
+
   const load = useCallback(async () => {
     try {
-      const [s, l] = await Promise.all([
+      const [s, l, ps] = await Promise.all([
         fetch("/api/newsletter/stats", { cache: "no-store" }).then((r) => r.json()),
         fetch("/api/newsletter", { cache: "no-store" }).then((r) => r.json()),
+        fetch("/api/push/stats", { cache: "no-store" }).then((r) => r.json()),
       ]);
       if (s && typeof s.total === "number") setStats(s);
       if (Array.isArray(l)) setSubs(l);
+      if (ps && typeof ps.active === "number") setPushStats(ps);
     } catch {
       /* ignore */
     }
@@ -95,10 +107,43 @@ export default function NewsletterPage() {
     }
   }
 
+  async function sendPush() {
+    if (!pTitle.trim()) {
+      setPErr("Give the notification a title.");
+      return;
+    }
+    if (!confirm(`Send this notification to ${pushStats?.active ?? 0} device(s) now?`)) return;
+    setPSending(true);
+    setPErr("");
+    setPResult("");
+    try {
+      const res = await fetch("/api/push/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: pTitle, body: pBody, url: pUrl, image: pImage }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setPResult(`Delivered to ${d.sent} of ${d.devices} device(s)${d.removed ? ` · ${d.removed} expired` : ""}.`);
+        setPTitle("");
+        setPBody("");
+        setPImage("");
+        load();
+      } else {
+        setPErr(d?.detail || "Couldn't send the notification.");
+      }
+    } catch {
+      setPErr("Network problem — please try again.");
+    } finally {
+      setPSending(false);
+    }
+  }
+
   const cards = [
     { label: "Active subscribers", value: stats?.active ?? 0, icon: "📧" },
     { label: "Total signups", value: stats?.total ?? 0, icon: "👥" },
     { label: "Customer accounts", value: stats?.customers ?? 0, icon: "🛍️" },
+    { label: "Push devices", value: pushStats?.active ?? 0, icon: "🔔" },
   ];
 
   return (
@@ -110,7 +155,7 @@ export default function NewsletterPage() {
         </p>
       </header>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <div key={c.label} className="min-w-0 rounded-2xl border border-ink-600/10 bg-white p-4 shadow-sm">
             <p className="flex items-center gap-2 text-xs text-ink-600/60">
@@ -215,6 +260,71 @@ export default function NewsletterPage() {
               ))}
             </ul>
           )}
+        </section>
+
+        {/* Phone / browser push notification */}
+        <section className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm lg:col-span-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-extrabold text-ink-600">🔔 Phone notification (push)</h2>
+            <span className="text-xs text-ink-600/60">
+              {pushStats?.enabled
+                ? `${pushStats.active} device(s) subscribed`
+                : "Push is not switched on yet"}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-ink-600/60">
+            Pops up on the shopper&apos;s phone even when your site is closed — tapping it opens the shop.
+          </p>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Title</label>
+              <input
+                value={pTitle}
+                onChange={(e) => setPTitle(e.target.value)}
+                placeholder="Checkout, HP deal just for you! 🎉"
+                className="mt-1 w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Opens this page</label>
+              <input
+                value={pUrl}
+                onChange={(e) => setPUrl(e.target.value)}
+                placeholder="/shop"
+                className="mt-1 w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <label className="mt-3 block text-sm font-semibold text-ink-700">Message</label>
+          <input
+            value={pBody}
+            onChange={(e) => setPBody(e.target.value)}
+            placeholder="Fresh laptops & better discounts. Tap to shop."
+            className="mt-1 w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
+          />
+
+          <label className="mt-3 block text-sm font-semibold text-ink-700">
+            Image <span className="font-normal text-ink-600/50">(optional — shows a big picture in the notification)</span>
+          </label>
+          <input
+            value={pImage}
+            onChange={(e) => setPImage(e.target.value)}
+            placeholder="https://www.onlinetechug.com/products/your-photo.webp"
+            className="mt-1 w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
+          />
+
+          {pErr && <p className="mt-3 text-sm font-semibold text-red-600">{pErr}</p>}
+          {pResult && <p className="mt-3 text-sm font-semibold text-green-600">✓ {pResult}</p>}
+
+          <button
+            onClick={sendPush}
+            disabled={pSending || !pushStats?.enabled}
+            className="mt-4 rounded-md bg-ink-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-ink-700 disabled:opacity-50"
+          >
+            {pSending ? "Sending…" : "🔔 Send notification"}
+          </button>
         </section>
       </div>
     </div>

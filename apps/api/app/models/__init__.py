@@ -8,6 +8,7 @@ from app.models.job import Job
 from app.models.order import Order, OrderItem, PaymentTransaction
 from app.models.payment import Payment
 from app.models.post import Post
+from app.models.push_subscription import PushSubscription
 from app.models.subscriber import Subscriber
 from app.models.product import Product
 from app.models.referral import Referral
@@ -30,6 +31,7 @@ __all__ = [
     "OrderItem",
     "PaymentTransaction",
     "Post",
+    "PushSubscription",
     "Subscriber",
     "Product",
     "Referral",

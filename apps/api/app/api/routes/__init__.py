@@ -11,6 +11,7 @@ from app.api.routes import (
     jobs,
     orders,
     newsletter,
+    push,
     payments,
     posts,
     products,
@@ -38,6 +39,7 @@ api_router.include_router(unlock_codes.router, prefix="/unlock-codes", tags=["un
 api_router.include_router(orders.router, prefix="/orders", tags=["orders"])
 api_router.include_router(payments.router, prefix="/payments", tags=["payments"])
 api_router.include_router(newsletter.router, prefix="/newsletter", tags=["newsletter"])
+api_router.include_router(push.router, prefix="/push", tags=["push"])
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])

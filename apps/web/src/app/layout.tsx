@@ -12,6 +12,7 @@ import { CartDrawer } from "@/components/cart-drawer";
 import { CartToast } from "@/components/cart-toast";
 import { MobileTabBar } from "@/components/mobile-tab-bar";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { PushOptIn } from "@/components/push-optin";
 import { ReferralCapture } from "@/components/referral-capture";
 import { Analytics } from "@/components/analytics";
 import { GoogleTranslate } from "@/components/google-translate";
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
     "online tech uganda",
   ],
   alternates: { canonical: "/" },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,
@@ -74,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <SiteFooter />
                 <WhatsAppButton />
                 <ScrollToTop />
+                <PushOptIn />
                 <CartDrawer />
                 <CartToast />
                 <MobileTabBar />

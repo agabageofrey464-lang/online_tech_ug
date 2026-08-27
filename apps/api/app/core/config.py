@@ -60,6 +60,12 @@ class Settings(BaseSettings):
     # Public base URL of THIS API (used to build the IPN callback Pesapal calls).
     api_public_url: str = "https://api.onlinetechug.com"
 
+    # Web Push (VAPID) — browser notifications for offers & new stock.
+    # Empty = push disabled; the storefront then never asks for permission.
+    vapid_public_key: str = ""
+    vapid_private_key: str = ""
+    vapid_subject: str = "mailto:onlinetechug@gmail.com"
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
