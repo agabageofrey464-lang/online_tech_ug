@@ -99,7 +99,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Key spec line — CPU · RAM · Storage for computers, else first bullet. */}
         {keySpec(product) && (
-          <p className="mt-0.5 truncate text-[10.5px] font-medium text-ink-700/55">{keySpec(product)}</p>
+          <p className="mt-0.5 hidden truncate text-[10.5px] font-medium text-ink-700/55 sm:block">{keySpec(product)}</p>
         )}
 
         {/* Condition + brand row. Refurbished isn't labelled on the card. */}
@@ -115,12 +115,14 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Price — Jumia style: selling price, crossed-out old price + -% badge. */}
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-          <span className="text-[15px] font-extrabold text-ink-900">{ugx(product.price)}</span>
-          <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-brand-500 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
-            -{discountPct}%
-          </span>
+        <div className="mt-1.5">
+          <p className="text-[15px] font-extrabold leading-tight text-ink-900">{ugx(product.price)}</p>
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+            <span className="rounded bg-brand-500 px-1 py-0.5 text-[10px] font-extrabold leading-none text-white">
+              -{discountPct}%
+            </span>
+          </div>
         </div>
 
         {/* Rating + review count (Jumia/Amazon show the number of ratings). */}
@@ -130,7 +132,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Trust line: delivery by distance + warranty by condition. */}
-        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-medium text-ink-700/55">
+        <div className="mt-1 hidden flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-medium text-ink-700/55 sm:flex">
           <span className="inline-flex items-center gap-1">🚚 Delivery by distance</span>
           <span className="inline-flex items-center gap-1 text-brand-600/90">
             🛡 {product.condition === "Brand New" ? "12mo" : product.condition === "Refurbished" ? "6mo" : "3mo"} warranty
