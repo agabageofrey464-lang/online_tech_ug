@@ -47,15 +47,18 @@ async def _campaign_worker() -> None:
                             await push.broadcast(db, title, body, link)
                         except Exception as exc:  # noqa: BLE001
                             logger.warning("Campaign push failed: %s", exc)
-                    try:
-                        html = (
-                            f"<p><b>{due.title}</b></p>"
-                            f"<p>{due.pill or ''}</p>"
-                            f"<p>{due.note or ''}</p>"
-                        )
-                        await newsletter.broadcast(db, title, html, include_customers=True)
-                    except Exception as exc:  # noqa: BLE001
-                        logger.warning("Campaign email failed: %s", exc)
+                    # Email is capped at one a day — push can fire 2-3 times.
+                    if campaign_auto.should_email(db):
+                        try:
+                            html = (
+                                f"<p><b>{due.title}</b></p>"
+                                f"<p>{due.pill or ''}</p>"
+                                f"<p>{due.note or ''}</p>"
+                            )
+                            await newsletter.broadcast(db, title, html, include_customers=True)
+                            due.emailed_at = datetime.utcnow()
+                        except Exception as exc:  # noqa: BLE001
+                            logger.warning("Campaign email failed: %s", exc)
 
                     due.notified_at = datetime.utcnow()
                     db.commit()

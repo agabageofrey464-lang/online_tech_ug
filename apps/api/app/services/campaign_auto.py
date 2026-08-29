@@ -3,8 +3,9 @@
 Two different rhythms on purpose:
 
 * The storefront BANNER refreshes every hour, so the shop always looks alive.
-* Customers are only ANNOUNCED to (email + push) two to three times a day,
-  spaced apart. Nobody wants 24 notifications about the same shop.
+* Customers get two to three PUSH notifications a day, spaced apart, and at
+  most ONE campaign EMAIL a day. Nobody wants 24 notifications about the
+  same shop, and an inbox is less forgiving than a lock screen.
 """
 
 import logging
@@ -22,6 +23,11 @@ logger = logging.getLogger("onlinetech.campaign_auto")
 # before the next, so a customer is never pinged twice in quick succession.
 MAX_ANNOUNCEMENTS_PER_DAY = 3
 MIN_HOURS_BETWEEN_ANNOUNCEMENTS = 3
+
+# A push notification is a glance; an email sits in the inbox. Three a day is
+# fine on the phone but reads as spam by email, so email gets its own, tighter
+# cap: one per day, on the first announcement of the day.
+MAX_EMAILS_PER_DAY = 1
 
 # Campaign shapes built from what the shop actually sells. Each entry is a
 # template; the hourly job rotates which ones are shown.
@@ -145,6 +151,19 @@ def due_for_announcement(db: Session, now: datetime | None = None) -> Campaign |
         if row and row.notified_at is None:
             return row
     return None
+
+
+def should_email(db: Session, now: datetime | None = None) -> bool:
+    """True if we haven't already emailed a campaign today. Push can go out 2-3
+    times a day, but the email version is capped at one."""
+    now = now or datetime.utcnow()
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    emailed_today = [
+        c
+        for c in db.execute(select(Campaign).where(Campaign.emailed_at.is_not(None))).scalars().all()
+        if c.emailed_at and c.emailed_at >= start
+    ]
+    return len(emailed_today) < MAX_EMAILS_PER_DAY
 
 
 def push_copy_for(row: Campaign) -> tuple[str, str]:

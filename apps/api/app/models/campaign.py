@@ -51,4 +51,7 @@ class Campaign(Base):
     # When this campaign was pushed/emailed out. Used to cap announcements to a
     # couple a day so we never spam a customer's inbox or phone.
     notified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # Email is far more intrusive than a push, so it's capped separately —
+    # see MAX_EMAILS_PER_DAY in services/campaign_auto.py.
+    emailed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     clicks: Mapped[int] = mapped_column(Integer, default=0)
