@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, Clock, BookOpen, Award, FileText, PlayCircle, X } from "lucide-react";
+import { Search, Clock, BookOpen, Award, FileText, ArrowRight, X } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui";
 import { ugx } from "@/lib/site";
-import type { Course } from "@/lib/data";
+import { REGISTRATION_FEE, courseTotal, type Course } from "@/lib/data";
 
 /**
  * Course browser for the Learn page.
@@ -174,8 +174,13 @@ export function CourseBrowser({
                   className="object-cover transition duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink-900/70 to-transparent" />
-                <span className="absolute right-3 top-3">
+                <span className="absolute right-3 top-3 flex flex-col items-end gap-1">
                   <Badge tone="ink">{c.level}</Badge>
+                  {c.durationMonths && (
+                    <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-ink-800">
+                      {c.durationMonths} Month{c.durationMonths > 1 ? "s" : ""}
+                    </span>
+                  )}
                 </span>
                 {notesSet.has(c.slug) && (
                   <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-ink-800">
@@ -202,22 +207,34 @@ export function CourseBrowser({
                   </span>
                 </div>
 
-                <p className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-green-600">
-                  <PlayCircle size={13} /> First lesson free
+                {/* Fee breakdown — registration is one-time and non-refundable */}
+                <dl className="mt-3 space-y-1 text-xs">
+                  <div className="flex items-center justify-between">
+                    <dt className="text-ink-700/60">Registration Fee</dt>
+                    <dd className="font-semibold tabular-nums text-ink-800">{ugx(REGISTRATION_FEE)}</dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-ink-700/60">Training Fee</dt>
+                    <dd className="font-semibold tabular-nums text-ink-800">{ugx(c.trainingFee ?? 0)}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-2.5 rounded-lg bg-brand-50 px-3 py-2">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-brand-700/70">
+                    Total Investment
+                  </p>
+                  <p className="text-lg font-extrabold leading-tight text-brand-600">
+                    {ugx(courseTotal(c))}
+                  </p>
+                </div>
+
+                <p className="mt-2 text-[11px] text-ink-700/55">
+                  Or study lesson by lesson from <b className="text-ink-800">{ugx(5000)}</b>
                 </p>
 
-                <div className="mt-auto flex items-end justify-between pt-4">
-                  <span>
-                    <span className="block text-[10px] font-semibold uppercase tracking-wide text-ink-700/45">
-                      Full course
-                    </span>
-                    <span className="text-lg font-extrabold text-brand-600">{ugx(c.price)}</span>
-                    <span className="block text-[10px] text-ink-700/50">or {ugx(5000)}/lesson</span>
-                  </span>
-                  <span className="rounded-md bg-brand-500 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-brand-600">
-                    View lessons
-                  </span>
-                </div>
+                <span className="press mt-auto flex items-center justify-center gap-1.5 rounded-md bg-brand-500 px-4 py-2.5 pt-2.5 text-sm font-bold text-white transition group-hover:bg-brand-600">
+                  Apply Now <ArrowRight size={15} />
+                </span>
               </div>
             </Link>
           ))}

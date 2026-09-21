@@ -10,7 +10,7 @@ import { LessonList } from "@/components/lesson-list";
 import { Quiz } from "@/components/quiz";
 import { CourseRegister } from "@/components/course-register";
 import { CourseProgress } from "@/components/course-progress";
-import { courses } from "@/lib/data";
+import { courses, REGISTRATION_FEE, courseTotal } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
 
@@ -28,7 +28,7 @@ export async function generateMetadata({
   if (!course) return { title: "Course not found" };
   return {
     title: course.title,
-    description: `${course.title} — ${course.lessons} lessons. Unlock lessons from ${ugx(5000)} or buy the full course for ${ugx(course.price)}.`,
+    description: `${course.title} — ${course.lessons} lessons over ${course.durationMonths ?? 1} month(s). Full programme ${ugx(courseTotal(course))} (registration ${ugx(REGISTRATION_FEE)} + training ${ugx(course.trainingFee ?? 0)}), or study lesson by lesson from ${ugx(5000)}.`,
   };
 }
 
@@ -86,21 +86,60 @@ export default async function CourseDetailPage({
 
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
           <p className="flex-1 text-sm text-ink-700/75">{course.blurb}</p>
-          <div className="shrink-0 text-center sm:text-right">
-            <p className="text-xs text-ink-700/50">Full course</p>
-            <p className="text-2xl font-extrabold text-brand-600">{ugx(course.price)}</p>
-            <p className="text-[11px] text-ink-700/50">or single lessons from {ugx(5000)}</p>
-            <div className="mt-2 flex flex-col items-stretch gap-2 sm:items-end">
-              <CourseRegister courseSlug={course.slug} courseTitle={course.title} price={course.price} />
+          {/* Programme fees — registration is one-time and non-refundable */}
+          <div className="w-full shrink-0 sm:w-72">
+            <div className="rounded-lg border border-ink-600/10 bg-ink-50/60 p-4">
+              <dl className="space-y-1.5 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-ink-700/65">
+                    Registration Fee
+                    <span className="block text-[10px] text-ink-700/45">One-time, non-refundable</span>
+                  </dt>
+                  <dd className="font-semibold tabular-nums text-ink-900">{ugx(REGISTRATION_FEE)}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-ink-700/65">
+                    Training Fee
+                    {course.durationMonths && (
+                      <span className="block text-[10px] text-ink-700/45">
+                        {course.durationMonths} month{course.durationMonths > 1 ? "s" : ""} of training
+                      </span>
+                    )}
+                  </dt>
+                  <dd className="font-semibold tabular-nums text-ink-900">{ugx(course.trainingFee ?? 0)}</dd>
+                </div>
+              </dl>
+              <div className="mt-3 border-t border-ink-600/10 pt-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-brand-700/70">
+                  Total Investment
+                </p>
+                <p className="text-2xl font-extrabold leading-tight text-brand-600">
+                  {ugx(courseTotal(course))}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-col items-stretch gap-2">
+              <CourseRegister
+                courseSlug={course.slug}
+                courseTitle={course.title}
+                price={courseTotal(course)}
+              />
               <Button
-                href={whatsappLink(`Hi, I'd like to buy the full "${course.title}" course (${ugx(course.price)}).`)}
+                href={whatsappLink(
+                  `Hi, I'd like to apply for the "${course.title}" programme (${course.durationMonths ?? ""} month${(course.durationMonths ?? 0) > 1 ? "s" : ""}) — total ${ugx(courseTotal(course))}.`,
+                )}
                 external
                 variant="outline"
                 className="px-5 py-2"
               >
-                Buy full course
+                Apply on WhatsApp
               </Button>
             </div>
+
+            <p className="mt-2 text-center text-[11px] text-ink-700/55 sm:text-right">
+              Not ready for the full programme? Unlock single lessons below from <b>{ugx(5000)}</b>.
+            </p>
           </div>
         </div>
       </div>
@@ -142,7 +181,7 @@ export default async function CourseDetailPage({
       <div className="mt-6 flex items-start gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 text-sm text-ink-700">
         <Lock size={18} className="mt-0.5 shrink-0 text-brand-600" />
         <p>
-          The first lesson is <b className="text-green-700">free</b>. Other lessons unlock from{" "}
+          Lessons unlock from{" "}
           <b className="text-brand-700">{ugx(5000)} to {ugx(15000)}</b> via Mobile Money — pay for just
           the lesson you need, or the whole course. Tick lessons as you finish, then take the quiz for
           your certificate.

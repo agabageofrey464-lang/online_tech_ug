@@ -6,7 +6,7 @@ import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { CourseBrowser } from "@/components/course-browser";
-import { courses, liveClasses } from "@/lib/data";
+import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
 
@@ -23,7 +23,7 @@ function fmtDate(iso: string) {
 export const metadata: Metadata = {
   title: "Learn — Online Computer Courses in Uganda",
   description:
-    "22 affordable online computer courses for students and mature learners in Uganda — Microsoft Office, graphic design, web development, networking and more. First lesson free, pay per lesson from UGX 5,000, certificate on completion.",
+    "22 professional computer training courses in Uganda — Microsoft Office, graphic design, web development, networking and more. Enrol on a full programme, or study lesson by lesson from UGX 5,000. Certificate on completion.",
   alternates: { canonical: "/learn" },
 };
 
@@ -35,11 +35,11 @@ export const revalidate = 3600;
 const FAQ = [
   {
     q: "How do I pay for a course?",
-    a: "Send Mobile Money to our number, then message us on WhatsApp with the confirmation. We reply with your unlock code within minutes. You can pay for a single lesson or the whole course.",
+    a: "Send Mobile Money (MTN MoMo or Airtel Money) to our number, then message us on WhatsApp with the confirmation. For a full programme we complete your registration; for self-study we reply with your unlock code within minutes.",
   },
   {
     q: "Can I pay for just one lesson?",
-    a: "Yes. Every lesson is priced on its own, from UGX 5,000 for short lessons up to UGX 15,000 for the longest. Pay only for what you need — your code unlocks that lesson alone.",
+    a: "Yes. If you don't want the full programme, every lesson is priced on its own, from UGX 5,000 for short lessons up to UGX 15,000 for the longest. Your code unlocks that lesson alone, and there is no registration fee for self-study.",
   },
   {
     q: "Do I get a certificate?",
@@ -54,8 +54,8 @@ const FAQ = [
     a: "Forever. Once a lesson is unlocked on your device it stays unlocked — there is no monthly fee and nothing expires.",
   },
   {
-    q: "Is the first lesson really free?",
-    a: "Yes, every course has a free opening lesson so you can see the teaching style before paying anything.",
+    q: "What is the registration fee for?",
+    a: "It is a one-time, non-refundable fee of UGX 180,000 that covers your enrolment, learning materials and certification. It is charged once, on top of the training fee for your course.",
   },
 ];
 
@@ -72,7 +72,7 @@ export default function LearnPage() {
     { value: `${courses.length}`, label: "Courses" },
     { value: `${totalLessons}`, label: "Lessons" },
     { value: `${totalHours}+`, label: "Hours" },
-    { value: "Free", label: "First lesson" },
+    { value: `${REGISTRATION_FEE / 1000}K`, label: "Registration" },
   ];
 
   return (
@@ -97,8 +97,8 @@ export default function LearnPage() {
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-white/85">
               From your very first click to graphic design, Excel and coding. Built for students and
-              mature learners in Uganda. Start free, go at your own pace, and earn a certificate you
-              can show an employer.
+              mature learners in Uganda. Enrol on a full programme or study lesson by lesson, and
+              earn a certificate you can show an employer.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -139,8 +139,8 @@ export default function LearnPage() {
           {[
             {
               icon: Smartphone,
-              title: "Start free",
-              body: "Open any course and watch the first lesson free — no account, no payment.",
+              title: "Pick your course",
+              body: "Enrol on the full taught programme, or unlock single lessons and study at your own pace.",
             },
             {
               icon: Wallet,

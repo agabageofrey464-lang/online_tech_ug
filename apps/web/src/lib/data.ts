@@ -1275,6 +1275,15 @@ export const liveClasses: LiveClass[] = [
 export type CourseMaterial = { title: string; file: string };
 export type QuizQuestion = { q: string; options: string[]; answer: number };
 
+// One-time, non-refundable registration fee, charged on top of a course's
+// training fee when a student enrols on the full taught programme.
+export const REGISTRATION_FEE = 180000;
+
+/** Total to enrol on the full programme: registration + training fee. */
+export function courseTotal(c: { trainingFee?: number }): number {
+  return REGISTRATION_FEE + (c.trainingFee ?? 0);
+}
+
 export type Course = {
   slug: string;
   title: string;
@@ -1291,6 +1300,8 @@ export type Course = {
   unlockCode?: string; // code sent to the learner after MoMo payment
   sampleVideo?: string; // video played for unlocked paid lessons
   cover?: string; // explicit cover image; else falls back to /courses/<slug>.webp
+  durationMonths?: number; // taught programme length, in months
+  trainingFee?: number; // programme training fee (registration is added on top)
 };
 
 // Per-lesson unlock price (UGX), 5,000 (short) to 15,000 (long) by lesson length.
@@ -1310,12 +1321,14 @@ export const courses: Course[] = [
     lessons: 22,
     hours: 6,
     price: 50000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb:
       "Start from zero — mouse, keyboard, files, internet and staying safe online. Perfect for students and mature learners.",
     emoji: "laptop",
     syllabus: [
-      { title: "Computer basics — full beginner tutorial (video)", minutes: 60, free: true, youtube: "y2kg3MOk1sY" },
-      { title: "Meet the computer: parts & switching on", minutes: 8, free: true, preview: "/videos/v-01.mp4" },
+      { title: "Computer basics — full beginner tutorial (video)", minutes: 60, youtube: "y2kg3MOk1sY" },
+      { title: "Meet the computer: parts & switching on", minutes: 8, preview: "/videos/v-01.mp4" },
       // Follows the written notes: what a computer is → hardware → operating it.
       { title: "What a computer is, its types & everyday uses", minutes: 14 },
       { title: "Inside the machine: CPU, RAM & storage", minutes: 16 },
@@ -1367,11 +1380,13 @@ export const courses: Course[] = [
     lessons: 35,
     hours: 14,
     price: 80000,
+    durationMonths: 2,
+    trainingFee: 350000,
     blurb: "Step by step through Word, Excel, PowerPoint, Publisher & Access — from beginner to confident, with hands-on practice.",
     emoji: "office",
     syllabus: [
-      { title: "Step 1 — Getting started with Microsoft Office", minutes: 10, free: true, preview: "/videos/v-06.mp4" },
-      { title: "Step 2 — Microsoft Word: beginner tutorial", minutes: 60, free: true, youtube: "v3zc3bXL5pc" },
+      { title: "Step 1 — Getting started with Microsoft Office", minutes: 10, preview: "/videos/v-06.mp4" },
+      { title: "Step 2 — Microsoft Word: beginner tutorial", minutes: 60, youtube: "v3zc3bXL5pc" },
       // One app at a time, start to finish — no jumping back and forth.
       { title: "Step 3 — Word: formatting, tables & images", minutes: 25 },
       { title: "Step 4 — Word: headers, footers & page numbers", minutes: 15 },
@@ -1381,7 +1396,7 @@ export const courses: Course[] = [
       { title: "Step 8 — Word: track changes & comments", minutes: 14 },
       { title: "Step 9 — Word: mail merge & printing", minutes: 22 },
       { title: "Step 10 — Word: shortcuts & productivity tips", minutes: 12 },
-      { title: "Step 11 — Microsoft Excel: beginner tutorial", minutes: 60, free: true, youtube: "Vl0H-qTclOg" },
+      { title: "Step 11 — Microsoft Excel: beginner tutorial", minutes: 60, youtube: "Vl0H-qTclOg" },
       { title: "Step 12 — Excel: formulas & functions", minutes: 30 },
       { title: "Step 13 — Excel: sorting & filtering data", minutes: 16 },
       { title: "Step 14 — Excel: IF, VLOOKUP & logical functions", minutes: 30 },
@@ -1390,7 +1405,7 @@ export const courses: Course[] = [
       { title: "Step 17 — Excel: data validation & drop-downs", minutes: 18 },
       { title: "Step 18 — Excel: pivot tables made simple", minutes: 28 },
       { title: "Step 19 — Excel: printing large spreadsheets", minutes: 12 },
-      { title: "Step 20 — Microsoft PowerPoint: beginner tutorial", minutes: 60, free: true, youtube: "KqgyvGxISxk" },
+      { title: "Step 20 — Microsoft PowerPoint: beginner tutorial", minutes: 60, youtube: "KqgyvGxISxk" },
       { title: "Step 21 — PowerPoint: building slides & using themes", minutes: 22 },
       { title: "Step 22 — PowerPoint: animations & transitions", minutes: 20 },
       { title: "Step 23 — PowerPoint: adding media & audio", minutes: 16 },
@@ -1398,7 +1413,7 @@ export const courses: Course[] = [
       { title: "Step 25 — Microsoft Publisher: flyers & brochures", minutes: 30 },
       { title: "Step 26 — Publisher: business cards & letterheads", minutes: 18 },
       { title: "Step 27 — Publisher: newsletters & multi-page layouts", minutes: 22 },
-      { title: "Step 28 — Microsoft Access: beginner database tutorial", minutes: 60, free: true, youtube: "hMuSHYfG7H8" },
+      { title: "Step 28 — Microsoft Access: beginner database tutorial", minutes: 60, youtube: "hMuSHYfG7H8" },
       { title: "Step 29 — Access: creating tables & forms", minutes: 26 },
       { title: "Step 30 — Access: table relationships", minutes: 20 },
       { title: "Step 31 — Access: building queries", minutes: 24 },
@@ -1431,10 +1446,12 @@ export const courses: Course[] = [
     lessons: 7,
     hours: 4,
     price: 35000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb: "Create, format and print professional documents — letters, reports and CVs — with tables, pictures and mail merge.",
     emoji: "office",
     syllabus: [
-      { title: "Getting started with Word — the screen & typing", minutes: 12, free: true },
+      { title: "Getting started with Word — the screen & typing", minutes: 12 },
       { title: "Editing text: select, delete, undo, find & replace", minutes: 15 },
       { title: "Formatting: fonts, colours, alignment & spacing", minutes: 18 },
       { title: "Bullet & numbered lists, styles & templates", minutes: 16 },
@@ -1456,10 +1473,12 @@ export const courses: Course[] = [
     lessons: 7,
     hours: 5,
     price: 40000,
+    durationMonths: 1,
+    trainingFee: 350000,
     blurb: "Master spreadsheets — enter data, calculate with formulas & functions, sort, filter and make charts.",
     emoji: "office",
     syllabus: [
-      { title: "Getting started — workbooks, worksheets & cells", minutes: 12, free: true },
+      { title: "Getting started — workbooks, worksheets & cells", minutes: 12 },
       { title: "Entering data & AutoFill", minutes: 14 },
       { title: "Formulas: =, +, −, *, / and cell references", minutes: 18 },
       { title: "Functions: SUM, AVERAGE, MAX, MIN, COUNT", minutes: 20 },
@@ -1481,10 +1500,12 @@ export const courses: Course[] = [
     lessons: 6,
     hours: 3,
     price: 35000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb: "Design and deliver clear, attractive slide presentations with themes, media, transitions and Presenter View.",
     emoji: "office",
     syllabus: [
-      { title: "Getting started — slides & layouts", minutes: 12, free: true },
+      { title: "Getting started — slides & layouts", minutes: 12 },
       { title: "Themes & consistent design", minutes: 14 },
       { title: "Adding text, pictures, charts & media", minutes: 18 },
       { title: "Transitions & animations", minutes: 16 },
@@ -1505,10 +1526,12 @@ export const courses: Course[] = [
     lessons: 6,
     hours: 4,
     price: 40000,
+    durationMonths: 1,
+    trainingFee: 350000,
     blurb: "Build databases — tables, relationships, queries, forms and reports — to store and manage records.",
     emoji: "office",
     syllabus: [
-      { title: "What a database is — tables, queries, forms, reports", minutes: 14, free: true },
+      { title: "What a database is — tables, queries, forms, reports", minutes: 14 },
       { title: "Designing tables, fields & data types", minutes: 18 },
       { title: "Primary keys & avoiding duplicate data", minutes: 16 },
       { title: "Relationships — linking tables", minutes: 20 },
@@ -1529,10 +1552,12 @@ export const courses: Course[] = [
     lessons: 6,
     hours: 3,
     price: 35000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb: "Design flyers, business cards, brochures, certificates and newsletters with precise, professional layouts.",
     emoji: "office",
     syllabus: [
-      { title: "Getting started — templates & publications", minutes: 12, free: true },
+      { title: "Getting started — templates & publications", minutes: 12 },
       { title: "Text boxes & picture boxes", minutes: 16 },
       { title: "Aligning, layering & guides", minutes: 15 },
       { title: "Colour schemes, fonts & your logo", minutes: 16 },
@@ -1553,11 +1578,13 @@ export const courses: Course[] = [
     lessons: 14,
     hours: 4,
     price: 40000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb: "Browse, search, send email, use mobile money safely and avoid online scams.",
     emoji: "globe",
     syllabus: [
-      { title: "Internet & online safety — full tutorial (video)", minutes: 30, free: true, youtube: "aO858HyFbKI" },
-      { title: "Email basics — how email works (video)", minutes: 20, free: true, youtube: "0kIaw1yhUVM" },
+      { title: "Internet & online safety — full tutorial (video)", minutes: 30, youtube: "aO858HyFbKI" },
+      { title: "Email basics — how email works (video)", minutes: 20, youtube: "0kIaw1yhUVM" },
       // Browsing → searching → email → communicating → staying safe.
       { title: "Web browsers compared (Chrome, Edge, Firefox)", minutes: 12 },
       { title: "Bookmarks, tabs & history", minutes: 12 },
@@ -1595,11 +1622,13 @@ export const courses: Course[] = [
     lessons: 13,
     hours: 4,
     price: 35000,
+    durationMonths: 1,
+    trainingFee: 320000,
     blurb: "Build real typing speed with guided drills — a skill every computer user needs.",
     emoji: "keyboard",
     syllabus: [
-      { title: "Learn to touch type — full tutorial (video)", minutes: 60, free: true, youtube: "bEKQQvMF8QE" },
-      { title: "Home row & correct finger placement", minutes: 9, free: true, preview: "/videos/v-04.mp4" },
+      { title: "Learn to touch type — full tutorial (video)", minutes: 60, youtube: "bEKQQvMF8QE" },
+      { title: "Home row & correct finger placement", minutes: 9, preview: "/videos/v-04.mp4" },
       // Learn the keys → build accuracy → then build speed. Accuracy before speed.
       { title: "Top & bottom rows", minutes: 12 },
       { title: "Numbers & symbols", minutes: 15 },
@@ -1639,11 +1668,13 @@ export const courses: Course[] = [
     lessons: 12,
     hours: 8,
     price: 120000,
+    durationMonths: 2,
+    trainingFee: 450000,
     blurb: "Design logos, posters, flyers and social media graphics like a pro — from Canva basics to Photoshop & Illustrator.",
     emoji: "monitor",
     unlockCode: "GD-2026",
     syllabus: [
-      { title: "What is graphic design? Tools & careers", minutes: 12, free: true },
+      { title: "What is graphic design? Tools & careers", minutes: 12 },
       { title: "Design principles: balance, contrast, hierarchy", minutes: 20 },
       { title: "Colour theory & choosing palettes", minutes: 18 },
       { title: "Typography — pairing & spacing fonts", minutes: 18 },
@@ -1673,11 +1704,13 @@ export const courses: Course[] = [
     lessons: 14,
     hours: 12,
     price: 180000,
+    durationMonths: 3,
+    trainingFee: 600000,
     blurb: "Build real websites from scratch — HTML, CSS and JavaScript — then launch fast sites with WordPress.",
     emoji: "web",
     unlockCode: "WEB-2026",
     syllabus: [
-      { title: "How the web works: browsers, servers, domains", minutes: 16, free: true },
+      { title: "How the web works: browsers, servers, domains", minutes: 16 },
       { title: "HTML: structure, headings, links & images", minutes: 24 },
       { title: "HTML forms & tables", minutes: 20 },
       { title: "CSS: colours, fonts & the box model", minutes: 26 },
@@ -1709,11 +1742,13 @@ export const courses: Course[] = [
     lessons: 11,
     hours: 7,
     price: 90000,
+    durationMonths: 2,
+    trainingFee: 400000,
     blurb: "Grow any business online — Facebook, Instagram, TikTok, WhatsApp Business, running ads and content that sells.",
     emoji: "chat",
     unlockCode: "DM-2026",
     syllabus: [
-      { title: "Digital marketing overview & strategy", minutes: 16, free: true },
+      { title: "Digital marketing overview & strategy", minutes: 16 },
       { title: "Building a brand people trust", minutes: 18 },
       { title: "Facebook & Instagram pages for business", minutes: 22 },
       { title: "TikTok content that goes viral", minutes: 20 },
@@ -1742,11 +1777,13 @@ export const courses: Course[] = [
     lessons: 11,
     hours: 8,
     price: 100000,
+    durationMonths: 2,
+    trainingFee: 400000,
     blurb: "Turn raw data into insights — advanced formulas, PivotTables, charts and dashboards that impress employers.",
     emoji: "office",
     unlockCode: "DATA-2026",
     syllabus: [
-      { title: "Excel for analysis — the workflow", minutes: 14, free: true },
+      { title: "Excel for analysis — the workflow", minutes: 14 },
       { title: "Cleaning & formatting messy data", minutes: 22 },
       { title: "Essential functions: SUMIF, COUNTIF, IF", minutes: 24 },
       { title: "VLOOKUP, XLOOKUP & INDEX/MATCH", minutes: 26 },
@@ -1775,11 +1812,13 @@ export const courses: Course[] = [
     lessons: 12,
     hours: 10,
     price: 150000,
+    durationMonths: 2,
+    trainingFee: 450000,
     blurb: "Understand how networks really work — IP addressing, routers, switches and Wi-Fi — the foundation for CCNA & IT jobs.",
     emoji: "wifi",
     unlockCode: "NETW-2026",
     syllabus: [
-      { title: "What is a network? LAN, WAN & the Internet", minutes: 16, free: true },
+      { title: "What is a network? LAN, WAN & the Internet", minutes: 16 },
       { title: "How data travels: the OSI & TCP/IP models", minutes: 24 },
       { title: "IP addresses & subnetting basics", minutes: 28 },
       { title: "Switches vs routers explained", minutes: 22 },
@@ -1809,11 +1848,13 @@ export const courses: Course[] = [
     lessons: 10,
     hours: 6,
     price: 90000,
+    durationMonths: 2,
+    trainingFee: 450000,
     blurb: "Protect yourself and your business online — passwords, phishing, malware, safe browsing and data privacy.",
     emoji: "shield",
     unlockCode: "CYB-2026",
     syllabus: [
-      { title: "Why cybersecurity matters", minutes: 14, free: true },
+      { title: "Why cybersecurity matters", minutes: 14 },
       { title: "Strong passwords & password managers", minutes: 18 },
       { title: "Two-factor authentication (2FA)", minutes: 16 },
       { title: "Spotting phishing & scam messages", minutes: 22 },
@@ -1841,11 +1882,13 @@ export const courses: Course[] = [
     lessons: 10,
     hours: 7,
     price: 90000,
+    durationMonths: 2,
+    trainingFee: 400000,
     blurb: "Edit professional videos for YouTube, TikTok and business — cuts, transitions, text, music and colour.",
     emoji: "monitor",
     unlockCode: "VID-2026",
     syllabus: [
-      { title: "Video editing overview & gear", minutes: 14, free: true },
+      { title: "Video editing overview & gear", minutes: 14 },
       { title: "CapCut basics on phone & PC", minutes: 22 },
       { title: "Cutting, trimming & pacing", minutes: 20 },
       { title: "Transitions & effects that look clean", minutes: 20 },
@@ -1872,11 +1915,13 @@ export const courses: Course[] = [
     lessons: 13,
     hours: 12,
     price: 160000,
+    durationMonths: 3,
+    trainingFee: 500000,
     blurb: "Start coding with the world's most popular language — from basics to real projects and automation.",
     emoji: "software",
     unlockCode: "PY-2026",
     syllabus: [
-      { title: "Why Python? Install & first program", minutes: 16, free: true },
+      { title: "Why Python? Install & first program", minutes: 16 },
       { title: "Variables, numbers & strings", minutes: 22 },
       { title: "User input & output", minutes: 18 },
       { title: "If / else decisions", minutes: 20 },
@@ -1906,12 +1951,14 @@ export const courses: Course[] = [
     lessons: 12,
     hours: 12,
     price: 200000,
+    durationMonths: 3,
+    trainingFee: 600000,
     blurb: "Build real Android & iOS apps with Flutter — from your first screen to publishing on the Play Store.",
     emoji: "mobile",
     unlockCode: "APP-2026",
     cover: "/courses/mobile-app-development.png",
     syllabus: [
-      { title: "How mobile apps work & tools setup", minutes: 18, free: true },
+      { title: "How mobile apps work & tools setup", minutes: 18 },
       { title: "Dart basics for Flutter", minutes: 24 },
       { title: "Widgets: building your first screen", minutes: 26 },
       { title: "Layouts, lists & navigation", minutes: 26 },
@@ -1940,12 +1987,14 @@ export const courses: Course[] = [
     lessons: 11,
     hours: 10,
     price: 170000,
+    durationMonths: 2,
+    trainingFee: 450000,
     blurb: "Draft professional 2D plans and 3D models — for engineering, architecture and construction.",
     emoji: "monitor",
     unlockCode: "CAD-2026",
     cover: "/courses/autocad.jpg",
     syllabus: [
-      { title: "AutoCAD interface & navigation", minutes: 18, free: true },
+      { title: "AutoCAD interface & navigation", minutes: 18 },
       { title: "Drawing lines, circles & shapes", minutes: 24 },
       { title: "Precision: coordinates, snap & grid", minutes: 22 },
       { title: "Modifying: move, copy, trim, offset", minutes: 24 },
@@ -1973,12 +2022,14 @@ export const courses: Course[] = [
     lessons: 10,
     hours: 8,
     price: 130000,
+    durationMonths: 2,
+    trainingFee: 400000,
     blurb: "Manage your business books like a pro — invoices, expenses, VAT and reports with QuickBooks.",
     emoji: "card",
     unlockCode: "QB-2026",
     cover: "/courses/quickbooks-accounting.jpg",
     syllabus: [
-      { title: "Bookkeeping basics every owner needs", minutes: 16, free: true },
+      { title: "Bookkeeping basics every owner needs", minutes: 16 },
       { title: "Setting up your company in QuickBooks", minutes: 22 },
       { title: "Chart of accounts explained", minutes: 20 },
       { title: "Recording sales & invoices", minutes: 22 },
@@ -2005,12 +2056,14 @@ export const courses: Course[] = [
     lessons: 10,
     hours: 6,
     price: 70000,
+    durationMonths: 1,
+    trainingFee: 350000,
     blurb: "Work smarter with Microsoft 365 — OneDrive, Outlook, Teams meetings, and collaborating in the cloud.",
     emoji: "office",
     unlockCode: "M365-2026",
     cover: "/courses/microsoft-365-teams.jpg",
     syllabus: [
-      { title: "What is Microsoft 365?", minutes: 14, free: true },
+      { title: "What is Microsoft 365?", minutes: 14 },
       { title: "OneDrive: cloud files & sharing", minutes: 20 },
       { title: "Outlook email & calendar", minutes: 22 },
       { title: "Teams: chat & channels", minutes: 20 },
@@ -2037,12 +2090,14 @@ export const courses: Course[] = [
     lessons: 10,
     hours: 7,
     price: 90000,
+    durationMonths: 2,
+    trainingFee: 400000,
     blurb: "Take stunning photos with any camera or phone, then edit them like a pro with Lightroom & Snapseed.",
     emoji: "monitor",
     unlockCode: "PHOTO-2026",
     cover: "/courses/photography-editing.png",
     syllabus: [
-      { title: "Photography basics & your camera/phone", minutes: 16, free: true },
+      { title: "Photography basics & your camera/phone", minutes: 16 },
       { title: "Composition: framing & the rule of thirds", minutes: 20 },
       { title: "Light: natural & indoor", minutes: 20 },
       { title: "Exposure: ISO, shutter & aperture", minutes: 24 },
