@@ -38,8 +38,8 @@ export function BrandLogoFull({
 
       {/* Wordmark + Uganda tagline */}
       <span className="flex flex-col leading-none">
-        <span className={`font-display font-black tracking-tight ${name} ${wordColor}`}>
-          Online<span className={techColor}>&nbsp;Tech</span>
+        <span className={`font-display font-black uppercase tracking-[0.01em] ${name} ${wordColor}`}>
+          ONLINE<span className={techColor}>&nbsp;TECH</span>
         </span>
         <span className="mt-1.5 flex items-center gap-1.5">
           {flag && (

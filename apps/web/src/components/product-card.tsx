@@ -88,7 +88,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="mt-1.5 flex items-center gap-2">
           <span className="text-[12px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-[#e63946] px-1.5 py-0.5 text-[11px] font-extrabold leading-none text-white">
+          <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-[11px] font-extrabold leading-none text-white">
             -{discountPct}%
           </span>
         </div>
