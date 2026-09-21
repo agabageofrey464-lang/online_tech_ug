@@ -11,6 +11,7 @@ import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
+import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
@@ -222,6 +223,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Deals of the Day — branded colour band with bookend panels */}
+      <DealsOfTheDay items={deals} />
 
       {/* Campaign banners — "Don't Miss Out!" */}
       <PromoBanners />
