@@ -204,8 +204,8 @@ export const productImages: Record<string, string[]> = {
   ],
   "macbook-pro-14-m3": [
     "/products/macbook-pro-14-m3.webp",
-    "/products/macbook-pro-14-m3-2.webp",
-    "/products/macbook-pro-14-m3-3.webp"
+    "/products/058fa929c75d4167b1b4f503a59bcd90.jpg",
+    "/products/c7faba20f628428a852d645265987c55.jpg"
   ],
   "mercury-power-bank": [
     "/products/mercury-power-bank.webp",

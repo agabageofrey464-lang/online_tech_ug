@@ -1066,7 +1066,6 @@ export const products: Product[] = [
 
   // ── NEW ARRIVALS — from your uploaded product photos (public/products/*).
   //    ⚠️ PRICES & SPECS ARE ESTIMATES — please confirm/adjust each one. ──
-  { image: "/products/058fa929c75d4167b1b4f503a59bcd90.jpg", id: "macbook-pro-14-m3", name: "Apple MacBook Pro 14\" (M3)", category: "Laptops", price: 6500000, brand: "Apple", condition: "Brand New", rating: 4.9, badge: "Sealed", specs: ["Apple M3 chip", "16GB RAM", "512GB SSD", "14\" Liquid Retina XDR", "macOS"] },
   { image: "/products/3ca68f657879410289bfa708045475a5.jpg", id: "hp-spectre-x360-13", name: "HP Spectre x360 13", category: "Laptops", price: 2800000, brand: "HP", condition: "UK Used", rating: 4.7, badge: "Premium", specs: ["Core i7", "16GB RAM", "512GB SSD", "13.3\" OLED touch", "2-in-1 convertible"] },
   { image: "/products/67c6404b77b341fda95fdce0ec62eb6f.jpg", id: "hp-elitebook-1040-g8", name: "HP EliteBook 1040 G8", category: "Laptops", price: 2000000, brand: "HP", condition: "UK Used", rating: 4.6, specs: ["Core i7 11th Gen", "16GB RAM", "512GB SSD", "14\" FHD", "Windows 11"] },
   { image: "/products/9be4a822003b4a0e8e0e1f7cd24c9ceb.jpg", id: "dell-xps-15-9500", name: "Dell XPS 15 9500", category: "Laptops", price: 2400000, brand: "Dell", condition: "UK Used", rating: 4.7, badge: "Popular", specs: ["Core i7", "16GB RAM", "512GB SSD", "15.6\" FHD+ InfinityEdge", "Windows 11"] },
