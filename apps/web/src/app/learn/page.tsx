@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check } from "lucide-react";
+import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check, Building2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
@@ -46,6 +46,10 @@ const FAQ = [
     a: "Yes. Finish the lessons, pass the short quiz at the end, and you can download your Online Tech Uganda certificate with your name on it.",
   },
   {
+    q: "Are classes physical or online?",
+    a: "Both. You can attend in person at our Kampala centre, or take the same course fully online and study from anywhere in Uganda. The tutors, materials and certificate are identical — tell us which you prefer when you apply.",
+  },
+  {
     q: "Do I need my own computer?",
     a: "It helps, but the lessons and notes work on a phone too. If you need practice time on a machine, talk to us — we can arrange it at our Kampala office.",
   },
@@ -89,16 +93,22 @@ export default function LearnPage() {
           </div>
 
           <div className="mt-4 max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider ring-1 ring-white/20">
-              <Award size={13} /> Certificate included
-            </span>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider ring-1 ring-white/20">
+                <Award size={13} /> Certificate included
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                <Building2 size={13} /> Physical &amp; Online classes
+              </span>
+            </div>
             <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
               Learn real computer skills — <span className="text-gold-300">pay per lesson</span>
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-white/85">
               From your very first click to graphic design, Excel and coding. Built for students and
-              mature learners in Uganda. Enrol on a full programme or study lesson by lesson, and
-              earn a certificate you can show an employer.
+              mature learners in Uganda. Attend in person at our Kampala centre or learn online from
+              anywhere — enrol on a full programme or study lesson by lesson, and earn a
+              certificate you can show an employer.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -135,7 +145,7 @@ export default function LearnPage() {
 
       {/* ── How it works ───────────────────────────────────────── */}
       <section className="container-page py-10">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               icon: Smartphone,
@@ -143,9 +153,14 @@ export default function LearnPage() {
               body: "Enrol on the full taught programme, or unlock single lessons and study at your own pace.",
             },
             {
+              icon: Building2,
+              title: "Physical or online",
+              body: "Attend classes at our Kampala centre, or learn fully online — same tutors, same certificate.",
+            },
+            {
               icon: Wallet,
               title: "Pay by Mobile Money",
-              body: "Pay for one lesson or the whole course. We send your unlock code on WhatsApp.",
+              body: "MTN MoMo or Airtel Money. We confirm your place and send your materials.",
             },
             {
               icon: Award,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Lock, FileText, Download, Check, PlayCircle, BadgeCheck, Users } from "lucide-react";
+import { Lock, FileText, Download, Check, Building2, BadgeCheck, Users } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 import { SafeImage } from "@/components/safe-image";
 import { CourseStructuredData, BreadcrumbStructuredData } from "@/components/structured-data";
@@ -77,6 +77,14 @@ export default async function CourseDetailPage({
               <span className="rounded-full bg-green-500 px-2.5 py-1 text-[11px] font-bold text-white">
                 Certificate
               </span>
+              {course.durationMonths && (
+                <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white ring-1 ring-white/20">
+                  {course.durationMonths} month{course.durationMonths > 1 ? "s" : ""}
+                </span>
+              )}
+              <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white ring-1 ring-white/20">
+                Physical &amp; online
+              </span>
             </div>
             <h1 className="mt-2 text-2xl font-black text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)] sm:text-3xl">
               {course.title}
@@ -147,7 +155,7 @@ export default async function CourseDetailPage({
       {/* Trust strip */}
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {[
-          { icon: PlayCircle, title: "Learn at your pace", body: "Watch lessons any time, on phone or laptop." },
+          { icon: Building2, title: "Physical or online", body: "Attend at our Kampala centre or learn online — your choice." },
           { icon: BadgeCheck, title: "Certificate included", body: "Pass the quiz and download your certificate." },
           { icon: Users, title: "Real support", body: "Stuck? Message our trainers on WhatsApp." },
         ].map((f) => (

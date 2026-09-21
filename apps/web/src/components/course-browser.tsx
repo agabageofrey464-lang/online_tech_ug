@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, Clock, BookOpen, Award, FileText, ArrowRight, X } from "lucide-react";
+import { Search, Clock, BookOpen, Award, FileText, ArrowRight, Building2, X } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui";
 import { ugx } from "@/lib/site";
@@ -204,6 +204,9 @@ export function CourseBrowser({
                   </span>
                   <span className="inline-flex items-center gap-1 text-green-600">
                     <Award size={12} /> Certificate
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-ink-700/60">
+                    <Building2 size={12} /> Physical &amp; online
                   </span>
                 </div>
 
