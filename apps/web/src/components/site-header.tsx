@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   Menu, User, ShoppingCart, Phone, Heart, Package, Star, HelpCircle, ChevronDown,
   LayoutGrid, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
-  Store,
+  Store, GraduationCap,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
@@ -149,6 +149,35 @@ export function SiteHeader() {
       <nav className="hidden border-b border-ink-600/10 bg-white shadow-sm md:block">
         <div className="container-wide flex items-center gap-x-6 py-1.5 text-sm font-semibold">
           <MegaMenu />
+
+          {/* Primary destinations — Shop and Learn lead the bar, ahead of the
+              category list, because they're where most visitors are heading. */}
+          <div className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5">
+            <Link
+              href="/shop"
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold transition ${
+                pathname === "/shop"
+                  ? "bg-brand-500 text-white"
+                  : "text-ink-900 hover:bg-brand-50 hover:text-brand-600"
+              }`}
+            >
+              <LayoutGrid size={17} strokeWidth={2.2} /> Shop
+            </Link>
+            <Link
+              href="/learn"
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold transition ${
+                pathname.startsWith("/learn")
+                  ? "bg-brand-500 text-white"
+                  : "text-ink-900 hover:bg-brand-50 hover:text-brand-600"
+              }`}
+            >
+              <GraduationCap size={17} strokeWidth={2.2} /> Learn
+              <span className="rounded-full bg-green-500 px-1.5 py-px text-[9px] font-extrabold uppercase text-white">
+                Free
+              </span>
+            </Link>
+          </div>
+
           <div className="flex flex-1 items-center gap-x-6 overflow-x-auto no-scrollbar">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;

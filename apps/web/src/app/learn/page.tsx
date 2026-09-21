@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
-import { Radio, CalendarClock, GraduationCap } from "lucide-react";
-import { PageHeader } from "@/components/page-header";
+import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check } from "lucide-react";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
+import { CourseBrowser } from "@/components/course-browser";
 import { courses, liveClasses } from "@/lib/data";
+import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function fmtDate(iso: string) {
@@ -20,191 +21,312 @@ function fmtDate(iso: string) {
 }
 
 export const metadata: Metadata = {
-  title: "Learn — Online Computer Courses",
+  title: "Learn — Online Computer Courses in Uganda",
   description:
-    "Affordable online computer courses for students and mature learners in Uganda. Computer basics, Microsoft Office, internet & email, and typing — with certificates.",
+    "22 affordable online computer courses for students and mature learners in Uganda — Microsoft Office, graphic design, web development, networking and more. First lesson free, pay per lesson from UGX 5,000, certificate on completion.",
+  alternates: { canonical: "/learn" },
 };
-
-const flow = ["Register", "Pay", "Unlock videos", "Learn", "Certificate"];
 
 // Regenerate hourly so a class that has already run drops off the page by
 // itself — otherwise a static build would keep advertising it until the next
 // deploy, and people could register for a session that already happened.
 export const revalidate = 3600;
 
+const FAQ = [
+  {
+    q: "How do I pay for a course?",
+    a: "Send Mobile Money to our number, then message us on WhatsApp with the confirmation. We reply with your unlock code within minutes. You can pay for a single lesson or the whole course.",
+  },
+  {
+    q: "Can I pay for just one lesson?",
+    a: "Yes. Every lesson is priced on its own, from UGX 5,000 for short lessons up to UGX 15,000 for the longest. Pay only for what you need — your code unlocks that lesson alone.",
+  },
+  {
+    q: "Do I get a certificate?",
+    a: "Yes. Finish the lessons, pass the short quiz at the end, and you can download your Online Tech Uganda certificate with your name on it.",
+  },
+  {
+    q: "Do I need my own computer?",
+    a: "It helps, but the lessons and notes work on a phone too. If you need practice time on a machine, talk to us — we can arrange it at our Kampala office.",
+  },
+  {
+    q: "How long do I have access?",
+    a: "Forever. Once a lesson is unlocked on your device it stays unlocked — there is no monthly fee and nothing expires.",
+  },
+  {
+    q: "Is the first lesson really free?",
+    a: "Yes, every course has a free opening lesson so you can see the teaching style before paying anything.",
+  },
+];
+
 export default function LearnPage() {
   const upcoming = liveClasses
     .filter((lc) => new Date(lc.date).getTime() > Date.now())
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  const totalLessons = courses.reduce((n, c) => n + c.lessons, 0);
+  const totalHours = courses.reduce((n, c) => n + c.hours, 0);
+  const withNotes = Object.keys(courseNotes);
+
+  const stats = [
+    { value: `${courses.length}`, label: "Courses" },
+    { value: `${totalLessons}`, label: "Lessons" },
+    { value: `${totalHours}+`, label: "Hours" },
+    { value: "Free", label: "First lesson" },
+  ];
+
   return (
     <>
-      <PageHeader
-        crumbs={[{ label: "Learn" }]}
-        eyebrow="Learn"
-        title="Online computer courses"
-        subtitle="Start from the basics and build real skills — designed for students and mature learners. Learn at your own pace and earn a certificate."
-      />
+      {/* ── Hero ───────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-ink-700 via-ink-600 to-brand-600 text-white">
+        {/* soft light blobs */}
+        <span className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+        <span className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-brand-400/20 blur-3xl" />
 
-      {/* How it works */}
-      <section className="container-page py-12">
-        <div className="flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-ink-600 sm:gap-3">
-          {flow.map((f, i) => (
-            <div key={f} className="flex items-center gap-2 sm:gap-3">
-              <span className="rounded-full bg-brand-50 px-4 py-2 text-brand-700">{f}</span>
-              {i < flow.length - 1 && <span className="text-brand-400">→</span>}
-            </div>
-          ))}
-        </div>
-        <p className="mt-4 text-center text-sm text-ink-700/60">
-          First lesson <span className="font-semibold text-green-600">free</span>. Pay per lesson to unlock
-          the rest — <span className="font-semibold text-brand-600">from {ugx(5000)} to {ugx(15000)}</span>,
-          or buy the full course.
-        </p>
-        <div className="mt-5 flex justify-center">
-          <Link
-            href="/learn/dashboard"
-            className="inline-flex items-center gap-2 rounded-md border border-brand-500 px-5 py-2.5 text-sm font-bold text-brand-600 transition hover:bg-brand-50"
-          >
-            <GraduationCap size={16} /> My Learning Dashboard
-          </Link>
-        </div>
-      </section>
-
-      {/* Live classes */}
-      <section className="container-page pb-4">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100 text-red-600">
-            <Radio size={18} />
-          </span>
-          <div>
-            <h2 className="text-xl font-extrabold text-ink-600">Live classes</h2>
-            <p className="text-sm text-ink-700/60">Instructor-led sessions — register to get the joining link.</p>
+        <div className="container-page relative py-10 sm:py-14">
+          <div className="[&_a]:text-white/70 [&_span]:text-white/50">
+            <Breadcrumbs items={[{ label: "Learn" }]} />
           </div>
-        </div>
-        {upcoming.length === 0 ? (
-          /* Never leave an empty grid — give people a way to ask for the next date. */
-          <div className="rounded-card border border-dashed border-ink-600/20 bg-white p-6 text-center">
-            <p className="text-sm font-semibold text-ink-800">No live classes scheduled right now.</p>
-            <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/65">
-              New dates are announced regularly. Message us and we&apos;ll tell you when the next session runs — or
-              start any course below straight away.
+
+          <div className="mt-4 max-w-2xl">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider ring-1 ring-white/20">
+              <Award size={13} /> Certificate included
+            </span>
+            <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+              Learn real computer skills — <span className="text-gold-300">pay per lesson</span>
+            </h1>
+            <p className="mt-3 text-[15px] leading-relaxed text-white/85">
+              From your very first click to graphic design, Excel and coding. Built for students and
+              mature learners in Uganda. Start free, go at your own pace, and earn a certificate you
+              can show an employer.
             </p>
-            <a
-              href={whatsappLink("Hi, when is the next live class?")}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-block rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600"
-            >
-              Ask about the next class
-            </a>
+
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <Link
+                href="#courses"
+                className="press rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 shadow-sm transition hover:bg-white/90"
+              >
+                Browse courses
+              </Link>
+              <a
+                href={whatsappLink("Hi Online Tech Uganda, I'd like to know more about your computer courses.")}
+                target="_blank"
+                rel="noreferrer"
+                className="press inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-green-700"
+              >
+                <MessageCircle size={16} /> Ask a question
+              </a>
+            </div>
           </div>
-        ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {upcoming.map((lc) => (
-            <div key={lc.id} className="flex flex-col rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-bold uppercase text-red-600">
-                  <Radio size={11} /> Live
-                </span>
-                <Badge tone="ink">{lc.mode}</Badge>
+
+          {/* Stats */}
+          <div className="mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
+                <p className="text-2xl font-extrabold leading-none">{s.value}</p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-white/65">
+                  {s.label}
+                </p>
               </div>
-              <h3 className="mt-3 text-sm font-extrabold text-ink-700">{lc.title}</h3>
-              <p className="mt-1 text-xs text-ink-700/70">{lc.topic}</p>
-              <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-ink-700/70">
-                <CalendarClock size={14} className="text-brand-500" /> {fmtDate(lc.date)} · {lc.durationMins}min
-              </p>
-              <p className="mt-1 text-xs text-ink-700/60">Host: {lc.host}</p>
-              <div className="mt-auto flex items-center justify-between pt-4">
-                <span className={`text-sm font-extrabold ${lc.price ? "text-brand-600" : "text-green-600"}`}>
-                  {lc.price ? ugx(lc.price) : "Free"}
-                </span>
-                <a
-                  href={whatsappLink(
-                    `Hi, I'd like to REGISTER for the live class "${lc.title}" on ${fmtDate(lc.date)}${lc.price ? ` (${ugx(lc.price)})` : " (free)"}.`,
-                  )}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-brand-600"
-                >
-                  Register
-                </a>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        )}
       </section>
 
-      {/* Courses */}
-      <section className="container-page pb-8">
-        <SectionHeading title="Our Courses" href="/learn/dashboard" linkLabel="My Learning →" className="mb-4" />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((c) => (
+      {/* ── How it works ───────────────────────────────────────── */}
+      <section className="container-page py-10">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            {
+              icon: Smartphone,
+              title: "Start free",
+              body: "Open any course and watch the first lesson free — no account, no payment.",
+            },
+            {
+              icon: Wallet,
+              title: "Pay by Mobile Money",
+              body: "Pay for one lesson or the whole course. We send your unlock code on WhatsApp.",
+            },
+            {
+              icon: Award,
+              title: "Finish & get certified",
+              body: "Work at your own pace, pass the quiz, and download your certificate.",
+            },
+          ].map((s, i) => (
             <div
-              key={c.slug}
-              className="flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:shadow-md"
+              key={s.title}
+              className="relative rounded-card border border-ink-600/10 bg-white p-5 shadow-sm"
             >
-              <div className="relative h-40 w-full overflow-hidden">
-                <SafeImage
-                  src={c.cover ?? `/courses/${c.slug}.webp`}
-                  alt={c.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 33vw"
-                  className="object-cover"
-                />
-                <span className="absolute right-3 top-3">
-                  <Badge tone="ink">{c.level}</Badge>
-                </span>
-                <span className="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-600 shadow">
-                  <Icon name={c.emoji} size={22} />
-                </span>
-              </div>
-              <div className="flex flex-1 flex-col p-6 pt-4">
-              <h2 className="text-lg font-extrabold text-ink-600">{c.title}</h2>
-              <p className="mt-2 text-sm text-ink-700/70">{c.blurb}</p>
-              <p className="mt-4 text-xs font-medium text-ink-700/60">
-                {c.lessons} lessons · {c.hours} hours · Certificate
-              </p>
-              <p className="mt-1 text-xs font-semibold">
-                <span className="text-green-600">1st lesson free</span>
-                <span className="text-ink-700/50"> · then from {ugx(5000)}</span>
-              </p>
-              <div className="mt-auto flex items-center justify-between pt-5">
-                <span className="text-lg font-extrabold text-brand-600">{ugx(c.price)}</span>
-                <Link
-                  href={`/learn/${c.slug}`}
-                  className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600"
-                >
-                  View lessons
-                </Link>
-              </div>
-              </div>
+              <span className="absolute right-4 top-3 text-4xl font-black text-ink-600/[0.07]">
+                {i + 1}
+              </span>
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                <s.icon size={22} />
+              </span>
+              <h2 className="mt-3 font-extrabold text-ink-900">{s.title}</h2>
+              <p className="mt-1 text-sm text-ink-700/70">{s.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Subscription note */}
-      <section className="container-page py-12">
-        <div className="rounded-card bg-ink-700 px-8 py-10 text-center text-white">
-          <h2 className="text-2xl font-extrabold">Or subscribe and learn everything</h2>
+      {/* ── Live classes ───────────────────────────────────────── */}
+      {upcoming.length > 0 && (
+        <section className="container-page pb-4">
+          <div className="overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink-600/10 bg-ink-50/70 px-5 py-3.5">
+              <h2 className="inline-flex items-center gap-2 text-lg font-extrabold text-ink-900">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                </span>
+                Live classes
+              </h2>
+              <span className="text-xs font-semibold text-ink-700/60">
+                {upcoming.length} upcoming
+              </span>
+            </div>
+            <ul className="divide-y divide-ink-600/5">
+              {upcoming.slice(0, 4).map((lc) => (
+                <li key={lc.title} className="flex flex-wrap items-center gap-3 p-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                    <Radio size={20} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-ink-900">{lc.title}</p>
+                    <p className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-ink-700/65">
+                      <CalendarClock size={13} /> {fmtDate(lc.date)}
+                      <span>· {lc.mode} · {lc.durationMins} min</span>
+                      {lc.host && <span>· with {lc.host}</span>}
+                    </p>
+                  </div>
+                  <span className="shrink-0 font-extrabold text-brand-600">
+                    {lc.price ? ugx(lc.price) : "Free"}
+                  </span>
+                  <a
+                    href={whatsappLink(`Hi, I'd like to join the live class: ${lc.title} (${fmtDate(lc.date)}).`)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="press shrink-0 rounded-md bg-brand-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
+                  >
+                    Reserve a seat
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* ── Courses ────────────────────────────────────────────── */}
+      <section id="courses" className="container-page scroll-mt-24 py-8">
+        <SectionHeading
+          title="Our Courses"
+          href="/learn/dashboard"
+          linkLabel="My Learning →"
+          className="mb-4"
+        />
+        <CourseBrowser courses={courses} withNotes={withNotes} />
+      </section>
+
+      {/* ── Certificate ────────────────────────────────────────── */}
+      <section className="container-page py-8">
+        <div className="grid items-center gap-6 overflow-hidden rounded-card border border-ink-600/10 bg-white p-6 shadow-sm sm:grid-cols-[1fr_auto] sm:p-8">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-green-700">
+              <Award size={13} /> On completion
+            </span>
+            <h2 className="mt-3 text-xl font-extrabold text-ink-900 sm:text-2xl">
+              Finish the course, get your certificate
+            </h2>
+            <p className="mt-2 max-w-lg text-sm text-ink-700/70">
+              Every course ends with a short quiz. Pass it and you can download an Online Tech
+              Uganda certificate carrying your name and the course title — something real to attach
+              to a job application.
+            </p>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              {[
+                "Your full name on it",
+                "Course title & hours",
+                "Download as PDF",
+                "Free — no extra charge",
+              ].map((x) => (
+                <li key={x} className="flex items-center gap-2 text-sm text-ink-700/80">
+                  <Check size={15} className="shrink-0 text-green-600" />
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Mini certificate mock */}
+          <div className="w-full max-w-[260px] justify-self-center rounded-lg border-4 border-double border-gold-400/60 bg-gradient-to-br from-white to-gold-50 p-4 text-center shadow-md">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-700/50">
+              Certificate of Completion
+            </p>
+            <p className="mt-2 text-[10px] text-ink-700/60">This certifies that</p>
+            <p className="mt-1 border-b border-ink-600/15 pb-1 text-sm font-extrabold text-ink-900">
+              Your Name
+            </p>
+            <p className="mt-2 text-[10px] leading-snug text-ink-700/60">
+              has successfully completed
+              <br />
+              <b className="text-ink-800">Microsoft Office</b>
+            </p>
+            <span className="mx-auto mt-3 flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-white">
+              <Award size={16} />
+            </span>
+            <p className="mt-2 text-[8px] font-bold uppercase tracking-wider text-brand-600">
+              Online Tech Uganda
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ────────────────────────────────────────────────── */}
+      <section className="container-page py-8">
+        <h2 className="text-xl font-extrabold text-ink-900">Common questions</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {FAQ.map((f) => (
+            <details
+              key={f.q}
+              className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+            >
+              <summary className="flex cursor-pointer items-center justify-between gap-3 font-bold text-ink-900">
+                {f.q}
+                <span className="shrink-0 text-brand-500 transition group-open:rotate-45">＋</span>
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-ink-700/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Group / school enquiry ─────────────────────────────── */}
+      <section className="container-page py-10">
+        <div className="rounded-card bg-ink-700 px-6 py-10 text-center text-white sm:px-8">
+          <h2 className="text-2xl font-extrabold">Training a school, church or team?</h2>
           <p className="mx-auto mt-2 max-w-xl text-white/85">
-            Get access to all current and future courses for just <b>{ugx(20000)}/month</b>. Cancel
-            anytime. Perfect for schools and groups.
+            We run group training at your premises or ours, with discounted rates for classes and
+            staff teams. Tell us how many learners and what they need to learn.
           </p>
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex flex-wrap justify-center gap-2.5">
             <Button
-              href={whatsappLink("Hi, I'm interested in the monthly learning subscription.")}
+              href={whatsappLink("Hi, I'd like a quote for group computer training.")}
               external
               variant="primary"
             >
-              Get notified at launch
+              Get a group quote
             </Button>
+            <Link
+              href="/contact"
+              className="press rounded-md border border-white/25 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Contact us
+            </Link>
           </div>
           <p className="mt-4 inline-flex items-center justify-center gap-1.5 text-xs text-white/70">
-            <Icon name="learn" size={14} /> Online learning platform launching in Phase 4. Enroll now
-            via WhatsApp for early access.
+            <Icon name="learn" size={14} /> Also available: on-site training in Kampala and nearby districts.
           </p>
         </div>
       </section>

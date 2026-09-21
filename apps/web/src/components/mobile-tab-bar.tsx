@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, ShoppingCart, Heart, User } from "lucide-react";
+import { Home, LayoutGrid, ShoppingCart, GraduationCap, User } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { useWishlist } from "@/lib/wishlist";
 import { useAuth } from "@/lib/auth";
 
 function Badge({ n }: { n: number }) {
@@ -19,7 +18,6 @@ function Badge({ n }: { n: number }) {
 export function MobileTabBar() {
   const pathname = usePathname();
   const { count: cartCount, open } = useCart();
-  const { count: wishCount } = useWishlist();
   const { user } = useAuth();
 
   const cls = (active: boolean) =>
@@ -32,8 +30,8 @@ export function MobileTabBar() {
       <Link href="/" className={cls(pathname === "/")}>
         <Home size={22} strokeWidth={1.8} /> Home
       </Link>
-      <Link href="/categories" className={cls(pathname.startsWith("/categories") || pathname.startsWith("/shop"))}>
-        <LayoutGrid size={22} strokeWidth={1.8} /> Categories
+      <Link href="/shop" className={cls(pathname.startsWith("/categories") || pathname.startsWith("/shop"))}>
+        <LayoutGrid size={22} strokeWidth={1.8} /> Shop
       </Link>
       <button onClick={open} className={cls(false)}>
         <span className="relative">
@@ -42,12 +40,8 @@ export function MobileTabBar() {
         </span>
         Cart
       </button>
-      <Link href="/wishlist" className={cls(pathname === "/wishlist")}>
-        <span className="relative">
-          <Heart size={22} strokeWidth={1.8} />
-          <Badge n={wishCount} />
-        </span>
-        Wishlist
+      <Link href="/learn" className={cls(pathname.startsWith("/learn"))}>
+        <GraduationCap size={22} strokeWidth={1.8} /> Learn
       </Link>
       <Link href={user ? "/account" : "/login"} className={cls(pathname === "/account" || pathname === "/login")}>
         <User size={22} strokeWidth={1.8} /> Account
