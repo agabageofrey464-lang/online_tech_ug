@@ -172,9 +172,6 @@ export function SiteHeader() {
               }`}
             >
               <GraduationCap size={17} strokeWidth={2.2} /> Learn
-              <span className="rounded-full bg-green-500 px-1.5 py-px text-[9px] font-extrabold uppercase text-white">
-                Free
-              </span>
             </Link>
           </div>
 
