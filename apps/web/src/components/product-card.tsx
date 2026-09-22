@@ -13,6 +13,32 @@ import { SafeImage } from "@/components/safe-image";
  * and extra lines here only slow a shopper scanning a grid.
  */
 
+/**
+ * The facts a buyer compares on. For computers that is CPU / RAM / storage,
+ * with screen and OS as a second line. Everything else falls back to the
+ * product's own spec bullets, so accessories still say something useful.
+ */
+function specLines(product: Product): { primary: string; secondary: string } {
+  const d = product.details;
+  if (d) {
+    const cpu =
+      d.processor.match(/Core i\d|Ryzen \d|Apple M\d|Celeron|Pentium|Athlon|Xeon/i)?.[0] ?? "";
+    const ram = d.ram.split("(")[0].trim();
+    const storage = d.storage.split("(")[0].trim();
+    const screen = d.display.split(/[,(]/)[0].trim();
+    const os = d.os.split(/[,(]/)[0].trim();
+    return {
+      primary: [cpu, ram, storage].filter(Boolean).join(" · "),
+      secondary: [screen, os].filter(Boolean).join(" · "),
+    };
+  }
+  const bullets = product.specs ?? [];
+  return {
+    primary: bullets.slice(0, 2).join(" · "),
+    secondary: bullets.slice(2, 4).join(" · "),
+  };
+}
+
 /** Rating: one gold star, the score, then how many people rated it. */
 function Rating({ rating, count }: { rating: number; count: number }) {
   return (
@@ -37,6 +63,7 @@ export function ProductCard({ product }: { product: Product }) {
       ? product.oldPrice
       : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
   const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
+  const spec = specLines(product);
 
   return (
     <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-ink-600/[0.08] transition duration-200 hover:z-10 hover:shadow-[0_6px_22px_rgba(20,16,46,0.14)]">
@@ -75,6 +102,17 @@ export function ProductCard({ product }: { product: Product }) {
         <h3 className="clamp-2 min-h-[2.6em] text-[13.5px] leading-snug text-ink-800 group-hover:text-brand-600">
           {product.name}
         </h3>
+
+        {/* Specs — fixed height so every card in a row still lines up, whether
+            the product has a full specification or only short bullets. */}
+        <div className="mt-1 min-h-[2.1em]">
+          {spec.primary && (
+            <p className="truncate text-[11px] font-semibold text-ink-700/75">{spec.primary}</p>
+          )}
+          {spec.secondary && (
+            <p className="truncate text-[10.5px] text-ink-700/50">{spec.secondary}</p>
+          )}
+        </div>
 
         <div className="mt-1.5">
           <Rating rating={product.rating} count={reviews} />
