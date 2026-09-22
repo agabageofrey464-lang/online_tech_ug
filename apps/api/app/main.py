@@ -47,9 +47,12 @@ async def _campaign_worker() -> None:
                             await push.broadcast(db, title, body, link)
                         except Exception as exc:  # noqa: BLE001
                             logger.warning("Campaign push failed: %s", exc)
-                    # ONE email a day, framed as the day's new arrivals — push
-                    # can still fire 2-3 times for the shorter offers.
-                    if campaign_auto.should_email(db):
+                    # Automatic marketing EMAIL is off — it was too much mail for
+                    # customers. Campaigns now reach people by push only, and the
+                    # owner sends an email deliberately from Admin > Notifications
+                    # when there is something worth saying. Set
+                    # CAMPAIGN_AUTO_EMAIL=true to turn the daily send back on.
+                    if settings.campaign_auto_email and campaign_auto.should_email(db):
                         try:
                             subject = "New arrivals at Online Tech Uganda"
                             html = (
@@ -57,8 +60,6 @@ async def _campaign_worker() -> None:
                                 f"<p><b>{due.title}</b></p>"
                                 f"<p>{due.pill or ''}</p>"
                                 f"<p>{due.note or ''}</p>"
-                                "<p>Fresh laptops, accessories and course places are added "
-                                "through the week — tap below to see the latest.</p>"
                             )
                             await newsletter.broadcast(db, subject, html, include_customers=True)
                             due.emailed_at = datetime.utcnow()

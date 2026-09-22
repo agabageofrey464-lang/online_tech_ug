@@ -66,6 +66,11 @@ class Settings(BaseSettings):
     vapid_private_key: str = ""
     vapid_subject: str = "mailto:onlinetechug@gmail.com"
 
+    # Automatic daily campaign EMAIL. Off by default — customers found it too
+    # much mail. Push notifications are unaffected, and the owner can still send
+    # a campaign by hand from the admin.
+    campaign_auto_email: bool = False
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
