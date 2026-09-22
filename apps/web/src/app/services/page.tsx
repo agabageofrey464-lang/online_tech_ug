@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { ExploreMore } from "@/components/explore-more";
 import { Button } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { services } from "@/lib/data";
@@ -134,6 +135,8 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+      <ExploreMore exclude={["/services"]} />
+
     </>
   );
 }

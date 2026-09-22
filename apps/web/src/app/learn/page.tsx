@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ExploreMore } from "@/components/explore-more";
 import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check, Building2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Button, Badge } from "@/components/ui";
@@ -364,6 +365,8 @@ export default function LearnPage() {
           </p>
         </div>
       </section>
+      <ExploreMore exclude={["/learn"]} />
+
     </>
   );
 }

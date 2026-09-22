@@ -11,8 +11,9 @@ const url = (path: string) => `${BASE}${path === "/" ? "" : path}`;
 
 // Public, indexable routes.
 const PUBLIC_PATHS = [
-  "/", "/shop", "/marketplace", "/sell", "/learn", "/jobs", "/freelancers", "/advertise",
-  "/services", "/portfolio", "/request", "/track", "/news", "/blog", "/about", "/help", "/contact",
+  "/", "/shop", "/categories", "/marketplace", "/sell", "/learn", "/community", "/jobs",
+  "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
+  "/news", "/blog", "/about", "/help", "/refer", "/pay", "/contact",
 ];
 
 async function apiList(path: string): Promise<Record<string, unknown>[]> {

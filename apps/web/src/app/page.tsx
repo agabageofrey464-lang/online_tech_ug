@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -110,6 +111,13 @@ function DealBand({
     </Reveal>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Computers, IT Services & Computer Courses in Uganda",
+  description:
+    "Buy quality laptops, desktops, SSDs and accessories in Kampala with warranty and countrywide delivery. Plus website and software development, IT support and repairs, and 22 computer courses with certificates — physical and online.",
+  alternates: { canonical: "/" },
+};
 
 // The storefront re-renders on a schedule (see `revalidate` below). Each slot
 // gets a different offset, so the home page leads with different products every

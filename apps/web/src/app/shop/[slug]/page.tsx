@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ExploreMore } from "@/components/explore-more";
 import { notFound } from "next/navigation";
 import { Check, Truck, MapPin, RotateCcw, ShieldCheck, Package, Phone } from "lucide-react";
 import { products, productImage } from "@/lib/data";
@@ -12,7 +13,7 @@ import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { RecentlyViewedTracker, RecentlyViewed } from "@/components/recently-viewed";
-import { ProductStructuredData } from "@/components/structured-data";
+import { ProductStructuredData, BreadcrumbStructuredData } from "@/components/structured-data";
 import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
@@ -96,6 +97,13 @@ export default async function ProductDetailPage({
   return (
     <div className="container-page py-10">
       <ProductStructuredData product={product} />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Shop", href: "/shop" },
+          { name: product.category, href: `/shop?cat=${product.category}` },
+          { name: product.name, href: `/shop/${product.id}` },
+        ]}
+      />
       <RecentlyViewedTracker slug={product.id} />
       <div className="mb-6">
         <Breadcrumbs
@@ -392,6 +400,8 @@ export default async function ProductDetailPage({
       <div className="mt-16">
         <RecentlyViewed exclude={product.id} />
       </div>
+      <ExploreMore exclude={["/shop"]} />
+
     </div>
   );
 }

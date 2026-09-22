@@ -13,6 +13,7 @@ import {
   Award,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { ExploreMore } from "@/components/explore-more";
 import { JobApply } from "@/components/job-apply";
 import { jobs as seedJobs } from "@/lib/jobs";
 import { site, whatsappLink } from "@/lib/site";
@@ -310,6 +311,8 @@ function JobCard({ j }: { j: JobItem }) {
           </li>
         ))}
       </ul>
+      <ExploreMore exclude={["/jobs"]} />
+
     </div>
   );
 }
