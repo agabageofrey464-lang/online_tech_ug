@@ -5,9 +5,12 @@ import { WishlistButton } from "@/components/wishlist-button";
 import { SafeImage } from "@/components/safe-image";
 
 /**
- * Product tile, jumia.ug grid style: a plain white card, square photo, two-line
- * title, a single-star rating with the review count, then the price with the
- * struck anchor price and a green discount badge beside it.
+ * Product tile, matching the jumia.ug reference: white card, square photo,
+ * two-line title, a single-star rating with the review count, then the price
+ * with the struck anchor price and a green discount badge.
+ *
+ * Kept deliberately spare — the full specification lives on the product page,
+ * and extra lines here only slow a shopper scanning a grid.
  */
 
 /** Rating: one gold star, the score, then how many people rated it. */
@@ -15,7 +18,7 @@ function Rating({ rating, count }: { rating: number; count: number }) {
   return (
     <span className="flex items-center gap-1 text-[12.5px] leading-none">
       <span className="text-[14px] leading-none text-[#f68b1e]">★</span>
-      <span className="font-semibold text-ink-900">{rating.toFixed(1)}</span>
+      <span className="font-bold text-ink-900">{rating.toFixed(1)}</span>
       <span className="text-ink-700/50">({count.toLocaleString()})</span>
     </span>
   );
@@ -23,7 +26,7 @@ function Rating({ rating, count }: { rating: number; count: number }) {
 
 export function ProductCard({ product }: { product: Product }) {
   const inStock = product.inStock !== false;
-  // Deterministic rating count — stable per product so it never shifts.
+  // Deterministic per product, so the figure never shifts between renders.
   const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
 
   // Anchor pricing (DESIGN only — the real selling price is unchanged).
@@ -48,9 +51,8 @@ export function ProductCard({ product }: { product: Product }) {
           />
         </Link>
 
-        {/* Corner flag. The reference shows "free delivery" here; ours carries
-            the condition instead, because delivery is charged by distance and a
-            free-delivery badge would not be true. */}
+        {/* Condition rides on the photo — it matters on a used machine, and it
+            costs no vertical space here. */}
         {product.condition !== "Refurbished" && (
           <span className="pointer-events-none absolute right-0 top-0 z-10 rounded-bl-md bg-brand-500 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
             {product.condition}
@@ -78,7 +80,7 @@ export function ProductCard({ product }: { product: Product }) {
           <Rating rating={product.rating} count={reviews} />
         </div>
 
-        <p className="mt-1.5 text-[16px] font-extrabold leading-none tracking-tight text-ink-900">
+        <p className="mt-1.5 text-[17px] font-extrabold leading-none tracking-tight text-ink-900">
           {ugx(product.price)}
         </p>
 
