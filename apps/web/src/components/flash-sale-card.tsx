@@ -53,13 +53,13 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
           <Rating rating={product.rating} count={reviews} />
         </div>
 
-        <p className="mt-1 text-[15px] font-bold leading-tight tracking-tight text-ink-900">
+        <p className="mt-1.5 text-[16px] font-extrabold leading-none tracking-tight text-ink-900">
           {ugx(product.price)}
         </p>
 
         <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
           <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-[#fdeee4] px-1.5 py-0.5 text-[11px] font-bold text-[#f68b1e]">
+          <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
             -{discountPct}%
           </span>
         </div>

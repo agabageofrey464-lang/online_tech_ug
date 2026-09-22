@@ -321,10 +321,9 @@ export function ShopGrid() {
         </div>
 
         {filtered.length > 0 ? (
-          // Flat cards directly on the page — full-bleed to the screen edges on
-          // mobile, no panel, no borders, just whitespace.
+          // White cards on a warm cream panel, as on the reference grid.
           <>
-            <div className="grid-cards gap-1">
+            <div className="grid-cards gap-2 rounded-lg bg-[#fdf3ec] p-2">
               {pageItems.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
