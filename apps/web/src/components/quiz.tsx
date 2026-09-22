@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import type { QuizQuestion } from "@/lib/data";
 import { saveQuiz, quizResult } from "@/lib/learning";
-import { Certificate } from "@/components/certificate";
 
 export function Quiz({
   courseSlug,
@@ -109,7 +108,7 @@ export function Quiz({
             }`}
           >
             You scored {score}/{total} ({Math.round((score / total) * 100)}%) —{" "}
-            {passed ? "Passed! 🎉 Claim your certificate below." : "Not passed yet. Review and try again."}
+            {passed ? "Passed! 🎉 Well done — you're ready for the course assessment." : "Not passed yet. Review and try again."}
           </div>
           <div className="mt-3 flex flex-wrap gap-3">
             <button
@@ -120,8 +119,15 @@ export function Quiz({
             </button>
           </div>
           {passed && (
-            <div className="mt-4">
-              <Certificate courseTitle={courseTitle} />
+            /* Certificates are issued by the school, not by passing a practice
+               quiz — so this points the learner at the real process. */
+            <div className="mt-4 rounded-card border border-brand-200 bg-brand-50 p-4 text-sm text-ink-700">
+              <p className="font-bold text-ink-900">Getting your certificate</p>
+              <p className="mt-1 text-ink-700/75">
+                Certificates are issued by Online Tech Uganda once you complete the course with us.
+                Finish your lessons, then message us on WhatsApp and we&apos;ll arrange your
+                assessment and print your certificate.
+              </p>
             </div>
           )}
         </div>

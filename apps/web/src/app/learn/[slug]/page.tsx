@@ -156,7 +156,7 @@ export default async function CourseDetailPage({
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {[
           { icon: Building2, title: "Physical or online", body: "Attend at our Kampala centre or learn online — your choice." },
-          { icon: BadgeCheck, title: "Certificate included", body: "Pass the quiz and download your certificate." },
+          { icon: BadgeCheck, title: "Certificate included", body: "Issued by the school when you complete the course." },
           { icon: Users, title: "Real support", body: "Stuck? Message our trainers on WhatsApp." },
         ].map((f) => (
           <div key={f.title} className="flex items-start gap-3 rounded-card border border-ink-600/10 bg-white p-4 shadow-sm">
@@ -191,8 +191,8 @@ export default async function CourseDetailPage({
         <p>
           Lessons unlock from{" "}
           <b className="text-brand-700">{ugx(5000)} to {ugx(15000)}</b> via Mobile Money — pay for just
-          the lesson you need, or the whole course. Tick lessons as you finish, then take the quiz for
-          your certificate.
+          the lesson you need, or the whole course. Tick lessons as you finish, and use the quiz to test
+          yourself before your assessment.
         </p>
       </div>
 

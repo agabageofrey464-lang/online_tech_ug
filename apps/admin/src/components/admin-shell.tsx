@@ -20,6 +20,7 @@ const sections = [
   { href: "/coupons", label: "Coupons", icon: "🏷️", count: "coupons" },
   { href: "/courses", label: "Courses", icon: "🎓", count: "courses" },
   { href: "/enrollments", label: "Enrollments", icon: "🎟️", count: "enrollments", attention: true },
+  { href: "/certificates", label: "Certificates", icon: "🏅" },
   { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
   { href: "/newsletter", label: "Notifications", icon: "📣" },
   { href: "/campaigns", label: "Campaigns", icon: "🎯" },

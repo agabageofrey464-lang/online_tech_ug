@@ -43,7 +43,7 @@ const FAQ = [
   },
   {
     q: "Do I get a certificate?",
-    a: "Yes. Finish the lessons, pass the short quiz at the end, and you can download your Online Tech Uganda certificate with your name on it.",
+    a: "Yes. When you complete the course with us, we issue an Online Tech Uganda certificate carrying your name, the course and a certificate number. Quizzes in the lessons are for your own practice — the certificate is issued by the school, not by the website.",
   },
   {
     q: "Are classes physical or online?",
@@ -165,7 +165,7 @@ export default function LearnPage() {
             {
               icon: Award,
               title: "Finish & get certified",
-              body: "Work at your own pace, pass the quiz, and download your certificate.",
+              body: "Complete the course with us and we issue your certificate, signed and stamped.",
             },
           ].map((s, i) => (
             <div
@@ -262,9 +262,9 @@ export default function LearnPage() {
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {[
                 "Your full name on it",
-                "Course title & hours",
-                "Download as PDF",
-                "Free — no extra charge",
+                "Course title & completion date",
+                "Unique certificate number",
+                "Issued & signed by the school",
               ].map((x) => (
                 <li key={x} className="flex items-center gap-2 text-sm text-ink-700/80">
                   <Check size={15} className="shrink-0 text-green-600" />
