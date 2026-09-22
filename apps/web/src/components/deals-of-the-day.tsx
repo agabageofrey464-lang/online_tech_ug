@@ -75,7 +75,7 @@ export function DealsOfTheDay({
             <Link
               key={p.id}
               href={`/shop/${p.id}`}
-              className="group flex w-[10.5rem] shrink-0 snap-start flex-col rounded-xl bg-gradient-to-b from-[#fb8b4c] to-[#ef5a22] p-3 shadow-sm ring-1 ring-white/20 transition hover:ring-white/50 sm:w-[13rem]"
+              className="group flex w-[10.5rem] shrink-0 snap-start flex-col rounded-xl bg-[#f7743c] p-3 shadow-sm ring-1 ring-white/20 transition hover:ring-white/50 sm:w-[13rem]"
             >
               <p className="line-clamp-2 min-h-[2.4em] text-[13px] font-extrabold leading-tight text-white">
                 {p.name}

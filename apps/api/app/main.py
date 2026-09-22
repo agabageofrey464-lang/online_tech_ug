@@ -47,15 +47,20 @@ async def _campaign_worker() -> None:
                             await push.broadcast(db, title, body, link)
                         except Exception as exc:  # noqa: BLE001
                             logger.warning("Campaign push failed: %s", exc)
-                    # Email is capped at one a day — push can fire 2-3 times.
+                    # ONE email a day, framed as the day's new arrivals — push
+                    # can still fire 2-3 times for the shorter offers.
                     if campaign_auto.should_email(db):
                         try:
+                            subject = "New arrivals at Online Tech Uganda"
                             html = (
+                                "<p>Here is what's new in the shop today.</p>"
                                 f"<p><b>{due.title}</b></p>"
                                 f"<p>{due.pill or ''}</p>"
                                 f"<p>{due.note or ''}</p>"
+                                "<p>Fresh laptops, accessories and course places are added "
+                                "through the week — tap below to see the latest.</p>"
                             )
-                            await newsletter.broadcast(db, title, html, include_customers=True)
+                            await newsletter.broadcast(db, subject, html, include_customers=True)
                             due.emailed_at = datetime.utcnow()
                         except Exception as exc:  # noqa: BLE001
                             logger.warning("Campaign email failed: %s", exc)

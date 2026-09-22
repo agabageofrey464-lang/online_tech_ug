@@ -78,16 +78,9 @@ html {
 }
 
 body {
-  /* Soft brand-tinted wash over the grey canvas so the page never looks like a
-     narrow column floating in dull empty margins on large / wide monitors. The
-     radials are anchored (fixed) so they stay put as the content scrolls. */
-  background:
-    radial-gradient(1100px 480px at 50% -170px, rgba(241, 90, 41, 0.07), transparent 60%),
-    radial-gradient(1000px 560px at 106% 2%, rgba(40, 35, 99, 0.06), transparent 55%),
-    radial-gradient(900px 560px at -8% 6%, rgba(0, 166, 81, 0.045), transparent 55%),
-    var(--background);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* Flat, solid canvas — no gradient washes. Colour stays clean behind the
+     white cards instead of tinting them. */
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

@@ -26,12 +26,12 @@ function byCat(cat: Product["category"]) {
 
 // Jumia-style deal-band colours — cycled per band so rails look varied.
 const BAND_COLORS = [
-  "from-brand-500 to-brand-600",
-  "from-[#6d28d9] to-[#5b21b6]", // purple
-  "from-ink-600 to-ink-700", // indigo
-  "from-green-600 to-green-700",
-  "from-[#c41c2e] to-[#a01722]", // red
-  "from-[#0e7490] to-[#155e75]", // teal
+  "bg-brand-500",
+  "bg-[#6d28d9]", // purple
+  "bg-ink-600", // indigo
+  "bg-green-600",
+  "bg-[#c41c2e]", // red
+  "bg-[#0e7490]", // teal
 ];
 
 function Panel({
@@ -49,7 +49,7 @@ function Panel({
   const band = BAND_COLORS[seed % BAND_COLORS.length];
 
   return (
-    <Reveal as="section" className={`overflow-hidden rounded-lg bg-gradient-to-br shadow-sm ${band}`}>
+    <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
       <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
         <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
         {href && (
@@ -92,7 +92,7 @@ function DealBand({
   const band = BAND_COLORS[seed % BAND_COLORS.length];
 
   return (
-    <Reveal as="section" className={`overflow-hidden rounded-lg bg-gradient-to-br shadow-sm ${band}`}>
+    <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
       <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
         <div className="min-w-0">
           <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
@@ -430,7 +430,7 @@ export default function HomePage() {
       </Panel>
 
       {/* Browse all products — same coloured deal-band treatment as the rails */}
-      <Reveal as="section" className="overflow-hidden rounded-lg bg-gradient-to-br from-[#6d28d9] to-[#5b21b6] shadow-sm">
+      <Reveal as="section" className="overflow-hidden rounded-lg bg-[#6d28d9] shadow-sm">
         <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
           <div className="min-w-0">
             <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
