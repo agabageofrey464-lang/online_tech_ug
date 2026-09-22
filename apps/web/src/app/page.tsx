@@ -171,6 +171,10 @@ export default function HomePage() {
 
   return (
     <div className="container-wide space-y-3 py-3">
+      {/* Call / WhatsApp — first thing on the page, on every device, so nobody
+          has to scroll to find how to order. */}
+      <OrderBanner />
+
       {/* Hero row — DESKTOP only. On mobile we skip straight to the products
           (Jumia-style), so the hero, call banner and category circles are hidden. */}
       <div className="bleed-wide hidden gap-3 sm:mx-0 md:grid lg:grid-cols-[230px_1fr]">
@@ -189,10 +193,6 @@ export default function HomePage() {
           on its own row and ate the first screen. Desktop keeps the sidebar,
           and "Explore our top categories" covers browsing for everyone. */}
 
-      {/* Order-now banner — desktop only (mobile starts with products) */}
-      <div className="hidden md:block">
-        <OrderBanner />
-      </div>
 
       {/* "Don't Miss Out!" now occupies this slot — the category circles that used
           to sit here are hidden, since the header search, mega-menu and mobile
