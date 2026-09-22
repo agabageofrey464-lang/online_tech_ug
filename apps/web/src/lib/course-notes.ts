@@ -258,5 +258,61 @@ export const courseNotes: Record<string, NoteMeta[]> = {
       "title": "Protecting Your Data & Business",
       "summary": "Backups, safe browsing, privacy and securing a small business."
     }
+  ],
+  "web-development": [
+    {
+      "n": 1,
+      "title": "How the Web Actually Works",
+      "summary": "Clients, servers, HTTP, domains and hosting — the ground every web developer stands on."
+    },
+    {
+      "n": 2,
+      "title": "HTML — The Structure of a Page",
+      "summary": "Elements, semantic markup, forms and accessibility."
+    },
+    {
+      "n": 3,
+      "title": "CSS — Making It Look Right",
+      "summary": "The box model, layout with Flexbox and Grid, and responsive design."
+    },
+    {
+      "n": 4,
+      "title": "JavaScript & Dynamic Pages",
+      "summary": "Variables, functions, the DOM, events and talking to a server."
+    }
+  ],
+  "python-programming": [
+    {
+      "n": 1,
+      "title": "Programming Foundations with Python",
+      "summary": "What a program is, how Python runs, variables, types and input."
+    },
+    {
+      "n": 2,
+      "title": "Control Flow, Lists & Dictionaries",
+      "summary": "Decisions, loops, and the data structures you will use daily."
+    },
+    {
+      "n": 3,
+      "title": "Functions, Files & Errors",
+      "summary": "Writing reusable code, saving data, and handling what goes wrong."
+    }
+  ],
+  "computer-networking": [
+    {
+      "n": 1,
+      "title": "Networking Fundamentals",
+      "summary": "What a network is, types, topologies and the OSI model."
+    },
+    {
+      "n": 2,
+      "title": "IP Addressing & Subnetting",
+      "summary": "Addresses, classes, private ranges, DHCP, DNS and NAT."
+    },
+    {
+      "n": 3,
+      "title": "Devices, Cabling & Troubleshooting",
+      "summary": "Switches, routers, Wi-Fi, cable standards and a method for finding faults."
+    }
   ]
 };
