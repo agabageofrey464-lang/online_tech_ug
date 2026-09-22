@@ -22,6 +22,7 @@ const sections = [
   { href: "/enrollments", label: "Enrollments", icon: "🎟️", count: "enrollments", attention: true },
   { href: "/certificates", label: "Certificates", icon: "🏅" },
   { href: "/enrolment-forms", label: "Enrolment Forms", icon: "📝" },
+  { href: "/internship-letters", label: "Internship Letters", icon: "📄" },
   { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
   { href: "/community", label: "Community", icon: "💬", attention: true },
   { href: "/newsletter", label: "Notifications", icon: "📣" },
