@@ -14,6 +14,7 @@ export default function EnrollmentsPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<number | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [notice, setNotice] = useState("");
   const [q, setQ] = useState("");
 
   const load = useCallback(async () => {
@@ -44,6 +45,26 @@ export default function EnrollmentsPage() {
     }
   }
 
+  async function approve(c: AdminUnlockCode) {
+    if (!confirm(`Approve ${c.note || "this student"} and send their code?`)) return;
+    setBusy(c.id);
+    try {
+      const res = await fetch(`/api/unlock-codes/${c.id}/approve`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setCodes((prev) => prev.map((x) => (x.id === c.id ? { ...x, ...data } : x)));
+        setNotice(
+          data.emailed
+            ? "Approved — the code has been emailed to the student."
+            : "Approved. No email on file, so send the code yourself.",
+        );
+        setTimeout(() => setNotice(""), 4000);
+      }
+    } finally {
+      setBusy(null);
+    }
+  }
+
   function copy(code: string) {
     navigator.clipboard?.writeText(code).then(() => {
       setCopied(code);
@@ -52,6 +73,8 @@ export default function EnrollmentsPage() {
   }
 
   const active = codes.filter((c) => !c.revoked).length;
+  // A revoked code that has never been used is a registration waiting on you.
+  const pending = codes.filter((c) => c.revoked && !c.used).length;
 
   const needle = q.trim().toLowerCase();
   const filtered = needle
@@ -143,14 +166,27 @@ export default function EnrollmentsPage() {
                       <td className="p-3 text-center">
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                            c.revoked ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
+                            !c.revoked
+                              ? "bg-green-100 text-green-700"
+                              : c.used
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-blue-100 text-blue-700"
                           }`}
                         >
-                          {c.revoked ? "Revoked" : "Active"}
+                          {!c.revoked ? "Approved" : c.used ? "Revoked" : "Pending"}
                         </span>
                       </td>
                       <td className="p-3 text-center text-ink-600/60">{c.redeemed_count}</td>
                       <td className="p-3 text-right">
+                        {c.revoked && !c.used && (
+                          <button
+                            onClick={() => approve(c)}
+                            disabled={busy === c.id}
+                            className="mr-1.5 rounded bg-green-600 px-3 py-1 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                          >
+                            {busy === c.id ? "…" : "✓ Approve"}
+                          </button>
+                        )}
                         <button
                           onClick={() => toggleRevoke(c)}
                           disabled={busy === c.id}

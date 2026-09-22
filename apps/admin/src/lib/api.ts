@@ -98,6 +98,8 @@ export type AdminUnlockCode = {
   note: string;
   redeemed_count: number;
   revoked: boolean;
+  used?: boolean;
+  email?: string;
   created_at: string;
   last_used: string | null;
 };

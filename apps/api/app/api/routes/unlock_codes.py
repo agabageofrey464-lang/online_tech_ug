@@ -13,7 +13,7 @@ from app.schemas.unlock_code import (
 )
 from app.services import unlock_codes
 from app.services.courses import get_course
-from app.services.email import send_enrollment_alert
+from app.services.email import send_code_activated, send_enrollment_alert
 
 router = APIRouter()
 
@@ -33,15 +33,15 @@ def verify(payload: VerifyIn, db: Session = Depends(get_db)) -> dict:
 
 @router.post("/register", response_model=RegisterOut, status_code=201)
 async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
-    """Public: a learner registers for a course and is auto-issued a PENDING unlock
-    code, which is emailed to them automatically. The code only unlocks the course
-    once payment is confirmed and an admin activates it."""
+    """Public: a learner applies for a course. This creates a PENDING registration —
+    the code exists but does NOT work until an administrator approves it in the
+    admin, which is what stops anyone unlocking a course by filling in a form."""
     note = f"{payload.name} · {payload.phone}" + (f" · {payload.email}" if payload.email else "")
     try:
-        # Active immediately — the learner never sees it; only the owner (who emails
-        # it out after confirming payment) does. No separate activation step needed.
+        # pending=True stores the code revoked. Approving it in the admin is what
+        # activates it and sends it to the learner.
         created = unlock_codes.generate_code(
-            db, payload.course_slug, note=note, pending=False, email=payload.email
+            db, payload.course_slug, note=note, pending=True, email=payload.email
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -58,8 +58,27 @@ async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
         price=int(course["price_ugx"]) if course and course.get("price_ugx") else 0,
     )
 
-    # Return no code — the owner distributes it manually.
-    return {"code": "", "course_slug": payload.course_slug, "pending": False}
+    # The learner never sees a code here — it is issued on approval.
+    return {"code": "", "course_slug": payload.course_slug, "pending": True}
+
+
+@router.post("/{code_id}/approve", dependencies=[Depends(require_admin)])
+async def approve(code_id: int, db: Session = Depends(get_db)) -> dict:
+    """Admin: approve a registration — activate the code and email it to the
+    learner. This is the step that turns an application into access."""
+    row = unlock_codes.set_revoked(db, code_id, False)
+    if not row:
+        raise HTTPException(status_code=404, detail="Registration not found")
+
+    course = get_course(db, row["course_slug"])
+    title = course["title"] if course else row["course_slug"]
+    sent = False
+    if row.get("email"):
+        try:
+            sent = await send_code_activated(to=row["email"], course_title=title, code=row["code"])
+        except Exception:  # noqa: BLE001
+            sent = False
+    return {**row, "approved": True, "emailed": sent}
 
 
 @router.post("", response_model=UnlockCodeOut, status_code=201, dependencies=[Depends(require_admin)])
