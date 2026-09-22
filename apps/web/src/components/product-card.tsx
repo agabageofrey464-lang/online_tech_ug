@@ -82,13 +82,13 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Price — the loudest thing on the card */}
-        <p className="mt-1.5 text-[19px] font-extrabold leading-none tracking-tight text-ink-900">
+        <p className="mt-1.5 text-[15px] font-extrabold leading-tight tracking-tight text-ink-900">
           {ugx(product.price)}
         </p>
 
         <div className="mt-1.5 flex items-center gap-2">
-          <span className="text-[12px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-[11px] font-extrabold leading-none text-white">
+          <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+          <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white">
             -{discountPct}%
           </span>
         </div>
