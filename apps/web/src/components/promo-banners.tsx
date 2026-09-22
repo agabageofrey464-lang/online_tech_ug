@@ -10,6 +10,126 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const BANNERS = [
   {
     program: "Online Tech Festival",
+    badge: "Weekend",
+    badgeSub: "Blowout",
+    dates: "Fri – Sun",
+    title: "Weekend Price Drop",
+    pill: "SELECTED LAPTOPS & SSDs",
+    note: "New prices every weekend while stock lasts",
+    small: "T&Cs Apply",
+    cta: "See the deals",
+    href: "/shop?deals=1",
+    bg: "bg-[#c41c2e]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-2.jpg",
+  },
+  {
+    program: "Back to School",
+    badge: "Student",
+    badgeSub: "Offer",
+    dates: "Term time",
+    title: "Student Laptop Bundle",
+    pill: "LAPTOP + BAG + MOUSE",
+    note: "Everything a student needs, one price",
+    small: "Show your student ID",
+    cta: "Shop bundles",
+    href: "/shop?cat=Laptops",
+    bg: "bg-[#0e7490]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-3.jpg",
+  },
+  {
+    program: "Online Tech Academy",
+    badge: "Skills",
+    badgeSub: "Season",
+    dates: "Enrolling now",
+    title: "Learn A Skill This Term",
+    pill: "22 COURSES · CERTIFICATE",
+    note: "Physical & online classes in Kampala",
+    small: "Registration UGX 180,000",
+    cta: "Browse courses",
+    href: "/learn",
+    bg: "bg-[#6d28d9]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-1.jpg",
+  },
+  {
+    program: "Online Tech Festival",
+    badge: "Flash",
+    badgeSub: "Hours",
+    dates: "Today only",
+    title: "Beat The Clock",
+    pill: "PRICES DROP FOR HOURS ONLY",
+    note: "Check back — deals refresh through the day",
+    small: "While stock lasts",
+    cta: "Shop flash sales",
+    href: "/shop?deals=1",
+    bg: "bg-[#b45309]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-2.jpg",
+  },
+  {
+    program: "Business Ready",
+    badge: "Office",
+    badgeSub: "Setup",
+    dates: "All month",
+    title: "Kit Out Your Office",
+    pill: "DESKTOPS · NETWORK · PRINTERS",
+    note: "Free site visit and setup in Kampala",
+    small: "Bulk pricing available",
+    cta: "Get a quote",
+    href: "/services",
+    bg: "bg-[#155e75]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-3.jpg",
+  },
+  {
+    program: "Online Tech Festival",
+    badge: "Trade",
+    badgeSub: "In",
+    dates: "Any time",
+    title: "Trade In Your Old Laptop",
+    pill: "PAY LESS ON YOUR UPGRADE",
+    note: "We value your machine and take it off the price",
+    small: "Subject to condition",
+    cta: "Ask for a valuation",
+    href: "/contact",
+    bg: "bg-[#3f6212]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-1.jpg",
+  },
+  {
+    program: "Repair Centre",
+    badge: "Same Day",
+    badgeSub: "Repairs",
+    dates: "Mon – Sat",
+    title: "Broken? Fixed Today",
+    pill: "FREE DIAGNOSIS",
+    note: "Screens, batteries, keyboards & software",
+    small: "Walk in or book ahead",
+    cta: "Book a repair",
+    href: "/services#repairs-support",
+    bg: "bg-[#9a3412]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-2.jpg",
+  },
+  {
+    program: "Online Tech Festival",
+    badge: "Accessory",
+    badgeSub: "Days",
+    dates: "This week",
+    title: "Finish The Setup",
+    pill: "MICE · BAGS · CHARGERS · HUBS",
+    note: "The small things that make a laptop work",
+    small: "T&Cs Apply",
+    cta: "Shop accessories",
+    href: "/shop?cat=Accessories",
+    bg: "bg-[#1e3a8a]",
+    panel: "bg-[#FCDC04]",
+    img: "/hero/hero-3.jpg",
+  },
+  {
+    program: "Online Tech Festival",
     badge: "Super Saver",
     badgeSub: "Sale",
     dates: "This Month",
@@ -169,12 +289,25 @@ type Banner = {
   panelHex?: string;
 };
 
+/** How fast the strip advances. Short on purpose — a festival strip that sits
+ *  still reads as a static advert, and shoppers stop seeing it. */
+const ROTATE_MS = 3500;
+
 export function PromoBanners() {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
   // Campaigns created in the admin replace these built-ins the moment any are
   // live; the hard-coded set stays as a fallback so the slot is never empty.
   const [banners, setBanners] = useState<Banner[]>(BANNERS as Banner[]);
   const n = banners.length;
+
+  // Auto-advance. Pauses while the pointer is over the strip so a shopper
+  // reading an offer doesn't have it yanked away mid-sentence.
+  useEffect(() => {
+    if (n <= 1 || paused) return;
+    const t = setInterval(() => setI((v) => (v + 1) % n), ROTATE_MS);
+    return () => clearInterval(t);
+  }, [n, paused]);
 
   useEffect(() => {
     let alive = true;
@@ -211,11 +344,6 @@ export function PromoBanners() {
   }, []);
   const go = useCallback((d: number) => setI((v) => (v + d + n) % n), [n]);
 
-  useEffect(() => {
-    const t = setTimeout(() => setI((v) => (v + 1) % n), 6000);
-    return () => clearTimeout(t);
-  }, [i, n]);
-
   const b = banners[i];
   if (!b) return null;
 
@@ -223,7 +351,13 @@ export function PromoBanners() {
     <section>
       <h2 className="mb-2 text-base font-extrabold text-ink-900 sm:text-lg">Don&apos;t Miss Out!</h2>
 
-      <div className="group/promo relative overflow-hidden rounded-lg shadow-sm">
+      <div
+        className="group/promo relative overflow-hidden rounded-lg shadow-sm"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setPaused(false)}
+      >
         <div
           className={`relative flex min-h-[190px] transition-colors duration-500 sm:min-h-[260px] ${b.bg}`}
           style={b.bgHex ? { backgroundColor: b.bgHex } : undefined}

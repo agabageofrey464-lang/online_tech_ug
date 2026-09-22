@@ -73,7 +73,8 @@ export function HeroRotator() {
 
   // Auto-advance; pauses is handled by resetting the timer on manual change.
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % n), 5500);
+    // Snappier — a hero that lingers gets scrolled past unseen.
+    const t = setInterval(() => setI((v) => (v + 1) % n), 4000);
     return () => clearInterval(t);
   }, [n, i]);
 
