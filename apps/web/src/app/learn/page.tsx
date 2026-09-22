@@ -241,6 +241,25 @@ export default function LearnPage() {
           linkLabel="My Learning →"
           className="mb-4"
         />
+        <Link
+          href="/community"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 transition hover:shadow-md"
+        >
+          <span className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
+              <MessageCircle size={20} />
+            </span>
+            <span>
+              <span className="block font-extrabold text-ink-900">Student Community</span>
+              <span className="block text-sm text-ink-700/70">
+                Stuck on something? Ask other students and our trainers.
+              </span>
+            </span>
+          </span>
+          <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">
+            Open community →
+          </span>
+        </Link>
         <CourseBrowser courses={courses} withNotes={withNotes} />
       </section>
 

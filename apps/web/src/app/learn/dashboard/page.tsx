@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { GraduationCap, FileText, Award, BookOpen, Play } from "lucide-react";
+import { GraduationCap, FileText, Award, BookOpen, Play, Users, Briefcase } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { courses } from "@/lib/data";
 import { enrolledCourses, progressPct, quizResult, learnerName } from "@/lib/learning";
@@ -39,8 +39,30 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-extrabold text-ink-600">
             {name ? `${name.split(" ")[0]}'s Learning` : "My Learning"}
           </h1>
-          <p className="text-sm text-ink-700/60">Your courses, progress, downloads and certificates.</p>
+          <p className="text-sm text-ink-700/60">Your courses, progress, community and certificates.</p>
         </div>
+      </div>
+
+      {/* Everything a student can reach from here */}
+      <div className="mb-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { href: "/learn", icon: BookOpen, title: "Courses & Lessons", body: "Browse and unlock lessons" },
+          { href: "/community", icon: Users, title: "Student Community", body: "Ask questions, get answers" },
+          { href: "/jobs", icon: Briefcase, title: "Jobs & Internships", body: "Openings for our students" },
+          { href: "/contact", icon: Award, title: "Certificates", body: "Issued when you complete" },
+        ].map((x) => (
+          <Link
+            key={x.href}
+            href={x.href}
+            className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <x.icon size={19} />
+            </span>
+            <p className="mt-2.5 font-bold text-ink-900 group-hover:text-brand-600">{x.title}</p>
+            <p className="text-xs text-ink-700/60">{x.body}</p>
+          </Link>
+        ))}
       </div>
 
       {!ready ? (
@@ -71,7 +93,7 @@ export default function DashboardPage() {
                       <h3 className="font-extrabold text-ink-700">{c.title}</h3>
                       {quiz?.passed && (
                         <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
-                          <Award size={12} /> Certified
+                          <Award size={12} /> Quiz passed
                         </span>
                       )}
                     </div>
