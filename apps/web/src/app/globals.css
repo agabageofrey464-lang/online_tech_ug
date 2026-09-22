@@ -72,9 +72,28 @@
 
 html {
   scroll-behavior: smooth;
-  /* Jumia-style compact base (~14px). Text and rem-based spacing scale down
-     together, giving the same dense, readable feel as jumia.ug. */
+  /* Jumia-style compact base (~14px) on phones and laptops, easing up on large
+     monitors. Locking 14px everywhere left text and rem-based spacing looking
+     undersized on a big screen; this keeps the dense feel where it belongs and
+     gains a little breathing room where there is room to spare. */
   font-size: 14px;
+}
+@media (min-width: 1280px) {
+  html { font-size: 15px; }
+}
+@media (min-width: 1700px) {
+  html { font-size: 16px; }
+}
+/* Respect a visitor who has asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {

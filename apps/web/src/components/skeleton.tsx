@@ -8,7 +8,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 /** A product-card-shaped placeholder grid for loading product lists. */
 export function ProductGridSkeleton({ count = 12 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+    <div className="grid-cards gap-2">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="rounded-lg bg-white p-2.5 shadow-sm">
           <Skeleton className="aspect-square w-full rounded-md" />

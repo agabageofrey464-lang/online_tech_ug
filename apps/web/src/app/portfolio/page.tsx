@@ -90,7 +90,7 @@ export default function PortfolioPage() {
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-600">How we work</p>
             <h2 className="mt-2 text-2xl font-extrabold text-ink-900">From idea to launch in 5 clear steps</h2>
           </div>
-          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="mt-8 grid-cards-sm gap-4">
             {process.map((s) => (
               <li key={s.n} className="relative rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-sm font-extrabold text-white">

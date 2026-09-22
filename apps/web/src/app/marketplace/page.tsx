@@ -166,7 +166,7 @@ export default async function MarketplacePage() {
             <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
               <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Vendor products
             </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid-cards gap-3">
               {products.map((p) => (
                 <VendorCard key={p.id} p={p} />
               ))}
