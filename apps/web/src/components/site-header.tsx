@@ -163,15 +163,24 @@ export function SiteHeader() {
             >
               <LayoutGrid size={17} strokeWidth={2.2} /> Shop
             </Link>
+            {/* Learn is the academy, not the shop — it carries its own green
+                identity so it reads as a different kind of destination and is
+                findable at a glance. */}
             <Link
               href="/learn"
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold transition ${
+              className={`group/learn flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
                 pathname.startsWith("/learn")
-                  ? "bg-brand-500 text-white"
-                  : "text-ink-900 hover:bg-brand-50 hover:text-brand-600"
+                  ? "bg-green-700"
+                  : "bg-green-600 hover:bg-green-700"
               }`}
             >
-              <GraduationCap size={17} strokeWidth={2.2} /> Learn
+              <GraduationCap size={17} strokeWidth={2.2} />
+              <span className="leading-none">
+                Learn
+                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
+                  Academy
+                </span>
+              </span>
             </Link>
           </div>
 

@@ -40,8 +40,15 @@ export function MobileTabBar() {
         </span>
         Cart
       </button>
-      <Link href="/learn" className={cls(pathname.startsWith("/learn"))}>
-        <GraduationCap size={22} strokeWidth={1.8} /> Learn
+      {/* Learn keeps the academy's green on mobile too, so it is the one tab
+          that stands out from the shopping ones. */}
+      <Link
+        href="/learn"
+        className={`flex flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-semibold transition ${
+          pathname.startsWith("/learn") ? "text-green-700" : "text-green-600"
+        }`}
+      >
+        <GraduationCap size={22} strokeWidth={2} /> Learn
       </Link>
       <Link href={user ? "/account" : "/login"} className={cls(pathname === "/account" || pathname === "/login")}>
         <User size={22} strokeWidth={1.8} /> Account
