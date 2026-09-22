@@ -61,12 +61,14 @@ export const navGroups = [
   {
     label: "More",
     items: [
-      { href: "/about", label: "About Us" },
-      { href: "/services", label: "Services" },
+      // Learn, internships and services lead — they are what most visitors
+      // come here for, so they sit ahead of the informational pages.
       { href: "/learn", label: "Learn" },
+      { href: "/jobs", label: "Internships & Jobs" },
+      { href: "/services", label: "Services" },
+      { href: "/about", label: "About Us" },
       { href: "/blog", label: "Blog" },
       { href: "/news", label: "News" },
-      { href: "/jobs", label: "Jobs" },
       { href: "/freelancers", label: "Freelancers" },
       { href: "/pricing", label: "Pricing & Plans" },
       { href: "/portfolio", label: "Portfolio" },
