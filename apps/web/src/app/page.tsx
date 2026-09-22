@@ -15,7 +15,6 @@ import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
-import { CategoryCircles } from "@/components/category-circles";
 import { products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -195,11 +194,10 @@ export default function HomePage() {
         <OrderBanner />
       </div>
 
-      {/* Category & services circles — DESKTOP only. On phones the bottom tab bar
-          and header search already cover category browsing, so we skip it. */}
-      <div className="hidden md:block">
-        <CategoryCircles />
-      </div>
+      {/* "Don't Miss Out!" now occupies this slot — the category circles that used
+          to sit here are hidden, since the header search, mega-menu and mobile
+          tab bar already cover category browsing. */}
+      <PromoBanners />
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -226,9 +224,6 @@ export default function HomePage() {
 
       {/* Deals of the Day — branded colour band with bookend panels */}
       <DealsOfTheDay items={deals} />
-
-      {/* Campaign banners — "Don't Miss Out!" */}
-      <PromoBanners />
 
 
 
