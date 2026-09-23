@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   Menu, User, ShoppingCart, Phone, Heart, Package, Star, HelpCircle, ChevronDown,
   LayoutGrid, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
-  Store, GraduationCap,
+  Store, GraduationCap, Code2,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
@@ -74,6 +74,12 @@ function HeaderWishlist() {
   );
 }
 
+/** The strip is split so what we sell is scannable ahead of the info pages. */
+const ALL_UTILITY = navGroups.flatMap((g) => g.items);
+const PRIMARY_COUNT = 5;
+const PRIMARY_LINKS = ALL_UTILITY.slice(0, PRIMARY_COUNT);
+const SECONDARY_LINKS = ALL_UTILITY.slice(PRIMARY_COUNT);
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -83,21 +89,53 @@ export function SiteHeader() {
       {/* Promo strip — rotating advert on mobile, both messages on desktop */}
       <PromoStrip />
 
-      {/* Thin utility bar (Jumia-style) — sell + secondary links + phone */}
-      <div className="hidden border-b border-ink-600/10 bg-ink-50 text-ink-700/80 md:block">
-        <div className="container-wide flex items-center gap-x-5 py-1.5 text-[11px] font-semibold">
-          <Link href="/sell" className="inline-flex items-center gap-1.5 text-brand-600 transition hover:text-brand-700">
-            <Star size={12} className="fill-brand-500 text-brand-500" /> Sell on {site.name}
+      {/* Utility bar. Dark, so it separates cleanly from the white bar below,
+          and split into what we SELL (bold, up front) and the informational
+          pages (muted) — fifteen identical links were impossible to scan. */}
+      <div className="hidden bg-ink-800 text-white md:block">
+        <div className="container-wide flex items-center gap-x-4 py-2 text-[11.5px] font-semibold">
+          <Link
+            href="/sell"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600"
+          >
+            <Star size={11} className="fill-white" /> Sell on {site.name}
           </Link>
-          <span className="mx-auto flex items-center gap-x-5">
-            {navGroups.flatMap((g) => g.items).map((it) => (
-              <Link key={it.href} href={it.href} className="whitespace-nowrap transition hover:text-brand-600">
+
+          <nav className="flex min-w-0 flex-1 items-center gap-x-4 overflow-x-auto no-scrollbar">
+            {/* What we do — these earn the emphasis */}
+            {PRIMARY_LINKS.map((it) => (
+              <Link
+                key={it.href}
+                href={it.href}
+                className={`whitespace-nowrap border-b-2 pb-0.5 transition ${
+                  pathname.startsWith(it.href)
+                    ? "border-brand-500 text-white"
+                    : "border-transparent text-white hover:border-brand-400"
+                }`}
+              >
                 {it.label}
               </Link>
             ))}
-          </span>
-          <a href={telHref(site.phoneDisplay)} className="inline-flex items-center gap-1.5 transition hover:text-brand-600">
-            <Phone size={12} /> {site.phoneDisplay}
+
+            <span className="h-3 w-px shrink-0 bg-white/25" aria-hidden />
+
+            {/* Everything else */}
+            {SECONDARY_LINKS.map((it) => (
+              <Link
+                key={it.href}
+                href={it.href}
+                className="whitespace-nowrap font-medium text-white/60 transition hover:text-white"
+              >
+                {it.label}
+              </Link>
+            ))}
+          </nav>
+
+          <a
+            href={telHref(site.phoneDisplay)}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 transition hover:bg-white/20"
+          >
+            <Phone size={11} /> {site.phoneDisplay}
           </a>
         </div>
       </div>
@@ -179,6 +217,24 @@ export function SiteHeader() {
                 Learn
                 <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
                   Academy
+                </span>
+              </span>
+            </Link>
+            {/* Development is a third distinct business — indigo separates it
+                from the orange shop and the green academy. */}
+            <Link
+              href="/development"
+              className={`hidden items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition lg:flex ${
+                pathname.startsWith("/development")
+                  ? "bg-ink-800"
+                  : "bg-ink-600 hover:bg-ink-700"
+              }`}
+            >
+              <Code2 size={17} strokeWidth={2.2} />
+              <span className="leading-none">
+                Develop
+                <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/70">
+                  Software
                 </span>
               </span>
             </Link>
