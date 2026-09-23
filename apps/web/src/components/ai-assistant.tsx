@@ -33,7 +33,7 @@ function answerFor(q: string): string {
   }
   return (
     best?.answer ??
-    "I'm not sure about that one 🤔 — tap 'Talk to a human' to chat with our team on WhatsApp, and they'll help right away."
+    `I'm not sure about that one 🤔 — tap 'Talk to a human' to reach our team on WhatsApp, call ${site.phoneDisplay}, or email ${site.email}.`
   );
 }
 

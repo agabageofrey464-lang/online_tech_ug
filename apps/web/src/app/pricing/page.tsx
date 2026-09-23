@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
 import { PricingSection, postingCharges, vendorPlans, freelancerPlans, advertPlans, servicePlans } from "@/components/pricing-section";
 
@@ -25,6 +26,14 @@ export default function PricingPage() {
         <PricingSection title="Freelancers — Get Hired" subtitle="List your skills weekly, monthly or yearly." plans={freelancerPlans} showPay={false} />
         <PricingSection title="Websites, Apps & Software" subtitle="Project-based pricing — websites from UGX 1,000,000." plans={servicePlans} showPay={false} />
       </section>
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject={"Pricing enquiry"}
+          heading={"Not sure which plan fits?"}
+          note={"Tell us your situation and we will recommend honestly."}
+        />
+      </div>
+
     </>
   );
 }

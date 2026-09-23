@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { OrderTracker } from "@/components/order-tracker";
@@ -127,6 +128,14 @@ export default async function TrackPage({
           </div>
         </div>
       </section>
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject={"Project update"}
+          heading={"Need an update?"}
+          note={"Ask us where your project or order has reached."}
+        />
+      </div>
+
     </>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import Link from "next/link";
 import { ExploreMore } from "@/components/explore-more";
 import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check, Building2 } from "lucide-react";
@@ -404,6 +405,14 @@ export default function LearnPage() {
         </div>
       </section>
       <ExploreMore exclude={["/learn"]} />
+
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject={"Course enquiry"}
+          heading={"Questions about a course?"}
+          note={"Ask about intakes, fees, timetables or anything else before you enrol."}
+        />
+      </div>
 
     </>
   );

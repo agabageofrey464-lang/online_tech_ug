@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import Link from "next/link";
 import {
   Store, Wallet, TrendingUp, ShieldCheck, Package, ImageIcon, BarChart3,
@@ -222,6 +223,14 @@ export default async function SellPage() {
           </p>
         </section>
       </div>
-    </div>
+    
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject="Vendor enquiry"
+          heading="Want to sell with us?"
+          note="Get in touch and we'll walk you through setting up your store."
+        />
+      </div>
+</div>
   );
 }

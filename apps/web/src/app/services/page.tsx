@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -136,6 +137,14 @@ export default function ServicesPage() {
         </div>
       </section>
       <ExploreMore exclude={["/services"]} />
+
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject={"Service enquiry"}
+          heading={"Need one of these services?"}
+          note={"Tell us what you need and we will advise on the best option and price."}
+        />
+      </div>
 
     </>
   );

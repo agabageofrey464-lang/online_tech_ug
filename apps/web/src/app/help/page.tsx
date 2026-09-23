@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ContactOptions } from "@/components/contact-options";
 import Link from "next/link";
 import {
   Search, ShoppingBag, CreditCard, Truck, RotateCcw, Package, User, Ticket,
@@ -179,6 +180,14 @@ export default function HelpCenterPage() {
           <p className="text-center text-xs text-ink-700/50">{site.name} — genuine tech, real human support.</p>
         </div>
       </div>
-    </div>
+    
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject="Help request"
+          heading="Still need help?"
+          note="Reach a real person — call, WhatsApp or email, whichever suits you."
+        />
+      </div>
+</div>
   );
 }

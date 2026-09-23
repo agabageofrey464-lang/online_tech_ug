@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
 import { SoftwareRequest } from "@/components/software-request";
 
@@ -20,6 +21,14 @@ export default function RequestPage() {
       <section className="container-page max-w-3xl py-12">
         <SoftwareRequest />
       </section>
-    </>
+    
+      <div className="container-page pb-10">
+        <ContactOptions
+          subject="Software request"
+          heading="Prefer to talk it through?"
+          note="Describe what you need in your own words and we'll come back with options."
+        />
+      </div>
+</>
   );
 }
