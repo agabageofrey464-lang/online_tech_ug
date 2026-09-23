@@ -178,9 +178,11 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   const cx = W / 2;
   let y = 12;
 
-  // ── Header band
-  doc.setFillColor(40, 35, 99);
+  // ── Header band — the house teal, as on every other document.
+  doc.setFillColor(14, 116, 144);
   doc.rect(0, 0, W, 30, "F");
+  doc.setFillColor(12, 93, 117);
+  doc.triangle(W, 0, W, 30, W - 68, 0, "F");
   if (logo) doc.addImage(logo, "PNG", M, 4, 50, 18);
 
   if (!logo) {
@@ -197,6 +199,9 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.text("STUDENT ENROLMENT FORM", W - M, 14, { align: "right" });
+
+  doc.setFillColor(241, 90, 41);
+  doc.rect(0, 30, W, 2, "F");
 
   y = 38;
 
@@ -339,13 +344,15 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   field("Date", 0.5);
 
   // ── Footer
-  doc.setDrawColor(230, 230, 230);
-  doc.setLineWidth(0.3);
-  doc.line(M, 283, W - M, 283);
+  doc.setFillColor(14, 116, 144);
+  doc.rect(0, 283, W, 14, "F");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
-  doc.text("Online Tech Uganda  ·  www.onlinetechug.com  ·  Physical & online computer training", cx, 288, {
-    align: "center",
-  });
+  doc.setTextColor(255, 255, 255);
+  doc.text(
+    "Online Tech Uganda  ·  Kampala  ·  +256 756 839 270  ·  onlinetechug@gmail.com  ·  www.onlinetechug.com",
+    cx,
+    290.5,
+    { align: "center" },
+  );
 }

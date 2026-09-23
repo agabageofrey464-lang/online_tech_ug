@@ -83,11 +83,13 @@ export default function InternshipLettersPage() {
       const width = W - M * 2;
       let y = 0;
 
-      // ── Letterhead
-      doc.setFillColor(40, 35, 99);
-      doc.rect(0, 0, W, 32, "F");
+      // ── Letterhead — the house teal, as on the receipt and the site.
+      doc.setFillColor(14, 116, 144);
+      doc.rect(0, 0, W, 34, "F");
+      doc.setFillColor(12, 93, 117);
+      doc.triangle(W, 0, W, 34, W - 74, 0, "F");
       if (logo.current) {
-        doc.addImage(logo.current, "PNG", M, 5, 55, 20);
+        doc.addImage(logo.current, "PNG", M, 6, 55, 20);
       } else {
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
@@ -97,7 +99,7 @@ export default function InternshipLettersPage() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.6);
       doc.setTextColor(215, 240, 247);
-      doc.text("Computer Training · IT Services · Software Development", M, 29.5);
+      doc.text("Computer Training · IT Services · Software Development", M, 31);
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(8);
       doc.text("+256 756 839 270", W - M, 12, { align: "right" });
@@ -108,9 +110,9 @@ export default function InternshipLettersPage() {
 
       // Orange rule under the header
       doc.setFillColor(241, 90, 41);
-      doc.rect(0, 32, W, 1.5, "F");
+      doc.rect(0, 34, W, 2, "F");
 
-      y = 45;
+      y = 47;
 
       // ── Ref + date
       doc.setTextColor(60, 60, 60);
@@ -138,7 +140,7 @@ export default function InternshipLettersPage() {
           : "RE: CONFIRMATION OF COMPLETED INDUSTRIAL TRAINING / INTERNSHIP";
       doc.text(subject, M, y);
       doc.setLineWidth(0.3);
-      doc.setDrawColor(40, 35, 99);
+      doc.setDrawColor(14, 116, 144);
       doc.line(M, y + 1.5, M + doc.getTextWidth(subject), y + 1.5);
       y += 10;
 
@@ -195,7 +197,7 @@ export default function InternshipLettersPage() {
       doc.text("Yours faithfully,", M, y);
       y += 4;
       if (sign.current) doc.addImage(sign.current, "PNG", M, y, 44, 9.1);
-      y += 20;
+      y += 13;
 
       doc.setDrawColor(120, 120, 120);
       doc.setLineWidth(0.3);
@@ -219,13 +221,17 @@ export default function InternshipLettersPage() {
       doc.text("OFFICIAL STAMP", W - M - 18, y - 11, { align: "center" });
 
       // ── Footer
-      doc.setDrawColor(230, 230, 230);
-      doc.line(M, 280, W - M, 280);
-      doc.setFontSize(7.5);
-      doc.setTextColor(150, 150, 150);
-      doc.text("Online Tech Uganda  ·  www.onlinetechug.com  ·  Kampala, Uganda", W / 2, 286, {
-        align: "center",
-      });
+      doc.setFillColor(14, 116, 144);
+      doc.rect(0, 283, W, 14, "F");
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.2);
+      doc.setTextColor(255, 255, 255);
+      doc.text(
+        "Online Tech Uganda  ·  Kampala  ·  +256 756 839 270  ·  onlinetechug@gmail.com  ·  www.onlinetechug.com",
+        W / 2,
+        290.5,
+        { align: "center" },
+      );
 
       if (print) {
         doc.autoPrint();

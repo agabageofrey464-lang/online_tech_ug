@@ -59,6 +59,8 @@ export default function CertificatesPage() {
   const [course, setCourse] = useState(COURSES[0]);
   const [date, setDate] = useState(todayISO());
   const [mode, setMode] = useState<"Physical" | "Online">("Physical");
+  const [duration, setDuration] = useState("");
+  const [remark, setRemark] = useState("");
   const [busy, setBusy] = useState(false);
   const [issued, setIssued] = useState<{ name: string; course: string; serial: string }[]>([]);
 
@@ -94,7 +96,7 @@ export default function CertificatesPage() {
       });
 
       // Borders
-      doc.setDrawColor(40, 35, 99);
+      doc.setDrawColor(14, 116, 144);
       doc.setLineWidth(3);
       doc.rect(6, 6, W - 12, 210 - 12);
       doc.setDrawColor(241, 90, 41);
@@ -112,7 +114,7 @@ export default function CertificatesPage() {
 
       doc.setFont("times", "bold");
       doc.setFontSize(30);
-      doc.setTextColor(40, 35, 99);
+      doc.setTextColor(14, 116, 144);
       doc.text("Certificate of Completion", cx, 66, { align: "center" });
 
       // Ornamental divider
@@ -131,7 +133,7 @@ export default function CertificatesPage() {
 
       doc.setFont("times", "bolditalic");
       doc.setFontSize(26);
-      doc.setTextColor(40, 35, 99);
+      doc.setTextColor(12, 93, 117);
       doc.text(learner, cx, 98, { align: "center" });
       const nameW = doc.getTextWidth(learner);
       doc.setDrawColor(241, 90, 41);
@@ -150,8 +152,52 @@ export default function CertificatesPage() {
       doc.setTextColor(50, 50, 50);
       doc.text(course, cx, 124, { align: "center" });
 
+      // The middle of the certificate used to be empty paper. What belongs
+      // there is what the certificate is actually attesting to.
+      let midY = 137;
+      const facts = [
+        duration.trim() ? `Programme duration: ${duration.trim()}` : "",
+        remark.trim() ? `Assessment: ${remark.trim()}` : "",
+      ].filter(Boolean);
+
+      doc.setFont("times", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(90, 90, 90);
+      for (const f of facts) {
+        doc.text(f, cx, midY, { align: "center" });
+        midY += 7;
+      }
+
+      doc.setFontSize(11.5);
+      doc.setTextColor(110, 110, 110);
+      doc.text(
+        "having attended the programme and passed the required assessments,",
+        cx,
+        midY + 2,
+        { align: "center" },
+      );
+      doc.text("trained at Online Tech Uganda · Kampala, Uganda", cx, midY + 8.5, {
+        align: "center",
+      });
+
+      // A quiet seal, so the space below reads as finished rather than blank.
+      const sealY = midY + 24;
+      doc.setDrawColor(14, 116, 144);
+      doc.setLineWidth(0.5);
+      doc.circle(cx, sealY, 11);
+      doc.setLineWidth(0.25);
+      doc.circle(cx, sealY, 9);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(14, 116, 144);
+      doc.text("OTU", cx, sealY - 1, { align: "center" });
+      doc.setFontSize(5.6);
+      doc.setTextColor(120, 150, 160);
+      doc.text("ONLINE TECH", cx, sealY + 3.2, { align: "center" });
+      doc.text("UGANDA", cx, sealY + 6.4, { align: "center" });
+
       // Footer: date and signature
-      const baseY = 172;
+      const baseY = 181;
       const colW = 62;
       const leftCx = cx - 62;
       const rightCx = cx + 62;
@@ -177,7 +223,7 @@ export default function CertificatesPage() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
-      doc.text(`Certificate No. ${serial}`, cx, 192, { align: "center" });
+      doc.text(`Certificate No. ${serial}`, cx, 194, { align: "center" });
 
       if (print) {
         doc.autoPrint();
@@ -256,6 +302,26 @@ export default function CertificatesPage() {
                 <option>Physical</option>
                 <option>Online</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Programme duration</label>
+              <input
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="e.g. 3 months"
+                className={input}
+              />
+              <p className="mt-1 text-[11px] text-ink-600/55">Optional — left off if blank.</p>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Assessment</label>
+              <input
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                placeholder="e.g. Distinction · Passed"
+                className={input}
+              />
+              <p className="mt-1 text-[11px] text-ink-600/55">Optional — left off if blank.</p>
             </div>
           </div>
 
