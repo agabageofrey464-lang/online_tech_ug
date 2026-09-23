@@ -13,6 +13,7 @@ type Item = { href: string; icon: string; title: string; body: string };
 
 const ALL: Item[] = [
   { href: "/shop", icon: "🛒", title: "Shop Computers", body: "Laptops, desktops, SSDs and accessories with warranty." },
+  { href: "/find", icon: "🔎", title: "Find My Laptop", body: "Tell us your budget — we'll say what actually fits." },
   { href: "/learn", icon: "🎓", title: "Computer Courses", body: "22 courses, physical or online, with a certificate." },
   { href: "/services", icon: "🛠", title: "IT Services", body: "Websites, software, repairs and IT support." },
   { href: "/jobs", icon: "💼", title: "Internships & Jobs", body: "Industrial training for university students." },

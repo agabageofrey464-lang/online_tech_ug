@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { ShopGrid } from "@/components/shop-grid";
 import { FeaturedProducts } from "@/components/featured-products";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -68,6 +69,30 @@ export default async function ShopPage({
       <div className="mb-3">
         <Breadcrumbs items={isFiltered ? [{ label: "Shop", href: "/shop" }, { label: title }] : [{ label: "Shop" }]} />
       </div>
+
+      {/* Not everyone knows what specs they need — many shoppers know only what
+          they can spend, so offer that route before the grid. */}
+      <Link
+        href="/find"
+        className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 transition hover:shadow-md"
+      >
+        <span className="flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-lg text-white">
+            🔎
+          </span>
+          <span>
+            <span className="block font-extrabold text-ink-900">
+              Not sure which one? Tell us your budget
+            </span>
+            <span className="block text-sm text-ink-700/70">
+              We&apos;ll show what genuinely fits — and say so if it doesn&apos;t.
+            </span>
+          </span>
+        </span>
+        <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">
+          Find my laptop →
+        </span>
+      </Link>
 
       {/* Category / results banner — reflects the chosen category, brand or search */}
       <section className="mb-3 overflow-hidden rounded-lg bg-gradient-to-r from-ink-700 to-ink-600 text-white shadow-sm">
