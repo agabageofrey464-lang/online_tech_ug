@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.services import email_guard
 from app.models.subscriber import Subscriber
 from app.models.user import User
 from app.services.email import send_email
@@ -36,7 +37,11 @@ def _to_dict(s: Subscriber) -> dict:
 def subscribe(db: Session, email: str, name: str = "", source: str = "website") -> dict:
     """Add (or re-activate) an address. Idempotent — signing up twice is fine."""
     addr = email.strip().lower()
-    if "@" not in addr or "." not in addr.split("@")[-1]:
+    reason = email_guard.problem(addr)
+    if reason:
+        hint = email_guard.suggest(addr)
+        if hint:
+            raise ValueError(f"That address looks like a typo — did you mean {hint}?")
         raise ValueError("Please enter a valid email address")
     row = db.execute(select(Subscriber).where(Subscriber.email == addr)).scalar_one_or_none()
     if row:

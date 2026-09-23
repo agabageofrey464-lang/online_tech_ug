@@ -30,11 +30,18 @@ async def _campaign_worker() -> None:
     from datetime import datetime
 
     from app.db.session import SessionLocal
-    from app.services import campaign_auto, newsletter, push
+    from app.services import campaign_auto, catalog_sync, newsletter, push
 
     while True:
         try:
             with SessionLocal() as db:
+                # Catches up with anything published to the shop since the
+                # last pass, so the two can't drift between restarts.
+                try:
+                    await catalog_sync.sync(db)
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("Catalog sync failed: %s", exc)
+
                 campaign_auto.refresh_auto_campaigns(db)
 
                 due = campaign_auto.due_for_announcement(db)
@@ -117,6 +124,17 @@ async def lifespan(app: FastAPI):
                     logger.info("Seeded %d posts into the database.", added)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Post seeding skipped (%s).", exc)
+        # Pull the shop front's catalogue so the prices we charge match the
+        # prices customers are shown, and every product on sale can be ordered.
+        try:
+            from app.db.session import SessionLocal
+            from app.services import catalog_sync
+
+            with SessionLocal() as db:
+                result = await catalog_sync.sync(db)
+                logger.info("Catalog sync at startup: %s", result)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Catalog sync skipped (%s).", exc)
     except Exception as exc:  # noqa: BLE001
         logger.warning("Database unavailable at startup (%s). Running in degraded mode.", exc)
 

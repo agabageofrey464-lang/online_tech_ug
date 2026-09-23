@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     owner_whatsapp_phone: str = ""
     owner_whatsapp_api_key: str = ""
 
+    # Keep the product table in step with the shop front. The API pulls this
+    # feed on startup and hourly, so publishing the site is the only step
+    # needed after a price change. Blank URL or false = never sync.
+    catalog_feed_url: str = "https://www.onlinetechug.com/api/catalog"
+    catalog_sync_enabled: bool = True
+
     # Online payments (Flutterwave) — MTN + Airtel + cards. Empty = disabled.
     flutterwave_secret_key: str = ""
     flutterwave_public_key: str = ""

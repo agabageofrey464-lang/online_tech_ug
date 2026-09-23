@@ -12,6 +12,7 @@ from email.message import EmailMessage
 import httpx
 
 from app.core.config import settings
+from app.services import email_guard
 
 logger = logging.getLogger("onlinetech.email")
 
@@ -40,6 +41,18 @@ def _send_gmail(to: str, subject: str, html: str, reply_to: str | None) -> bool:
 
 async def send_email(*, to: str, subject: str, html: str, reply_to: str | None = None) -> bool:
     """Send an email. Returns True if sent (or logged in dev), False on error."""
+    # Mail to an address that doesn't exist comes back as a bounce in the
+    # company inbox, every time, for as long as the address stays on the list.
+    # Checking here covers every sender in the app at once.
+    reason = email_guard.problem(to)
+    if reason:
+        hint = email_guard.suggest(to)
+        logger.info(
+            "Email skipped — %s: %s%s", reason, to,
+            f" (did they mean {hint}?)" if hint else "",
+        )
+        return False
+
     # 1) Gmail SMTP (delivers to any recipient) if configured.
     if settings.gmail_user and settings.gmail_app_password:
         return await asyncio.to_thread(_send_gmail, to, subject, html, reply_to)
