@@ -137,7 +137,7 @@ h1, h2, h3, p, li, dd, a {
   to { opacity: 1; transform: translateY(0); }
 }
 .ad-fade {
-  animation: adFade 0.5s ease;
+  animation: adFade 0.5s var(--ease-out);
 }
 
 /* Hero animations */
@@ -145,7 +145,7 @@ h1, h2, h3, p, li, dd, a {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.hero-fade { animation: heroFade 0.6s ease both; }
+.hero-fade { animation: heroFade 0.6s var(--ease-out) both; }
 
 @keyframes kenburns {
   from { transform: scale(1); }
@@ -191,6 +191,84 @@ h1, h2, h3, p, li, dd, a {
 @keyframes heroMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .animate-hero-marquee { animation: heroMarquee 32s linear infinite; }
 
+/* ─── Motion & surface tokens ─────────────────────────────────────────
+   One easing curve and one shadow scale, used everywhere. Mixed easings are
+   what make a site feel homemade: each element arrives on its own schedule
+   and nothing settles together. These are tuned so movement decelerates the
+   way a physical object does. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);      /* arrivals, reveals */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);        /* hovers, colour */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* pops, confirmations */
+  --t-fast: 140ms;
+  --t-base: 220ms;
+  --t-slow: 420ms;
+
+  /* Layered rather than single-drop: a tight contact shadow plus a wide soft
+     one reads as a real object resting on the page. */
+  --shadow-1: 0 1px 2px rgba(20, 16, 46, 0.05), 0 1px 3px rgba(20, 16, 46, 0.04);
+  --shadow-2: 0 2px 4px rgba(20, 16, 46, 0.05), 0 6px 16px rgba(20, 16, 46, 0.07);
+  --shadow-3: 0 4px 8px rgba(20, 16, 46, 0.06), 0 14px 34px rgba(20, 16, 46, 0.13);
+  --shadow-brand: 0 6px 18px rgba(241, 90, 41, 0.28);
+}
+
+/* Text selection in the brand colour rather than the browser's blue. */
+::selection {
+  background: color-mix(in srgb, var(--color-brand-500) 22%, transparent);
+  color: var(--color-ink-900);
+}
+
+/* A visible, branded focus ring for anyone using a keyboard. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Slim, quiet scrollbars — the default chrome ones are heavy inside rails. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-ink-600) 26%, transparent) transparent;
+}
+*::-webkit-scrollbar { height: 8px; width: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-ink-600) 22%, transparent);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-ink-600) 38%, transparent);
+}
+
+/* Product photos fade in as they decode. Without this a grid snaps into
+   place image by image, which is the single most noticeable rough edge on
+   a shop page. */
+.img-in {
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity var(--t-slow) var(--ease-out), transform var(--t-slow) var(--ease-out);
+}
+.img-in.is-loaded { opacity: 1; transform: none; }
+
+/* A card that responds to the cursor: lifts, deepens, and warms its edge. */
+.card-lift {
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-soft);
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-3);
+  border-color: color-mix(in srgb, var(--color-brand-500) 38%, transparent);
+}
+/* The photo inside eases in rather than jumping to its zoomed state. */
+.card-lift .card-zoom {
+  transition: transform var(--t-slow) var(--ease-out);
+}
+.card-lift:hover .card-zoom { transform: scale(1.06); }
+
 /* ─── Motion & micro-interactions ─────────────────────────────────── */
 
 /* Scroll reveal — content fades + rises as it enters the viewport. The
@@ -202,17 +280,26 @@ h1, h2, h3, p, li, dd, a {
 }
 .reveal { opacity: 0; will-change: opacity, transform; }
 .reveal.in {
-  animation: revealIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: revealIn 0.6s var(--ease-out) both;
   animation-delay: var(--reveal-delay, 0ms);
 }
 
 /* Hover-lift — cards float up slightly with a soft shadow on hover. */
-.hover-lift { transition: transform 0.22s ease, box-shadow 0.22s ease; }
-.hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(20, 16, 46, 0.16); }
+.hover-lift {
+  transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+.hover-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-3); }
 
-/* Tactile press feedback for buttons/links. */
-.press { transition: transform 0.09s ease; }
-.press:active { transform: scale(0.96); }
+/* Tactile press feedback for buttons/links. A shade of lift on hover as well,
+   so a button answers the cursor before it is clicked. */
+.press {
+  transition:
+    transform var(--t-fast) var(--ease-soft),
+    box-shadow var(--t-fast) var(--ease-soft),
+    filter var(--t-fast) var(--ease-soft);
+}
+.press:hover { filter: brightness(1.04); }
+.press:active { transform: scale(0.97); }
 
 /* Add-to-cart confirmation pop. */
 @keyframes cartPop {
@@ -220,14 +307,14 @@ h1, h2, h3, p, li, dd, a {
   60% { transform: scale(1.18); }
   100% { transform: scale(1); }
 }
-.animate-cart-pop { animation: cartPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-cart-pop { animation: cartPop 0.35s var(--ease-spring) both; }
 
 /* Skeleton shimmer for loading states. */
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .skeleton {
-  background: linear-gradient(100deg, #e7e9f0 30%, #f4f5f8 50%, #e7e9f0 70%);
+  background: linear-gradient(100deg, #e9ebf2 28%, #f7f8fb 50%, #e9ebf2 72%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.4s var(--ease-soft) infinite;
   border-radius: 0.5rem;
 }
 
@@ -240,6 +327,10 @@ h1, h2, h3, p, li, dd, a {
   .hover-lift:hover { transform: none; }
   .animate-cart-pop { animation: none; }
   .skeleton { animation: none; }
+  .card-lift:hover { transform: none; }
+  .card-lift:hover .card-zoom { transform: none; }
+  .img-in { opacity: 1; transform: none; transition: none; }
+  .press:hover { filter: none; }
 }
 
 /* Headings share the same humanist face (Open Sans). It reads best at near-

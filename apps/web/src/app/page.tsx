@@ -404,7 +404,7 @@ export default function HomePage() {
             <Link
               key={c.slug}
               href={`/learn/${c.slug}`}
-              className="group/course flex flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group/course flex flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm card-lift"
             >
               {/* Cover photo fills what used to be empty card space */}
               <span className="relative block h-24 w-full overflow-hidden bg-ink-50 sm:h-28">

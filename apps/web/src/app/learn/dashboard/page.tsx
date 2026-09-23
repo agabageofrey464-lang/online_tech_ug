@@ -54,7 +54,7 @@ export default function DashboardPage() {
           <Link
             key={x.href}
             href={x.href}
-            className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm card-lift"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
               <x.icon size={19} />

@@ -66,7 +66,7 @@ export function ProductCard({ product }: { product: Product }) {
   const spec = specLines(product);
 
   return (
-    <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-ink-600/[0.08] transition duration-200 hover:z-10 hover:shadow-[0_6px_22px_rgba(20,16,46,0.14)]">
+    <article className="group card-lift relative flex h-full w-full flex-col overflow-hidden rounded-md border border-ink-600/[0.08] bg-white shadow-[var(--shadow-1)] hover:z-10">
       <div className="relative aspect-square overflow-hidden bg-white">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           <SafeImage
@@ -74,7 +74,7 @@ export function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-            className={`object-contain p-2.5 transition duration-200 group-hover:scale-[1.04] ${inStock ? "" : "opacity-50"}`}
+            className={`card-zoom object-contain p-2.5 ${inStock ? "" : "opacity-50"}`}
           />
         </Link>
 
@@ -99,7 +99,7 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pb-3 pt-2">
-        <h3 className="clamp-2 min-h-[2.6em] text-[13.5px] leading-snug text-ink-800 group-hover:text-brand-600">
+        <h3 className="clamp-2 min-h-[2.6em] text-[13.5px] leading-snug text-ink-800 transition-colors duration-200 group-hover:text-brand-600">
           {product.name}
         </h3>
 

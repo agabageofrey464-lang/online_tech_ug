@@ -225,7 +225,7 @@ export default function DevelopmentPage() {
               <Link
                 key={p.slug}
                 href={`/portfolio/${p.slug}`}
-                className="group overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="group overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm card-lift"
               >
                 <span className="relative block h-36 w-full overflow-hidden bg-ink-50">
                   <SafeImage

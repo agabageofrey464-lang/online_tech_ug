@@ -8,9 +8,14 @@ import { fallbackImage } from "@/lib/image-fallback";
  * next/image that falls back to a local web-image MATCHING the item's name
  * when the source is missing or fails to load — so no item ever renders as a
  * broken/blank image, and the fallback still looks relevant.
+ *
+ * Photos also fade in as they decode. A grid that snaps into place image by
+ * image is the roughest edge on a shop page, and it is the one thing a
+ * visitor notices before they notice anything about the products.
  */
 export function SafeImage({ src, alt = "", fill, className, ...rest }: ImageProps) {
   const [failed, setFailed] = useState(!src);
+  const [loaded, setLoaded] = useState(false);
   const fallback = fallbackImage(typeof alt === "string" ? alt : "");
 
   if (failed || !src) {
@@ -34,8 +39,11 @@ export function SafeImage({ src, alt = "", fill, className, ...rest }: ImageProp
       src={src}
       alt={alt}
       fill={fill}
-      className={className}
+      className={`img-in${loaded ? " is-loaded" : ""}${className ? ` ${className}` : ""}`}
       onError={() => setFailed(true)}
+      // Fires for a cached image too, so a returning visitor never sees a
+      // photo stuck at zero opacity.
+      onLoad={() => setLoaded(true)}
       {...rest}
     />
   );

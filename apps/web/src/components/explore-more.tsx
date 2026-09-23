@@ -45,7 +45,7 @@ export function ExploreMore({
           <Link
             key={i.href}
             href={i.href}
-            className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm card-lift"
           >
             <span className="text-2xl" aria-hidden>
               {i.icon}

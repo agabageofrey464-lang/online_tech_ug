@@ -163,7 +163,7 @@ export function CourseBrowser({
             <Link
               key={c.slug}
               href={`/learn/${c.slug}`}
-              className="group flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+              className="group flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm card-lift"
             >
               <div className="relative h-36 w-full overflow-hidden">
                 <SafeImage
