@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Menu, User, ShoppingCart, Phone, Heart, Package, Star, HelpCircle, ChevronDown,
-  LayoutGrid, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
+  LayoutGrid,
+  ShoppingBag, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
   Store, GraduationCap, Code2,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
@@ -231,13 +232,17 @@ export function SiteHeader() {
           <div className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5">
             <Link
               href="/shop"
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold transition ${
-                pathname === "/shop"
-                  ? "bg-brand-500 text-white"
-                  : "text-ink-900 hover:bg-brand-50 hover:text-brand-600"
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
+                pathname === "/shop" ? "bg-brand-600" : "bg-brand-500 hover:bg-brand-600"
               }`}
             >
-              <LayoutGrid size={17} strokeWidth={2.2} /> Shop
+              <ShoppingBag size={17} strokeWidth={2.2} />
+              <span className="leading-none">
+                Shop
+                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
+                  Computers
+                </span>
+              </span>
             </Link>
             {/* Learn is the academy, not the shop — it carries its own green
                 identity so it reads as a different kind of destination and is
