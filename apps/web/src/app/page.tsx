@@ -184,6 +184,40 @@ export default function HomePage() {
           has to scroll to find how to order. */}
       <OrderBanner />
 
+      {/* The other two businesses, on a phone. The desktop nav carries them,
+          but a phone never renders it, so Learn and Software Development were
+          only findable by opening the menu. */}
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <Link
+          href="/learn"
+          className="press card-lift flex items-center gap-2.5 rounded-xl bg-green-600 px-3 py-3 text-white shadow-sm"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/20">
+            <Icon name="graduation" size={19} />
+          </span>
+          <span className="min-w-0 leading-tight">
+            <span className="block text-[15px] font-extrabold">Learn</span>
+            <span className="block text-[10.5px] font-semibold uppercase tracking-wide text-white/80">
+              Academy
+            </span>
+          </span>
+        </Link>
+        <Link
+          href="/development"
+          className="press card-lift flex items-center gap-2.5 rounded-xl bg-ink-600 px-3 py-3 text-white shadow-sm"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/20">
+            <Icon name="code" size={19} />
+          </span>
+          <span className="min-w-0 leading-tight">
+            <span className="block text-[15px] font-extrabold">Develop</span>
+            <span className="block text-[10.5px] font-semibold uppercase tracking-wide text-white/80">
+              Software
+            </span>
+          </span>
+        </Link>
+      </div>
+
       {/* Hero row — DESKTOP only. On mobile we skip straight to the products
           (Jumia-style), so the hero, call banner and category circles are hidden. */}
       <div className="bleed-wide hidden gap-3 sm:mx-0 md:grid lg:grid-cols-[230px_1fr]">

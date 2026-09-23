@@ -1,16 +1,7 @@
-import Image from "next/image";
-
 /**
- * Online Tech Uganda logo — the orange "OT" monogram tile with the globe from
- * the company's own artwork sitting behind it, locked up with the "Online Tech"
- * wordmark and a spaced "Uganda" tagline.
- *
- * The globe is half again as wide as the tile and sits to its left, so it
- * reads as a planet with the badge in front of it. Centring the tile on the
- * globe simply hid it — the badge covered all but a fringe.
- *
- * The globe is positioned absolutely and allowed to overflow, so adding it
- * did not make the header taller.
+ * Online Tech Uganda logo — Option 2 "Orange Monogram": a bold orange tile with
+ * an "OT" monogram + gold spark, locked up with the "Online Tech" wordmark and a
+ * spaced "Uganda" tagline. Reads cleanly on light and dark surfaces.
  */
 export function BrandLogoFull({
   className = "",
@@ -29,39 +20,19 @@ export function BrandLogoFull({
   const sub = size === "lg" ? "text-[11px] tracking-[0.42em]" : size === "sm" ? "text-[8px] tracking-[0.3em]" : "text-[9.5px] tracking-[0.38em]";
   const dot = size === "lg" ? "h-1.5 w-1.5" : "h-1 w-1";
 
-  // Tile edge in px, and the globe at 1.5x that, sitting behind and left.
-  const tilePx = size === "lg" ? 56 : size === "sm" ? 36 : 48;
-  const globeW = Math.round(tilePx * 1.5);
-  const wrapW = Math.round(tilePx * 1.46);
-
   const wordColor = onLight ? "text-ink-900" : "text-white";
   const techColor = onLight ? "text-brand-600" : "text-brand-400";
   const subColor = onLight ? "text-ink-500" : "text-white/70";
 
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      {/* Globe behind, orange monogram tile in front */}
+      {/* Orange monogram tile */}
       <span
-        className="relative inline-flex shrink-0 items-center justify-end"
-        style={{ width: wrapW, height: tilePx }}
+        className={`relative flex ${badge} shrink-0 items-center justify-center bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-md ring-1 ring-black/5`}
       >
-        <Image
-          src="/globe-mark.png"
-          alt=""
-          width={globeW}
-          height={Math.round((globeW * 229) / 256)}
-          priority
-          aria-hidden
-          className="pointer-events-none absolute top-1/2 -translate-y-1/2 select-none"
-          style={{ left: -2, width: globeW, height: "auto" }}
-        />
-        <span
-          className={`relative flex ${badge} shrink-0 items-center justify-center bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-lg ring-1 ring-black/10`}
-        >
-          <span className={`inline-flex items-start font-display font-black leading-none tracking-tight text-white ${mono}`}>
-            OT
-            <span className={`ml-[1px] mt-[3px] ${dot} rounded-full`} style={{ background: "#FCDC04" }} />
-          </span>
+        <span className={`inline-flex items-start font-display font-black leading-none tracking-tight text-white ${mono}`}>
+          OT
+          <span className={`ml-[1px] mt-[3px] ${dot} rounded-full`} style={{ background: "#FCDC04" }} />
         </span>
       </span>
 

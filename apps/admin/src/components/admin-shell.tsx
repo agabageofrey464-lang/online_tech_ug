@@ -115,7 +115,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   const brand = (
     <Link href="/" className="flex items-center gap-2 px-2">
-      <BrandLogo className="shrink-0" size={38} />
+      <BrandLogo className="h-10 w-10 shrink-0 text-white" />
       <span className="text-sm font-extrabold leading-tight">
         Online Tech
         <span className="block text-[10px] font-semibold uppercase tracking-widest text-brand-500">Admin</span>

@@ -181,10 +181,14 @@ export function SiteHeader() {
           </button>
         </div>
 
-        {/* Phone: the two businesses that aren't the shop, on every page.
-            They were reachable only through the desktop nav, which a phone
-            never shows. */}
-        <div className="container-wide flex gap-2 pb-2.5 md:hidden">
+        {/* Phone: the two businesses that aren't the shop. They were reachable
+            only through the desktop nav, which a phone never renders. The home
+            page shows a larger pair of its own, so this stands down there. */}
+        <div
+          className={`container-wide gap-2 pb-2.5 md:hidden ${
+            pathname === "/" ? "hidden" : "flex"
+          }`}
+        >
           <Link
             href="/learn"
             className={`press flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-bold text-white shadow-sm ${

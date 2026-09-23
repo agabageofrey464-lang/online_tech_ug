@@ -1,4 +1,5 @@
 import {
+  Code2,
   Laptop,
   Monitor,
   Mouse,
@@ -75,6 +76,7 @@ const map: Record<string, LucideIcon> = {
   user: User,
   keyboard: Keyboard,
   office: FileSpreadsheet,
+  code: Code2,
 };
 
 export function Icon({
