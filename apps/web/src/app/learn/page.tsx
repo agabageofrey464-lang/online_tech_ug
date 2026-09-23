@@ -33,6 +33,12 @@ export const metadata: Metadata = {
 // deploy, and people could register for a session that already happened.
 export const revalidate = 3600;
 
+/** Upcoming online intakes. Each drops off once its date has passed. */
+const INTAKES = [
+  { date: "2026-09-28", label: "28 September 2026", note: "Online classes — register before the 28th" },
+  { date: "2026-10-15", label: "15 October 2026", note: "Next online intake — limited places" },
+];
+
 const FAQ = [
   {
     q: "How do I pay for a course?",
@@ -72,6 +78,9 @@ export default function LearnPage() {
   const totalLessons = courses.reduce((n, c) => n + c.lessons, 0);
   const totalHours = courses.reduce((n, c) => n + c.hours, 0);
   const withNotes = Object.keys(courseNotes);
+  // Only advertise intakes that haven't started yet.
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingIntakes = INTAKES.filter((i) => i.date >= today);
 
   const stats = [
     { value: `${courses.length}`, label: "Courses" },
@@ -261,6 +270,35 @@ export default function LearnPage() {
             Open community →
           </span>
         </Link>
+        {upcomingIntakes.length > 0 && (
+          <div className="mb-4 overflow-hidden rounded-card border border-green-300 bg-green-50">
+            <div className="flex items-center gap-2 bg-green-600 px-4 py-2 text-white">
+              <CalendarClock size={16} />
+              <p className="text-sm font-extrabold">Upcoming online intakes</p>
+            </div>
+            <ul className="divide-y divide-green-200">
+              {upcomingIntakes.map((i) => (
+                <li key={i.date} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                  <span>
+                    <span className="block font-extrabold text-ink-900">{i.label}</span>
+                    <span className="block text-sm text-ink-700/70">{i.note}</span>
+                  </span>
+                  <a
+                    href={whatsappLink(
+                      `Hi, I'd like to register for the online classes starting ${i.label}.`,
+                    )}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="press shrink-0 rounded-md bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
+                  >
+                    Reserve a place
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <CourseBrowser courses={courses} withNotes={withNotes} />
       </section>
 

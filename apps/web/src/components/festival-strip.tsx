@@ -14,10 +14,32 @@ import { X } from "lucide-react";
  * annoyance on the page someone actually came to read.
  */
 
-type Strip = { text: string; cta: string; href: string; bg: string };
+type Strip = {
+  text: string;
+  cta: string;
+  href: string;
+  bg: string;
+  /** ISO date after which this stops showing — for dated intakes. */
+  until?: string;
+};
 
 /** Used until the live campaigns load, and whenever none are running. */
 const FALLBACK: Strip[] = [
+  // Dated intakes — these drop off by themselves once the date passes.
+  {
+    text: "New ONLINE classes start 28 September — register now",
+    cta: "Reserve a place",
+    href: "/learn",
+    bg: "bg-green-600",
+    until: "2026-09-29",
+  },
+  {
+    text: "Next ONLINE intake: 15 October — limited places",
+    cta: "Register now",
+    href: "/learn",
+    bg: "bg-[#6d28d9]",
+    until: "2026-10-16",
+  },
   { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-[#6d28d9]" },
   { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-brand-500" },
   { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-600" },
@@ -29,8 +51,14 @@ const FALLBACK: Strip[] = [
 const DISMISS_KEY = "otu_strip_closed";
 const ROTATE_MS = 5000;
 
+/** Keeps only strips that haven't passed their date. */
+const live = (list: Strip[]) => {
+  const today = new Date().toISOString().slice(0, 10);
+  return list.filter((s) => !s.until || s.until >= today);
+};
+
 export function FestivalStrip() {
-  const [strips, setStrips] = useState<Strip[]>(FALLBACK);
+  const [strips, setStrips] = useState<Strip[]>(() => live(FALLBACK));
   const [i, setI] = useState(0);
   // Shown by default so it renders server-side and the page doesn't jump once
   // hydration runs; only a visitor who actually dismissed it sees it hidden.
