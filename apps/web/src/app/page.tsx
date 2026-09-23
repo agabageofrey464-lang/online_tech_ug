@@ -184,38 +184,57 @@ export default function HomePage() {
           has to scroll to find how to order. */}
       <OrderBanner />
 
-      {/* The other two businesses, on a phone. The desktop nav carries them,
-          but a phone never renders it, so Learn and Software Development were
-          only findable by opening the menu. */}
-      <div className="grid grid-cols-2 gap-2.5 md:hidden">
-        <Link
-          href="/learn"
-          className="press card-lift flex items-center gap-2.5 rounded-xl bg-green-600 px-3 py-3 text-white shadow-sm"
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/20">
-            <Icon name="graduation" size={19} />
-          </span>
-          <span className="min-w-0 leading-tight">
-            <span className="block text-[15px] font-extrabold">Learn</span>
-            <span className="block text-[10.5px] font-semibold uppercase tracking-wide text-white/80">
-              Academy
+      {/* The three businesses, side by side. Shop, Learn and Software
+          Development are separate things we sell, and two of them were only
+          reachable through the desktop nav — which a phone never renders.
+          Three across on every screen: stacked icon-over-label where it is
+          narrow, and a full row with a line of explanation where there's room. */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        {[
+          {
+            href: "/shop",
+            icon: "shop",
+            title: "Shop",
+            tag: "Computers",
+            blurb: "Laptops, desktops, SSDs and accessories, with warranty.",
+            bg: "bg-brand-500",
+          },
+          {
+            href: "/learn",
+            icon: "graduation",
+            title: "Learn",
+            tag: "Academy",
+            blurb: "22 computer courses, physical or online, with a certificate.",
+            bg: "bg-green-600",
+          },
+          {
+            href: "/development",
+            icon: "code",
+            title: "Develop",
+            tag: "Software",
+            blurb: "Websites, apps, systems and school projects, built to order.",
+            bg: "bg-ink-600",
+          },
+        ].map((b) => (
+          <Link
+            key={b.href}
+            href={b.href}
+            className={`press card-lift flex flex-col items-center gap-1.5 rounded-xl ${b.bg} px-2 py-3 text-center text-white shadow-sm sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 sm:text-left`}
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/20 sm:h-11 sm:w-11">
+              <Icon name={b.icon} size={20} />
             </span>
-          </span>
-        </Link>
-        <Link
-          href="/development"
-          className="press card-lift flex items-center gap-2.5 rounded-xl bg-ink-600 px-3 py-3 text-white shadow-sm"
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/20">
-            <Icon name="code" size={19} />
-          </span>
-          <span className="min-w-0 leading-tight">
-            <span className="block text-[15px] font-extrabold">Develop</span>
-            <span className="block text-[10.5px] font-semibold uppercase tracking-wide text-white/80">
-              Software
+            <span className="min-w-0 leading-tight">
+              <span className="block text-[13px] font-extrabold sm:text-[17px]">{b.title}</span>
+              <span className="block text-[9.5px] font-semibold uppercase tracking-wide text-white/80 sm:text-[11px]">
+                {b.tag}
+              </span>
+              <span className="mt-1 hidden text-[12px] leading-snug text-white/85 lg:block">
+                {b.blurb}
+              </span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        ))}
       </div>
 
       {/* Hero row — DESKTOP only. On mobile we skip straight to the products

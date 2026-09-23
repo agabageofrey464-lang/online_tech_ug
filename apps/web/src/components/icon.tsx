@@ -1,5 +1,6 @@
 import {
   Code2,
+  ShoppingBag,
   Laptop,
   Monitor,
   Mouse,
@@ -77,6 +78,7 @@ const map: Record<string, LucideIcon> = {
   keyboard: Keyboard,
   office: FileSpreadsheet,
   code: Code2,
+  shop: ShoppingBag,
 };
 
 export function Icon({
