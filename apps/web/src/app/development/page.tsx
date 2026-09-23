@@ -53,7 +53,7 @@ const WHAT_WE_BUILD = [
     title: "Websites",
     body: "Business websites, portfolios, NGO and school sites — fast on mobile data, easy for you to update, and built to be found on Google.",
     examples: ["Business & corporate sites", "Portfolios & profiles", "NGO & church sites", "Landing pages"],
-    from: 800000,
+    from: 2500000,
   },
   {
     icon: ShoppingCart,
@@ -74,7 +74,7 @@ const WHAT_WE_BUILD = [
     title: "Student Final-Year Projects",
     body: "Working systems for your final-year project, built with you so you can defend every part of it — plus documentation and a walkthrough.",
     examples: ["Working system", "Documentation", "Code walkthrough", "Defence preparation"],
-    from: 400000,
+    from: 900000,
   },
 ];
 
