@@ -192,11 +192,13 @@ export function SiteHeader() {
         >
           <Link
             href="/learn"
-            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-bold text-white shadow-sm ${
+            className={`press flex flex-1 items-center justify-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-bold text-white shadow-md ring-1 ring-black/5 ${
               pathname.startsWith("/learn") ? "bg-green-700" : "bg-green-600"
             }`}
           >
-            <GraduationCap size={17} strokeWidth={2.2} />
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-green-700">
+              <GraduationCap size={14} strokeWidth={2.6} />
+            </span>
             <span className="leading-none">
               Learn
               <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/75">
@@ -206,11 +208,13 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/development"
-            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-bold text-white shadow-sm ${
+            className={`press flex flex-1 items-center justify-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-bold text-white shadow-md ring-1 ring-black/5 ${
               pathname.startsWith("/development") ? "bg-ink-800" : "bg-ink-600"
             }`}
           >
-            <Code2 size={17} strokeWidth={2.2} />
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink-700">
+              <Code2 size={14} strokeWidth={2.6} />
+            </span>
             <span className="leading-none">
               Develop
               <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/75">
@@ -232,14 +236,16 @@ export function SiteHeader() {
           <div className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5">
             <Link
               href="/shop"
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
+              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
                 pathname === "/shop" ? "bg-brand-600" : "bg-brand-500 hover:bg-brand-600"
               }`}
             >
-              <ShoppingBag size={17} strokeWidth={2.2} />
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-brand-600">
+                <ShoppingBag size={14} strokeWidth={2.6} />
+              </span>
               <span className="leading-none">
                 Shop
-                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
+                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
                   Computers
                 </span>
               </span>
@@ -249,16 +255,18 @@ export function SiteHeader() {
                 findable at a glance. */}
             <Link
               href="/learn"
-              className={`group/learn flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
+              className={`group/learn flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
                 pathname.startsWith("/learn")
                   ? "bg-green-700"
                   : "bg-green-600 hover:bg-green-700"
               }`}
             >
-              <GraduationCap size={17} strokeWidth={2.2} />
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-green-700">
+                <GraduationCap size={14} strokeWidth={2.6} />
+              </span>
               <span className="leading-none">
                 Learn
-                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
+                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
                   Academy
                 </span>
               </span>
@@ -267,16 +275,18 @@ export function SiteHeader() {
                 from the orange shop and the green academy. */}
             <Link
               href="/development"
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
+              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
                 pathname.startsWith("/development")
                   ? "bg-ink-800"
                   : "bg-ink-600 hover:bg-ink-700"
               }`}
             >
-              <Code2 size={17} strokeWidth={2.2} />
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink-700">
+                <Code2 size={14} strokeWidth={2.6} />
+              </span>
               <span className="leading-none">
                 Develop
-                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
+                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
                   Software
                 </span>
               </span>

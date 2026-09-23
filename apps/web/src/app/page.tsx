@@ -197,6 +197,7 @@ export default function HomePage() {
             title: "Shop",
             tag: "Computers",
             bg: "bg-brand-500",
+            ink: "text-brand-600",
           },
           {
             href: "/learn",
@@ -204,6 +205,7 @@ export default function HomePage() {
             title: "Learn",
             tag: "Academy",
             bg: "bg-green-600",
+            ink: "text-green-700",
           },
           {
             href: "/development",
@@ -211,19 +213,24 @@ export default function HomePage() {
             title: "Develop",
             tag: "Software",
             bg: "bg-ink-600",
+            ink: "text-ink-700",
           },
         ].map((b) => (
           <Link
             key={b.href}
             href={b.href}
-            className={`press card-lift flex flex-col items-center gap-1 rounded-lg ${b.bg} px-1.5 py-2 text-center text-white shadow-sm sm:flex-row sm:gap-2.5 sm:px-3 sm:py-2.5 sm:text-left`}
+            className={`press card-lift flex flex-col items-center gap-1.5 rounded-xl ${b.bg} px-1.5 py-2.5 text-center text-white shadow-md ring-1 ring-black/5 sm:flex-row sm:gap-2.5 sm:px-3 sm:py-2.5 sm:text-left`}
           >
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white/20 sm:h-8 sm:w-8">
-              <Icon name={b.icon} size={15} />
+            <span
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ${b.ink} sm:h-9 sm:w-9`}
+            >
+              <Icon name={b.icon} size={17} strokeWidth={2.4} />
             </span>
             <span className="min-w-0 leading-tight">
-              <span className="block text-[11.5px] font-extrabold sm:text-[14px]">{b.title}</span>
-              <span className="block text-[8px] font-semibold uppercase tracking-wide text-white/80 sm:text-[9.5px]">
+              <span className="block text-[12px] font-black tracking-tight sm:text-[14px]">
+                {b.title}
+              </span>
+              <span className="block text-[8px] font-bold uppercase tracking-[0.08em] text-white/85 sm:text-[9.5px]">
                 {b.tag}
               </span>
             </span>
