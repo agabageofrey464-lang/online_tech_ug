@@ -4,8 +4,26 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { getOrder, type Order } from "@/lib/api";
-import { ugx } from "@/lib/site";
+import { ugx, whatsappLink } from "@/lib/site";
 import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
+
+/** The order, written out so it arrives readable in our WhatsApp. */
+function orderWhatsAppText(order: Order | null, ref: string | null): string {
+  const head = `Hello Online Tech Uganda, I've placed order ${ref ?? ""}`.trim();
+  if (!order) return `${head}. Please confirm it.`;
+
+  const parts = [
+    `${head}`,
+    "",
+    ...order.items.map((i) => `- ${i.quantity} x ${i.name}`),
+    "",
+    `Total: ${ugx(order.total)}`,
+    `Name: ${order.customer_name}`,
+    `Phone: ${order.phone}`,
+  ];
+  if (order.delivery_town) parts.push(`Deliver to: ${order.delivery_town}`);
+  return parts.join("\n");
+}
 
 function SuccessInner() {
   const params = useSearchParams();
@@ -82,7 +100,8 @@ function SuccessInner() {
         </div>
       )}
 
-      {/* Jumia-style confirmation — order is recorded, pay on delivery. No WhatsApp step. */}
+      {/* Jumia-style confirmation — order is recorded, pay on delivery. WhatsApp is
+          offered, never required: the order is already placed either way. */}
       <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">
         <p className="text-base font-extrabold text-ink-900">✅ Your order is confirmed</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
@@ -90,6 +109,16 @@ function SuccessInner() {
           delivery, and you <b>pay on delivery</b> — nothing to pay now.
         </p>
         <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
+          {/* One tap puts the whole order in our WhatsApp — the fastest way for
+              a customer to reach us, and the fastest way for us to see a sale. */}
+          <a
+            href={whatsappLink(orderWhatsAppText(order, ref))}
+            target="_blank"
+            rel="noreferrer"
+            className="press rounded-lg bg-green-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-green-700"
+          >
+            💬 Send my order on WhatsApp
+          </a>
           <Link
             href={ref ? `/track?ref=${ref}` : "/track"}
             className="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"

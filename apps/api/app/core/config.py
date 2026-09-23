@@ -43,6 +43,11 @@ class Settings(BaseSettings):
     gmail_user: str = "onlinetechug@gmail.com"
     gmail_app_password: str = ""
 
+    # WhatsApp alerts to the owner (CallMeBot). Both blank = no WhatsApp sent;
+    # email still goes out either way.
+    owner_whatsapp_phone: str = ""
+    owner_whatsapp_api_key: str = ""
+
     # Online payments (Flutterwave) — MTN + Airtel + cards. Empty = disabled.
     flutterwave_secret_key: str = ""
     flutterwave_public_key: str = ""

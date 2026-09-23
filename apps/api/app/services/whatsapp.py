@@ -1,0 +1,77 @@
+"""Send the owner a WhatsApp message when something needs their attention.
+
+Email already goes to the shop inbox, but an inbox is checked when someone
+remembers to check it. An order that arrives on WhatsApp gets acted on.
+
+This uses CallMeBot, which needs no business account and no monthly fee — the
+owner sends one authorisation message to the bot once and gets an API key. Set
+OWNER_WHATSAPP_PHONE and OWNER_WHATSAPP_API_KEY and it starts working; leave
+them blank and every call here is a no-op, so nothing breaks without them.
+
+Sending must never block or fail an order: a customer who has just paid should
+not see an error because a notification didn't go out.
+"""
+
+from __future__ import annotations
+
+import logging
+from urllib.parse import quote
+
+import httpx
+
+from app.core.config import settings
+
+logger = logging.getLogger(__name__)
+
+ENDPOINT = "https://api.callmebot.com/whatsapp.php"
+TIMEOUT = 8.0
+
+
+def configured() -> bool:
+    return bool(settings.owner_whatsapp_phone and settings.owner_whatsapp_api_key)
+
+
+async def notify_owner(text: str) -> bool:
+    """Send `text` to the owner's WhatsApp. Returns False if it didn't go."""
+    if not configured():
+        return False
+
+    phone = settings.owner_whatsapp_phone.lstrip("+").replace(" ", "")
+    params = {
+        "phone": phone,
+        "text": text[:900],  # the relay truncates long messages anyway
+        "apikey": settings.owner_whatsapp_api_key,
+    }
+    url = f"{ENDPOINT}?phone={params['phone']}&text={quote(params['text'])}&apikey={params['apikey']}"
+
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+            res = await client.get(url)
+        if res.status_code >= 400:
+            logger.warning("WhatsApp notify failed (%s): %s", res.status_code, res.text[:200])
+            return False
+        return True
+    except Exception as exc:  # noqa: BLE001 — never let this break the caller
+        logger.warning("WhatsApp notify error: %s", exc)
+        return False
+
+
+def order_message(order) -> str:
+    """The order, written so it reads properly in a WhatsApp notification."""
+    lines = [f"🛒 NEW ORDER  {order.reference}", ""]
+    for i in order.items:
+        lines.append(f"• {i.quantity} x {i.name} — UGX {int(i.line_total):,}")
+    lines += [
+        "",
+        f"Total: UGX {int(order.total):,}",
+        f"Payment: {order.payment_method.replace('_', ' ').title()} ({order.payment_status})",
+        "",
+        f"{order.customer_name} — {order.phone}",
+    ]
+    if order.delivery_town:
+        lines.append(f"Deliver to: {order.delivery_town}")
+    if order.delivery_address:
+        lines.append(order.delivery_address)
+    if order.notes:
+        lines.append(f"Note: {order.notes}")
+    return "\n".join(lines)

@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.schemas.order import OrderCreate, OrderOut, OrderSummary, OrderUpdate
 from app.services import orders as orders_service
 from app.services.email import send_order_confirmation
+from app.services import whatsapp
 
 router = APIRouter()
 
@@ -22,6 +23,9 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
     except orders_service.OrderError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     await send_order_confirmation(order)
+    # An inbox is read when someone remembers to read it; a WhatsApp message
+    # gets acted on. Never let a failed notification fail the order.
+    await whatsapp.notify_owner(whatsapp.order_message(order))
     return order
 
 
