@@ -66,7 +66,7 @@ export default function CertificatesPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.jpeg").then((i) => (logo.current = i));
+    loadImg("/logo-mark.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
     try {
       const raw = localStorage.getItem("otu_issued_certs");
@@ -101,12 +101,14 @@ export default function CertificatesPage() {
       doc.setLineWidth(0.6);
       doc.rect(11, 11, W - 22, 210 - 22);
 
-      if (logo.current) doc.addImage(logo.current, "JPEG", cx - 11, 20, 22, 22);
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.setTextColor(241, 90, 41);
-      doc.text("ONLINE TECH UGANDA", cx, 50, { align: "center" });
+      if (logo.current) {
+        doc.addImage(logo.current, "PNG", cx - 32, 18, 64, 23);
+      } else {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(241, 90, 41);
+        doc.text("ONLINE TECH UGANDA", cx, 36, { align: "center" });
+      }
 
       doc.setFont("times", "bold");
       doc.setFontSize(30);

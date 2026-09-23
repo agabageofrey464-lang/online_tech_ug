@@ -28,7 +28,7 @@ export default function EnrolmentFormsPage() {
   const logo = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.jpeg").then((i) => (logo.current = i));
+    loadImg("/logo-mark.png").then((i) => (logo.current = i));
   }, []);
 
   const course = COURSES[idx];
@@ -181,20 +181,22 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   // ── Header band
   doc.setFillColor(40, 35, 99);
   doc.rect(0, 0, W, 30, "F");
-  if (logo) doc.addImage(logo, "JPEG", M, 5, 18, 18);
+  if (logo) doc.addImage(logo, "PNG", M, 4, 50, 18);
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(15);
-  doc.text("ONLINE TECH UGANDA", M + 23, 13);
+  if (!logo) {
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(15);
+    doc.text("ONLINE TECH UGANDA", M, 14);
+  }
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.setTextColor(255, 210, 190);
-  doc.text("Computer Training  ·  Kampala  ·  +256 756 839 270  ·  onlinetechug@gmail.com", M + 23, 19);
+  doc.setFontSize(7.6);
+  doc.setTextColor(215, 240, 247);
+  doc.text("Computer Training  ·  Kampala  ·  +256 756 839 270  ·  onlinetechug@gmail.com", M, 26.5);
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.text("STUDENT ENROLMENT FORM", M + 23, 25.5);
+  doc.setFontSize(11);
+  doc.text("STUDENT ENROLMENT FORM", W - M, 14, { align: "right" });
 
   y = 38;
 

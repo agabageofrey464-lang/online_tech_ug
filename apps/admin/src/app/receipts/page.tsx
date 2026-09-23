@@ -37,6 +37,29 @@ const COMPANY = {
   address: "Kampala, Uganda",
 };
 
+// House colours, matching the site.
+const TEAL = [14, 116, 144] as const;
+const TEAL_DARK = [12, 93, 117] as const;
+const TEAL_PALE = [238, 250, 253] as const;
+const ORANGE = [241, 90, 41] as const;
+const INK = [34, 34, 34] as const;
+const MUTED = [110, 110, 110] as const;
+const RULE = [226, 232, 234] as const;
+const ZEBRA = [247, 251, 252] as const;
+const NOTE_BG = [252, 250, 246] as const;
+const SOFT = [250, 252, 253] as const;
+const GREEN = [0, 150, 80] as const;
+const AMBER = [214, 120, 20] as const;
+const RED = [200, 60, 40] as const;
+const PEN = [150, 150, 150] as const;
+const STAMP = [210, 218, 220] as const;
+
+// Where a balance can be settled — printed rather than explained on the phone.
+const MOMO = {
+  mtn: "0760 547 211  (Online Tech Uganda)",
+  airtel: "Pay Merchant ID 7148212  (Online TechUG Services)",
+};
+
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const long = (iso: string) =>
   iso
@@ -134,9 +157,11 @@ export default function ReceiptsPage() {
   const [msg, setMsg] = useState("");
 
   const logo = useRef<HTMLImageElement | null>(null);
+  const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.jpeg").then((i) => (logo.current = i));
+    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
   // localStorage is only readable in the browser, so the number is settled here.
@@ -157,236 +182,337 @@ export default function ReceiptsPage() {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const W = 210;
-    const M = 16;
+    const H = 297;
+    const M = 15;
     const right = W - M;
 
-    /* ── Letterhead */
-    doc.setFillColor(40, 35, 99);
-    doc.rect(0, 0, W, 30, "F");
-    if (logo.current) doc.addImage(logo.current, "JPEG", M, 5, 20, 20);
-    const tx = logo.current ? M + 24 : M;
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(15);
-    doc.text(COMPANY.name, tx, 12);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.2);
-    doc.setTextColor(255, 205, 185);
-    doc.text(COMPANY.tagline, tx, 17.5);
-    doc.text(
-      `${COMPANY.address}  ·  ${COMPANY.phone} / ${COMPANY.phoneAlt}  ·  ${COMPANY.email}`,
-      tx,
-      22,
-    );
-    doc.text(COMPANY.site, tx, 26.5);
+    type RGB = readonly [number, number, number];
+    const col = (c: RGB) => doc.setTextColor(c[0], c[1], c[2]);
+    const fill = (c: RGB) => doc.setFillColor(c[0], c[1], c[2]);
+    const draw = (c: RGB) => doc.setDrawColor(c[0], c[1], c[2]);
 
-    doc.setFillColor(241, 90, 41);
-    doc.rect(0, 30, W, 1.5, "F");
+    /* ── Letterhead ───────────────────────────────────────────── */
+    const HB = 36;
+    fill(TEAL);
+    doc.rect(0, 0, W, HB, "F");
+    // A darker wedge on the right gives the flat band some depth and gives
+    // the contact details something to sit on.
+    fill(TEAL_DARK);
+    doc.triangle(W, 0, W, HB, W - 74, 0, "F");
 
-    /* ── Title, number and date */
-    let y = 42;
-    doc.setTextColor(40, 35, 99);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(20);
-    doc.text("RECEIPT", M, y);
-
-    doc.setFontSize(9);
-    doc.setTextColor(60, 60, 60);
-    doc.text(`No.  ${num}`, right, y - 5, { align: "right" });
-    doc.setFont("helvetica", "normal");
-    doc.text(`Date:  ${long(date)}`, right, y, { align: "right" });
-    y += 6;
-    doc.setDrawColor(225, 225, 225);
-    doc.setLineWidth(0.4);
-    doc.line(M, y, right, y);
-    y += 9;
-
-    /* ── Received from */
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(120, 120, 120);
-    doc.text("RECEIVED FROM", M, y);
-    y += 5.5;
-
-    doc.setFontSize(12);
-    doc.setTextColor(25, 25, 25);
-    doc.text(party === "business" ? business.trim() || name.trim() : name.trim(), M, y);
-    y += 5;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(80, 80, 80);
-    const who: string[] = [];
-    if (party === "business") {
-      who.push(`Contact person: ${name.trim()}`);
-      if (tin.trim()) who.push(`TIN: ${tin.trim()}`);
+    if (logo.current) {
+      // The logo is a wide lockup drawn for dark backgrounds, so on the teal
+      // band it needs no tile — and it already carries the company name.
+      doc.addImage(logo.current, "PNG", M, 6, 58, 21);
     } else {
-      who.push("Individual customer");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(17);
+      doc.setTextColor(255, 255, 255);
+      doc.text(COMPANY.name, M, 17);
     }
-    if (address.trim()) who.push(address.trim());
-    const reach = [phone.trim(), email.trim()].filter(Boolean).join("  ·  ");
-    if (reach) who.push(reach);
-    for (const w of who) {
-      doc.text(w, M, y);
-      y += 4.4;
-    }
-    y += 5;
 
-    /* ── Items */
-    const cQty = M + 105;
-    const cPrice = M + 143;
-    const cAmt = right;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.6);
+    doc.setTextColor(215, 240, 247);
+    doc.text(COMPANY.tagline, M, 32.5);
 
-    doc.setFillColor(40, 35, 99);
-    doc.rect(M, y - 5, right - M, 8, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
+    doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
-    doc.text("DESCRIPTION", M + 2, y);
+    doc.setFont("helvetica", "bold");
+    doc.text(COMPANY.phone, right, 12, { align: "right" });
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(206, 235, 243);
+    doc.setFontSize(7.6);
+    doc.text(COMPANY.phoneAlt, right, 17, { align: "right" });
+    doc.text(COMPANY.email, right, 22, { align: "right" });
+    doc.text(`${COMPANY.site}  ·  ${COMPANY.address}`, right, 27, { align: "right" });
+
+    fill(ORANGE);
+    doc.rect(0, HB, W, 2, "F");
+
+    /* ── Title, number and date ───────────────────────────────── */
+    let y = 52;
+    col(TEAL);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.text("RECEIPT", M, y);
+    doc.setFontSize(8);
+    col(MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.text("Official receipt of payment", M, y + 5.5);
+
+    // Boxed, because the number is what gets quoted back to us on the phone.
+    const bx = right - 72;
+    const by = 40;
+    const bw = 72;
+    fill(TEAL_PALE);
+    draw(RULE);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(bx, by, bw, 19, 2, 2, "FD");
+    doc.setFontSize(7.5);
+    col(MUTED);
+    doc.text("RECEIPT No.", bx + 4, by + 6);
+    doc.text("DATE", bx + 4, by + 14);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    col(TEAL);
+    doc.text(num, bx + bw - 4, by + 6, { align: "right" });
+    col(INK);
+    doc.text(long(date), bx + bw - 4, by + 14, { align: "right" });
+
+    y += 12;
+
+    /* ── Who paid, and how ────────────────────────────────────── */
+    const colW = (right - M - 6) / 2;
+    const boxTop = y;
+
+    const leftLines: string[] = [];
+    if (party === "business") {
+      leftLines.push(`Contact person: ${name.trim()}`);
+      if (tin.trim()) leftLines.push(`TIN: ${tin.trim()}`);
+    } else {
+      leftLines.push("Individual customer");
+    }
+    if (address.trim()) leftLines.push(address.trim());
+    const reach = [phone.trim(), email.trim()].filter(Boolean).join("   ·   ");
+    if (reach) leftLines.push(reach);
+
+    const boxH = Math.max(26, 14 + leftLines.length * 4.4);
+
+    draw(RULE);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(M, boxTop, colW, boxH, 2, 2, "D");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    col(MUTED);
+    doc.text("RECEIVED FROM", M + 4, boxTop + 6);
+    doc.setFontSize(11.5);
+    col(INK);
+    const who = party === "business" ? business.trim() || name.trim() : name.trim();
+    doc.text(doc.splitTextToSize(who, colW - 8)[0] as string, M + 4, boxTop + 12.5);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.4);
+    col(MUTED);
+    let ly = boxTop + 17.5;
+    for (const t of leftLines) {
+      doc.text(doc.splitTextToSize(t, colW - 8)[0] as string, M + 4, ly);
+      ly += 4.4;
+    }
+
+    const rx = M + colW + 6;
+    fill(TEAL_PALE);
+    draw(RULE);
+    doc.roundedRect(rx, boxTop, colW, boxH, 2, 2, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    col(MUTED);
+    doc.text("PAYMENT", rx + 4, boxTop + 6);
+    doc.setFontSize(11.5);
+    col(INK);
+    doc.text(method, rx + 4, boxTop + 12.5);
+
+    // Settled or not, stated plainly — it is the first thing anyone checks.
+    const settled = balance <= 0;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.8);
+    fill(settled ? GREEN : AMBER);
+    const chip = settled ? "PAID IN FULL" : "PART PAYMENT";
+    const cw = doc.getTextWidth(chip) + 7;
+    doc.roundedRect(rx + 4, boxTop + 16, cw, 6, 1.5, 1.5, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.text(chip, rx + 4 + cw / 2, boxTop + 20.2, { align: "center" });
+
+    y = boxTop + boxH + 9;
+
+    /* ── Items ────────────────────────────────────────────────── */
+    const cQty = M + 112;
+    const cPrice = M + 148;
+    const cAmt = right - 3;
+
+    fill(TEAL);
+    doc.roundedRect(M, y - 5.5, right - M, 9, 1.5, 1.5, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text("DESCRIPTION", M + 4, y);
     doc.text("QTY", cQty, y, { align: "right" });
     doc.text("UNIT PRICE", cPrice, y, { align: "right" });
-    doc.text("AMOUNT", cAmt - 2, y, { align: "right" });
-    y += 8;
+    doc.text("AMOUNT", cAmt, y, { align: "right" });
+    y += 9;
 
-    doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
-    doc.setTextColor(40, 40, 40);
     let shade = false;
     for (const l of lines) {
       if (!l.desc.trim() && !l.price) continue;
       const amt = (Number(l.qty) || 0) * (Number(l.price) || 0);
-      const wrapped = doc.splitTextToSize(l.desc.trim() || "—", 96) as string[];
-      const h = Math.max(7, wrapped.length * 4.6 + 2.5);
+      const wrapped = doc.splitTextToSize(l.desc.trim() || "—", 100) as string[];
+      const h = Math.max(8, wrapped.length * 4.6 + 3.2);
       if (shade) {
-        doc.setFillColor(248, 248, 250);
-        doc.rect(M, y - 4.5, right - M, h, "F");
+        fill(ZEBRA);
+        doc.rect(M, y - 5, right - M, h, "F");
       }
       shade = !shade;
-      doc.text(wrapped, M + 2, y);
+      doc.setFont("helvetica", "normal");
+      col(INK);
+      doc.text(wrapped, M + 4, y);
+      col(MUTED);
       doc.text(String(l.qty), cQty, y, { align: "right" });
       doc.text(Number(l.price).toLocaleString("en-UG"), cPrice, y, { align: "right" });
       doc.setFont("helvetica", "bold");
-      doc.text(amt.toLocaleString("en-UG"), cAmt - 2, y, { align: "right" });
-      doc.setFont("helvetica", "normal");
+      col(INK);
+      doc.text(amt.toLocaleString("en-UG"), cAmt, y, { align: "right" });
       y += h;
     }
+    draw(RULE);
+    doc.setLineWidth(0.3);
+    doc.line(M, y - 3.5, right, y - 3.5);
+    y += 3;
 
-    doc.setDrawColor(225, 225, 225);
-    doc.line(M, y - 3, right, y - 3);
-    y += 4;
-
-    /* ── Totals */
-    const label = (t: string, v: string, bold = false) => {
+    /* ── Totals ───────────────────────────────────────────────── */
+    const row = (t: string, v: string, bold = false, color?: RGB) => {
       doc.setFont("helvetica", bold ? "bold" : "normal");
       doc.setFontSize(9.5);
+      col(color ?? MUTED);
       doc.text(t, cPrice, y, { align: "right" });
-      doc.text(v, cAmt - 2, y, { align: "right" });
-      y += bold ? 6.5 : 5.5;
+      col(color ?? INK);
+      doc.text(v, cAmt, y, { align: "right" });
+      y += 5.6;
     };
-    doc.setTextColor(60, 60, 60);
-    label("Total", ugx(total));
-    label("Amount paid", ugx(received));
-    if (balance > 0) {
-      doc.setTextColor(200, 60, 40);
-      label("Balance due", ugx(balance), true);
-      doc.setTextColor(60, 60, 60);
-    }
+    row("Subtotal", ugx(total));
+    row("Amount received", ugx(received));
+    if (balance > 0) row("Balance due", ugx(balance), true, RED);
 
-    y += 2;
-    doc.setFillColor(40, 35, 99);
-    doc.rect(cQty - 12, y - 5.5, right - (cQty - 12), 10, "F");
+    y += 1.5;
+    fill(TEAL);
+    doc.roundedRect(cQty - 16, y - 6, right - (cQty - 16), 11, 1.5, 1.5, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
+    doc.setFontSize(11.5);
     doc.setTextColor(255, 255, 255);
-    doc.text("PAID", cQty - 8, y + 0.5);
-    doc.text(ugx(received), cAmt - 2, y + 0.5, { align: "right" });
-    y += 12;
+    doc.text("TOTAL PAID", cQty - 12, y + 1.2);
+    doc.text(ugx(received), cAmt, y + 1.2, { align: "right" });
+    y += 13;
 
-    /* ── Amount in words and payment method */
-    doc.setTextColor(60, 60, 60);
+    /* ── Amount in words ──────────────────────────────────────── */
+    const words = doc.splitTextToSize(inWords(received), right - M - 36) as string[];
+    const wh = Math.max(13, words.length * 4.6 + 8);
+    fill(TEAL_PALE);
+    draw(RULE);
+    doc.roundedRect(M, y - 5, right - M, wh, 2, 2, "FD");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
-    doc.text("AMOUNT IN WORDS", M, y);
-    y += 4.8;
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(9.5);
-    doc.setTextColor(30, 30, 30);
-    const words = doc.splitTextToSize(inWords(received), right - M) as string[];
-    doc.text(words, M, y);
-    y += words.length * 4.8 + 4;
+    doc.setFontSize(7.3);
+    col(MUTED);
+    doc.text("AMOUNT IN WORDS", M + 4, y);
+    doc.setFont("helvetica", "bolditalic");
+    doc.setFontSize(9.6);
+    col(TEAL_DARK);
+    doc.text(words, M + 4, y + 5.4);
+    y += wh + 5;
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
-    doc.setTextColor(60, 60, 60);
-    doc.text("PAID BY", M, y);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
-    doc.setTextColor(30, 30, 30);
-    doc.text(method, M + 24, y);
-    y += 7;
-
+    /* ── Note ─────────────────────────────────────────────────── */
     if (note.trim()) {
+      const nl = doc.splitTextToSize(note.trim(), right - M - 30) as string[];
+      const nh = Math.max(13, nl.length * 4.4 + 8);
+      fill(NOTE_BG);
+      draw(RULE);
+      doc.roundedRect(M, y - 5, right - M, nh, 2, 2, "FD");
+      // An orange keyline marks it as an aside rather than another figure.
+      fill(ORANGE);
+      doc.rect(M, y - 5, 1.6, nh, "F");
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(8.5);
-      doc.setTextColor(60, 60, 60);
-      doc.text("NOTE", M, y);
-      y += 4.5;
+      doc.setFontSize(7.3);
+      col(MUTED);
+      doc.text("NOTE", M + 6, y);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.setTextColor(40, 40, 40);
-      const nl = doc.splitTextToSize(note.trim(), right - M) as string[];
-      doc.text(nl, M, y);
-      y += nl.length * 4.4 + 3;
+      col(INK);
+      doc.text(nl, M + 6, y + 5.4);
+      y += nh + 5;
     }
 
-    /* ── Signature block */
-    y = Math.max(y + 8, 230);
-    doc.setDrawColor(235, 235, 235);
-    doc.setLineWidth(0.4);
-    doc.line(M, y - 6, right, y - 6);
+    /* ── Settling the balance, or the terms ───────────────────── */
+    // A part-paid receipt raises a question — how do I pay the rest? — so the
+    // answer belongs on the document rather than in a phone call.
+    const payLines =
+      balance > 0
+        ? [
+            `Balance of ${ugx(balance)} may be paid by:`,
+            `MTN Mobile Money  ·  ${MOMO.mtn}`,
+            `Airtel Money  ·  ${MOMO.airtel}`,
+            "Cash or card at our office in Kampala, or on delivery.",
+          ]
+        : [
+            "This receipt confirms payment in full for the items listed above.",
+            "Please keep it — it is required for any warranty claim or exchange.",
+          ];
 
-    // The company mark sits above the rule; the signatory signs over it by hand.
-    doc.setFont("times", "bolditalic");
-    doc.setFontSize(17);
-    doc.setTextColor(40, 35, 99);
-    doc.text("onlinetechug", M + 2, y + 4);
-
-    doc.setDrawColor(120, 120, 120);
+    const ph = payLines.length * 4.6 + 10;
+    fill(SOFT);
+    draw(RULE);
     doc.setLineWidth(0.3);
-    doc.line(M, y + 8, M + 68, y + 8);
+    doc.roundedRect(M, y - 5, right - M, ph, 2, 2, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.3);
+    col(MUTED);
+    doc.text(balance > 0 ? "HOW TO PAY THE BALANCE" : "TERMS", M + 4, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.6);
+    col(INK);
+    let py = y + 5.8;
+    for (const t of payLines) {
+      doc.text(t, M + 4, py);
+      py += 4.6;
+    }
+    y += ph + 6;
+
+    /* ── Signature ────────────────────────────────────────────── */
+    // A floor keeps the signature in the same place on every receipt, which
+    // is what makes a stack of them look like one company's paperwork.
+    y = Math.max(y + 4, 214);
+
+    if (sign.current) {
+      doc.addImage(sign.current, "PNG", M + 1, y - 9, 46, 18);
+    } else {
+      doc.setFont("times", "bolditalic");
+      doc.setFontSize(19);
+      col(TEAL);
+      doc.text("onlinetechug", M + 3, y + 5);
+    }
+
+    draw(PEN);
+    doc.setLineWidth(0.3);
+    doc.line(M, y + 9, M + 72, y + 9);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.setTextColor(30, 30, 30);
-    doc.text("AUTHORISED SIGNATURE", M, y + 13);
+    col(INK);
+    doc.text("AUTHORISED SIGNATURE", M, y + 14);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(90, 90, 90);
-    doc.text(signatory.trim() || "Online Tech Uganda", M, y + 17.5);
-    doc.text("For and on behalf of Online Tech Uganda", M, y + 21.5);
+    doc.setFontSize(8.4);
+    col(MUTED);
+    doc.text(signatory.trim() || "Online Tech Uganda", M, y + 18.6);
+    doc.text("For and on behalf of Online Tech Uganda", M, y + 22.8);
 
-    // Stamp ring, to the right of the signature
-    doc.setDrawColor(205, 205, 205);
-    doc.circle(right - 20, y + 8, 16);
+    draw(STAMP);
+    doc.setLineWidth(0.4);
+    doc.circle(right - 19, y + 9, 16.5);
     doc.setFontSize(7);
-    doc.setTextColor(185, 185, 185);
-    doc.text("COMPANY STAMP", right - 20, y + 9, { align: "center" });
+    doc.setTextColor(185, 195, 198);
+    doc.text("COMPANY", right - 19, y + 7.6, { align: "center" });
+    doc.text("STAMP", right - 19, y + 11.4, { align: "center" });
 
-    /* ── Footer */
-    doc.setDrawColor(235, 235, 235);
-    doc.line(M, 278, right, 278);
+    /* ── Footer ───────────────────────────────────────────────── */
+    fill(TEAL);
+    doc.rect(0, H - 14, W, 14, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.4);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Thank you for your business.", W / 2, H - 8.6, { align: "center" });
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.2);
-    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(6.8);
+    doc.setTextColor(200, 232, 241);
     doc.text(
-      "Goods received in good condition. Warranty as stated at the time of sale. Keep this receipt — it is required for any claim.",
+      "Goods received in good condition · Warranty as stated at the time of sale · Keep this receipt, it is required for any claim",
       W / 2,
-      283,
-      { align: "center" },
-    );
-    doc.text(
-      `${COMPANY.name}  ·  ${COMPANY.address}  ·  ${COMPANY.phone}  ·  ${COMPANY.email}  ·  ${COMPANY.site}`,
-      W / 2,
-      288,
+      H - 4.4,
       { align: "center" },
     );
 
@@ -639,35 +765,41 @@ export default function ReceiptsPage() {
             </div>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          {!ready && (
+            <p className="mt-5 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs font-semibold text-amber-800">
+              <span aria-hidden>⚠️</span>
+              <span>
+                Before you can issue this receipt, add{" "}
+                {name.trim().length > 1 ? "" : <b>the customer&apos;s name</b>}
+                {name.trim().length > 1 || total > 0 ? "" : " and "}
+                {total > 0 ? "" : <b>one priced item</b>}.
+              </span>
+            </p>
+          )}
+
+          <div className={`mt-4 flex flex-wrap gap-2 ${ready ? "" : "opacity-60"}`}>
             <button
               onClick={() => run("print")}
               disabled={busy || !ready}
-              className="rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-50"
+              className="rounded-lg bg-brand-500 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-ink-600/25 disabled:shadow-none"
             >
               {busy ? "Preparing…" : "🖨️ Print receipt"}
             </button>
             <button
               onClick={() => run("share")}
               disabled={busy || !ready}
-              className="rounded-md bg-green-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-green-700 disabled:opacity-50"
+              className="rounded-lg bg-green-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-ink-600/25 disabled:shadow-none"
             >
               📲 Share to client
             </button>
             <button
               onClick={() => run("download")}
               disabled={busy || !ready}
-              className="rounded-md border border-ink-600/20 px-6 py-2.5 text-sm font-bold text-ink-700 transition hover:bg-ink-50 disabled:opacity-50"
+              className="rounded-lg border border-ink-600/20 bg-white px-6 py-3 text-sm font-bold text-ink-700 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-600 disabled:cursor-not-allowed disabled:text-ink-600/40"
             >
               ⬇️ Download PDF
             </button>
           </div>
-
-          {!ready && (
-            <p className="mt-3 text-xs text-ink-600/55">
-              Add the customer&apos;s name and at least one priced item to issue the receipt.
-            </p>
-          )}
           {msg && <p className="mt-3 text-xs font-semibold text-ink-700">{msg}</p>}
         </section>
 

@@ -66,7 +66,7 @@ export default function InternshipLettersPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.jpeg").then((i) => (logo.current = i));
+    loadImg("/logo-mark.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -86,16 +86,25 @@ export default function InternshipLettersPage() {
       // ── Letterhead
       doc.setFillColor(40, 35, 99);
       doc.rect(0, 0, W, 32, "F");
-      if (logo.current) doc.addImage(logo.current, "JPEG", M, 6, 20, 20);
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("ONLINE TECH UGANDA", M + 25, 14);
+      if (logo.current) {
+        doc.addImage(logo.current, "PNG", M, 5, 55, 20);
+      } else {
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("ONLINE TECH UGANDA", M, 16);
+      }
       doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.6);
+      doc.setTextColor(215, 240, 247);
+      doc.text("Computer Training · IT Services · Software Development", M, 29.5);
+      doc.setTextColor(255, 255, 255);
       doc.setFontSize(8);
-      doc.setTextColor(255, 205, 185);
-      doc.text("Computer Training · IT Services · Software Development", M + 25, 20);
-      doc.text("Kampala, Uganda  ·  +256 756 839 270  ·  onlinetechug@gmail.com", M + 25, 25);
+      doc.text("+256 756 839 270", W - M, 12, { align: "right" });
+      doc.setTextColor(206, 235, 243);
+      doc.setFontSize(7.6);
+      doc.text("onlinetechug@gmail.com", W - M, 17, { align: "right" });
+      doc.text("www.onlinetechug.com  ·  Kampala, Uganda", W - M, 22, { align: "right" });
 
       // Orange rule under the header
       doc.setFillColor(241, 90, 41);
