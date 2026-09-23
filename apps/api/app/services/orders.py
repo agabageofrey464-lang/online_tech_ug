@@ -132,8 +132,11 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
 
     total = max(0, subtotal - discount) + delivery_fee
 
-    # MoMo flows start as "pending" payment; COD is collected on delivery.
-    payment_status = "pending" if payload.payment_method.value != "cash_on_delivery" else "unpaid"
+    # Someone paying now is "pending" until we see the money; someone coming
+    # to the shop is "unpaid" until they arrive. Nothing ships either way
+    # until payment is confirmed.
+    method = payload.payment_method.value
+    payment_status = "unpaid" if method in ("pay_at_shop", "cash_on_delivery") else "pending"
 
     order = Order(
         reference=_generate_reference(),
@@ -285,13 +288,15 @@ def assess_orders(orders: list[Order]) -> dict[int, dict]:
                 score += 1
                 reasons.append("Repeat order from this phone")
 
-        if o.payment_method != "cash_on_delivery" and not o.email:
+        if o.payment_method not in ("pay_at_shop", "cash_on_delivery") and not o.email:
             score += 1
             reasons.append("No email on a mobile-money order")
 
-        if o.payment_method == "cash_on_delivery" and total >= 2_000_000:
+        # A large order nobody has paid for is the one worth a phone call
+        # before anything is set aside or dispatched.
+        if o.payment_status != "paid" and total >= 2_000_000:
             score += 2
-            reasons.append("Large cash-on-delivery order")
+            reasons.append("Large order still unpaid")
 
         level = (
             "high" if score >= 4

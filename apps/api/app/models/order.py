@@ -32,7 +32,8 @@ class Order(Base):
     total: Mapped[int] = mapped_column(Numeric(12, 0), default=0)
 
     # Payment & fulfilment
-    payment_method: Mapped[str] = mapped_column(String(40), default="cash_on_delivery")
+    # We deliver what has been paid for; nothing is collected on the doorstep.
+    payment_method: Mapped[str] = mapped_column(String(40), default="mtn_momo")
     payment_status: Mapped[str] = mapped_column(String(20), default="unpaid")
     status: Mapped[str] = mapped_column(String(20), default="pending")
 

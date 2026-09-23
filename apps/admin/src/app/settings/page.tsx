@@ -3,7 +3,7 @@ const store = {
   phone: "+256 756 839 270 / +256 760 547 211",
   email: "onlinetechug@gmail.com",
   address: "Liberty Tower, Kampala Road, Kampala",
-  payments: ["MTN MoMo", "Airtel Money", "Bank transfer / cards", "Pay on Delivery"],
+  payments: ["MTN MoMo", "Airtel Money", "Bank transfer / cards", "Pay at our shop"],
   delivery: ["Kampala from UGX 10,000", "Upcountry by distance (UGX 20k–75k)", "Free above UGX 3,000,000"],
 };
 

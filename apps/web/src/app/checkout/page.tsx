@@ -16,10 +16,10 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [town, setTown] = useState("Kampala");
-  const [payment, setPayment] = useState<OrderPayload["payment_method"]>("cash_on_delivery");
+  const [payment, setPayment] = useState<OrderPayload["payment_method"]>("airtel_money");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  // When Pesapal is live, checkout is pay-online-only (no Pay on Delivery). Until
+  // When Pesapal is live, checkout is pay-online-only. Until
   // keys are set, the existing manual Mobile Money / PoD flow stays as fallback.
   const [pesapalReady, setPesapalReady] = useState(false);
 
@@ -247,12 +247,22 @@ export default function CheckoutPage() {
                       ))}
                     </div>
 
-                    <p className="mb-2 mt-5 text-sm font-bold text-ink-900">Payment on delivery</p>
+                    <p className="mb-2 mt-5 text-sm font-bold text-ink-900">Or pay at our shop</p>
                     <PayOption
-                      opt={{ v: "cash_on_delivery", label: "Pay on Delivery", hint: "Pay with cash or Mobile Money when your order arrives." }}
+                      opt={{
+                        v: "pay_at_shop",
+                        label: "Collect & pay at our shop",
+                        hint: "Come to our shop in Kampala, check the item, and pay there.",
+                      }}
                       payment={payment}
                       setPayment={setPayment}
                     />
+
+                    <p className="mt-4 rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
+                      We deliver orders that have been paid for. There is no cash on
+                      delivery — pay by Mobile Money and we&apos;ll bring it to you, or
+                      collect it from the shop and pay when you see it.
+                    </p>
                   </>
                 )}
 
@@ -277,7 +287,7 @@ export default function CheckoutPage() {
                       </ol>
                     )}
                     <p className="mt-2 rounded-md bg-white/70 px-2.5 py-1.5 text-xs text-ink-700/75">
-                      After paying, tap <b>Confirm order</b> below. We verify your payment and dispatch — you can also pay on delivery.
+                      After paying, tap <b>Confirm order</b> below. We verify your payment and then dispatch — we deliver orders that are already paid for.
                     </p>
                   </div>
                 )}

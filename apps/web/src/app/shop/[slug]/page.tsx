@@ -339,7 +339,7 @@ export default async function ProductDetailPage({
               <ShieldCheck size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
                 <p className="font-bold text-ink-900">Genuine &amp; Warranted</p>
-                <p className="mt-0.5 text-xs text-ink-700/60">Quality-checked. Pay via MTN/Airtel MoMo or cash on delivery.</p>
+                <p className="mt-0.5 text-xs text-ink-700/60">Quality-checked. Pay via MTN/Airtel MoMo, or at our shop.</p>
               </div>
             </div>
           </div>

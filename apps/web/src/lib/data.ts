@@ -2160,6 +2160,6 @@ export const whyUs = [
   {
     icon: "card",
     title: "Flexible payments",
-    body: "Mobile Money, cash on delivery and bank transfer accepted.",
+    body: "Mobile Money, bank transfer, card, or pay at our shop.",
   },
 ];

@@ -438,7 +438,7 @@ export default function ReceiptsPage() {
             `Balance of ${ugx(balance)} may be paid by:`,
             `MTN Mobile Money  ·  ${MOMO.mtn}`,
             `Airtel Money  ·  ${MOMO.airtel}`,
-            "Cash or card at our office in Kampala, or on delivery.",
+            "Cash or card at our shop in Kampala.",
           ]
         : [
             "This receipt confirms payment in full for the items listed above.",

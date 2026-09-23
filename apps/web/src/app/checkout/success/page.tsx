@@ -96,17 +96,18 @@ function SuccessInner() {
         >
           {payStatus === "checking" && "⏳ Confirming your payment…"}
           {payStatus === "successful" && "✅ Payment received — thank you! Your order is paid."}
-          {payStatus === "failed" && "⚠️ Payment wasn't completed. No problem — you can pay on delivery, or contact us to try again."}
+          {payStatus === "failed" && "⚠️ Payment wasn't completed. Your order is saved — call us and we'll help you pay, or collect it from our shop."}
         </div>
       )}
 
-      {/* Jumia-style confirmation — order is recorded, pay on delivery. WhatsApp is
+      {/* Order is recorded; it ships once paid for. WhatsApp is
           offered, never required: the order is already placed either way. */}
       <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">
         <p className="text-base font-extrabold text-ink-900">✅ Your order is confirmed</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
-          We&apos;ve received your order and it&apos;s being processed. You&apos;ll get a call to arrange
-          delivery, and you <b>pay on delivery</b> — nothing to pay now.
+          We&apos;ve received your order and it&apos;s being processed. We&apos;ll call you to
+          confirm. We deliver orders that have been <b>paid for</b> — pay by Mobile Money
+          and we&apos;ll bring it to you, or collect it from our shop in Kampala.
         </p>
         <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
           {/* One tap puts the whole order in our WhatsApp — the fastest way for

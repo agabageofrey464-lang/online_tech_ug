@@ -45,7 +45,7 @@ const ORDER_TEMPLATES: Template[] = [
     label: "Payment not received",
     subject: "About payment for your order",
     body: () =>
-      `We're holding your order, but we haven't seen your payment come through yet.\n\nIf you've already paid, call us with the transaction details and we'll check straight away. Otherwise you're welcome to pay on delivery.`,
+      `We're holding your order, but we haven't seen your payment come through yet.\n\nIf you've already paid, call us with the transaction details and we'll check straight away. We deliver once payment is confirmed, or you can collect it from our shop and pay there.`,
   },
 ];
 

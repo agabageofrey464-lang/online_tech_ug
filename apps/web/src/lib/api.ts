@@ -47,7 +47,9 @@ export type OrderPayload = {
   delivery_town: string;
   delivery_address: string;
   notes?: string;
-  payment_method: "cash_on_delivery" | "mtn_momo" | "airtel_money" | "pesapal";
+  // "cash_on_delivery" is legacy — orders taken before we stopped
+  // collecting on delivery. It is no longer offered at checkout.
+  payment_method: "mtn_momo" | "airtel_money" | "pay_at_shop" | "pesapal" | "cash_on_delivery";
   coupon_code?: string;
   referral_code?: string;
   items: OrderItemPayload[];

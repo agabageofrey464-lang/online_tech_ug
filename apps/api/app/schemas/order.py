@@ -5,10 +5,20 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class PaymentMethod(str, Enum):
-    cash_on_delivery = "cash_on_delivery"
+    """How the customer is paying.
+
+    We don't collect on delivery: an order is paid first, or collected and
+    paid for at the shop. Delivery is of goods already paid for.
+
+    `cash_on_delivery` is kept only so orders taken before that rule can still
+    be read back; it is not offered at checkout.
+    """
+
     mtn_momo = "mtn_momo"
     airtel_money = "airtel_money"
+    pay_at_shop = "pay_at_shop"  # collect and pay in person in Kampala
     pesapal = "pesapal"  # secure online payment (MTN/Airtel/card via Pesapal)
+    cash_on_delivery = "cash_on_delivery"  # legacy — historical orders only
 
 
 class OrderItemIn(BaseModel):
@@ -23,7 +33,7 @@ class OrderCreate(BaseModel):
     delivery_town: str = Field(default="", max_length=120)
     delivery_address: str = ""
     notes: str = ""
-    payment_method: PaymentMethod = PaymentMethod.cash_on_delivery
+    payment_method: PaymentMethod = PaymentMethod.mtn_momo
     coupon_code: str = ""
     referral_code: str = ""
     items: list[OrderItemIn] = Field(min_length=1)

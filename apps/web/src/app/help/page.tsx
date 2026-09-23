@@ -31,7 +31,7 @@ const PAY_METHODS = [
   { name: "MTN MoMo", tag: "Fast & secure", icon: "/Icons/mtn.svg", note: "Pay with your MTN Mobile Money — quick and safe, at no extra cost." },
   { name: "Airtel Money", tag: "Airtel Money", icon: "/Icons/airtel.svg", note: "Pay with your Airtel Money account — simple and secure, no extra charge." },
   { name: "Bank Transfer", tag: "Bank / Cards", icon: "/Icons/bank.svg", note: "Pay safely by bank transfer or card. Contact us for account details." },
-  { name: "Pay on Delivery", tag: "Cash on delivery", icon: null, note: "Pay with cash, Mobile Money or card when your order arrives." },
+  { name: "Pay at our shop", tag: "Collect in person", icon: null, note: "Come to our shop in Kampala, check the item, and pay there." },
 ];
 
 type Faq = { cat: string; q: string; a: string };
@@ -39,8 +39,8 @@ const FAQS: Faq[] = [
   { cat: "ordering", q: "How do I place an order?", a: "Browse the shop, tap Order now, then open the cart and press Checkout. Fill in your name, phone and delivery address, choose a payment method, and confirm. You'll get an order reference." },
   { cat: "ordering", q: "Can I order without an account?", a: "Yes — you can check out as a guest. Creating an account lets you track orders and check out faster next time." },
   { cat: "ordering", q: "How do I cancel an order?", a: "Contact us on WhatsApp with your order reference and we'll cancel it if it hasn't shipped yet." },
-  { cat: "payments", q: "What payment methods do you accept?", a: "MTN MoMo, Airtel Money, bank transfer/cards, and Pay on Delivery (cash, Mobile Money or card on arrival)." },
-  { cat: "payments", q: "Is Pay on Delivery available?", a: "Yes, for eligible orders and locations. Pay with cash, Mobile Money or card when your order is delivered — no payment needed beforehand." },
+  { cat: "payments", q: "What payment methods do you accept?", a: "MTN MoMo, Airtel Money, bank transfer or card, or cash when you collect from our shop in Kampala." },
+  { cat: "payments", q: "Do you accept cash on delivery?", a: "No. We deliver orders that have already been paid for. Pay by Mobile Money, bank transfer or card and we'll bring it to you — or come to our shop in Kampala, check the item yourself, and pay there." },
   { cat: "delivery", q: "How long does delivery take?", a: "Kampala deliveries are usually same-day or next-day. Upcountry takes 1–3 days. We confirm timing on WhatsApp after you order." },
   { cat: "delivery", q: "How much is delivery?", a: `From ${ugx(15000)} within Kampala and ${ugx(25000)} upcountry. Delivery is FREE on orders above ${ugx(3000000)}.` },
   { cat: "delivery", q: "How do I track my order?", a: "Go to Track Project / your Account, or message us on WhatsApp with your order reference for a live update." },
@@ -129,9 +129,11 @@ export default function HelpCenterPage() {
               ))}
             </div>
             <div className="mt-5 space-y-3 text-sm text-ink-700/80">
-              <p><b className="text-ink-900">Option 1: Pay on Delivery</b><br />Pay when your order arrives — cash, Mobile Money, Mastercard or Visa — no payment information needed beforehand.</p>
-              <p><b className="text-ink-900">Option 2: Mobile Money (MTN / Airtel)</b><br />Securely pay for your order using MTN MoMo or Airtel Money.</p>
-              <p><b className="text-ink-900">Option 3: Vouchers</b><br />Apply a valid promo/voucher code at checkout to save on your order.</p>
+              <p><b className="text-ink-900">Option 1: Mobile Money (MTN / Airtel)</b><br />Pay for your order with MTN MoMo or Airtel Money, and we deliver it to you.</p>
+              <p><b className="text-ink-900">Option 2: Collect &amp; pay at our shop</b><br />Come to our shop in Kampala, look at the item first, and pay there.</p>
+              <p><b className="text-ink-900">Option 3: Bank transfer or card</b><br />For companies, schools and NGOs. Ask us for a proforma invoice and account details.</p>
+              <p><b className="text-ink-900">Vouchers</b><br />Apply a valid promo code at checkout to save on your order.</p>
+              <p className="rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-[13px]"><b className="text-ink-900">We don&apos;t collect cash on delivery.</b> What we deliver has already been paid for — it keeps our prices down and our drivers safe.</p>
             </div>
           </section>
 

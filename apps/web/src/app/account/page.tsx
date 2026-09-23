@@ -674,7 +674,7 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
                   <div className="flex justify-between text-ink-700/70">
                     <span>Payment</span>
                     <span className="font-semibold text-ink-900">
-                      {o.payment_method || "Pay on delivery"} · {o.payment_status === "paid" ? "Paid" : "Not paid"}
+                      {o.payment_method || "Awaiting payment"} · {o.payment_status === "paid" ? "Paid" : "Not paid"}
                     </span>
                   </div>
                   <div className="flex justify-between text-ink-700/70">

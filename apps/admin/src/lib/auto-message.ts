@@ -58,7 +58,7 @@ export function orderMessage(o: {
         subject: `Your order ${o.reference} is on the way`,
         body:
           `Your order is ready and on its way to you.${bought}\n\n` +
-          `Our driver will call you shortly before arriving. Please have payment ready if you chose to pay on delivery.`,
+          `Our driver will call you shortly before arriving.`,
       };
     case "delivered":
       return {
@@ -94,7 +94,7 @@ export function orderPaymentMessage(o: {
     body:
       `We're holding your order${what ? ` for ${what}` : ""}, but we haven't seen your payment come through yet.\n\n` +
       `The total is ${ugx(o.total)}. If you've already paid, call us with the transaction details and we'll check straight away. ` +
-      `Otherwise you're welcome to pay on delivery.`,
+      `We deliver orders once payment is confirmed — or you're welcome to collect it from our shop and pay there.`,
   };
 }
 

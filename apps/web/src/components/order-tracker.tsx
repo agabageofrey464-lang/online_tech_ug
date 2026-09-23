@@ -16,7 +16,7 @@ const STEPS = [
 
 const PAY_LABEL: Record<string, string> = {
   paid: "Paid",
-  unpaid: "Pay on delivery",
+  unpaid: "Awaiting payment",
   pending: "Payment pending",
   refunded: "Refunded",
 };
