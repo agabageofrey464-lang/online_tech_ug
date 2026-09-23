@@ -63,3 +63,6 @@ apps/web/public/web/73902.jpg
 apps/web/public/web/KIU4269S.jpg
 apps/web/public/web/hp-1.jpeg
 apps/web/public/web/hp-probook-430-g6.jpeg
+
+# Verification builds (BUILD_DIR) — kept out of the dev server's .next
+.next-verify/
