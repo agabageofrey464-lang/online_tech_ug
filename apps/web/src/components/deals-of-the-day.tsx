@@ -19,7 +19,7 @@ function DealsPanel() {
       <span className="text-[26px] font-black uppercase leading-[0.85] tracking-tight text-white [text-shadow:0_3px_0_rgba(0,0,0,0.18)] sm:text-[34px]">
         Deals
       </span>
-      <span className="my-1 -rotate-3 rounded-full bg-[#7c3aed] px-3 py-0.5 text-[13px] font-extrabold italic text-white shadow-md sm:text-[15px]">
+      <span className="my-1 -rotate-3 rounded-full bg-teal-600 px-3 py-0.5 text-[13px] font-extrabold italic text-white shadow-md sm:text-[15px]">
         of the
       </span>
       <span className="text-[30px] font-black uppercase leading-[0.85] tracking-tight text-gold-300 [text-shadow:0_3px_0_rgba(0,0,0,0.18)] sm:text-[40px]">

@@ -360,7 +360,7 @@ export function PromoBanners() {
             img: c.image_url || "/hero/hero-1.jpg",
             bg: "",
             panel: "",
-            bgHex: c.bg_color || "#6d28d9",
+            bgHex: c.bg_color || "#0e7490",
             panelHex: c.panel_color || "#FCDC04",
             slug: c.slug,
           })),

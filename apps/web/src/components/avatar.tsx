@@ -10,7 +10,7 @@ const COLORS = [
   "bg-ink-600",
   "bg-emerald-600",
   "bg-blue-600",
-  "bg-violet-600",
+  "bg-teal-700",
   "bg-pink-600",
   "bg-amber-500",
   "bg-teal-600",

@@ -38,7 +38,7 @@ const BLANK = {
   cta_label: "Shop now",
   link_url: "/shop",
   image_url: "/hero/hero-1.jpg",
-  bg_color: "#6d28d9",
+  bg_color: "#0e7490",
   panel_color: "#FCDC04",
   starts_at: "",
   ends_at: "",
@@ -49,8 +49,8 @@ const BLANK = {
 
 // Colour pairs that read well on the storefront banner.
 const THEMES = [
-  { name: "Purple", bg: "#6d28d9", panel: "#FCDC04" },
-  { name: "Teal", bg: "#0e7490", panel: "#22d3ee" },
+  { name: "Teal", bg: "#0e7490", panel: "#FCDC04" },
+  { name: "Deep Teal", bg: "#0d4b5e", panel: "#22d3ee" },
   { name: "Red", bg: "#c41c2e", panel: "#fb7185" },
   { name: "Orange", bg: "#f15a29", panel: "#282363" },
   { name: "Green", bg: "#00a651", panel: "#FCDC04" },

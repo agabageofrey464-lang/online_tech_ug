@@ -11,7 +11,7 @@ const THEMES = [
   { id: "indigo", label: "Indigo", from: "#2a2560", to: "#3f3a86" },
   { id: "sunset", label: "Sunset", from: "#e0451c", to: "#f4632e" },
   { id: "ocean", label: "Ocean", from: "#0d9488", to: "#0891b2" },
-  { id: "grape", label: "Grape", from: "#6d28d9", to: "#c026d3" },
+  { id: "lagoon", label: "Lagoon", from: "#0e7490", to: "#0c5d75" },
   { id: "forest", label: "Forest", from: "#15803d", to: "#10b981" },
   { id: "midnight", label: "Midnight", from: "#0f172a", to: "#334155" },
 ];

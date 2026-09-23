@@ -57,7 +57,7 @@ const typeTone: Record<string, string> = {
   "Full-time": "bg-green-100 text-green-700",
   Internship: "bg-blue-100 text-blue-700",
   "Part-time": "bg-yellow-100 text-yellow-700",
-  Contract: "bg-purple-100 text-purple-700",
+  Contract: "bg-teal-100 text-teal-700",
 };
 
 /** Placement areas we actually supervise. */
