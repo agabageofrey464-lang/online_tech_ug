@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { FestivalStrip } from "@/components/festival-strip";
 import { SiteStructuredData } from "@/components/structured-data";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <RecentlyViewedProvider>
                 <ReferralCapture />
                 <SiteHeader />
+                <FestivalStrip />
                 <main className="pb-14 md:pb-0">{children}</main>
                 <SiteFooter />
                 <WhatsAppButton />
