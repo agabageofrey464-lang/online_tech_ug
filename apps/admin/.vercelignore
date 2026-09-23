@@ -1,0 +1,2 @@
+# Verification builds (BUILD_DIR) — never part of a deployment.
+.next-verify/
