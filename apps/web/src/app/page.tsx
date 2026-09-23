@@ -14,6 +14,7 @@ import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
+import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
 import { products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
@@ -422,8 +423,8 @@ export default function HomePage() {
               <div className="flex flex-1 flex-col p-3">
                 <p className="clamp-2 text-sm font-bold leading-snug text-ink-900">{c.title}</p>
                 <p className="mt-0.5 text-[11px] text-ink-700/60">{c.level} · {c.lessons} lessons</p>
-                <p className="mt-1.5 inline-flex w-fit rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700">
-                  Free lessons
+                <p className="mt-1.5 inline-flex w-fit rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-700">
+                  Certificate included
                 </p>
                 <p className="mt-auto pt-2 text-sm font-extrabold text-brand-600">{ugx(c.price)}</p>
               </div>
@@ -455,6 +456,10 @@ export default function HomePage() {
 
       {/* Your recently viewed items */}
       <RecentlyViewed />
+
+      {/* The rest of the business — the page used to stop dead after the grid,
+          which on a phone is a long way to scroll for nothing. */}
+      <ExploreMore title="More from Online Tech Uganda" limit={6} />
 
       {/* WhatsApp CTA */}
       <section className="rounded bg-ink-700 px-6 py-8 text-center text-white">

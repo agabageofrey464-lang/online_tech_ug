@@ -42,10 +42,17 @@ export function Reveal({
           }
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0, rootMargin: "0px 0px -60px 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    // Nothing on this site is worth hiding for more than a moment.
+    const failsafe = window.setTimeout(() => setShown(true), 1200);
+
+    return () => {
+      io.disconnect();
+      window.clearTimeout(failsafe);
+    };
   }, [once]);
 
   return (
