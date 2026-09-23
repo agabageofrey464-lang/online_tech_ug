@@ -160,18 +160,20 @@ export function ReplyButton({
     setResult("");
   }
 
-  /** Posts whatever is given, so the quick button doesn't depend on state. */
-  async function post(s: string, m: string) {
+  type Channel = "email" | "whatsapp";
+
+  /** Posts whatever is given, so the quick buttons don't depend on state. */
+  async function post(s: string, m: string, channel: Channel) {
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, subject: s, message: m }),
+      body: JSON.stringify({ name, email, phone, subject: s, message: m, channel }),
     });
     const data = await res.json().catch(() => ({}));
     return { ok: res.ok, data };
   }
 
-  async function send() {
+  async function send(channel: Channel) {
     if (message.trim().length < 2) {
       setResult("Write a message first.");
       return;
@@ -179,20 +181,24 @@ export function ReplyButton({
     setSending(true);
     setResult("");
     try {
-      const { ok, data } = await post(subject, message);
+      const { ok, data } = await post(subject, message, channel);
 
       if (!ok) {
         setResult(typeof data?.detail === "string" ? data.detail : "Couldn't send that.");
         return;
       }
-      if (data.emailed) {
-        setResult(`✅ Emailed to ${email}`);
-      } else if (data.email_skipped) {
-        setResult("That email address isn't deliverable — use WhatsApp instead.");
-      } else {
-        setResult("No email address on file — use WhatsApp instead.");
+      if (channel === "whatsapp") {
+        if (data.whatsapp_url) {
+          window.open(data.whatsapp_url, "_blank", "noopener");
+          setResult(`✅ WhatsApp opened for ${phone}`);
+        } else {
+          setResult("No phone number on file for this person.");
+        }
+        return;
       }
-      if (data.whatsapp_url) window.open(data.whatsapp_url, "_blank", "noopener");
+      if (data.emailed) setResult(`✅ Emailed to ${email}`);
+      else if (data.email_skipped) setResult("That email address isn't deliverable — try WhatsApp.");
+      else setResult("No email address on file — try WhatsApp.");
     } catch {
       setResult("Network problem — please try again.");
     } finally {
@@ -201,18 +207,26 @@ export function ReplyButton({
   }
 
   /** One tap: send the message the record wrote, without opening anything. */
-  async function quick() {
+  async function quick(channel: Channel) {
     if (!auto) return;
     setSending(true);
     setSentInline("");
     try {
-      const { ok, data } = await post(auto.subject, auto.body);
+      const { ok, data } = await post(auto.subject, auto.body, channel);
       if (!ok) {
         setSentInline("failed");
         return;
       }
-      setSentInline(data.emailed ? "✓ Sent" : data.whatsapp_url ? "✓ WhatsApp" : "no address");
-      if (data.whatsapp_url) window.open(data.whatsapp_url, "_blank", "noopener");
+      if (channel === "whatsapp") {
+        if (data.whatsapp_url) {
+          window.open(data.whatsapp_url, "_blank", "noopener");
+          setSentInline("✓ WhatsApp");
+        } else {
+          setSentInline("no number");
+        }
+        return;
+      }
+      setSentInline(data.emailed ? "✓ Emailed" : "no email");
     } catch {
       setSentInline("failed");
     } finally {
@@ -223,19 +237,32 @@ export function ReplyButton({
   if (!open) {
     return (
       <span className="inline-flex items-center gap-1.5">
-        {auto && quickSend && (
+        {/* Two ways to reach them, chosen per message: an applicant with a
+            working email is best emailed, someone who only left a number is
+            not. Whichever detail is missing, that button stays out. */}
+        {auto && quickSend && email && (
           <button
-            onClick={quick}
+            onClick={() => quick("email")}
             disabled={sending || !!sentInline}
-            title={`Send: ${auto.subject}`}
-            className="whitespace-nowrap rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-brand-600 disabled:opacity-60"
+            title={`Email ${email} — ${auto.subject}`}
+            className="whitespace-nowrap rounded-md bg-brand-500 px-2.5 py-1.5 text-xs font-bold text-white transition hover:bg-brand-600 disabled:opacity-60"
           >
-            {sending ? "…" : sentInline || "📨 Send update"}
+            {sending ? "…" : sentInline || "📧 Email"}
+          </button>
+        )}
+        {auto && quickSend && phone && (
+          <button
+            onClick={() => quick("whatsapp")}
+            disabled={sending}
+            title={`WhatsApp ${phone} — ${auto.subject}`}
+            className="whitespace-nowrap rounded-md bg-[#25D366] px-2.5 py-1.5 text-xs font-bold text-white transition hover:brightness-105 disabled:opacity-60"
+          >
+            💬 WhatsApp
           </button>
         )}
         <button
           onClick={() => setOpen(true)}
-          className="whitespace-nowrap rounded-md border border-brand-500 px-3 py-1.5 text-xs font-bold text-brand-600 transition hover:bg-brand-50"
+          className="whitespace-nowrap rounded-md border border-brand-500 px-2.5 py-1.5 text-xs font-bold text-brand-600 transition hover:bg-brand-50"
         >
           ✉️ {label}
         </button>
@@ -306,16 +333,33 @@ export function ReplyButton({
         </p>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      {/* Choose how to reach them. Sending both at once was rarely what was
+          wanted — most people need telling once, on the channel they use. */}
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         <button
-          onClick={send}
-          disabled={sending}
-          className="rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-50"
+          onClick={() => send("email")}
+          disabled={sending || !email}
+          title={email ? `Email ${email}` : "No email address on file"}
+          className="rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {sending ? "Sending…" : phone && email ? "Send email + open WhatsApp" : phone ? "Open WhatsApp" : "Send email"}
+          {sending ? "Sending…" : "📧 Send email"}
         </button>
-        {result && <span className="text-xs font-semibold text-ink-700">{result}</span>}
+        <button
+          onClick={() => send("whatsapp")}
+          disabled={sending || !phone}
+          title={phone ? `WhatsApp ${phone}` : "No phone number on file"}
+          className="rounded-md bg-[#25D366] px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          💬 Send on WhatsApp
+        </button>
       </div>
+
+      {!email && !phone && (
+        <p className="mt-2 text-xs font-semibold text-amber-700">
+          There&apos;s no email address or phone number on this record, so there&apos;s nowhere to send it.
+        </p>
+      )}
+      {result && <p className="mt-2 text-xs font-semibold text-ink-700">{result}</p>}
       </div>
     </div>
   );

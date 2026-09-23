@@ -12,6 +12,8 @@ nothing.
 
 from __future__ import annotations
 
+from typing import Literal
+
 from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
 
@@ -32,24 +34,29 @@ class FeedbackIn(BaseModel):
     phone: str = Field(default="", max_length=40)
     subject: str = Field(default="", max_length=200)
     message: str = Field(min_length=2, max_length=4000)
+    # Which way to reach them. The admin picks per message: an applicant with
+    # a good email is best emailed, a customer who only left a number is not.
+    channel: Literal["email", "whatsapp", "both"] = "both"
 
 
 @router.post("/send", dependencies=[Depends(require_admin)])
 async def send(payload: FeedbackIn) -> dict:
     """Email the person, and hand back a WhatsApp link for the same message."""
-    emailed = await notify.send_feedback(
-        name=payload.name,
-        email=payload.email,
-        subject=payload.subject,
-        message=payload.message,
-    )
+    emailed = False
+    if payload.channel in ("email", "both"):
+        emailed = await notify.send_feedback(
+            name=payload.name,
+            email=payload.email,
+            subject=payload.subject,
+            message=payload.message,
+        )
 
     # The WhatsApp text carries the message as written, plus how to reach us.
     wa_text = (
         f"Hello {payload.name or 'there'},\n\n{payload.message.strip()}\n\n"
         f"— Online Tech Uganda\n{notify.CALL_LINE}"
     )
-    wa = notify.whatsapp_url(payload.phone, wa_text)
+    wa = notify.whatsapp_url(payload.phone, wa_text) if payload.channel in ("whatsapp", "both") else ""
 
     if not emailed and not wa:
         raise HTTPException(
@@ -60,5 +67,6 @@ async def send(payload: FeedbackIn) -> dict:
     return {
         "emailed": emailed,
         "whatsapp_url": wa,
-        "email_skipped": bool(payload.email) and not emailed,
+        "email_skipped": payload.channel in ("email", "both") and bool(payload.email) and not emailed,
+        "channel": payload.channel,
     }
