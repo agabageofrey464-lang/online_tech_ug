@@ -14,6 +14,7 @@ import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
+import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
@@ -237,6 +238,11 @@ export default function HomePage() {
           </Link>
         ))}
       </div>
+
+      {/* Categories, on a phone. The mega-menu and the sidebar that cover this
+          on a desktop are both hidden here, so browsing by category meant
+          opening the menu and going looking. */}
+      <CategoryStrip className="md:hidden" />
 
       {/* Hero row — DESKTOP only. On mobile we skip straight to the products
           (Jumia-style), so the hero, call banner and category circles are hidden. */}

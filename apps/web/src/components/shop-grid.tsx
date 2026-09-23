@@ -167,8 +167,9 @@ export function ShopGrid() {
         <span className="text-brand-600">{showFilters ? "Hide ▲" : "Show ▼"}</span>
       </button>
 
-      {/* Mobile category chips — quick top-to-bottom categories as a scrolling row */}
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar lg:hidden">
+      {/* Mobile category chips — a scrolling row that sticks to the top, so a
+          long grid can be re-filtered without scrolling back up for it. */}
+      <div className="sticky top-0 z-20 -mx-1 flex gap-2 overflow-x-auto bg-[#e6e8ef]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
         {(productCategories as readonly string[]).map((c) => (
           <button
             key={c}
@@ -178,6 +179,9 @@ export function ShopGrid() {
             }`}
           >
             {c}
+            <span className={category === c ? "ml-1 text-white/70" : "ml-1 text-ink-700/45"}>
+              {c === "All" ? products.length : products.filter((p) => p.category === c).length}
+            </span>
           </button>
         ))}
       </div>
