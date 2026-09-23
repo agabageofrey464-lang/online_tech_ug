@@ -219,18 +219,18 @@ export default function HomePage() {
           <Link
             key={b.href}
             href={b.href}
-            className={`press card-lift flex flex-col items-center gap-1.5 rounded-xl ${b.bg} px-1.5 py-2.5 text-center text-white shadow-md ring-1 ring-black/5 sm:flex-row sm:gap-2.5 sm:px-3 sm:py-2.5 sm:text-left`}
+            className={`press card-lift flex items-center gap-1.5 rounded-full ${b.bg} py-1 pl-1 pr-2 text-white shadow-md ring-1 ring-black/5 sm:gap-2 sm:pr-3`}
           >
             <span
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ${b.ink} sm:h-9 sm:w-9`}
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ${b.ink} sm:h-7 sm:w-7`}
             >
-              <Icon name={b.icon} size={17} strokeWidth={2.4} />
+              <Icon name={b.icon} size={13} strokeWidth={2.6} />
             </span>
-            <span className="min-w-0 leading-tight">
-              <span className="block text-[12px] font-black tracking-tight sm:text-[14px]">
+            <span className="min-w-0 leading-[1.15]">
+              <span className="block truncate text-[11px] font-black tracking-tight sm:text-[13px]">
                 {b.title}
               </span>
-              <span className="block text-[8px] font-bold uppercase tracking-[0.08em] text-white/85 sm:text-[9.5px]">
+              <span className="block truncate text-[7.5px] font-bold uppercase tracking-[0.06em] text-white/80 sm:text-[9px]">
                 {b.tag}
               </span>
             </span>
