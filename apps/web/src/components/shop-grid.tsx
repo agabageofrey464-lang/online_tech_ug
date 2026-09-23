@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { products, productCategories } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
+import { SidebarExtras } from "@/components/sidebar-extras";
 import { EmptyState } from "@/components/empty-state";
 
 type Sort = "popular" | "price-asc" | "price-desc" | "new";
@@ -182,7 +183,8 @@ export function ShopGrid() {
       </div>
 
       {/* Sidebar filters — sticky so the column isn't a big empty space */}
-      <aside className={`h-fit rounded bg-white p-4 shadow-sm lg:sticky lg:top-4 lg:block lg:self-start ${showFilters ? "block" : "hidden"}`}>
+      <div className={`h-fit lg:sticky lg:top-4 lg:block lg:self-start ${showFilters ? "block" : "hidden lg:block"}`}>
+      <aside className="rounded bg-white p-4 shadow-sm">
         {/* Category — Amazon-style drill-down */}
         <p className="text-sm font-bold text-ink-900">Category</p>
         <div className="mt-1.5 flex flex-col text-sm">
@@ -295,6 +297,8 @@ export function ShopGrid() {
           </button>
         )}
       </aside>
+      <SidebarExtras />
+      </div>
 
       {/* Results */}
       <div>
