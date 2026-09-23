@@ -194,7 +194,7 @@ export default function InternshipLettersPage() {
       // ── Sign-off
       doc.text("Yours faithfully,", M, y);
       y += 4;
-      if (sign.current) doc.addImage(sign.current, "PNG", M, y, 38, 17);
+      if (sign.current) doc.addImage(sign.current, "PNG", M, y, 44, 9.1);
       y += 20;
 
       doc.setDrawColor(120, 120, 120);

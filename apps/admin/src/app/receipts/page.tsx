@@ -470,7 +470,7 @@ export default function ReceiptsPage() {
     y = Math.max(y + 4, 214);
 
     if (sign.current) {
-      doc.addImage(sign.current, "PNG", M + 1, y - 9, 46, 18);
+      doc.addImage(sign.current, "PNG", M + 1, y - 2, 52, 10.8);
     } else {
       doc.setFont("times", "bolditalic");
       doc.setFontSize(19);
