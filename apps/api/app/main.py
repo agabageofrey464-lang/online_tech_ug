@@ -68,7 +68,7 @@ async def _campaign_worker() -> None:
                                 f"<p>{due.pill or ''}</p>"
                                 f"<p>{due.note or ''}</p>"
                             )
-                            await newsletter.broadcast(db, subject, html, include_customers=True)
+                            await newsletter.broadcast(db, subject, html, include_customers=False)
                             due.emailed_at = datetime.utcnow()
                         except Exception as exc:  # noqa: BLE001
                             logger.warning("Campaign email failed: %s", exc)

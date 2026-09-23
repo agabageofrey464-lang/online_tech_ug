@@ -37,7 +37,7 @@ TEMPLATES: list[dict] = [
         "title": "Enjoy FREE Setup", "pill": "ON LAPTOPS OVER UGX 1M",
         "note": "Windows, Office & antivirus installed free",
         "cta_label": "Shop laptops", "link_url": "/shop?cat=Laptops",
-        "bg_color": "#6d28d9", "panel_color": "#FCDC04", "image_url": "/hero/hero-1.jpg",
+        "bg_color": "#0e7490", "panel_color": "#FCDC04", "image_url": "/hero/hero-1.jpg",
         "push_title": "Free setup on laptops over UGX 1M 💻",
         "push_body": "Windows, Office & antivirus installed free. Tap to shop.",
     },
@@ -52,12 +52,12 @@ TEMPLATES: list[dict] = [
     },
     {
         "program": "Online Tech Academy", "badge": "Learn", "badge_sub": "& Earn",
-        "title": "Start Learning Free", "pill": "1ST LESSON ON US",
-        "note": "Certificates you keep · pay per lesson from 5K",
+        "title": "Learn A New Skill", "pill": "LESSONS FROM UGX 5,000",
+        "note": "22 courses · physical or online · certificate included",
         "cta_label": "Browse courses", "link_url": "/learn",
-        "bg_color": "#c41c2e", "panel_color": "#fb7185", "image_url": "/hero/hero-4.jpg",
-        "push_title": "Your first lesson is free 🎓",
-        "push_body": "22 computer courses. Learn at your pace, get a certificate.",
+        "bg_color": "#0c5d75", "panel_color": "#22d3ee", "image_url": "/hero/hero-4.jpg",
+        "push_title": "22 computer courses, lessons from UGX 5,000 🎓",
+        "push_body": "Physical or online. Learn at your pace, get a certificate.",
     },
     {
         "program": "Online Tech Care", "badge": "Repairs", "badge_sub": "& Support",
@@ -98,9 +98,17 @@ def refresh_auto_campaigns(db: Session, now: datetime | None = None) -> dict:
     # Rotate a window of 3 templates through the list.
     picked = [TEMPLATES[(slot + i) % len(TEMPLATES)] for i in range(3)]
 
-    # Clear last hour's generated set (keeps the table from growing forever).
+    # Clear last hour's generated set, but never the rows that record what we
+    # have already announced — the daily cap and the three-hour gap are read
+    # off their notified_at, so deleting them resets the limits every hour.
+    cutoff = now - timedelta(days=7)
     for old in db.execute(select(Campaign).where(Campaign.auto.is_(True))).scalars().all():
-        db.delete(old)
+        if old.notified_at is None or old.notified_at < cutoff:
+            db.delete(old)
+        else:
+            old.active = False  # keep the record, stop showing it
+            if not old.slug.startswith("sent-"):
+                old.slug = f"sent-{old.id}-{old.slug}"[:160]
     db.commit()
 
     created = []
