@@ -212,7 +212,7 @@ export default function CertificatesPage() {
       doc.setTextColor(50, 50, 50);
       doc.text(shown, leftCx, baseY - 3, { align: "center" });
 
-      if (sign.current) doc.addImage(sign.current, "PNG", rightCx - 22, baseY - 14, 44, 9.1);
+      if (sign.current) doc.addImage(sign.current, "PNG", rightCx - 25, baseY - 8.8, 50, 10.3);
 
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
