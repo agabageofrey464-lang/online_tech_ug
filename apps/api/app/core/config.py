@@ -54,6 +54,11 @@ class Settings(BaseSettings):
     catalog_feed_url: str = "https://www.onlinetechug.com/api/catalog"
     catalog_sync_enabled: bool = True
 
+    # Printed on every message we send a customer, so they can call and
+    # confirm rather than wait and wonder.
+    company_phone: str = "+256 756 839 270"
+    company_phone_alt: str = "+256 760 547 211"
+
     # Online payments (Flutterwave) — MTN + Airtel + cards. Empty = disabled.
     flutterwave_secret_key: str = ""
     flutterwave_public_key: str = ""

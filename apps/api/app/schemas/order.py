@@ -73,6 +73,7 @@ class OrderSummary(BaseModel):
     reference: str
     customer_name: str
     phone: str
+    email: str = ""
     total: int
     payment_method: str
     payment_status: str
@@ -82,6 +83,8 @@ class OrderSummary(BaseModel):
     # Fraud/risk signals (computed, not stored)
     risk_level: str = "none"
     risk_reasons: list[str] = []
+    # "2 x HP EliteBook 840 G6" — so a reply can name what they bought.
+    items_summary: str = ""
 
 
 class OrderUpdate(BaseModel):

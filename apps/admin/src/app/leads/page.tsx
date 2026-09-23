@@ -1,4 +1,6 @@
 import { apiGetAdmin, type AdminLead } from "@/lib/api";
+import { enquiryMessage } from "@/lib/auto-message";
+import { ReplyButton, ENQUIRY_TEMPLATES } from "@/components/reply-button";
 
 
 export default async function LeadsPage() {
@@ -61,6 +63,18 @@ export default async function LeadsPage() {
                   </a>
                 )}
               </div>
+
+              {/* Templated reply — faster than composing the same answer for
+                  the tenth time, and it carries our numbers automatically. */}
+              <ReplyButton
+                name={l.name}
+                email={l.email}
+                phone={l.phone}
+                templates={ENQUIRY_TEMPLATES}
+                label="Edit"
+                context={l.subject || "Website enquiry"}
+                auto={enquiryMessage({ name: l.name, subject: l.subject })}
+              />
             </div>
           ))}
         </div>

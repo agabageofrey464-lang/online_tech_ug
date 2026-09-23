@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { partnerMessage } from "@/lib/auto-message";
+import { ReplyButton, PARTNER_TEMPLATES } from "@/components/reply-button";
 import { ImageUpload } from "@/components/image-upload";
 import { SubscriptionControl } from "@/components/subscription-control";
 
@@ -380,6 +382,20 @@ export default function VendorsPage() {
                 >
                   Delete
                 </button>
+              </div>
+
+              {/* Approving or refusing a vendor without telling them is how
+                  they end up calling to ask. */}
+              <div className="w-full">
+                <ReplyButton
+                  name={v.name}
+                  email={v.email}
+                  phone={v.phone}
+                  templates={PARTNER_TEMPLATES}
+                  label="Edit"
+                  context="Vendor application"
+                  auto={partnerMessage({ name: v.name, approved: v.vendor_approved, kind: "vendor" })}
+                />
               </div>
             </div>
           ))}

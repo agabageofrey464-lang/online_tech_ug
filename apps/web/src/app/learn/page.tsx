@@ -77,16 +77,20 @@ export default function LearnPage() {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const totalLessons = courses.reduce((n, c) => n + c.lessons, 0);
-  const totalHours = courses.reduce((n, c) => n + c.hours, 0);
   const withNotes = Object.keys(courseNotes);
   // Only advertise intakes that haven't started yet.
   const today = new Date().toISOString().slice(0, 10);
   const upcomingIntakes = INTAKES.filter((i) => i.date >= today);
 
+  // Programmes run two months for the short courses and three or four for the
+  // harder ones — stated up front, because it decides whether someone can
+  // commit before they read anything else.
+  const months = courses.map((c) => c.durationMonths ?? 2);
+
   const stats = [
     { value: `${courses.length}`, label: "Courses" },
     { value: `${totalLessons}`, label: "Lessons" },
-    { value: `${totalHours}+`, label: "Hours" },
+    { value: `${Math.min(...months)}–${Math.max(...months)}`, label: "Months" },
     { value: `${REGISTRATION_FEE / 1000}K`, label: "Registration" },
   ];
 

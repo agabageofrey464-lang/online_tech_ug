@@ -422,7 +422,12 @@ export default function HomePage() {
               </span>
               <div className="flex flex-1 flex-col p-3">
                 <p className="clamp-2 text-sm font-bold leading-snug text-ink-900">{c.title}</p>
-                <p className="mt-0.5 text-[11px] text-ink-700/60">{c.level} · {c.lessons} lessons</p>
+                {/* How long the taught programme runs is the first thing
+                    someone enrolling asks, so it belongs on the card. */}
+                <p className="mt-0.5 text-[11px] text-ink-700/60">
+                  {c.level} · {c.lessons} lessons
+                  {c.durationMonths ? ` · ${c.durationMonths} months` : ""}
+                </p>
                 <p className="mt-1.5 inline-flex w-fit rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-700">
                   Certificate included
                 </p>

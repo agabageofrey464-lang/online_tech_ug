@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { partnerMessage } from "@/lib/auto-message";
+import { ReplyButton, PARTNER_TEMPLATES } from "@/components/reply-button";
 import { ImageUpload } from "@/components/image-upload";
 import { SubscriptionControl } from "@/components/subscription-control";
 
@@ -141,6 +143,19 @@ export default function FreelancersAdminPage() {
                   <button onClick={() => approve(f, true)} disabled={busy === f.id} className="rounded-md bg-green-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-green-700 disabled:opacity-50">{busy === f.id ? "…" : "Approve"}</button>
                 )}
                 <button onClick={() => remove(f.id)} className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Delete</button>
+              </div>
+
+              {/* Approving someone without telling them leaves them waiting. */}
+              <div className="w-full">
+                <ReplyButton
+                  name={f.name}
+                  email={f.email}
+                  phone={f.phone}
+                  templates={PARTNER_TEMPLATES}
+                  label="Edit"
+                  context={f.title}
+                  auto={partnerMessage({ name: f.name, approved: f.approved, kind: "freelancer" })}
+                />
               </div>
             </div>
           ))}

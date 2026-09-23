@@ -1,7 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { enrolmentMessage } from "@/lib/auto-message";
+import { ReplyButton, ENROLMENT_TEMPLATES } from "@/components/reply-button";
 import type { AdminUnlockCode } from "@/lib/api";
+
+/**
+ * Pull the student's details back out of the registration note.
+ *
+ * Registration stores them as "Name · 0700000000 · them@example.com" in a
+ * single note field, so a reply had nothing to send to. Splitting it here
+ * means the composer can email or WhatsApp them; the stored email column is
+ * preferred when it's set, since older rows don't have one.
+ */
+function studentContact(note: string, storedEmail?: string) {
+  const parts = (note || "").split("·").map((p) => p.trim()).filter(Boolean);
+  const email = storedEmail || parts.find((p) => p.includes("@")) || "";
+  const phone = parts.find((p) => /\d{6,}/.test(p) && !p.includes("@")) || "";
+  const name = parts[0] && !parts[0].includes("@") && !/^\+?\d/.test(parts[0]) ? parts[0] : "Student";
+  return { name, phone, email };
+}
 
 const prettyCourse = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -196,6 +214,23 @@ export default function EnrollmentsPage() {
                         >
                           {busy === c.id ? "…" : c.revoked ? "Restore" : "Revoke"}
                         </button>
+                        {/* Tell the student where their enrolment stands. */}
+                        <span className="ml-1.5 inline-block align-middle">
+                          <ReplyButton
+                            name={studentContact(c.note, c.email).name}
+                            email={studentContact(c.note, c.email).email}
+                            phone={studentContact(c.note, c.email).phone}
+                            templates={ENROLMENT_TEMPLATES}
+                            label="Edit"
+                            context={prettyCourse(c.course_slug)}
+                            auto={enrolmentMessage({
+                              name: studentContact(c.note, c.email).name,
+                              course: prettyCourse(c.course_slug),
+                              approved: !c.revoked,
+                              used: c.used,
+                            })}
+                          />
+                        </span>
                       </td>
                     </tr>
                   ))}

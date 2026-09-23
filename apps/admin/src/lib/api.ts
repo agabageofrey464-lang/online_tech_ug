@@ -55,6 +55,7 @@ export type AdminOrder = {
   reference: string;
   customer_name: string;
   phone: string;
+  email?: string;
   total: number;
   payment_method: string;
   payment_status: string;
@@ -63,6 +64,8 @@ export type AdminOrder = {
   created_at?: string;
   risk_level?: "none" | "low" | "medium" | "high";
   risk_reasons?: string[];
+  /** "2 x HP EliteBook 840 G6" — lets a reply name what they bought. */
+  items_summary?: string;
 };
 
 // Format an order timestamp as a short date + time.

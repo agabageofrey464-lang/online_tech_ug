@@ -6,6 +6,7 @@ from app.api.routes import (
     campaigns,
     careers,
     contact,
+    feedback,
     coupons,
     courses,
     health,
@@ -46,5 +47,6 @@ api_router.include_router(push.router, prefix="/push", tags=["push"])
 api_router.include_router(campaigns.router, prefix="/campaigns", tags=["campaigns"])
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
+api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
 api_router.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])

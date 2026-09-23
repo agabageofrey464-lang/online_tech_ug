@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { apiGet, ugx, orderDate, type AdminOrder } from "@/lib/api";
+import { OrderRowActions } from "@/components/order-row-actions";
 
 
 const statusTone: Record<string, string> = {
@@ -105,6 +106,7 @@ export default async function OrdersPage({
                 <th className="p-4 text-right">Total</th>
                 <th className="p-4 text-center">Risk</th>
                 <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -158,6 +160,20 @@ export default async function OrdersPage({
                     <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${statusTone[o.status] ?? "bg-ink-50 text-ink-600"}`}>
                       {o.status}
                     </span>
+                  </td>
+                  {/* The next step, one tap away — reviewing a dozen orders
+                      through the detail page one at a time is slow. */}
+                  <td className="p-4">
+                    <OrderRowActions
+                      reference={o.reference}
+                      status={o.status}
+                      paymentStatus={o.payment_status}
+                      customerName={o.customer_name}
+                      phone={o.phone}
+                      email={o.email ?? ""}
+                      total={o.total}
+                      itemsSummary={o.items_summary ?? ""}
+                    />
                   </td>
                 </tr>
               ))}

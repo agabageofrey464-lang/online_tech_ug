@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { applicationMessage } from "@/lib/auto-message";
+import { ReplyButton, APPLICANT_TEMPLATES } from "@/components/reply-button";
 
 type App = {
   id: number;
@@ -93,6 +95,18 @@ export default function ApplicationsPage() {
                   </select>
                 </div>
               </div>
+
+              {/* Tell them where they stand — most applicants never hear back
+                  at all, and that is the whole complaint. */}
+              <ReplyButton
+                name={a.name}
+                email={a.email}
+                phone={a.phone}
+                templates={APPLICANT_TEMPLATES}
+                label="Edit"
+                context={a.job_title || "General application"}
+                auto={applicationMessage({ name: a.name, status: a.status, job_title: a.job_title })}
+              />
             </div>
           ))}
         </div>
