@@ -66,7 +66,7 @@ export default function InternshipLettersPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.png").then((i) => (logo.current = i));
+    loadImg("/logo.jpeg").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -95,7 +95,7 @@ export default function InternshipLettersPage() {
       doc.setFontSize(8);
       doc.setTextColor(255, 205, 185);
       doc.text("Computer Training · IT Services · Software Development", M + 25, 20);
-      doc.text("Kampala, Uganda  ·  +256 706 168 006  ·  info@onlinetechug.com", M + 25, 25);
+      doc.text("Kampala, Uganda  ·  +256 756 839 270  ·  onlinetechug@gmail.com", M + 25, 25);
 
       // Orange rule under the header
       doc.setFillColor(241, 90, 41);

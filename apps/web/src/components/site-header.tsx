@@ -92,7 +92,7 @@ export function SiteHeader() {
       {/* Utility bar. Dark, so it separates cleanly from the white bar below,
           and split into what we SELL (bold, up front) and the informational
           pages (muted) — fifteen identical links were impossible to scan. */}
-      <div className="hidden bg-ink-800 text-white md:block">
+      <div className="stripes hidden bg-teal-600 text-white md:block">
         <div className="container-wide flex items-center gap-x-4 py-2 text-[11.5px] font-semibold">
           <Link
             href="/sell"

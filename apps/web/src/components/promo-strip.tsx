@@ -9,21 +9,21 @@ const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 // Rotating festival-style offers. Each shows a headline + a bold deal pill, so
 // the strip advertises something different every few seconds.
 const OFFERS = [
-  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-[#f15a29]" },
-  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-[#0e7490]" },
-  { title: "Storage Deals", deal: "1TB SSD · UGX 580,000", note: "Genuine, warranted", href: "/shop?cat=Storage", bg: "bg-[#282363]" },
-  { title: "Learn & Earn", deal: "1ST LESSON FREE", note: "22 courses · certificates", href: "/learn", bg: "bg-[#00a651]" },
-  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-[#6d28d9]" },
-  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-[#c41c2e]" },
-  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-[#d97706]" },
-  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-[#1d4ed8]" },
-  { title: "Free Delivery Zone", deal: "COUNTRYWIDE", note: "Fee by distance · fast", href: "/shop", bg: "bg-[#f15a29]" },
-  { title: "Power & Backup", deal: "UPS FROM UGX 180,000", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-[#0e7490]" },
-  { title: "Accessories Sale", deal: "FROM UGX 20,000", note: "Mice · keyboards · bags", href: "/shop?cat=Accessories", bg: "bg-[#282363]" },
-  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-[#00a651]" },
-  { title: "Websites & Software", deal: "FROM UGX 500,000", note: "Built for your business", href: "/services", bg: "bg-[#6d28d9]" },
-  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-[#c41c2e]" },
-  { title: "Refer & Earn", deal: "GET REWARDED", note: "Invite friends, earn cash", href: "/refer", bg: "bg-[#d97706]" },
+  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-teal-600" },
+  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-teal-700" },
+  { title: "Storage Deals", deal: "1TB SSD · UGX 580,000", note: "Genuine, warranted", href: "/shop?cat=Storage", bg: "bg-teal-800" },
+  { title: "Learn & Earn", deal: "22 COURSES", note: "Physical or online · certificates", href: "/learn", bg: "bg-teal-600" },
+  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-teal-700" },
+  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-teal-800" },
+  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-teal-600" },
+  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-teal-700" },
+  { title: "Free Delivery Zone", deal: "COUNTRYWIDE", note: "Fee by distance · fast", href: "/shop", bg: "bg-teal-800" },
+  { title: "Power & Backup", deal: "UPS FROM UGX 180,000", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-teal-600" },
+  { title: "Accessories Sale", deal: "FROM UGX 20,000", note: "Mice · keyboards · bags", href: "/shop?cat=Accessories", bg: "bg-teal-700" },
+  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-teal-800" },
+  { title: "Websites & Software", deal: "FROM UGX 500,000", note: "Built for your business", href: "/services", bg: "bg-teal-600" },
+  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-teal-700" },
+  { title: "Refer & Earn", deal: "GET REWARDED", note: "Invite friends, earn cash", href: "/refer", bg: "bg-teal-800" },
 ];
 
 export function PromoStrip() {

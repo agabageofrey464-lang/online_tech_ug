@@ -28,7 +28,7 @@ export default function EnrolmentFormsPage() {
   const logo = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.png").then((i) => (logo.current = i));
+    loadImg("/logo.jpeg").then((i) => (logo.current = i));
   }, []);
 
   const course = COURSES[idx];
@@ -190,7 +190,7 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   doc.setTextColor(255, 210, 190);
-  doc.text("Computer Training  ·  Kampala  ·  0706 168 006  ·  info@onlinetechug.com", M + 23, 19);
+  doc.text("Computer Training  ·  Kampala  ·  +256 756 839 270  ·  onlinetechug@gmail.com", M + 23, 19);
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);

@@ -30,22 +30,22 @@ const FALLBACK: Strip[] = [
     text: "New ONLINE classes start 28 September — register now",
     cta: "Reserve a place",
     href: "/learn",
-    bg: "bg-green-600",
+    bg: "bg-teal-600",
     until: "2026-09-29",
   },
   {
     text: "Next ONLINE intake: 15 October — limited places",
     cta: "Register now",
     href: "/learn",
-    bg: "bg-[#6d28d9]",
+    bg: "bg-teal-700",
     until: "2026-10-16",
   },
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-[#6d28d9]" },
-  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-brand-500" },
-  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-600" },
-  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-[#c41c2e]" },
-  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-[#0e7490]" },
-  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-[#b45309]" },
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-teal-600" },
+  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700" },
+  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-teal-600" },
+  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-teal-800" },
+  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-teal-600" },
+  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-700" },
 ];
 
 const DISMISS_KEY = "otu_strip_closed";
@@ -84,7 +84,7 @@ export function FestivalStrip() {
             text: [c.title, c.pill].filter(Boolean).join(" — "),
             cta: c.cta_label || "See offer",
             href: c.link_url || "/shop",
-            bg: c.bg_color || "bg-brand-500",
+            bg: c.bg_color || "bg-teal-600",
           })),
         );
       })
@@ -116,8 +116,10 @@ export function FestivalStrip() {
   }
 
   return (
-    <div className={`relative ${s.bg.startsWith("bg-") ? s.bg : ""} text-white transition-colors duration-500`}
-         style={!s.bg.startsWith("bg-") ? { backgroundColor: s.bg } : undefined}>
+    <div
+      className={`stripes relative ${s.bg.startsWith("bg-") ? s.bg : ""} text-white transition-colors duration-500`}
+      style={!s.bg.startsWith("bg-") ? { backgroundColor: s.bg } : undefined}
+    >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
           <span className="text-[12.5px] font-semibold leading-snug sm:text-[13px]">{s.text}</span>

@@ -327,6 +327,14 @@ export default function DevelopmentPage() {
               <Phone size={16} /> {site.phoneDisplay}
             </a>
           </div>
+
+          <p className="mt-5 text-sm text-white/70">
+            Need paperwork before you can commit?{" "}
+            <Link href="/invoice" className="font-bold text-white underline underline-offset-2">
+              Request a quotation or proforma invoice
+            </Link>
+            .
+          </p>
         </div>
       </section>
 

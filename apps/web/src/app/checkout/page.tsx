@@ -281,6 +281,15 @@ export default function CheckoutPage() {
                     </p>
                   </div>
                 )}
+
+                {/* Institutions can't pay off a web page — they need paperwork first. */}
+                <p className="mt-4 rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
+                  Buying for a company, school or NGO?{" "}
+                  <Link href="/invoice" className="font-bold text-brand-600 hover:underline">
+                    Request a proforma invoice
+                  </Link>{" "}
+                  and we&apos;ll send figures your finance office can work from.
+                </p>
               </div>
             </section>
           </div>

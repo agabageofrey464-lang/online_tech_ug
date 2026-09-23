@@ -13,7 +13,7 @@ const url = (path: string) => `${BASE}${path === "/" ? "" : path}`;
 const PUBLIC_PATHS = [
   "/", "/shop", "/find", "/categories", "/marketplace", "/sell", "/learn", "/development", "/community", "/jobs",
   "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
-  "/news", "/blog", "/about", "/help", "/refer", "/pay", "/contact",
+  "/news", "/blog", "/about", "/help", "/refer", "/pay", "/invoice", "/contact",
 ];
 
 async function apiList(path: string): Promise<Record<string, unknown>[]> {

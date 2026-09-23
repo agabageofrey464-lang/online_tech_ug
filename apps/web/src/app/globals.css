@@ -38,6 +38,19 @@
   --color-ink-800: #1a1740;
   --color-ink-900: #12102e;
 
+  /* Teal — the band colour used across the offer strips and utility bar.
+     Built around #0e7490, sampled from the approved strip design. */
+  --color-teal-50: #eefafd;
+  --color-teal-100: #d3f0f7;
+  --color-teal-200: #a7dfee;
+  --color-teal-300: #6cc6de;
+  --color-teal-400: #33a5c4;
+  --color-teal-500: #1587a9;
+  --color-teal-600: #0e7490; /* core */
+  --color-teal-700: #0c5d75;
+  --color-teal-800: #0d4b5e;
+  --color-teal-900: #0e3e4e;
+
   /* Success — green (#00A651) */
   --color-green-50: #e6f7ee;
   --color-green-100: #c2ebd4;
@@ -354,4 +367,17 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Soft diagonal stripes over a solid band — the look of our offer strips.
+   The stripes are a single shade lighter than the base so they read as texture,
+   not as pattern, and never fight the white text on top. */
+.stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.055) 0px,
+    rgba(255, 255, 255, 0.055) 10px,
+    transparent 10px,
+    transparent 20px
+  );
 }

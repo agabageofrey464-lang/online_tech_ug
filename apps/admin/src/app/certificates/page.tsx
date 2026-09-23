@@ -66,7 +66,7 @@ export default function CertificatesPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo.png").then((i) => (logo.current = i));
+    loadImg("/logo.jpeg").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
     try {
       const raw = localStorage.getItem("otu_issued_certs");

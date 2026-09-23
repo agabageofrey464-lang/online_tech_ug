@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { ContactForm } from "@/components/contact-form";
 import { Icon } from "@/components/icon";
@@ -95,6 +96,15 @@ export default async function ContactPage({
             <div className="mt-6">
               <ContactForm initialSubject={initialSubject} />
             </div>
+
+            {/* Business buyers usually need a document, not a conversation. */}
+            <p className="mt-5 rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-3 text-sm text-ink-700/75">
+              Buying for a company, school, church or NGO?{" "}
+              <Link href="/invoice" className="font-bold text-brand-600 hover:underline">
+                Request a proforma invoice or quotation
+              </Link>{" "}
+              instead — we&apos;ll email itemised figures your finance office can work from.
+            </p>
           </div>
         </div>
       </section>
