@@ -44,7 +44,7 @@ export function LoginForm() {
         className="w-full max-w-sm rounded-2xl bg-white p-7 shadow-xl"
       >
         <div className="mb-6 flex flex-col items-center text-center">
-          <BrandLogo className="h-12 w-12 text-ink-600" />
+          <BrandLogo size={52} />
           <h1 className="mt-3 text-lg font-extrabold text-ink-600">Online Tech Admin</h1>
           <p className="text-sm text-ink-600/60">Sign in to manage your store</p>
         </div>

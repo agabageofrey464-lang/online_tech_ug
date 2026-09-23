@@ -1,8 +1,21 @@
+import Image from "next/image";
+
 /**
- * Online Tech Uganda logo — Option 2 "Orange Monogram": a bold orange tile with
- * an "OT" monogram + gold spark, locked up with the "Online Tech" wordmark and a
- * spaced "Uganda" tagline. Reads cleanly on light and dark surfaces.
+ * Online Tech Uganda logo — the globe from the company's own artwork, locked up
+ * with the "Online Tech" wordmark and a spaced "Uganda" tagline.
+ *
+ * The mark used to be an invented orange "OT" monogram, which meant the site
+ * and the company's real logo were two different brands. The globe is cut from
+ * the original lockup with its background keyed out, so it sits on the white
+ * header and on dark surfaces without a tile behind it.
  */
+
+const SIZES = {
+  sm: { w: 38, h: 34 },
+  md: { w: 52, h: 46 },
+  lg: { w: 62, h: 55 },
+} as const;
+
 export function BrandLogoFull({
   className = "",
   size = "md",
@@ -14,10 +27,15 @@ export function BrandLogoFull({
   flag?: boolean;
   onLight?: boolean;
 }) {
-  const badge = size === "lg" ? "h-14 w-14 rounded-2xl" : size === "sm" ? "h-9 w-9 rounded-lg" : "h-12 w-12 rounded-xl";
-  const mono = size === "lg" ? "text-2xl" : size === "sm" ? "text-base" : "text-xl";
-  const name = size === "lg" ? "text-2xl sm:text-3xl" : size === "sm" ? "text-base" : "text-xl sm:text-[1.35rem]";
-  const sub = size === "lg" ? "text-[11px] tracking-[0.42em]" : size === "sm" ? "text-[8px] tracking-[0.3em]" : "text-[9.5px] tracking-[0.38em]";
+  const mark = SIZES[size];
+  const name =
+    size === "lg" ? "text-2xl sm:text-3xl" : size === "sm" ? "text-base" : "text-xl sm:text-[1.35rem]";
+  const sub =
+    size === "lg"
+      ? "text-[11px] tracking-[0.42em]"
+      : size === "sm"
+        ? "text-[8px] tracking-[0.3em]"
+        : "text-[9.5px] tracking-[0.38em]";
   const dot = size === "lg" ? "h-1.5 w-1.5" : "h-1 w-1";
 
   const wordColor = onLight ? "text-ink-900" : "text-white";
@@ -25,16 +43,17 @@ export function BrandLogoFull({
   const subColor = onLight ? "text-ink-500" : "text-white/70";
 
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      {/* Orange monogram tile */}
-      <span
-        className={`relative flex ${badge} shrink-0 items-center justify-center bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-md ring-1 ring-black/5`}
-      >
-        <span className={`inline-flex items-start font-display font-black leading-none tracking-tight text-white ${mono}`}>
-          OT
-          <span className={`ml-[1px] mt-[3px] ${dot} rounded-full`} style={{ background: "#FCDC04" }} />
-        </span>
-      </span>
+    <span className={`inline-flex items-center gap-2 ${className}`}>
+      {/* The globe from the company's own logo */}
+      <Image
+        src="/globe-mark.png"
+        alt=""
+        width={mark.w}
+        height={mark.h}
+        priority
+        className="shrink-0 select-none"
+        style={{ width: mark.w, height: "auto" }}
+      />
 
       {/* Wordmark + Uganda tagline */}
       <span className="flex flex-col leading-none">

@@ -180,6 +180,40 @@ export function SiteHeader() {
             <Menu size={24} />
           </button>
         </div>
+
+        {/* Phone: the two businesses that aren't the shop, on every page.
+            They were reachable only through the desktop nav, which a phone
+            never shows. */}
+        <div className="container-wide flex gap-2 pb-2.5 md:hidden">
+          <Link
+            href="/learn"
+            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-bold text-white shadow-sm ${
+              pathname.startsWith("/learn") ? "bg-green-700" : "bg-green-600"
+            }`}
+          >
+            <GraduationCap size={17} strokeWidth={2.2} />
+            <span className="leading-none">
+              Learn
+              <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/75">
+                Academy
+              </span>
+            </span>
+          </Link>
+          <Link
+            href="/development"
+            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-bold text-white shadow-sm ${
+              pathname.startsWith("/development") ? "bg-ink-800" : "bg-ink-600"
+            }`}
+          >
+            <Code2 size={17} strokeWidth={2.2} />
+            <span className="leading-none">
+              Develop
+              <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/75">
+                Software
+              </span>
+            </span>
+          </Link>
+        </div>
       </div>
 
       {/* Category strip — WHITE with icons (Jumia). Desktop only; mobile shows the
@@ -224,7 +258,7 @@ export function SiteHeader() {
                 from the orange shop and the green academy. */}
             <Link
               href="/development"
-              className={`hidden items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition lg:flex ${
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-bold text-white shadow-sm transition ${
                 pathname.startsWith("/development")
                   ? "bg-ink-800"
                   : "bg-ink-600 hover:bg-ink-700"
@@ -233,7 +267,7 @@ export function SiteHeader() {
               <Code2 size={17} strokeWidth={2.2} />
               <span className="leading-none">
                 Develop
-                <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-white/70">
+                <span className="ml-1 hidden text-[10px] font-semibold uppercase tracking-wide text-white/70 lg:inline">
                   Software
                 </span>
               </span>
