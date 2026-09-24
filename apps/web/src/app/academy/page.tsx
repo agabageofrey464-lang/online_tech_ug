@@ -214,6 +214,26 @@ export default function AcademyPage() {
         </div>
       ))}
 
+      {/* Nobody arrives here by accident, so say plainly why it is empty. */}
+      {data.courses.length === 0 && (
+        <div className="mt-3 rounded-card border border-brand-200 bg-white p-6 text-center shadow-sm">
+          <GraduationCap className="mx-auto text-brand-500" size={34} />
+          <p className="mt-2 text-base font-extrabold text-ink-900">
+            You&apos;re not on a course yet
+          </p>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-ink-700/70">
+            Once you register for a course and we confirm your payment, your classes,
+            timetable, notes and assignments all appear here.
+          </p>
+          <Link
+            href="/learn"
+            className="press mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+          >
+            <BookOpen size={15} /> Browse our courses
+          </Link>
+        </div>
+      )}
+
       {/* ── Tabs ── */}
       <div className="sticky top-0 z-20 -mx-1 mt-4 flex gap-2 overflow-x-auto bg-[#e6e8ef]/95 px-1 py-2 no-scrollbar backdrop-blur">
         {TABS.map((t) => (

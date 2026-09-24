@@ -284,6 +284,62 @@ async def send_enrollment_alert(
     )
 
 
+async def send_registration_received(
+    *,
+    to: str,
+    name: str,
+    course_title: str,
+    reference: str,
+    course_slug: str = "",
+    price: int = 0,
+) -> bool:
+    """Confirm to the LEARNER that we have their registration.
+
+    Sent the moment the form is submitted. Someone who fills in a form and
+    gets nothing back assumes it failed, which is why registration used to
+    end in a WhatsApp message — this is that receipt, in writing.
+    """
+    first = (name or "there").split(" ")[0]
+    pairs = [("Reference", reference), ("Course", course_title), ("Name", name or "—")]
+    if price:
+        pairs.append(("Course fee", _ugx(price)))
+
+    body = (
+        email_theme.text(f"Hello {first},")
+        + email_theme.text(
+            f"We have your registration for <b>{course_title}</b>. Your place is held — "
+            "nothing more is needed from you right now."
+        )
+        + email_theme.details(pairs)
+        + email_theme.panel(
+            "How to pay",
+            f"Mobile Money to <b>{settings.company_phone}</b> or "
+            f"<b>{settings.company_phone_alt}</b>, in the name of Online Tech Uganda. "
+            "You can also pay at our Kampala office. Quote your reference above.",
+        )
+        + email_theme.steps([
+            "Pay the course fee by Mobile Money, or come to the office.",
+            "We confirm your payment — usually the same working day.",
+            "You get an email with your unlock code and your class timetable.",
+            "Enter the code on the course page and your lessons open.",
+        ])
+        + email_theme.text(
+            "Keep this email — your reference is how we find you if you call or visit."
+        )
+        + email_theme.button(
+            "View your course",
+            f"{settings.site_url.rstrip('/')}/learn/{course_slug}" if course_slug
+            else f"{settings.site_url.rstrip('/')}/learn",
+        )
+    )
+    return await send_email(
+        to=to,
+        subject=f"Registration received — {course_title} ({reference})",
+        html=email_theme.shell(heading="Registration received", body_html=body),
+        reply_to=settings.contact_inbox,
+    )
+
+
 async def send_code_activated(*, to: str, course_title: str, code: str) -> bool:
     """Tell a learner their unlock code is now active (payment confirmed)."""
     body = (
@@ -298,6 +354,45 @@ async def send_code_activated(*, to: str, course_title: str, code: str) -> bool:
         to=to,
         subject=f"{course_title} unlocked — start learning",
         html=email_theme.shell(heading="Your course is unlocked", body_html=body),
+    )
+
+
+async def send_request_received(
+    *, to: str, name: str, subject: str, reference: str, summary: str = ""
+) -> bool:
+    """Confirm to the CLIENT that a request reached us.
+
+    Every request form on the site ends here. A form that answers with
+    nothing teaches people to chase us on WhatsApp instead, which is the
+    habit this replaces.
+    """
+    first = (name or "there").split(" ")[0]
+    pairs = [("Reference", reference), ("Request", subject or "General enquiry")]
+
+    body = (
+        email_theme.text(f"Hello {first},")
+        + email_theme.text(
+            "Thank you — we have your request and it is with our team. "
+            "Nothing more is needed from you right now."
+        )
+        + email_theme.details(pairs)
+        + (email_theme.panel("What you sent us", summary) if summary else "")
+        + email_theme.steps([
+            "We read your request and check what it needs.",
+            "We come back to you with a written quote, scope and timeline.",
+            "You approve it, and we start.",
+        ])
+        + email_theme.text(
+            "Most requests are answered within one working day. "
+            "Quote your reference if you call us."
+        )
+        + email_theme.button("See our work", f"{settings.site_url.rstrip('/')}/portfolio")
+    )
+    return await send_email(
+        to=to,
+        subject=f"We have your request — {reference}",
+        html=email_theme.shell(heading="Request received", body_html=body),
+        reply_to=settings.contact_inbox,
     )
 
 

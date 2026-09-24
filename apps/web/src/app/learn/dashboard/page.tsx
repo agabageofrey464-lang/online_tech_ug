@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { GraduationCap, FileText, Award, BookOpen, Play, Users, Briefcase } from "lucide-react";
+import { GraduationCap, FileText, Award, BookOpen, Play, Users, Briefcase, Video } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { courses } from "@/lib/data";
 import { enrolledCourses, progressPct, quizResult, learnerName } from "@/lib/learning";
@@ -42,6 +42,26 @@ export default function DashboardPage() {
           <p className="text-sm text-ink-700/60">Your courses, progress, community and certificates.</p>
         </div>
       </div>
+
+      <Link
+        href="/academy"
+        className="press mb-4 flex items-center gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-4 shadow-sm transition hover:shadow-md"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white">
+          <Video size={21} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-base font-extrabold text-ink-900">
+            My Academy — live classes
+          </span>
+          <span className="block text-sm text-ink-700/65">
+            Join your lecturer, see your timetable, hand in work and check attendance.
+          </span>
+        </span>
+        <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">
+          Open →
+        </span>
+      </Link>
 
       {/* Everything a student can reach from here */}
       <div className="mb-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

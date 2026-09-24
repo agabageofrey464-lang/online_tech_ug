@@ -20,6 +20,8 @@ class RegisterOut(BaseModel):
     code: str
     course_slug: str
     pending: bool = True
+    reference: str = ""
+    emailed: bool = False
 
 
 class VerifyIn(BaseModel):

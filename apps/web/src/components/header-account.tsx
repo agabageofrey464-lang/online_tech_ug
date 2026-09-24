@@ -51,10 +51,10 @@ export function HeaderAccount({ onLight = false }: { onLight?: boolean }) {
     { href: "/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account", label: "Vouchers", icon: Ticket },
     ...(user.role === "vendor" ? [{ href: "/vendor", label: "Vendor Dashboard", icon: Store }] : []),
-    // The academy is only in the menu for the people it belongs to.
-    ...(["student", "lecturer", "admin"].includes(user.role)
-      ? [{ href: "/academy", label: "My Academy", icon: GraduationCap }]
-      : []),
+    // Shown to everyone signed in. Gating it on a role meant nobody could
+    // find it until someone set that role by hand, and the page itself
+    // explains kindly when there is no course yet.
+    { href: "/academy", label: "My Academy", icon: GraduationCap },
     ...(["lecturer", "admin"].includes(user.role)
       ? [{ href: "/academy/teach", label: "Teaching", icon: Video }]
       : []),

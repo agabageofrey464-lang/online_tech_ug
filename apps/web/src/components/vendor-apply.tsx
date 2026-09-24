@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Store } from "lucide-react";
-import { whatsappLink, site } from "@/lib/site";
+import { Store } from "lucide-react";
+import { RequestSent } from "@/components/request-sent";
+import { submitRequest } from "@/lib/api";
 
 const CATS = [
   // Tech
@@ -15,21 +16,45 @@ const CATS = [
 export function VendorApply() {
   const [f, setF] = useState({ shop: "", owner: "", phone: "", email: "", category: CATS[0], products: "" });
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [sent, setSent] = useState({ reference: "", emailed: false });
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    setBusy(true);
+    setErr("");
     try {
       const k = "otu_vendor_applications";
       const list = JSON.parse(localStorage.getItem(k) || "[]");
       list.push({ ...f, at: new Date().toISOString() });
       localStorage.setItem(k, JSON.stringify(list));
     } catch {}
-    const msg =
-      `Hello Online Tech Uganda! I'd like to SELL on your platform.\n` +
-      `Shop: ${f.shop}\nOwner: ${f.owner}\nPhone: ${f.phone}` +
-      `${f.email ? `\nEmail: ${f.email}` : ""}\nCategory: ${f.category}\nProducts: ${f.products}`;
-    window.open(whatsappLink(msg), "_blank");
-    setDone(true);
+
+    const message =
+      `Vendor application: ${f.shop}
+` +
+      `Category: ${f.category}
+
+` +
+      `What they sell:
+${f.products}`;
+
+    try {
+      const res = await submitRequest({
+        name: f.owner,
+        phone: f.phone,
+        email: f.email,
+        subject: `Vendor application — ${f.shop}`,
+        message,
+      });
+      setSent({ reference: res.reference, emailed: res.emailed });
+      setDone(true);
+    } catch (error) {
+      setErr(error instanceof Error ? error.message : "We couldn't send that. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   const input =
@@ -37,14 +62,12 @@ export function VendorApply() {
 
   if (done) {
     return (
-      <div className="rounded-card border border-green-200 bg-green-50 p-8 text-center">
-        <CheckCircle2 className="mx-auto text-green-600" size={44} />
-        <h2 className="mt-3 text-lg font-extrabold text-ink-700">Application received!</h2>
-        <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/70">
-          We&apos;ve opened WhatsApp with your details. Our team will review and set up your vendor account,
-          then explain payouts. You can also call {site.phoneDisplay}.
-        </p>
-      </div>
+      <RequestSent
+        title="Application received"
+        reference={sent.reference}
+        emailed={sent.emailed}
+        next="Our team will review your shop, set up your vendor account and explain how payouts work — usually within one working day."
+      />
     );
   }
 
@@ -90,7 +113,12 @@ export function VendorApply() {
           placeholder="e.g. brand-new & UK-used laptops, chargers, accessories — about 50 items in stock"
         />
       </label>
-      <button type="submit" className="mt-5 rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
+      {err && <p className="mt-4 text-sm font-semibold text-red-600">{err}</p>}
+      <button
+        type="submit"
+        disabled={busy}
+        className="press mt-5 rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60"
+      >
         Submit application
       </button>
     </form>

@@ -112,7 +112,13 @@ export async function registerForCourse(input: {
   name: string;
   phone: string;
   email?: string;
-}): Promise<{ code: string; course_slug: string; pending: boolean }> {
+}): Promise<{
+  code: string;
+  course_slug: string;
+  pending: boolean;
+  reference?: string;
+  emailed?: boolean;
+}> {
   const res = await fetch(`${base()}/unlock-codes/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -232,4 +238,42 @@ export async function verifyUnlockCode(courseSlug: string, code: string): Promis
   if (!res.ok) throw new Error(`Verify failed (${res.status})`);
   const d = await res.json();
   return { valid: !!d.valid, lesson: d.lesson ?? null, reason: d.reason ?? "" };
+}
+
+export type RequestResult = { ok: boolean; reference: string; emailed: boolean };
+
+/**
+ * Send a client request — a software brief, a vendor application, a quote.
+ *
+ * Everything lands as a contact message, so it is recorded, de-duplicated and
+ * visible in the admin. The reference that comes back is what the client
+ * quotes when they ring us, which is the whole point of not routing these
+ * through WhatsApp.
+ */
+export async function submitRequest(input: {
+  name: string;
+  phone: string;
+  email?: string;
+  subject: string;
+  message: string;
+}): Promise<RequestResult> {
+  const res = await fetch("/_api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: input.name,
+      phone: input.phone,
+      email: input.email ?? "",
+      subject: input.subject,
+      message: input.message,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(
+      typeof body?.detail === "string" ? body.detail : "We couldn't send that. Please try again.",
+    );
+  }
+  const d = await res.json();
+  return { ok: !!d.ok, reference: d.reference ?? "", emailed: !!d.emailed };
 }

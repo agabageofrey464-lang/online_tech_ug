@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.contact import ContactMessage
 from app.schemas.contact import ContactCreate
-from app.services.email import send_contact_notification
+from app.services.email import send_contact_notification, send_request_received
 
 logger = logging.getLogger("onlinetech.contact")
 router = APIRouter()
@@ -127,4 +127,27 @@ async def create_contact(payload: ContactCreate, db: Session = Depends(get_db)) 
             message=payload.message,
         )
 
-    return {"ok": True, "id": saved_id, "message": "Thank you! We'll get back to you shortly."}
+    # Something the sender can quote back to us, and a written receipt so the
+    # form visibly did something. A failed email must not fail the request:
+    # it is already saved and the owner has already been told.
+    reference = f"OTU-Q{saved_id:05d}" if saved_id else ""
+    emailed = False
+    if payload.email and reference and not flooding:
+        try:
+            emailed = await send_request_received(
+                to=str(payload.email),
+                name=payload.name,
+                subject=payload.subject,
+                reference=reference,
+                summary=payload.message[:600],
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not send the request receipt: %s", exc)
+
+    return {
+        "ok": True,
+        "id": saved_id,
+        "reference": reference,
+        "emailed": emailed,
+        "message": "Thank you! We'll get back to you shortly.",
+    }

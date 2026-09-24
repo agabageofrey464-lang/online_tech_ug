@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { getOrder, type Order } from "@/lib/api";
-import { ugx, whatsappLink } from "@/lib/site";
+import { site, ugx, whatsappLink } from "@/lib/site";
 import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 
 /** The order, written out so it arrives readable in our WhatsApp. */
@@ -100,8 +100,8 @@ function SuccessInner() {
         </div>
       )}
 
-      {/* Order is recorded; it ships once paid for. WhatsApp is
-          offered, never required: the order is already placed either way. */}
+      {/* The order is recorded and we have been told. Nothing below is a step
+          the customer must complete for us to see it. */}
       <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">
         <p className="text-base font-extrabold text-ink-900">✅ Your order is confirmed</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
@@ -110,29 +110,34 @@ function SuccessInner() {
           and we&apos;ll bring it to you, or collect it from our shop in Kampala.
         </p>
         <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
-          {/* One tap puts the whole order in our WhatsApp — the fastest way for
-              a customer to reach us, and the fastest way for us to see a sale. */}
-          <a
-            href={whatsappLink(orderWhatsAppText(order, ref))}
-            target="_blank"
-            rel="noreferrer"
-            className="press rounded-lg bg-green-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-green-700"
-          >
-            💬 Send my order on WhatsApp
-          </a>
           <Link
             href={ref ? `/track?ref=${ref}` : "/track"}
-            className="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+            className="press rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
           >
             📦 Track your order
           </Link>
           <Link
             href="/account#orders"
-            className="rounded-lg border border-ink-600/20 bg-white px-5 py-2.5 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
+            className="press rounded-lg border border-ink-600/20 bg-white px-5 py-2.5 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
           >
             View my orders
           </Link>
         </div>
+
+        {/* Offered, never required: the order already reached us, and sending
+            it again by hand is work the customer should not be doing. */}
+        <p className="mt-3 text-[12.5px] text-ink-700/60">
+          Need us?{" "}
+          <a
+            href={whatsappLink(orderWhatsAppText(order, ref))}
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold text-green-700 underline-offset-2 hover:underline"
+          >
+            Message us on WhatsApp
+          </a>{" "}
+          or call {site.phoneDisplay}.
+        </p>
       </div>
 
       {loading && <p className="mt-8 text-center text-ink-700/60">Loading your order…</p>}

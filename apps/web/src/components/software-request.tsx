@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Send } from "lucide-react";
-import { whatsappLink, site } from "@/lib/site";
+import { Send } from "lucide-react";
+import { RequestSent } from "@/components/request-sent";
+import { submitRequest } from "@/lib/api";
 
 const TYPES = [
   "Website",
@@ -29,22 +30,47 @@ export function SoftwareRequest() {
     details: "",
   });
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [sent, setSent] = useState({ reference: "", emailed: false });
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    setBusy(true);
+    setErr("");
     try {
       const key = "otu_software_requests";
       const list = JSON.parse(localStorage.getItem(key) || "[]");
       list.push({ ...f, at: new Date().toISOString() });
       localStorage.setItem(key, JSON.stringify(list));
     } catch {}
-    const msg =
-      `Hello Online Tech Uganda! I'd like to REQUEST software.\n` +
-      `Type: ${f.type}\nName: ${f.name}\nPhone: ${f.phone}` +
-      `${f.email ? `\nEmail: ${f.email}` : ""}${f.org ? `\nOrganisation: ${f.org}` : ""}` +
-      `\nBudget: ${f.budget}\nDetails: ${f.details}`;
-    window.open(whatsappLink(msg), "_blank");
-    setDone(true);
+
+    // The brief, written out so it arrives readable and needs no chasing.
+    const message =
+      `Software request: ${f.type}
+` +
+      `${f.org ? `Organisation: ${f.org}
+` : ""}` +
+      `Budget: ${f.budget}
+
+` +
+      `${f.details}`;
+
+    try {
+      const res = await submitRequest({
+        name: f.name,
+        phone: f.phone,
+        email: f.email,
+        subject: `Software request — ${f.type}`,
+        message,
+      });
+      setSent({ reference: res.reference, emailed: res.emailed });
+      setDone(true);
+    } catch (error) {
+      setErr(error instanceof Error ? error.message : "We couldn't send that. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   const input =
@@ -52,20 +78,13 @@ export function SoftwareRequest() {
 
   if (done) {
     return (
-      <div className="rounded-card border border-green-200 bg-green-50 p-8 text-center">
-        <CheckCircle2 className="mx-auto text-green-600" size={44} />
-        <h2 className="mt-3 text-lg font-extrabold text-ink-700">Request sent!</h2>
-        <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/70">
-          We&apos;ve opened WhatsApp with your request. Our team will reply with a proposal, timeline and
-          quote. You can also call {site.phoneDisplay}.
-        </p>
-        <button
-          onClick={() => setDone(false)}
-          className="mt-4 rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600"
-        >
-          Send another request
-        </button>
-      </div>
+      <RequestSent
+        title="Request received"
+        reference={sent.reference}
+        emailed={sent.emailed}
+        next="Our team will come back to you with a written proposal, timeline and quote — usually within one working day."
+        onAgain={() => setDone(false)}
+      />
     );
   }
 
@@ -116,12 +135,17 @@ export function SoftwareRequest() {
           placeholder="Describe what you want the system/app/website to do, key features, who will use it…"
         />
       </label>
+      {err && <p className="mt-4 text-sm font-semibold text-red-600">{err}</p>}
       <button
         type="submit"
-        className="mt-5 inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+        disabled={busy}
+        className="press mt-5 inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60"
       >
-        <Send size={16} /> Send request
+        <Send size={16} /> {busy ? "Sending…" : "Send request"}
       </button>
+      <p className="mt-2 text-[12px] text-ink-700/55">
+        We&apos;ll email you a reference and come back with a quote. No WhatsApp needed.
+      </p>
     </form>
   );
 }
