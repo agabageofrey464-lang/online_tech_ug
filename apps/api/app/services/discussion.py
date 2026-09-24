@@ -123,6 +123,35 @@ def list_threads(db: Session, course_slug: str | None = None, limit: int = 50) -
     return out
 
 
+def rooms(db: Session) -> list[dict]:
+    """Every course discussion that has something in it, busiest first.
+
+    A dropdown hides where the conversation is. A student wants to see which
+    rooms are alive before deciding where to ask, so each one carries its
+    message count and when it was last used.
+    """
+    rows = db.execute(
+        select(
+            DiscussionPost.course_slug,
+            func.count(DiscussionPost.id),
+            func.max(DiscussionPost.created_at),
+        )
+        .where(DiscussionPost.hidden.is_(False))
+        .group_by(DiscussionPost.course_slug)
+    ).all()
+
+    out = [
+        {
+            "course_slug": slug or "general",
+            "messages": int(count or 0),
+            "last_activity": last.isoformat() if last else None,
+        }
+        for slug, count, last in rows
+    ]
+    out.sort(key=lambda r: (r["last_activity"] or ""), reverse=True)
+    return out
+
+
 def get_thread(db: Session, post_id: int) -> dict | None:
     root = db.get(DiscussionPost, post_id)
     if not root or root.hidden or root.parent_id is not None:

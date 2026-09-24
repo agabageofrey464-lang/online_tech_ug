@@ -8,6 +8,8 @@ import { courses } from "@/lib/data";
 import { deviceToken } from "@/lib/api";
 import { learnerName, setLearnerName } from "@/lib/learning";
 
+type Room = { course_slug: string; messages: number; last_activity: string | null };
+
 type Post = {
   id: number;
   course_slug: string;
@@ -37,6 +39,7 @@ export default function CommunityPage() {
   const [threads, setThreads] = useState<Post[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   // New question
   const [name, setName] = useState("");
@@ -65,12 +68,50 @@ export default function CommunityPage() {
     }
   }, [filter]);
 
+  // Rooms with conversation in them lead; the rest follow so a quiet course
+  // can still be started off.
+  const activeRooms = rooms.filter((r) => r.messages > 0);
+  const quietRooms = courses.filter(
+    (c) => !rooms.some((r) => r.course_slug === c.slug && r.messages > 0),
+  );
+
+  const loadRooms = useCallback(async () => {
+    try {
+      const res = await fetch("/_api/discussion/rooms", { cache: "no-store" });
+      const data = await res.json();
+      if (Array.isArray(data)) setRooms(data);
+    } catch {
+      /* offline — the rooms we already have still work */
+    }
+  }, []);
+
   useEffect(() => {
     setName(learnerName());
   }, []);
+
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    loadRooms();
+  }, [loadRooms]);
+
+  // Refresh while the tab is in front, so a reply turns up on its own. Paused
+  // when the tab is hidden — nobody needs us polling in a background tab.
+  useEffect(() => {
+    const tick = () => {
+      if (document.visibilityState !== "visible") return;
+      load();
+      loadRooms();
+    };
+    const t = setInterval(tick, 20000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [load, loadRooms]);
 
   async function ask(e: React.FormEvent) {
     e.preventDefault();
@@ -190,19 +231,43 @@ export default function CommunityPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_330px]">
         {/* ── Threads ── */}
         <section>
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <select value={filter} onChange={(e) => setFilter(e.target.value)} className={`${field} max-w-xs`}>
-              <option value="all">All courses</option>
-              <option value="general">General</option>
-              {courses.map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.title}
-                </option>
+          {/* Rooms — a dropdown hides where the conversation actually is. */}
+          <div className="mb-3">
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar">
+              <RoomChip
+                active={filter === "all"}
+                onClick={() => setFilter("all")}
+                label="All rooms"
+                count={rooms.reduce((n, r) => n + r.messages, 0)}
+              />
+              {activeRooms.map((r) => (
+                <RoomChip
+                  key={r.course_slug}
+                  active={filter === r.course_slug}
+                  onClick={() => setFilter(r.course_slug)}
+                  label={courseTitle(r.course_slug)}
+                  count={r.messages}
+                  when={r.last_activity ? ago(r.last_activity) : ""}
+                />
               ))}
-            </select>
-            <span className="text-sm text-ink-700/55">
-              {loading ? "Loading…" : `${threads.length} discussion${threads.length === 1 ? "" : "s"}`}
-            </span>
+              {/* Rooms nobody has posted in yet, so a student can still start one. */}
+              {quietRooms.map((c) => (
+                <RoomChip
+                  key={c.slug}
+                  active={filter === c.slug}
+                  onClick={() => setFilter(c.slug)}
+                  label={c.title}
+                  count={0}
+                />
+              ))}
+            </div>
+            <p className="mt-2 text-sm text-ink-700/55">
+              {loading
+                ? "Loading…"
+                : `${threads.length} discussion${threads.length === 1 ? "" : "s"}${
+                    filter === "all" ? " across all rooms" : ` in ${courseTitle(filter)}`
+                  }`}
+            </p>
           </div>
 
           {!loading && threads.length === 0 ? (
@@ -344,5 +409,46 @@ export default function CommunityPage() {
         </aside>
       </div>
     </div>
+  );
+}
+
+function RoomChip({
+  active,
+  onClick,
+  label,
+  count,
+  when,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  when?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`press flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5 text-left shadow-sm ring-1 transition ${
+        active
+          ? "bg-brand-500 text-white ring-black/5"
+          : "bg-white text-ink-700 ring-ink-600/10 hover:bg-brand-50"
+      }`}
+    >
+      <span
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-black ${
+          active ? "bg-white text-brand-600" : "bg-brand-50 text-brand-600"
+        }`}
+      >
+        {count}
+      </span>
+      <span className="leading-[1.15]">
+        <span className="block max-w-[10rem] truncate text-[12.5px] font-bold">{label}</span>
+        {when && (
+          <span className={`block text-[9.5px] ${active ? "text-white/75" : "text-ink-700/50"}`}>
+            active {when}
+          </span>
+        )}
+      </span>
+    </button>
   );
 }

@@ -42,6 +42,12 @@ def list_threads(
     return discussion.list_threads(db, course, limit)
 
 
+@router.get("/rooms")
+def list_rooms(db: Session = Depends(get_db)) -> list[dict]:
+    """Public: which course rooms have conversation in them."""
+    return discussion.rooms(db)
+
+
 @router.get("/{post_id}")
 def get_thread(post_id: int, db: Session = Depends(get_db)) -> dict:
     thread = discussion.get_thread(db, post_id)
