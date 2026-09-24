@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.careers import FreelancerIn, StatusIn
-from app.services import careers
+from app.services import careers, notify
 
 router = APIRouter()
 
@@ -41,6 +41,24 @@ async def apply(
             "job_id": job_id, "job_title": job_title, "cv_filename": stored,
         },
     )
+
+    # Until now an application reached nobody — it sat in the database waiting
+    # to be noticed. Tell the owner on both channels.
+    await notify.alert_owner(
+        icon="💼",
+        title="New job application",
+        reference=f"OTU-A{app.id:05d}",
+        pairs=[
+            ("Role", job_title or "General application"),
+            ("Name", name),
+            ("Phone", phone),
+            ("Email", email),
+            ("CV", "attached" if stored else "none"),
+        ],
+        note=message,
+        where="Admin › Applications",
+        reply_to=email or None,
+    )
     return {"id": app.id, "ok": True}
 
 
@@ -51,9 +69,27 @@ def freelancers(db: Session = Depends(get_db)) -> list[dict]:
 
 
 @router.post("/freelancers", status_code=201)
-def join_freelancers(payload: FreelancerIn, db: Session = Depends(get_db)) -> dict:
+async def join_freelancers(payload: FreelancerIn, db: Session = Depends(get_db)) -> dict:
     """Public self-signup — listed after admin approval."""
-    f = careers.create_freelancer(db, payload.model_dump(), approved=False)
+    data = payload.model_dump()
+    f = careers.create_freelancer(db, data, approved=False)
+    await notify.alert_owner(
+        icon="🧑",
+        title="New freelancer signup",
+        reference=f"OTU-F{f.id:05d}",
+        pairs=[
+            ("Name", data.get("name", "")),
+            ("Title", data.get("title", "")),
+            ("Skills", data.get("skills", "")),
+            ("Rate", data.get("rate", "")),
+            ("Location", data.get("location", "")),
+            ("Phone", data.get("phone", "")),
+            ("Email", data.get("email", "")),
+        ],
+        note=data.get("bio", ""),
+        where="Admin › Freelancers — approve to list them",
+        reply_to=data.get("email") or None,
+    )
     return {"id": f.id, "ok": True}
 
 

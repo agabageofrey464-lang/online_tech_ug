@@ -17,6 +17,7 @@ from app.models.vendor_payout import VendorPayout
 from app.models.vendor_product import VendorProduct
 from app.schemas.vendor_product import MarketplaceItem, PayoutIn, VendorProductIn, VendorProductOut
 from app.services import auth as auth_service
+from app.services import notify
 from app.services import storage, vendor_products
 from app.services.email import send_email
 
@@ -79,7 +80,7 @@ def my_products(user: User = Depends(require_vendor), db: Session = Depends(get_
 
 
 @router.post("/products", response_model=VendorProductOut, status_code=201)
-def add_product(
+async def add_product(
     payload: VendorProductIn,
     user: User = Depends(require_listing_vendor),
     db: Session = Depends(get_db),
@@ -89,7 +90,24 @@ def add_product(
     # unapprove a specific product later from the dashboard.
     data = payload.model_dump()
     data["approved"] = True
-    return vendor_products.create(db, user.id, data)
+    row = vendor_products.create(db, user.id, data)
+
+    # This one goes live the moment it is posted, which is exactly why the
+    # owner should hear about it rather than find it later.
+    await notify.alert_owner(
+        icon="🏪",
+        title="Vendor listed a product",
+        reference=f"OTU-V{row.id:05d}",
+        pairs=[
+            ("Product", data.get("name", "")),
+            ("Price", f"UGX {int(data.get('price_ugx') or 0):,}"),
+            ("Vendor", user.business_name or user.name),
+            ("Phone", user.phone or ""),
+        ],
+        note=data.get("description", ""),
+        where="It is live now — Admin › Vendors to unapprove it",
+    )
+    return row
 
 
 @router.put("/products/{product_id}", response_model=VendorProductOut)

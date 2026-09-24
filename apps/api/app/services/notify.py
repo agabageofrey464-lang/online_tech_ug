@@ -122,3 +122,49 @@ def whatsapp_url(phone: str, message: str) -> str:
     elif not digits.startswith("256"):
         digits = "256" + digits.lstrip("+")
     return f"https://wa.me/{digits}?text={quote(message[:1200])}"
+
+
+# ── Telling the owner something arrived ─────────────────────────────────────
+async def alert_owner(
+    *,
+    icon: str,
+    title: str,
+    pairs: list[tuple[str, str]],
+    reference: str = "",
+    note: str = "",
+    where: str = "",
+    reply_to: str | None = None,
+) -> dict:
+    """Tell the owner something came in — by email and on WhatsApp.
+
+    The email is the record and survives; the WhatsApp is what actually gets
+    it acted on. Neither may fail the thing that triggered it, so every error
+    here is logged and swallowed.
+    """
+    from app.services import whatsapp  # local: whatsapp imports settings too
+
+    rows = [(k, v) for k, v in pairs if v]
+    body = email_theme.details(rows)
+    if note:
+        body += email_theme.panel("What they said", note[:1200])
+    if where:
+        body += email_theme.text(where)
+
+    emailed = False
+    try:
+        emailed = await send_email(
+            to=settings.contact_inbox,
+            subject=f"{title}{f' — {reference}' if reference else ''}",
+            html=_wrap(title, body, show_phones=False),
+            reply_to=reply_to,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Owner alert email failed (%s): %s", title, exc)
+
+    messaged = await whatsapp.notify_owner(
+        whatsapp.alert_message(
+            icon=icon, title=title, reference=reference,
+            pairs=rows, note=note, where=where,
+        )
+    )
+    return {"emailed": emailed, "messaged": messaged}

@@ -3,7 +3,6 @@ import {
   MapPin,
   Briefcase,
   Check,
-  Mail,
   MessageCircle,
   GraduationCap,
   FileText,
@@ -16,7 +15,7 @@ import { PageHeader } from "@/components/page-header";
 import { ExploreMore } from "@/components/explore-more";
 import { JobApply } from "@/components/job-apply";
 import { jobs as seedJobs } from "@/lib/jobs";
-import { site, whatsappLink } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Internships & Jobs",
@@ -154,19 +153,18 @@ export default async function JobsPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2.5">
+              <JobApply
+                jobTitle="Industrial Training / Internship"
+                label="Apply for internship"
+                className="press inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 transition hover:bg-white/90"
+              />
               <a
                 href={applyLink}
                 target="_blank"
                 rel="noreferrer"
-                className="press inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-green-700"
+                className="press inline-flex items-center gap-2 rounded-md border border-white/40 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
               >
-                <MessageCircle size={16} /> Apply on WhatsApp
-              </a>
-              <a
-                href={`mailto:${site.email}?subject=${encodeURIComponent("Internship / Industrial Training Application")}`}
-                className="press inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 transition hover:bg-white/90"
-              >
-                <Mail size={16} /> Apply by email
+                <MessageCircle size={16} /> Ask a question
               </a>
             </div>
           </div>
@@ -288,18 +286,12 @@ function JobCard({ j }: { j: JobItem }) {
         <div className="flex flex-wrap gap-2">
           <JobApply jobId={typeof j.id === "number" ? j.id : undefined} jobTitle={j.title} />
           <a
-            href={`mailto:${site.email}?subject=${encodeURIComponent("Application: " + j.title)}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-ink-50"
-          >
-            <Mail size={15} /> Email
-          </a>
-          <a
-            href={whatsappLink(`Hi, I'd like to apply for the "${j.title}" position at Online Tech Uganda.`)}
+            href={whatsappLink(`Hi, I have a question about the "${j.title}" position at Online Tech Uganda.`)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-md border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-ink-50"
           >
-            <MessageCircle size={15} /> WhatsApp
+            <MessageCircle size={15} /> Ask about this role
           </a>
         </div>
       </div>

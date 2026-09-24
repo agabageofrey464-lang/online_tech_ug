@@ -114,3 +114,30 @@ def request_message(
         lines += ["", trimmed[:300] + ("…" if len(trimmed) > 300 else "")]
     lines += ["", "It's in Admin › Leads."]
     return "\n".join(lines)
+
+
+def alert_message(
+    *,
+    icon: str,
+    title: str,
+    reference: str = "",
+    pairs: list[tuple[str, str]],
+    note: str = "",
+    where: str = "",
+) -> str:
+    """One shape for every "something arrived" alert.
+
+    Written for a phone screen: what it is, who it's from, and where to go
+    and deal with it. Anything longer gets skimmed and forgotten.
+    """
+    head = f"{icon} {title.upper()}"
+    if reference:
+        head += f"  {reference}"
+    lines = [head, ""]
+    lines += [f"{k}: {v}" for k, v in pairs if v]
+    if note:
+        trimmed = note.strip().replace("\r", "")
+        lines += ["", trimmed[:280] + ("…" if len(trimmed) > 280 else "")]
+    if where:
+        lines += ["", where]
+    return "\n".join(lines)

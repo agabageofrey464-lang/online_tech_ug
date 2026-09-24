@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.advert import AdvertIn, AdvertOut
 from app.services import adverts as adverts_service
+from app.services import notify
 
 router = APIRouter()
 
@@ -26,13 +27,29 @@ def admin_list(db: Session = Depends(get_db)) -> list[dict]:
 
 
 @router.post("/submit", response_model=AdvertOut, status_code=201)
-def submit_advert(payload: AdvertIn, db: Session = Depends(get_db)) -> AdvertOut:
+async def submit_advert(payload: AdvertIn, db: Session = Depends(get_db)) -> AdvertOut:
     """Public: an advertiser submits an advert. It stays inactive (pending) and
     is hidden from the site until an admin approves (activates) it."""
     data = payload.model_dump()
     data["active"] = False  # never auto-publish — pending admin review
     data["placement"] = "home"
-    return adverts_service.create(db, data)
+    row = adverts_service.create(db, data)
+
+    # It is hidden until approved, so nobody sees it until the owner looks.
+    await notify.alert_owner(
+        icon="📢",
+        title="New advert submitted",
+        reference=f"OTU-D{row.id:05d}",
+        pairs=[
+            ("Advert", data.get("title", "")),
+            ("Advertiser", data.get("advertiser", "")),
+            ("Category", data.get("category", "")),
+            ("Links to", data.get("link_url", "")),
+        ],
+        note=data.get("description", ""),
+        where="Admin › Adverts — approve to publish it",
+    )
+    return row
 
 
 @router.post("", response_model=AdvertOut, status_code=201, dependencies=[Depends(require_admin)])

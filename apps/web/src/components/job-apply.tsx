@@ -4,7 +4,17 @@ import { useState } from "react";
 import { Upload, X, CheckCircle2 } from "lucide-react";
 
 /** "Apply online" button + modal with CV upload for a job. */
-export function JobApply({ jobId, jobTitle }: { jobId?: number; jobTitle: string }) {
+export function JobApply({
+  jobId,
+  jobTitle,
+  label = "Apply online",
+  className = "press rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600",
+}: {
+  jobId?: number;
+  jobTitle: string;
+  label?: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -36,9 +46,9 @@ export function JobApply({ jobId, jobTitle }: { jobId?: number; jobTitle: string
     <>
       <button
         onClick={() => { setOpen(true); setDone(false); setErr(""); setFileName(""); }}
-        className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600"
+        className={className}
       >
-        Apply online
+        {label}
       </button>
 
       {open && (
