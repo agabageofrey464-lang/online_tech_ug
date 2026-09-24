@@ -1,3 +1,14 @@
+from app.models.academy import (
+    Announcement,
+    Assignment,
+    ClassAttendance,
+    ClassMaterial,
+    Enrolment,
+    LessonProgress,
+    LiveClass,
+    QuizAttempt,
+    Submission,
+)
 from app.models.advert import Advert
 from app.models.application import Application
 from app.models.campaign import Campaign
@@ -21,6 +32,15 @@ from app.models.vendor_payout import VendorPayout
 from app.models.vendor_product import VendorProduct
 
 __all__ = [
+    "Announcement",
+    "Assignment",
+    "ClassAttendance",
+    "ClassMaterial",
+    "Enrolment",
+    "LessonProgress",
+    "LiveClass",
+    "QuizAttempt",
+    "Submission",
     "VendorMessage",
     "Advert",
     "Application",

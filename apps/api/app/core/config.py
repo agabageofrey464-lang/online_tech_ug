@@ -59,6 +59,13 @@ class Settings(BaseSettings):
     company_phone: str = "+256 756 839 270"
     company_phone_alt: str = "+256 760 547 211"
 
+    # The live classroom. Video, audio, screen sharing and recording need a
+    # media server and TURN; we own who may enter the room, not the call
+    # itself. "jitsi" on the public server works with no account; point
+    # live_class_domain at 8x8.vc or your own Jitsi to get recording.
+    live_class_provider: str = "jitsi"
+    live_class_domain: str = "meet.jit.si"
+
     # Online payments (Flutterwave) — MTN + Airtel + cards. Empty = disabled.
     flutterwave_secret_key: str = ""
     flutterwave_public_key: str = ""

@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    academy,
     adverts,
     auth,
     campaigns,
@@ -48,5 +49,6 @@ api_router.include_router(campaigns.router, prefix="/campaigns", tags=["campaign
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
 api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
+api_router.include_router(academy.router, prefix="/academy", tags=["academy"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
 api_router.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])
