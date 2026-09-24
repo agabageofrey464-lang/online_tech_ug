@@ -179,64 +179,77 @@ async def send_order_confirmation(order, db=None) -> bool:
     return ok
 
 
-def _code_html(*, heading: str, intro: str, code: str) -> str:
-    return f"""
-    <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto">
-      <h2 style="color:#282363">{heading}</h2>
-      <p style="color:#444">{intro}</p>
-      <p style="font-size:34px;font-weight:bold;letter-spacing:8px;color:#f15a29;
-                background:#f6f6fb;border-radius:10px;padding:16px;text-align:center;margin:20px 0">
-        {code}
-      </p>
-      <p style="color:#888;font-size:13px">This code expires in 20 minutes. If you didn't request it, you can ignore this email.</p>
-      <p style="color:#888;font-size:13px">— Online Tech Uganda</p>
-    </div>
-    """
-
-
 async def send_verification_code(*, to: str, name: str, code: str) -> bool:
     """Email a new user their account-verification code."""
-    html = _code_html(
-        heading=f"Welcome, {name}!",
-        intro="Confirm your email address to secure your Online Tech Uganda account. Enter this code on the site:",
-        code=code,
+    body = (
+        email_theme.text(f"Hello {name},")
+        + email_theme.text(
+            "Confirm your email address to secure your Online Tech Uganda account. "
+            "Enter this code on the site:"
+        )
+        + email_theme.code_block(code)
+        + email_theme.text(
+            '<span style="font-size:12.5px;color:#6e6e6e">This code expires in 20 minutes. '
+            "If you didn&rsquo;t request it, you can ignore this email.</span>"
+        )
     )
-    return await send_email(to=to, subject="Verify your email — Online Tech Uganda", html=html)
+    return await send_email(
+        to=to,
+        subject="Verify your email — Online Tech Uganda",
+        html=email_theme.shell(heading=f"Welcome, {name}", body_html=body, show_phones=False),
+    )
 
 
 async def send_login_otp(*, to: str, name: str, code: str) -> bool:
     """Email a login one-time passcode (2FA)."""
-    html = _code_html(
-        heading="Your login code",
-        intro=f"Hi {name}, use this one-time code to finish signing in:",
-        code=code,
+    body = (
+        email_theme.text(f"Hi {name}, use this one-time code to finish signing in:")
+        + email_theme.code_block(code)
+        + email_theme.text(
+            '<span style="font-size:12.5px;color:#6e6e6e">This code expires in 20 minutes. '
+            "If you didn&rsquo;t try to sign in, you can ignore this email &mdash; "
+            "but do tell us, because someone has your address.</span>"
+        )
     )
-    return await send_email(to=to, subject="Your login code — Online Tech Uganda", html=html)
+    return await send_email(
+        to=to,
+        subject="Your login code — Online Tech Uganda",
+        html=email_theme.shell(heading="Your login code", body_html=body, show_phones=False),
+    )
 
 
 async def send_unlock_code(
     *, to: str, name: str, course_title: str, code: str, price: int = 0
 ) -> bool:
     """Email a learner their course unlock code as soon as they register."""
-    price_line = f"<p style='color:#444'>Course fee: <b>{_ugx(price)}</b></p>" if price else ""
-    html = f"""
-    <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto">
-      <h2 style="color:#282363">Your unlock code for {course_title}</h2>
-      <p style="color:#444">Hi {name}, thank you for enrolling! Here is your personal unlock code:</p>
-      <p style="font-size:30px;font-weight:bold;letter-spacing:6px;color:#f15a29;
-                background:#f6f6fb;border-radius:10px;padding:16px;text-align:center;margin:18px 0">
-        {code}
-      </p>
-      {price_line}
-      <ol style="color:#444;font-size:14px;line-height:1.6">
-        <li>Pay the course fee via <b>Mobile Money</b> and send us your confirmation on WhatsApp.</li>
-        <li>Once we confirm payment we activate this code.</li>
-        <li>Enter it on the course page to unlock all lessons.</li>
-      </ol>
-      <p style="color:#888;font-size:13px">Keep this code safe — it's tied to your enrolment. — Online Tech Uganda</p>
-    </div>
-    """
-    return await send_email(to=to, subject=f"Your unlock code for {course_title}", html=html)
+    body = (
+        email_theme.text(f"Hi {name}, thank you for enrolling. Here is your personal unlock code:")
+        + email_theme.code_block(code)
+        + (
+            email_theme.panel("Course fee", f"<b>{_ugx(price)}</b>")
+            if price
+            else ""
+        )
+        + email_theme.steps(
+            [
+                "Pay the course fee by <b>Mobile Money</b> and send us the confirmation on WhatsApp.",
+                "We confirm your payment and activate this code.",
+                "Enter it on the course page to unlock your lessons.",
+            ]
+        )
+        + email_theme.button(
+            f"Open {course_title}", f"{settings.site_url.rstrip('/')}/learn"
+        )
+        + email_theme.text(
+            '<span style="font-size:12.5px;color:#6e6e6e">Keep this code safe &mdash; '
+            "it is tied to your enrolment and your device.</span>"
+        )
+    )
+    return await send_email(
+        to=to,
+        subject=f"Your unlock code for {course_title}",
+        html=email_theme.shell(heading=f"Your code for {course_title}", body_html=body),
+    )
 
 
 async def send_enrollment_alert(
@@ -244,64 +257,87 @@ async def send_enrollment_alert(
 ) -> bool:
     """Notify the OWNER (not the learner) of a new enrolment, with the unlock code
     to send the learner once their Mobile Money payment is confirmed."""
-    price_line = f"<p><b>Course fee:</b> {_ugx(price)}</p>" if price else ""
-    html = f"""
-    <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto">
-      <h2 style="color:#282363">New course enrolment</h2>
-      <p style="color:#444">Someone registered for <b>{course_title}</b>. Send them this unlock code once you
-      confirm their Mobile Money payment:</p>
-      <p style="font-size:30px;font-weight:bold;letter-spacing:6px;color:#f15a29;
-                background:#f6f6fb;border-radius:10px;padding:16px;text-align:center;margin:18px 0">
-        {code}
-      </p>
-      <p><b>Name:</b> {name}</p>
-      <p><b>Phone:</b> {phone}</p>
-      <p><b>Email:</b> {email or "—"}</p>
-      {price_line}
-      <p style="color:#888;font-size:13px">Once you confirm their Mobile Money payment, just send them this
-      code — it unlocks the course immediately. — Online Tech Uganda</p>
-    </div>
-    """
+    pairs = [("Name", name), ("Phone", phone), ("Email", email or "—"), ("Course", course_title)]
+    if price:
+        pairs.append(("Course fee", _ugx(price)))
+
+    body = (
+        email_theme.text(
+            f"Someone registered for <b>{course_title}</b>. Send them this code once you have "
+            "confirmed their Mobile Money payment:"
+        )
+        + email_theme.code_block(code)
+        + email_theme.details(pairs)
+        + email_theme.panel(
+            "Next step",
+            "Approve the enrolment in <b>Admin &rsaquo; Enrollments</b> and the code is "
+            "emailed to them automatically.",
+        )
+    )
     return await send_email(
         to=settings.contact_inbox,
         subject=f"New enrolment: {course_title} — code {code}",
-        html=html,
+        html=email_theme.shell(
+            heading="New course enrolment", body_html=body, show_phones=False
+        ),
         reply_to=email or None,
     )
 
 
 async def send_code_activated(*, to: str, course_title: str, code: str) -> bool:
     """Tell a learner their unlock code is now active (payment confirmed)."""
-    html = f"""
-    <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto">
-      <h2 style="color:#282363">Your course is unlocked! 🎉</h2>
-      <p style="color:#444">Payment confirmed for <b>{course_title}</b>. Your code is now active:</p>
-      <p style="font-size:30px;font-weight:bold;letter-spacing:6px;color:#00a651;
-                background:#f6f6fb;border-radius:10px;padding:16px;text-align:center;margin:18px 0">
-        {code}
-      </p>
-      <p style="color:#444;font-size:14px">Enter it on the course page to open all lessons. Happy learning!</p>
-      <p style="color:#888;font-size:13px">— Online Tech Uganda</p>
-    </div>
-    """
-    return await send_email(to=to, subject=f"{course_title} unlocked — start learning", html=html)
+    body = (
+        email_theme.text(
+            f"Payment confirmed for <b>{course_title}</b>. Your code is now active:"
+        )
+        + email_theme.code_block(code, colour="#00a651")
+        + email_theme.text("Enter it on the course page to open your lessons. Happy learning.")
+        + email_theme.button("Start learning", f"{settings.site_url.rstrip('/')}/learn")
+    )
+    return await send_email(
+        to=to,
+        subject=f"{course_title} unlocked — start learning",
+        html=email_theme.shell(heading="Your course is unlocked", body_html=body),
+    )
 
 
 async def send_contact_notification(
     *, name: str, phone: str, email: str, subject: str, message: str
 ) -> bool:
-    html = f"""
-    <h2>New contact message — Online Tech Uganda</h2>
-    <p><b>Name:</b> {name}</p>
-    <p><b>Phone:</b> {phone}</p>
-    <p><b>Email:</b> {email or "—"}</p>
-    <p><b>Interested in:</b> {subject or "—"}</p>
-    <p><b>Message:</b></p>
-    <p>{message}</p>
-    """
+    """Tell the owner someone has written in, with everything needed to reply."""
+    wa = "".join(ch for ch in (phone or "") if ch.isdigit())
+    if wa.startswith("0"):
+        wa = "256" + wa[1:]
+
+    contact = [
+        ("Name", name),
+        ("Phone", f'<a href="tel:{phone}" style="color:#0e7490;text-decoration:none">{phone}</a>'),
+        (
+            "Email",
+            f'<a href="mailto:{email}" style="color:#0e7490;text-decoration:none">{email}</a>'
+            if email
+            else "—",
+        ),
+        ("About", subject or "—"),
+    ]
+
+    body = (
+        email_theme.details(contact)
+        + email_theme.panel("Their message", message.replace("\n", "<br />"))
+        + (
+            email_theme.button("Reply on WhatsApp", f"https://wa.me/{wa}", colour="#25D366")
+            if wa
+            else ""
+        )
+    )
     return await send_email(
         to=settings.contact_inbox,
         subject=f"New inquiry: {subject or 'Website contact'}",
-        html=html,
+        html=email_theme.shell(
+            heading="Someone has written in",
+            intro="Reply to this email and it goes straight to them.",
+            body_html=body,
+            show_phones=False,
+        ),
         reply_to=email or None,
     )

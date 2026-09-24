@@ -138,6 +138,67 @@ def totals_table(rows: list[tuple[str, str]], grand: tuple[str, str] | None = No
     </table>"""
 
 
+def code_block(code: str, colour: str = ORANGE) -> str:
+    """A one-time code or unlock code, big enough to read off a phone screen."""
+    return f"""
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="margin:18px 0 6px;border-collapse:collapse">
+      <tr>
+        <td align="center" style="background:{TEAL_PALE};border:1px dashed {colour};
+                                  border-radius:10px;padding:18px 12px">
+          <div style="font-family:'Courier New',Courier,monospace;font-size:30px;font-weight:bold;
+                      letter-spacing:7px;color:{colour}">{escape(code)}</div>
+        </td>
+      </tr>
+    </table>"""
+
+
+def details(pairs: list[tuple[str, str]]) -> str:
+    """Name, phone, email — the facts an alert exists to carry."""
+    rows = "".join(
+        f"""
+        <tr>
+          <td width="110" style="padding:5px 10px 5px 0;font-family:Arial,Helvetica,sans-serif;
+                                 font-size:12px;font-weight:bold;text-transform:uppercase;
+                                 letter-spacing:.05em;color:{MUTED};vertical-align:top">{escape(k)}</td>
+          <td style="padding:5px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;
+                     color:{INK};vertical-align:top">{v}</td>
+        </tr>"""
+        for k, v in pairs
+    )
+    return f"""
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="margin:14px 0 0;border-collapse:collapse">{rows}</table>"""
+
+
+def steps(items: list[str]) -> str:
+    """What to do next, numbered, so nobody has to work it out."""
+    rows = "".join(
+        f"""
+        <tr>
+          <td width="30" style="padding:5px 10px 5px 0;vertical-align:top">
+            <div style="width:22px;height:22px;background:{TEAL};border-radius:11px;
+                        font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;
+                        color:#ffffff;text-align:center;line-height:22px">{n}</div>
+          </td>
+          <td style="padding:5px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;
+                     line-height:1.55;color:{INK};vertical-align:top">{t}</td>
+        </tr>"""
+        for n, t in enumerate(items, start=1)
+    )
+    return f"""
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="margin:14px 0 0;border-collapse:collapse">{rows}</table>"""
+
+
+def text(body: str) -> str:
+    """A paragraph in the body typeface."""
+    return (
+        f'<p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14.5px;'
+        f'line-height:1.6;color:{INK}">{body}</p>'
+    )
+
+
 def panel(title: str, body_html: str, accent: str = TEAL) -> str:
     """A tinted block for an address, a note or a set of instructions."""
     return f"""

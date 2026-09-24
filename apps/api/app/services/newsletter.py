@@ -13,7 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.services import email_guard
+from app.services import email_guard, email_theme
 from app.models.subscriber import Subscriber
 from app.models.user import User
 from app.services.email import send_email
@@ -103,35 +103,33 @@ def _recipients(db: Session, include_customers: bool) -> list[tuple[str, str, st
 
 
 def _wrap(body_html: str, name: str, token: str) -> str:
-    """Brand the message and append the unsubscribe footer."""
-    greeting = f"<p style='color:#444'>Hi {name},</p>" if name else ""
-    unsub = (
-        f"<p style='color:#999;font-size:12px'>You're receiving this because you asked for updates from "
-        f"Online Tech Uganda. <a href='{settings.site_url}/unsubscribe?token={token}' "
-        f"style='color:#999'>Unsubscribe</a>.</p>"
-        if token
-        else "<p style='color:#999;font-size:12px'>You're receiving this as an Online Tech Uganda customer.</p>"
-    )
-    return f"""
-    <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto">
-      <div style="background:#282363;padding:16px 20px;border-radius:10px 10px 0 0">
-        <span style="color:#fff;font-size:19px;font-weight:bold">ONLINE<span style="color:#f15a29">&nbsp;TECH</span></span>
-        <span style="color:#ffffff99;font-size:11px;letter-spacing:3px;display:block;margin-top:2px">UGANDA</span>
-      </div>
-      <div style="border:1px solid #eceaf5;border-top:none;border-radius:0 0 10px 10px;padding:20px">
-        {greeting}
-        {body_html}
-        <p style="margin-top:22px">
-          <a href="{settings.site_url}/shop"
-             style="background:#f15a29;color:#fff;text-decoration:none;padding:11px 22px;border-radius:7px;font-weight:bold;display:inline-block">
-            Shop now
-          </a>
-        </p>
-        <hr style="border:none;border-top:1px solid #eceaf5;margin:22px 0">
-        {unsub}
-      </div>
-    </div>
+    """Brand the message and append the unsubscribe footer.
+
+    Uses the same letterhead as our order mail — a campaign that looks
+    different from a receipt reads as a different sender, which is how
+    legitimate mail ends up in a spam folder.
     """
+    greeting = email_theme.text(f"Hi {name},") if name else ""
+
+    unsub = (
+        f'<p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11.5px;'
+        f'color:#6e6e6e;text-align:center">You are receiving this because you asked for updates '
+        f'from Online Tech Uganda. '
+        f'<a href="{settings.site_url}/unsubscribe?token={token}" '
+        f'style="color:#6e6e6e">Unsubscribe</a>.</p>'
+        if token
+        else '<p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11.5px;'
+        'color:#6e6e6e;text-align:center">You are receiving this as an Online Tech Uganda customer.</p>'
+    )
+
+    return email_theme.shell(
+        heading="From Online Tech Uganda",
+        body_html=greeting
+        + body_html
+        + email_theme.button("Shop now", f"{settings.site_url.rstrip('/')}/shop")
+        + unsub,
+        show_phones=False,
+    )
 
 
 async def broadcast(db: Session, subject: str, body_html: str, include_customers: bool = True) -> dict:
