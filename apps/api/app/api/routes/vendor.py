@@ -106,6 +106,8 @@ async def add_product(
         ],
         note=data.get("description", ""),
         where="It is live now — Admin › Vendors to unapprove it",
+        db=db,
+        url="/vendors",
     )
     return row
 

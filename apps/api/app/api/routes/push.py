@@ -51,6 +51,39 @@ def unsubscribe(payload: UnsubscribeIn, db: Session = Depends(get_db)) -> dict:
     return {"ok": push.remove_subscription(db, payload.endpoint)}
 
 
+@router.post("/admin/subscribe", status_code=201, dependencies=[Depends(require_admin)])
+def subscribe_owner_device(
+    payload: SubscribeIn, request: Request, db: Session = Depends(get_db)
+) -> dict:
+    """Admin: tag the calling device as the owner's, so alerts reach it.
+
+    Behind the admin key, because these notifications carry customer names,
+    phone numbers and order totals.
+    """
+    try:
+        return push.save_owner_device(
+            db, payload.subscription, request.headers.get("user-agent", "")
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+
+@router.get("/admin/owner-devices", dependencies=[Depends(require_admin)])
+def owner_devices(db: Session = Depends(get_db)) -> dict:
+    return {"devices": push.owner_devices(db), "enabled": push.configured()}
+
+
+@router.post("/admin/test", dependencies=[Depends(require_admin)])
+async def test_owner_push(db: Session = Depends(get_db)) -> dict:
+    """Admin: send a test alert to the owner's devices."""
+    return await push.notify_owner(
+        db,
+        "Test alert — Online Tech Uganda",
+        "If you can read this, alerts are working on this phone.",
+        "/",
+    )
+
+
 @router.get("/admin/stats", dependencies=[Depends(require_admin)])
 def admin_stats(db: Session = Depends(get_db)) -> dict:
     return push.stats(db)

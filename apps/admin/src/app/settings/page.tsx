@@ -1,3 +1,5 @@
+import { PhoneAlerts } from "@/components/phone-alerts";
+
 const store = {
   name: "Online Tech Uganda",
   phone: "+256 756 839 270 / +256 760 547 211",
@@ -23,6 +25,10 @@ export default function SettingsPage() {
         <h1 className="text-2xl font-extrabold text-ink-600">Settings</h1>
         <p className="text-sm text-ink-600/60">Store configuration & admin account.</p>
       </header>
+
+      <div className="mb-5">
+        <PhoneAlerts />
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Card title="Store details">

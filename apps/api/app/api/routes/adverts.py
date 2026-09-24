@@ -48,6 +48,8 @@ async def submit_advert(payload: AdvertIn, db: Session = Depends(get_db)) -> Adv
         ],
         note=data.get("description", ""),
         where="Admin › Adverts — approve to publish it",
+        db=db,
+        url="/adverts",
     )
     return row
 

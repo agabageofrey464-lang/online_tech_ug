@@ -134,6 +134,8 @@ async def alert_owner(
     note: str = "",
     where: str = "",
     reply_to: str | None = None,
+    db=None,
+    url: str = "/",
 ) -> dict:
     """Tell the owner something came in — by email and on WhatsApp.
 
@@ -167,4 +169,19 @@ async def alert_owner(
             pairs=rows, note=note, where=where,
         )
     )
-    return {"emailed": emailed, "messaged": messaged}
+
+    # A push lands on the owner's phone with no third party in between, and
+    # needs nothing set up beyond tapping Allow once in the admin.
+    pushed = 0
+    if db is not None:
+        from app.services import push
+
+        summary = " · ".join(f"{k}: {v}" for k, v in rows[:3])
+        try:
+            pushed = (await push.notify_owner(
+                db, f"{icon} {title}", summary or note[:120], url
+            )).get("sent", 0)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Owner push failed (%s): %s", title, exc)
+
+    return {"emailed": emailed, "messaged": messaged, "pushed": pushed}

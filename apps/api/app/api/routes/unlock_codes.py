@@ -15,7 +15,7 @@ from app.schemas.unlock_code import (
     VerifyOut,
 )
 from app.models.user import User
-from app.services import academy, unlock_codes, whatsapp
+from app.services import academy, push, unlock_codes, whatsapp
 from app.services.courses import get_course
 from app.services.email import (
     send_code_activated,
@@ -113,6 +113,13 @@ async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
             price=price,
             code=created["code"],
         )
+    )
+
+    await push.notify_owner(
+        db,
+        f"🎓 New registration {reference}",
+        f"{title} · {payload.name} · {payload.phone}",
+        "/enrollments",
     )
 
     # And confirm to the learner, so submitting the form visibly did something.

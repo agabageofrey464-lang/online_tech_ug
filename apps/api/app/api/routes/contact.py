@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.contact import ContactMessage
 from app.schemas.contact import ContactCreate
-from app.services import whatsapp
+from app.services import push, whatsapp
 from app.services.email import send_contact_notification, send_request_received
 
 logger = logging.getLogger("onlinetech.contact")
@@ -145,6 +145,13 @@ async def create_contact(payload: ContactCreate, db: Session = Depends(get_db)) 
                 email=str(payload.email or ""),
                 message=payload.message,
             )
+        )
+
+        await push.notify_owner(
+            db,
+            f"📩 New request {reference}",
+            f"{payload.subject or 'Enquiry'} · {payload.name} · {payload.phone}",
+            "/leads",
         )
 
     emailed = False

@@ -6,7 +6,7 @@ from app.db.session import get_db
 from app.schemas.order import OrderCreate, OrderOut, OrderSummary, OrderUpdate
 from app.services import orders as orders_service
 from app.services.email import send_order_confirmation
-from app.services import notify, whatsapp
+from app.services import notify, push, whatsapp
 
 router = APIRouter()
 
@@ -26,6 +26,12 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
     # An inbox is read when someone remembers to read it; a WhatsApp message
     # gets acted on. Never let a failed notification fail the order.
     await whatsapp.notify_owner(whatsapp.order_message(order))
+    await push.notify_owner(
+        db,
+        f"🛒 New order {order.reference}",
+        f"UGX {int(order.total):,} · {order.customer_name} · {order.phone}",
+        "/orders",
+    )
     return order
 
 

@@ -19,6 +19,12 @@ from app.models.push_subscription import PushSubscription
 
 logger = logging.getLogger("onlinetech.push")
 
+# Marks a device as the owner's. Held in `email` because adding a column
+# would need a migration, and create_all does not alter existing tables.
+# The public subscribe endpoint refuses it, so a device can only be tagged
+# this way through the admin-key route.
+OWNER_TAG = "owner@device"
+
 
 def configured() -> bool:
     return bool(settings.vapid_public_key and settings.vapid_private_key)
@@ -26,6 +32,9 @@ def configured() -> bool:
 
 def save_subscription(db: Session, sub: dict, user_agent: str = "", email: str = "") -> dict:
     """Store (or refresh) a device's push subscription. Idempotent by endpoint."""
+    if email == OWNER_TAG:
+        raise ValueError("Invalid email")
+
     endpoint = (sub or {}).get("endpoint", "")
     keys = (sub or {}).get("keys", {}) or {}
     p256dh, auth = keys.get("p256dh", ""), keys.get("auth", "")
@@ -128,3 +137,70 @@ async def broadcast(db: Session, title: str, body: str, url: str = "/shop", imag
             failed += 1
     db.commit()
     return {"devices": len(rows), "sent": sent, "failed": failed, "removed": removed}
+
+
+def save_owner_device(db: Session, sub: dict, user_agent: str = "") -> dict:
+    """Tag this device as the owner's, so alerts reach it and nobody else's."""
+    endpoint = (sub or {}).get("endpoint", "")
+    keys = (sub or {}).get("keys", {}) or {}
+    p256dh, auth = keys.get("p256dh", ""), keys.get("auth", "")
+    if not endpoint or not p256dh or not auth:
+        raise ValueError("Invalid push subscription")
+
+    row = db.execute(
+        select(PushSubscription).where(PushSubscription.endpoint == endpoint)
+    ).scalar_one_or_none()
+    if row:
+        row.p256dh, row.auth, row.active, row.email = p256dh, auth, True, OWNER_TAG
+    else:
+        db.add(PushSubscription(
+            endpoint=endpoint, p256dh=p256dh, auth=auth,
+            user_agent=user_agent[:255], email=OWNER_TAG,
+        ))
+    db.commit()
+    return {"ok": True}
+
+
+def owner_devices(db: Session) -> int:
+    return db.execute(
+        select(func.count()).select_from(PushSubscription).where(
+            PushSubscription.email == OWNER_TAG, PushSubscription.active.is_(True)
+        )
+    ).scalar_one()
+
+
+async def notify_owner(db: Session, title: str, body: str = "", url: str = "/") -> dict:
+    """Push an alert to the owner's own devices only.
+
+    Never raises: an alert that fails must not fail the order, registration or
+    application that triggered it.
+    """
+    if not configured():
+        return {"sent": 0, "devices": 0}
+
+    payload = {"title": title[:120], "body": body[:400], "url": url, "image": ""}
+    rows = db.execute(
+        select(PushSubscription).where(
+            PushSubscription.email == OWNER_TAG, PushSubscription.active.is_(True)
+        )
+    ).scalars().all()
+
+    sent = 0
+    now = datetime.utcnow()
+    for row in rows:
+        try:
+            ok, dead = await asyncio.to_thread(_send_one, row, payload)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Owner push error: %s", exc)
+            continue
+        if ok:
+            sent += 1
+            row.send_count += 1
+            row.last_sent = now
+        elif dead:
+            row.active = False
+    try:
+        db.commit()
+    except Exception:  # noqa: BLE001
+        db.rollback()
+    return {"sent": sent, "devices": len(rows)}

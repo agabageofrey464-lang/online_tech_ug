@@ -57,6 +57,8 @@ async def apply(
         ],
         note=message,
         where="Admin › Applications",
+        db=db,
+        url="/applications",
         reply_to=email or None,
     )
     return {"id": app.id, "ok": True}
@@ -88,6 +90,8 @@ async def join_freelancers(payload: FreelancerIn, db: Session = Depends(get_db))
         ],
         note=data.get("bio", ""),
         where="Admin › Freelancers — approve to list them",
+        db=db,
+        url="/freelancers",
         reply_to=data.get("email") or None,
     )
     return {"id": f.id, "ok": True}
