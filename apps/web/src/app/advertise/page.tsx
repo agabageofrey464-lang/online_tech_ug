@@ -90,7 +90,7 @@ export default async function AdvertisePage() {
       <PageHeader
         crumbs={[{ label: "Advertise" }]}
         eyebrow="Advertise & grow"
-        title="Market your business to thousands"
+        title="Put your business in front of our customers"
         subtitle="Put your business, school, institution or company in front of our shoppers and learners across Uganda — with banners, featured listings, sponsored posts, or a simple monthly subscription."
       />
 

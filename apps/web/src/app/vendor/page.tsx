@@ -158,7 +158,7 @@ export default function VendorDashboard() {
           <Store size={28} />
         </span>
         <h1 className="mt-4 text-2xl font-extrabold text-ink-900">Sell on Online Tech Uganda</h1>
-        <p className="mt-2 text-sm text-ink-700/70">Reach thousands of shoppers countrywide. Open a vendor account to list your products.</p>
+        <p className="mt-2 text-sm text-ink-700/70">Put your products in front of our customers. Open a vendor account to list your products.</p>
         <Link href="/signup?role=vendor&next=/vendor" className="mt-5 inline-block rounded-md bg-brand-500 px-6 py-3 text-sm font-bold text-white hover:bg-brand-600">
           Become a vendor
         </Link>

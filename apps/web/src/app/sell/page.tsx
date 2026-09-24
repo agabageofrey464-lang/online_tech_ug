@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactOptions } from "@/components/contact-options";
+import { whatsappLink } from "@/lib/site";
 import Link from "next/link";
 import {
   Store, Wallet, TrendingUp, ShieldCheck, Package, ImageIcon, BarChart3,
@@ -9,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Sell on OnlineTechUg — Become a Vendor",
   description:
-    "Join OnlineTechUg as a vendor. Open your own online store, list products, reach thousands of buyers and get paid after every sale.",
+    "Sell on Online Tech Uganda. Open a store on our marketplace with no monthly fee, keep 90% of every sale, and get paid by Mobile Money once the customer has their order.",
 };
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
@@ -39,7 +40,7 @@ async function getTopStores(): Promise<VStore[]> {
 }
 
 const perks = [
-  { icon: TrendingUp, title: "Reach more buyers", text: "Tap into our shoppers, marketing and WhatsApp audience across Uganda." },
+  { icon: TrendingUp, title: "Our customers see your stock", text: "Your products sit alongside ours on the marketplace, and go out in the campaigns we run." },
   { icon: Store, title: "Your own online store", text: "A storefront on our marketplace — no website or tech skills needed." },
   { icon: Wallet, title: "Keep most of every sale", text: `You keep ${100 - COMMISSION}% — we take just a ${COMMISSION}% fee per item sold.` },
   { icon: ShieldCheck, title: "Trusted & supported", text: "We handle secure orders, customer care and delivery together with you." },
@@ -83,10 +84,10 @@ export default async function SellPage() {
             <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide">
               🏪 Sell on OnlineTechUg
             </span>
-            <h1 className="mt-4 text-3xl font-black leading-tight sm:text-5xl">Grow your business — sell to thousands of buyers</h1>
+            <h1 className="mt-4 text-3xl font-black leading-tight sm:text-5xl">Put your products in front of our customers</h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85 sm:text-base">
-              Open your own online store on OnlineTechUg. List your products, reach customers across Uganda,
-              and get paid after every sale — we bring the buyers, you make the sales.
+              Open a store on our marketplace in minutes. No website, no monthly fee, no contract —
+              you keep 90% of every sale and we pay you once the customer has their order.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-lg transition hover:bg-brand-600">
@@ -96,12 +97,38 @@ export default async function SellPage() {
                 <LogIn size={18} /> Vendor Login
               </Link>
             </div>
+            <div className="mt-3 flex justify-center">
+              <a
+                href={whatsappLink("Hello Online Tech Uganda, I'd like to sell on your marketplace. Can you tell me how it works?")}
+                target="_blank"
+                rel="noreferrer"
+                className="press inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-6 py-2.5 text-sm font-bold text-white shadow-md transition hover:brightness-105"
+              >
+                <MessageCircle size={17} /> Ask us on WhatsApp first
+              </a>
+            </div>
             <p className="mt-4 text-xs text-white/60">Already selling? Log in to your dashboard. New here? Register in 2 minutes.</p>
           </div>
         </div>
       </section>
 
       <div className="container-page space-y-12 py-12">
+        {/* The decision, in three numbers. A seller is weighing cost, risk and
+            how soon they see money — that belongs above the sales pitch. */}
+        <section className="-mt-6 grid gap-3 sm:grid-cols-3">
+          {[
+            { big: `${100 - COMMISSION}%`, t: "is yours", d: `We keep ${COMMISSION}% of an item's price when it sells. Nothing else.` },
+            { big: "UGX 0", t: "to start", d: "No monthly fee on commission, no listing fee, no contract. Leave whenever you like." },
+            { big: "On delivery", t: "you're paid", d: "Once the customer has the order, your money goes out by Mobile Money or bank." },
+          ].map((k) => (
+            <div key={k.t} className="rounded-card border border-ink-600/10 bg-white p-5 text-center shadow-sm">
+              <p className="text-3xl font-black text-brand-600">{k.big}</p>
+              <p className="text-sm font-extrabold uppercase tracking-wide text-ink-900">{k.t}</p>
+              <p className="mt-1.5 text-[13px] leading-snug text-ink-700/70">{k.d}</p>
+            </div>
+          ))}
+        </section>
+
         {/* Benefits */}
         <section>
           <h2 className="text-center text-2xl font-extrabold text-ink-900">Why sell with us</h2>
@@ -207,7 +234,7 @@ export default async function SellPage() {
         {/* Final CTA */}
         <section className="rounded-card bg-ink-700 p-8 text-center text-white">
           <h2 className="text-2xl font-extrabold">Ready to start selling?</h2>
-          <p className="mx-auto mt-1 max-w-lg text-sm text-white/80">Join OnlineTechUg today and put your products in front of thousands of buyers.</p>
+          <p className="mx-auto mt-1 max-w-lg text-sm text-white/80">Register in two minutes. We approve most stores within a day, and there is nothing to pay until something sells.</p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-7 py-3 text-sm font-extrabold text-white hover:bg-brand-600">
               <UserPlus size={18} /> Become a Vendor
