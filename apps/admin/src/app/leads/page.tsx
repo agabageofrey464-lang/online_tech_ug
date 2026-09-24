@@ -1,5 +1,6 @@
 import { apiGetAdmin, type AdminLead } from "@/lib/api";
 import { enquiryMessage } from "@/lib/auto-message";
+import Link from "next/link";
 import { ReplyButton, ENQUIRY_TEMPLATES } from "@/components/reply-button";
 
 
@@ -43,7 +44,22 @@ export default async function LeadsPage() {
                 )}
               </div>
               <p className="mt-3 whitespace-pre-wrap rounded-lg bg-ink-50 p-3 text-sm text-ink-600/80">{l.message}</p>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link
+                  href={{
+                    pathname: "/quotations",
+                    query: {
+                      name: l.name,
+                      phone: l.phone,
+                      email: l.email ?? "",
+                      subject: l.subject ?? "",
+                      note: (l.message ?? "").slice(0, 300),
+                    },
+                  }}
+                  className="rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600"
+                >
+                  🧾 Quote this
+                </Link>
                 <a
                   href={`https://wa.me/${l.phone.replace(/\D/g, "").replace(/^0/, "256")}`}
                   target="_blank"

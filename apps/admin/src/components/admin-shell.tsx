@@ -23,6 +23,7 @@ const sections = [
   { href: "/certificates", label: "Certificates", icon: "🏅" },
   { href: "/enrolment-forms", label: "Enrolment Forms", icon: "📝" },
   { href: "/internship-letters", label: "Internship Letters", icon: "📄" },
+  { href: "/quotations", label: "Quotations", icon: "📑" },
   { href: "/receipts", label: "Receipts", icon: "🧾" },
   { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
   { href: "/community", label: "Community", icon: "💬", attention: true },
