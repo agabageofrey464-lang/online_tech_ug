@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Store, Users, ShieldCheck } from "lucide-react";
-import { ugx } from "@/lib/site";
-import { fallbackImage } from "@/lib/image-fallback";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { WhatsAppOrder } from "@/components/whatsapp-order";
-import { vendorOrderMessage } from "@/lib/order-message";
+import { MarketplaceBrowser } from "@/components/marketplace-browser";
 
 export const metadata: Metadata = {
   title: "Marketplace — Shop from our vendors",
@@ -60,10 +57,6 @@ const initials = (n: string) => n.split(" ").map((w) => w[0]).join("").slice(0, 
 export default async function MarketplacePage() {
   const items = await getItems();
   const vendors = vendorProfiles(items);
-  // One tidy grid, grouped naturally by category (no fragmented sections).
-  const products = [...items].sort(
-    (a, b) => (a.category || "Other").localeCompare(b.category || "Other") || a.name.localeCompare(b.name),
-  );
 
   return (
     <div className="container-wide py-4">
@@ -161,60 +154,10 @@ export default async function MarketplacePage() {
             </section>
           )}
 
-          {/* All vendor products — ONE tidy grid */}
-          <section>
-            <h2 className="mb-3 flex items-center gap-2 text-base font-extrabold text-ink-900 sm:text-lg">
-              <span className="h-5 w-1.5 rounded-full bg-brand-500" /> Vendor products
-            </h2>
-            <div className="grid-cards gap-3">
-              {products.map((p) => (
-                <VendorCard key={p.id} p={p} />
-              ))}
-            </div>
-          </section>
+          {/* Search, categories, sellers and price order */}
+          <MarketplaceBrowser items={items} />
         </>
       )}
     </div>
-  );
-}
-
-function VendorCard({ p }: { p: Item }) {
-  return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/[0.06] transition duration-200 hover:ring-brand-200 hover:shadow-[0_4px_18px_rgba(20,16,46,0.12)]">
-      <div className="relative aspect-square bg-white">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={p.image_url || fallbackImage(p.name, p.category)}
-          alt={p.name}
-          className="h-full w-full object-contain p-2 transition duration-200 group-hover:scale-[1.03]"
-        />
-        <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-          Vendor
-        </span>
-        {p.vendor_verified && (
-          <span title="Verified vendor" className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-brand-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
-            ✓ Verified
-          </span>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
-        <h3 className="clamp-2 min-h-[2.25rem] text-[12.5px] leading-tight text-ink-800 group-hover:text-brand-600">{p.name}</h3>
-        <p className="mt-0.5 truncate text-[10.5px] text-ink-700/50">by {p.vendor_name} · {p.category}</p>
-        <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
-        <WhatsAppOrder
-          className="mt-2"
-          label="Order now"
-          brand
-          phone={p.vendor_verified && p.vendor_phone ? p.vendor_phone : undefined}
-          message={vendorOrderMessage({
-            name: p.name,
-            priceLabel: ugx(p.price_ugx),
-            vendor: p.vendor_name,
-            category: p.category,
-            url: p.image_url || undefined,
-          })}
-        />
-      </div>
-    </article>
   );
 }
