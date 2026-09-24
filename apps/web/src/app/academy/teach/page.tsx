@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CalendarPlus, ClipboardList, Radio, Users, Video } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { TeachCoursework } from "@/components/teach-coursework";
 import { courses } from "@/lib/data";
 import { academy, whenLabel, type LiveClass } from "@/lib/academy";
 
@@ -40,6 +41,8 @@ export default function TeachPage() {
   const [mins, setMins] = useState(60);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+
+  const [tab, setTab] = useState<"classes" | "coursework">("classes");
 
   const [openRegister, setOpenRegister] = useState<number | null>(null);
   const [register, setRegister] = useState<
@@ -132,10 +135,31 @@ export default function TeachPage() {
 
       <header className="mb-4">
         <h1 className="text-2xl font-black text-ink-900">Teaching</h1>
-        <p className="text-sm text-ink-700/65">{who} · schedule classes and take the register</p>
+        <p className="text-sm text-ink-700/65">{who} · classes, the register and coursework</p>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
+      <div className="mb-4 flex gap-1.5 overflow-x-auto border-b border-ink-600/10 pb-px">
+        {([
+          ["classes", "Classes"],
+          ["coursework", "Coursework"],
+        ] as const).map(([k, label]) => (
+          <button
+            key={k}
+            onClick={() => setTab(k)}
+            className={`shrink-0 border-b-2 px-4 py-2.5 text-sm font-bold transition ${
+              tab === k
+                ? "border-brand-500 text-brand-600"
+                : "border-transparent text-ink-700/55 hover:text-ink-900"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "coursework" && <TeachCoursework />}
+
+      <div className={`grid gap-4 lg:grid-cols-[1fr_340px] ${tab === "classes" ? "" : "hidden"}`}>
         {/* Classes */}
         <section className="space-y-2.5">
           {classes.length === 0 && (

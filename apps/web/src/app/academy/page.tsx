@@ -10,6 +10,7 @@ import {
   FileText,
   GraduationCap,
   Megaphone,
+  Paperclip,
   PlayCircle,
   Radio,
   TrendingUp,
@@ -17,6 +18,7 @@ import {
   Video,
 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { FilePicker } from "@/components/file-picker";
 import { courses } from "@/lib/data";
 import { academy, countdown, whenLabel, type MyAcademy } from "@/lib/academy";
 
@@ -392,6 +394,8 @@ export default function AcademyPage() {
                     {a.due_at ? ` · due ${whenLabel(a.due_at)}` : ""}
                   </p>
                   {a.brief && <p className="mt-2 text-sm text-ink-700/75">{a.brief}</p>}
+                  {a.attachment && <Attachment url={a.attachment} label="Assignment brief" />}
+                  {mine?.attachment && <Attachment url={mine.attachment} label="Your submitted file" />}
                   {mine?.feedback && (
                     <p className="mt-2 rounded-lg bg-ink-50 px-3 py-2 text-[13px] text-ink-700/80">
                       <b>Feedback:</b> {mine.feedback}
@@ -488,18 +492,36 @@ function Materials({
   );
 }
 
+function Attachment({ url, label }: { url: string; label: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-2 flex items-center gap-2 rounded-lg bg-ink-50 px-3 py-2 text-[13px] font-semibold text-ink-800 hover:text-brand-600"
+    >
+      <Paperclip size={13} className="shrink-0 text-brand-500" />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      <span className="shrink-0 text-xs font-bold text-brand-600">Open</span>
+    </a>
+  );
+}
+
 function SubmitBox({ assignmentId, onDone }: { assignmentId: number; onDone: () => void }) {
   const [text, setText] = useState("");
+  const [attachment, setAttachment] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
   async function send() {
-    if (text.trim().length < 2) return setErr("Write your answer first.");
+    // A file on its own is a perfectly good answer — don't demand prose too.
+    if (text.trim().length < 2 && !attachment) return setErr("Write your answer or attach a file.");
     setBusy(true);
     setErr("");
     try {
-      await academy.submit(assignmentId, text);
+      await academy.submit(assignmentId, text, attachment);
       setText("");
+      setAttachment("");
       onDone();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Couldn't submit.");
@@ -514,9 +536,10 @@ function SubmitBox({ assignmentId, onDone }: { assignmentId: number; onDone: () 
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={3}
-        placeholder="Type your answer, or paste a link to your work…"
+        placeholder="Type your answer, or attach your work below…"
         className="w-full rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
       />
+      <FilePicker onDone={(url) => setAttachment(url)} label="Attach your work" />
       {err && <p className="mt-1 text-xs font-semibold text-red-600">{err}</p>}
       <button
         onClick={send}

@@ -10,7 +10,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -18,7 +19,7 @@ from app.api.routes.auth import get_current_user
 from app.core.config import settings
 from app.db.session import get_db
 from app.models.user import User
-from app.services import academy
+from app.services import academy, storage
 
 router = APIRouter()
 
@@ -289,6 +290,18 @@ def new_assignment(
     return _ok(academy.create_assignment, db, **payload.model_dump(), lecturer_id=user.id)
 
 
+@router.get("/assignments")
+def course_assignments(
+    course: str = Query(...), user: User = Depends(require_lecturer), db: Session = Depends(get_db)
+) -> list[dict]:
+    """Assignments on a course, for the lecturer marking them.
+
+    /me answers this for a student, but it reads from their enrolments, and a
+    lecturer isn't enrolled on the course they teach.
+    """
+    return academy.list_assignments(db, [course])
+
+
 @router.get("/assignments/{assignment_id}/submissions")
 def submissions(
     assignment_id: int, user: User = Depends(require_lecturer), db: Session = Depends(get_db)
@@ -318,6 +331,54 @@ def new_announcement(
     payload: AnnounceIn, user: User = Depends(require_lecturer), db: Session = Depends(get_db)
 ) -> dict:
     return _ok(academy.announce, db, **payload.model_dump(), author_id=user.id)
+
+
+# ── Files ───────────────────────────────────────────────────────────────────
+# Notes, slides and a student's submitted work. Kept small and to known types:
+# an upload box on a public site is an invitation, and the cheapest way to
+# decline it is to accept only what a class actually needs.
+ACADEMY_EXT = {".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx",
+               ".jpg", ".jpeg", ".png", ".webp", ".txt", ".zip"}
+MAX_ACADEMY_BYTES = 25 * 1024 * 1024
+
+
+@router.post("/files", status_code=201)
+async def upload_file(
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+) -> dict:
+    """Store a file and hand back the URL to save against a note or submission.
+
+    Any signed-in member of the academy may upload — a student has to be able
+    to hand work in — but the row that points at it still has to pass the
+    role checks on whichever endpoint records it.
+    """
+    if user.role not in ("student", "lecturer", "admin"):
+        raise HTTPException(status_code=403, detail="Academy members only.")
+
+    content = await file.read()
+    try:
+        stored = storage.save_file(
+            "academy", file.filename or "file", content,
+            allowed=ACADEMY_EXT, max_bytes=MAX_ACADEMY_BYTES,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return {
+        "stored": stored,
+        "name": file.filename,
+        "url": f"{settings.api_public_url.rstrip('/')}/api/v1/academy/files/{stored}",
+        "size_kb": round(len(content) / 1024),
+    }
+
+
+@router.get("/files/{stored}")
+def serve_file(stored: str):
+    path = storage.file_path("academy", stored)
+    if not path:
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(path)
 
 
 # ── Owner / admin app (shared-key auth) ─────────────────────────────────────

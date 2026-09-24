@@ -49,6 +49,7 @@ export type Assignment = {
   course_slug: string;
   title: string;
   brief: string;
+  attachment: string;
   due_at: string | null;
   max_score: number;
   overdue: boolean;
@@ -57,7 +58,9 @@ export type Assignment = {
 export type Submission = {
   id: number;
   assignment_id: number;
+  user_id: number;
   text: string;
+  attachment: string;
   score: number | null;
   feedback: string;
   marked: boolean;
@@ -171,7 +174,73 @@ export const academy = {
     call<
       { id: number; name: string; email: string; minutes: number; status: string; in_room: boolean }[]
     >(`/classes/${id}/register`),
+
+  students: (course_slug: string) =>
+    call<{ id: number; name: string; email: string; status: string }[]>(
+      `/courses/${encodeURIComponent(course_slug)}/students`,
+    ),
+
+  addAssignment: (body: {
+    course_slug: string;
+    title: string;
+    brief?: string;
+    due_at?: string | null;
+    max_score?: number;
+    attachment?: string;
+  }) => call<Assignment>("/assignments", { method: "POST", body: JSON.stringify(body) }),
+
+  courseAssignments: (course_slug: string) =>
+    call<Assignment[]>(`/assignments?course=${encodeURIComponent(course_slug)}`),
+
+  submissionsFor: (assignmentId: number) =>
+    call<(Submission & { name: string; email: string })[]>(
+      `/assignments/${assignmentId}/submissions`,
+    ),
+
+  mark: (submissionId: number, score: number, feedback = "") =>
+    call<Submission>(`/submissions/${submissionId}/mark`, {
+      method: "POST",
+      body: JSON.stringify({ score, feedback }),
+    }),
+
+  addMaterial: (body: {
+    course_slug: string;
+    title: string;
+    kind?: Material["kind"];
+    url?: string;
+    live_class_id?: number | null;
+  }) => call<Material>("/materials", { method: "POST", body: JSON.stringify(body) }),
+
+  announce: (body: { title: string; body?: string; course_slug?: string; kind?: string }) =>
+    call<AnnouncementItem>("/announcements", { method: "POST", body: JSON.stringify(body) }),
 };
+
+export type Upload = { stored: string; name: string; url: string; size_kb: number };
+
+/**
+ * Send a file up and get back its URL.
+ *
+ * Deliberately outside `academy` because it can't go through `call` — a
+ * multipart body must set its own boundary, so the Content-Type header has
+ * to be left alone rather than forced to JSON.
+ */
+export async function uploadFile(file: File): Promise<Upload> {
+  const token = authToken();
+  const form = new FormData();
+  form.append("file", file);
+
+  const res = await fetch("/_api/academy/files", {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(typeof body?.detail === "string" ? body.detail : "That file wouldn't upload.");
+  }
+  return (await res.json()) as Upload;
+}
 
 /** "Today at 14:00", "Tomorrow at 09:30", or the date for anything further off. */
 export function whenLabel(iso: string): string {

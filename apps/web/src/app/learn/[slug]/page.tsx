@@ -10,6 +10,7 @@ import { LessonList } from "@/components/lesson-list";
 import { Quiz } from "@/components/quiz";
 import { CourseRegister } from "@/components/course-register";
 import { CourseProgress } from "@/components/course-progress";
+import { CourseAcademyPanel } from "@/components/course-academy-panel";
 import { courses, REGISTRATION_FEE, courseTotal } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -150,6 +151,11 @@ export default async function CourseDetailPage({
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Live classes, for a student who is already on this course */}
+      <div className="mt-4">
+        <CourseAcademyPanel slug={course.slug} />
       </div>
 
       {/* Trust strip */}
