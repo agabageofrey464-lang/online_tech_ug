@@ -12,7 +12,7 @@ export type AuthUser = {
   name: string;
   email: string;
   phone: string;
-  role: "customer" | "vendor" | "admin";
+  role: "customer" | "vendor" | "admin" | "student" | "lecturer";
   business_name: string;
   vendor_approved: boolean;
   email_verified: boolean;

@@ -125,6 +125,7 @@ const GROUPS: Group[] = [
       ["Graphic Design", "/learn/graphic-design"],
       ["Web Development", "/learn/web-development"],
       ["My Learning", "/learn/dashboard"],
+      ["My Academy — live classes", "/academy"],
     ] }],
   },
   {
