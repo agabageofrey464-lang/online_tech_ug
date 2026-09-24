@@ -21,5 +21,9 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // Protect everything except Next internals and the logo asset.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg).*)"],
+  // sw.js must stay public: a browser fetches a service worker without
+  // cookies, so a redirect to /login means it can never register, and
+  // without it there are no alerts on the owner's phone. The worker holds
+  // no data of its own — the alerts it displays are pushed to it.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|sw.js).*)"],
 };
