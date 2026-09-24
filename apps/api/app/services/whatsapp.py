@@ -75,3 +75,42 @@ def order_message(order) -> str:
     if order.notes:
         lines.append(f"Note: {order.notes}")
     return "\n".join(lines)
+
+
+def registration_message(
+    *,
+    course_title: str,
+    reference: str,
+    name: str,
+    phone: str,
+    email: str = "",
+    price: int = 0,
+    code: str = "",
+) -> str:
+    """A course registration, written for a phone screen."""
+    lines = [f"🎓 NEW REGISTRATION  {reference}", "", course_title]
+    if price:
+        lines.append(f"Fee: UGX {price:,}")
+    lines += ["", f"{name} — {phone}"]
+    if email:
+        lines.append(email)
+    if code:
+        lines += ["", f"Unlock code: {code}", "(send it once payment is confirmed)"]
+    lines += ["", "Approve it in Admin › Enrollments."]
+    return "\n".join(lines)
+
+
+def request_message(
+    *, subject: str, reference: str, name: str, phone: str, email: str = "", message: str = ""
+) -> str:
+    """A client request — software, a quote, a vendor application."""
+    lines = [f"📩 NEW REQUEST  {reference}", "", subject or "General enquiry", ""]
+    lines.append(f"{name} — {phone}")
+    if email:
+        lines.append(email)
+    if message:
+        # Enough to judge whether it needs answering now, not the whole brief.
+        trimmed = message.strip().replace("\r", "")
+        lines += ["", trimmed[:300] + ("…" if len(trimmed) > 300 else "")]
+    lines += ["", "It's in Admin › Leads."]
+    return "\n".join(lines)

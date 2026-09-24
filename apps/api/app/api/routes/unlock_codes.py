@@ -15,7 +15,7 @@ from app.schemas.unlock_code import (
     VerifyOut,
 )
 from app.models.user import User
-from app.services import academy, unlock_codes
+from app.services import academy, unlock_codes, whatsapp
 from app.services.courses import get_course
 from app.services.email import (
     send_code_activated,
@@ -99,6 +99,20 @@ async def register(payload: RegisterIn, db: Session = Depends(get_db)) -> dict:
         phone=payload.phone,
         email=payload.email,
         price=price,
+    )
+
+    # An inbox is read when someone remembers to read it; a WhatsApp message
+    # gets acted on. Both go out — neither may fail the registration.
+    await whatsapp.notify_owner(
+        whatsapp.registration_message(
+            course_title=title,
+            reference=reference,
+            name=payload.name,
+            phone=payload.phone,
+            email=payload.email,
+            price=price,
+            code=created["code"],
+        )
     )
 
     # And confirm to the learner, so submitting the form visibly did something.

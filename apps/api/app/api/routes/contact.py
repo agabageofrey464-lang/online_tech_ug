@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.contact import ContactMessage
 from app.schemas.contact import ContactCreate
+from app.services import whatsapp
 from app.services.email import send_contact_notification, send_request_received
 
 logger = logging.getLogger("onlinetech.contact")
@@ -131,6 +132,21 @@ async def create_contact(payload: ContactCreate, db: Session = Depends(get_db)) 
     # form visibly did something. A failed email must not fail the request:
     # it is already saved and the owner has already been told.
     reference = f"OTU-Q{saved_id:05d}" if saved_id else ""
+
+    # Same reasoning as an order: tell the owner on the channel they watch.
+    # Spam and floods are already filtered out above, so this stays useful.
+    if not flooding:
+        await whatsapp.notify_owner(
+            whatsapp.request_message(
+                subject=payload.subject,
+                reference=reference or "—",
+                name=payload.name,
+                phone=payload.phone,
+                email=str(payload.email or ""),
+                message=payload.message,
+            )
+        )
+
     emailed = False
     if payload.email and reference and not flooding:
         try:
