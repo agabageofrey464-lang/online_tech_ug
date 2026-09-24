@@ -22,7 +22,7 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
         order = orders_service.create_order(db, payload)
     except orders_service.OrderError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    await send_order_confirmation(order)
+    await send_order_confirmation(order, db)
     # An inbox is read when someone remembers to read it; a WhatsApp message
     # gets acted on. Never let a failed notification fail the order.
     await whatsapp.notify_owner(whatsapp.order_message(order))
@@ -77,6 +77,6 @@ async def update_order(
         raise HTTPException(status_code=404, detail="Order not found")
 
     if payload.status and payload.status != was:
-        await notify.order_status_changed(order, payload.status)
+        await notify.order_status_changed(order, payload.status, db)
 
     return order

@@ -16,7 +16,7 @@ import logging
 from urllib.parse import quote
 
 from app.core.config import settings
-from app.services import email_guard
+from app.services import email_guard, email_theme
 from app.services.email import send_email
 
 logger = logging.getLogger(__name__)
@@ -25,32 +25,8 @@ CALL_LINE = f"{settings.company_phone} or {settings.company_phone_alt}"
 
 
 def _wrap(heading: str, body_html: str, *, show_phones: bool = True) -> str:
-    phones = (
-        f"""
-      <p style="margin:18px 0 0;padding:12px 14px;background:#eefafd;border-radius:8px;
-                color:#0c5d75;font-size:14px">
-        <b>Call us to confirm:</b><br/>
-        <a href="tel:{settings.company_phone.replace(' ', '')}"
-           style="color:#0e7490;text-decoration:none">{settings.company_phone}</a>
-        &nbsp;·&nbsp;
-        <a href="tel:{settings.company_phone_alt.replace(' ', '')}"
-           style="color:#0e7490;text-decoration:none">{settings.company_phone_alt}</a>
-      </p>"""
-        if show_phones
-        else ""
-    )
-
-    return f"""
-    <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:auto;color:#222">
-      <h2 style="color:#0e7490;margin:0 0 12px">{heading}</h2>
-      {body_html}
-      {phones}
-      <p style="margin:20px 0 0;color:#888;font-size:13px">
-        Online Tech Uganda · Kampala<br/>
-        <a href="mailto:{settings.contact_inbox}" style="color:#888">{settings.contact_inbox}</a>
-      </p>
-    </div>
-    """
+    """One letterhead for everything we send — see services/email_theme.py."""
+    return email_theme.shell(heading=heading, body_html=body_html, show_phones=show_phones)
 
 
 # ── Order status ────────────────────────────────────────────────────────────
@@ -84,35 +60,36 @@ ORDER_COPY: dict[str, tuple[str, str]] = {
 }
 
 
-def order_status_html(order, status: str) -> tuple[str, str]:
+def order_status_html(order, status: str, db=None) -> tuple[str, str]:
     """Subject and HTML for an order that has just changed status."""
+    from app.services.email import _order_rows
+
     heading, line = ORDER_COPY.get(
         status, ("Update on your order", "There's an update on your order.")
     )
 
-    rows = "".join(
-        f"<tr><td style='padding:4px 0'>{i.quantity} × {i.name}</td>"
-        f"<td align='right' style='padding:4px 0'>UGX {int(i.line_total):,}</td></tr>"
-        for i in order.items
+    body = (
+        f'<p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14.5px;'
+        f'line-height:1.6;color:#222">Hello {order.customer_name},</p>'
+        f'<p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:14.5px;'
+        f'line-height:1.6;color:#6e6e6e">{line}</p>'
+        f'<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6e6e6e">'
+        f'Order <b style="color:#222">{order.reference}</b></p>'
+        + email_theme.items_table(_order_rows(order, db))
+        + email_theme.totals_table([], ("Total", email_theme.money(int(order.total))))
+        + email_theme.button(
+            "Track your order",
+            f"{settings.site_url.rstrip('/')}/track?ref={order.reference}",
+        )
     )
-
-    body = f"""
-      <p style="font-size:15px">Hello {order.customer_name},</p>
-      <p style="font-size:15px">{line}</p>
-      <p style="margin:16px 0 4px;font-size:13px;color:#666">
-        Order <b style="color:#222">{order.reference}</b>
-      </p>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">{rows}</table>
-      <p style="margin:10px 0 0;font-size:15px"><b>Total: UGX {int(order.total):,}</b></p>
-    """
     return f"{heading} — {order.reference}", _wrap(heading, body)
 
 
-async def order_status_changed(order, status: str) -> bool:
+async def order_status_changed(order, status: str, db=None) -> bool:
     """Tell the customer their order moved on. False if there was no address."""
     if not order.email or not email_guard.deliverable(order.email):
         return False
-    subject, html = order_status_html(order, status)
+    subject, html = order_status_html(order, status, db)
     return await send_email(to=order.email, subject=subject, html=html)
 
 

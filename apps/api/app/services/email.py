@@ -12,7 +12,7 @@ from email.message import EmailMessage
 import httpx
 
 from app.core.config import settings
-from app.services import email_guard
+from app.services import email_guard, email_theme
 
 logger = logging.getLogger("onlinetech.email")
 
@@ -89,40 +89,92 @@ def _ugx(amount: int) -> str:
     return f"UGX {int(amount):,}"
 
 
-async def send_order_confirmation(order) -> bool:
-    """Email the customer (and notify the shop) about a new order."""
-    rows = "".join(
-        f"<tr><td>{i.name}</td><td align='center'>{i.quantity}</td>"
-        f"<td align='right'>{_ugx(int(i.line_total))}</td></tr>"
-        for i in order.items
-    )
-    html = f"""
-    <h2>Thank you for your order, {order.customer_name}!</h2>
-    <p>Your order <b>{order.reference}</b> has been received.</p>
-    <table cellpadding="6" style="border-collapse:collapse;width:100%">
-      <tr><th align="left">Item</th><th>Qty</th><th align="right">Total</th></tr>
-      {rows}
-    </table>
-    <p>Subtotal: {_ugx(int(order.subtotal))}<br/>
-    Delivery: {_ugx(int(order.delivery_fee))}<br/>
-    <b>Total: {_ugx(int(order.total))}</b></p>
-    <p>Payment: {order.payment_method.replace("_", " ").title()} ({order.payment_status})</p>
-    <p>We will contact you on {order.phone} to confirm delivery to {order.delivery_town or "your location"}.</p>
-    <p>— Online Tech Uganda</p>
+def _order_rows(order, db=None) -> list[dict]:
+    """The order's items, each with a photo to show alongside it.
+
+    Item rows store a slug, not a picture, so the catalogue is asked for one.
+    A missing photo is not worth failing an order confirmation over.
     """
+    from app.services import catalog
+
+    rows = []
+    for i in order.items:
+        image = ""
+        try:
+            product = catalog.get_product(db, i.product_slug)
+            if product:
+                image = product.get("image_url", "") or ""
+        except Exception:  # noqa: BLE001 — a thumbnail is never worth an error
+            image = ""
+        rows.append(
+            {
+                "name": i.name,
+                "quantity": int(i.quantity),
+                "unit_price": int(i.unit_price),
+                "line_total": int(i.line_total),
+                "image_url": image,
+            }
+        )
+    return rows
+
+
+async def send_order_confirmation(order, db=None) -> bool:
+    """Email the customer (and notify the shop) about a new order."""
+    rows = _order_rows(order, db)
+
+    totals = [("Subtotal", _ugx(int(order.subtotal)))]
+    if int(getattr(order, "discount", 0) or 0):
+        totals.append(("Discount", f"-{_ugx(int(order.discount))}"))
+    totals.append(
+        ("Delivery", "Free" if int(order.delivery_fee) == 0 else _ugx(int(order.delivery_fee)))
+    )
+
+    where = order.delivery_town or "your location"
+    method = order.payment_method.replace("_", " ").title()
+
+    body = (
+        email_theme.items_table(rows)
+        + email_theme.totals_table(totals, ("Total", _ugx(int(order.total))))
+        + email_theme.panel(
+            "Delivery",
+            f"We&rsquo;ll call you on <b>{order.phone}</b> to confirm delivery to "
+            f"<b>{where}</b>.<br />We deliver orders that have been paid for &mdash; "
+            f"or you&rsquo;re welcome to collect from our shop in Kampala.",
+        )
+        + email_theme.panel(
+            "Payment",
+            f"{method} &middot; {order.payment_status}",
+            accent=email_theme.ORANGE,
+        )
+        + email_theme.button("Track your order", f"{settings.site_url.rstrip('/')}/track?ref={order.reference}")
+    )
+
+    customer_html = email_theme.shell(
+        heading=f"Thank you for your order, {order.customer_name}",
+        intro=f"We&rsquo;ve received order <b>{order.reference}</b> and it&rsquo;s with our team now.",
+        body_html=body,
+    )
+
     ok = True
-    # Notify the shop inbox
+    # The shop's own copy — same figures, headed so it reads as an alert.
     ok &= await send_email(
         to=settings.contact_inbox,
         subject=f"New order {order.reference} — {_ugx(int(order.total))}",
-        html=html,
+        html=email_theme.shell(
+            heading=f"New order — {_ugx(int(order.total))}",
+            intro=f"<b>{order.customer_name}</b> &middot; {order.phone}"
+            + (f" &middot; {order.email}" if order.email else "")
+            + f"<br />Order <b>{order.reference}</b> &middot; deliver to {where}",
+            body_html=body,
+            show_phones=False,
+        ),
     )
-    # Confirm to the customer if they gave an email
+
     if order.email:
         ok &= await send_email(
             to=order.email,
             subject=f"Your Online Tech Uganda order {order.reference}",
-            html=html,
+            html=customer_html,
         )
     return ok
 
