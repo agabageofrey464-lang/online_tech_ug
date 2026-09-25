@@ -17,6 +17,14 @@ export const COMPANY = {
   address: "Kampala, Uganda",
 };
 
+/**
+ * Charged once when a student joins, on top of the course's training fee.
+ * Must match REGISTRATION_FEE in apps/web/src/lib/data.ts — it is the figure
+ * the site quotes, so a document printing a different one is quoting a price
+ * we do not offer.
+ */
+export const REGISTRATION_FEE = 180000;
+
 /** Where a client can pay — printed rather than explained on the phone. */
 export const MOMO = {
   mtn: "0760 547 211  (Online Tech Uganda)",

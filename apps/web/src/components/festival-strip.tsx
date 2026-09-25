@@ -41,16 +41,16 @@ const FALLBACK: Strip[] = [
     text: "Next ONLINE intake: 15 October — limited places",
     cta: "Register now",
     href: "/learn",
-    bg: "bg-teal-700",
+    bg: "bg-brand-600",
     img: "/courses/graphic-design.jpg",
     until: "2026-10-16",
   },
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-teal-600", img: "/products/hp-elitebook-840-g3.webp" },
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-ink-600", img: "/products/hp-elitebook-840-g3.webp" },
   { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700", img: "/products/dell-xps-13-9310.webp" },
-  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-teal-600", img: "/courses/microsoft-office.webp" },
-  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-teal-800", img: "/products/ram-ddr4-8gb-dimm.webp" },
-  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-teal-600", img: "/courses/python-programming.png" },
-  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-700", img: "/products/ssd-480gb-sata.webp" },
+  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-700", img: "/courses/microsoft-office.webp" },
+  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-brand-700", img: "/products/ram-ddr4-8gb-dimm.webp" },
+  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-ink-700", img: "/courses/python-programming.png" },
+  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-800", img: "/products/ssd-480gb-sata.webp" },
 ];
 
 const DISMISS_KEY = "otu_strip_closed";

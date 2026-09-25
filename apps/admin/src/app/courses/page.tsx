@@ -1,5 +1,6 @@
 import { apiGet, ugx, type AdminCourse } from "@/lib/api";
 import { CourseCodes } from "@/components/course-codes";
+import { CourseCatalogue } from "@/components/course-catalogue";
 
 
 export default async function CoursesPage() {
@@ -11,6 +12,11 @@ export default async function CoursesPage() {
         <h1 className="text-2xl font-extrabold text-ink-600">Courses</h1>
         <p className="text-sm text-ink-600/60">{courses.length} course(s) in the database.</p>
       </header>
+
+      {/* Something to send a student who is still choosing. */}
+      <div className="mb-6">
+        <CourseCatalogue courses={courses} />
+      </div>
 
       {/* How the unlock-code flow works — so anyone can handle a "send my code" request. */}
       <div className="mb-6 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-ink-600">

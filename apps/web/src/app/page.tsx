@@ -81,11 +81,14 @@ function DealBand({
   title,
   subtitle,
   href,
+  items,
   children,
 }: {
   title: string;
   subtitle?: string;
   href?: string;
+  /** The rail's own products, previewed in the band like a festival strip. */
+  items?: Product[];
   children: ReactNode;
 }) {
   // Jumia-style: a SOLID colour band with white cards. Colour varies per band
@@ -100,6 +103,34 @@ function DealBand({
           <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
           {subtitle && <p className="text-xs font-semibold text-white/85 sm:text-sm">{subtitle}</p>}
         </div>
+        {/* The band was a title at one end and a button at the other with a
+            stripe of empty colour between. These are the actual products in
+            the rail below, so the header advertises instead of labelling. */}
+        {items && items.length > 0 && (
+          <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
+            {items.slice(0, 5).map((p) => (
+              <Link
+                key={p.id}
+                href={`/shop/${p.id}`}
+                title={p.name}
+                className="group flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 ring-1 ring-white/30 transition hover:ring-2 hover:ring-white"
+              >
+                <SafeImage
+                  src={productImage(p)}
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="h-8 w-8 object-contain transition duration-300 group-hover:scale-110"
+                />
+              </Link>
+            ))}
+            <span className="ml-1 shrink-0 rounded-full bg-black/20 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide ring-1 ring-white/20">
+              From {ugx(Math.min(...items.map((x) => x.price)))}
+            </span>
+          </div>
+        )}
+
+
         {href && (
           <Link
             href={href}
@@ -344,13 +375,13 @@ export default function HomePage() {
       </div>
 
       {/* Top selling — teal banded separator */}
-      <DealBand title={trending.title} subtitle={trending.subtitle} href="/shop?sort=popular">
+      <DealBand title={trending.title} subtitle={trending.subtitle} href="/shop?sort=popular" items={topSelling}>
         <Rail items={topSelling} />
       </DealBand>
 
       {/* Weekend Top Deals — teal banded separator */}
       {deals.length > 0 && (
-        <DealBand title="Explosion Weekend" subtitle="Top Deals" href="/shop?deals=1">
+        <DealBand title="Explosion Weekend" subtitle="Top Deals" href="/shop?deals=1" items={deals}>
           <Rail items={deals} />
         </DealBand>
       )}
@@ -362,6 +393,7 @@ export default function HomePage() {
           title={g.brand}
           subtitle="Top Deals"
           href={`/shop?brand=${encodeURIComponent(g.brand)}`}
+          items={g.items.slice(0, 8)}
         >
           <Rail items={g.items.slice(0, 8)} />
         </DealBand>
