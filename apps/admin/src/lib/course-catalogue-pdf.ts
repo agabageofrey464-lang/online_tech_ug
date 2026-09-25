@@ -174,11 +174,7 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
       col(MUTED);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7);
-      doc.text(
-        `${c.level} · ${c.lessons} lessons · ${c.hours} hrs`,
-        x,
-        ty + name.length * 3.9 + 0.6,
-      );
+      doc.text(c.level, x, ty + name.length * 3.9 + 0.6);
     });
 
     y += blockH + 4;
