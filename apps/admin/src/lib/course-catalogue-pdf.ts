@@ -9,6 +9,7 @@ import {
   TEAL,
   TEAL_DARK,
   TEAL_PALE,
+  ZEBRA,
   logoPlate,
   long,
   paymentBand,
@@ -115,70 +116,61 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
 
   let y = 55;
 
-  /* ── Grouped by fee ─────────────────────────────────────────── */
-  const tiers = new Map<number, AdminCourse[]>();
-  for (const c of courses) {
-    const p = Number(c.price_ugx);
-    tiers.set(p, [...(tiers.get(p) ?? []), c]);
-  }
-  const prices = [...tiers.keys()].sort((a, b) => a - b);
+  /* ── One course, one price ──────────────────────────────────── */
+  // Grouping by fee saved space but made a reader work out which courses a
+  // price belonged to. Each course now carries its own figure, with room
+  // around it, which is what someone comparing two courses needs.
+  const list = [...courses].sort((a, b) => Number(a.price_ugx) - Number(b.price_ugx));
+  const ROW = 13;
 
-  const PRICE_W = 44; // the money column, kept the same width on every tier
+  const listHead = () => {
+    fill(TEAL);
+    doc.rect(M, y, W - M * 2, 8, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.6);
+    doc.text("COURSE", M + 4, y + 5.4);
+    doc.text("FULL PROGRAMME", right - 4, y + 5.4, { align: "right" });
+    y += 8;
+  };
+  listHead();
 
-  for (const price of prices) {
-    const list = (tiers.get(price) ?? []).sort((a, b) => a.title.localeCompare(b.title));
-
-    // Two courses per line in the right-hand column.
-    const perRow = 2;
-    const rows = Math.ceil(list.length / perRow);
-    const blockH = Math.max(20, 8 + rows * 12);
-
-    if (y + blockH > H - 22) {
+  list.forEach((c, i) => {
+    if (y + ROW > H - 24) {
       doc.addPage();
       header("COURSE FEES", "continued");
       y = 55;
+      listHead();
     }
 
-    // The fee, once, large.
-    fill(TEAL);
-    doc.roundedRect(M, y, PRICE_W, blockH, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
+    if (i % 2 === 1) {
+      fill(ZEBRA);
+      doc.rect(M, y, W - M * 2, ROW, "F");
+    }
+
+    col(INK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    const name = (doc.splitTextToSize(c.title, 108) as string[]).slice(0, 2);
+    name.forEach((line, n) => doc.text(line, M + 4, y + 5.6 + n * 4.4));
+
+    col(MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.4);
+    doc.text(c.level, M + 4, y + 5.6 + name.length * 4.4);
+
+    // The price, on its own, against the course it belongs to.
+    col(TEAL);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(13);
-    doc.text(ugx(price).replace("UGX ", ""), M + PRICE_W / 2, y + blockH / 2 - 0.5, {
-      align: "center",
-    });
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(6.6);
-    doc.setTextColor(198, 232, 241);
-    doc.text("UGX · full programme", M + PRICE_W / 2, y + blockH / 2 + 4.4, { align: "center" });
+    doc.text(ugx(Number(c.price_ugx)), right - 4, y + 8, { align: "right" });
 
-    // What you get for it.
-    const cx = M + PRICE_W + 5;
-    const colW = (right - cx) / perRow;
-    list.forEach((c, i) => {
-      const r = Math.floor(i / perRow);
-      const cIdx = i % perRow;
-      const x = cx + cIdx * colW;
-      const ty = y + 7 + r * 12;
+    y += ROW;
+    fill(RULE);
+    doc.rect(M, y, W - M * 2, 0.2, "F");
+  });
 
-      // A long title gets a second line of its own. Folding the remainder
-      // into the detail line produced "& WordPress) · Intermediate · 14
-      // lessons", which reads as nonsense.
-      col(INK);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(8.4);
-      const name = (doc.splitTextToSize(c.title, colW - 5) as string[]).slice(0, 2);
-      name.forEach((line, n) => doc.text(line, x, ty + n * 3.9));
-
-      col(MUTED);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(7);
-      doc.text(c.level, x, ty + name.length * 3.9 + 0.6);
-    });
-
-    y += blockH + 4;
-  }
+  y += 6;
 
   /* ── What every student gets ────────────────────────────────── */
   if (y + 32 > H - 22) {
