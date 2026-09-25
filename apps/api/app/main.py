@@ -42,6 +42,13 @@ async def _campaign_worker() -> None:
                 except Exception as exc:  # noqa: BLE001
                     logger.warning("Catalog sync failed: %s", exc)
 
+                # Registration is validated against the courses table, so it
+                # has to know about a course before anyone can enrol on it.
+                try:
+                    await catalog_sync.sync_courses(db)
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("Course sync failed: %s", exc)
+
                 campaign_auto.refresh_auto_campaigns(db)
 
                 due = campaign_auto.due_for_announcement(db)
@@ -133,6 +140,8 @@ async def lifespan(app: FastAPI):
             with SessionLocal() as db:
                 result = await catalog_sync.sync(db)
                 logger.info("Catalog sync at startup: %s", result)
+                result = await catalog_sync.sync_courses(db)
+                logger.info("Course sync at startup: %s", result)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Catalog sync skipped (%s).", exc)
     except Exception as exc:  # noqa: BLE001

@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     # feed on startup and hourly, so publishing the site is the only step
     # needed after a price change. Blank URL or false = never sync.
     catalog_feed_url: str = "https://www.onlinetechug.com/api/catalog"
+    course_feed_url: str = "https://www.onlinetechug.com/api/courses-feed"
     catalog_sync_enabled: bool = True
 
     # Printed on every message we send a customer, so they can call and
