@@ -4,7 +4,11 @@ import Link from "next/link";
 import { ShopGrid } from "@/components/shop-grid";
 import { FeaturedProducts } from "@/components/featured-products";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { products } from "@/lib/data";
+import { getProducts } from "@/lib/catalog";
+
+// Rebuilt in the background every few minutes, so a product added or
+// repriced in the admin reaches the shop without a deploy.
+export const revalidate = 300; // keep in step with CATALOG_REVALIDATE
 
 export async function generateMetadata({
   searchParams,
@@ -35,6 +39,7 @@ export default async function ShopPage({
   searchParams: Promise<{ cat?: string; brand?: string; q?: string; deals?: string; sort?: string }>;
 }) {
   const sp = await searchParams;
+  const products = await getProducts();
   const cat = typeof sp.cat === "string" ? sp.cat : "";
   const brand = typeof sp.brand === "string" ? sp.brand : "";
   const q = typeof sp.q === "string" ? sp.q : "";
@@ -122,7 +127,7 @@ export default async function ShopPage({
 
       {!isFiltered && <FeaturedProducts />}
       <Suspense fallback={<div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">Loading…</div>}>
-        <ShopGrid />
+        <ShopGrid items={products} />
       </Suspense>
     </div>
   );

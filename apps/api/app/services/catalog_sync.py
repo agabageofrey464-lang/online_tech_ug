@@ -9,9 +9,12 @@ charging pre-increase prices.
 Rather than remembering to run a script, the API pulls the shop's public
 catalogue feed and upserts from it. Publishing the site is the only step.
 
-What it will not touch: stock_qty and in_stock, which the owner manages in the
-admin and the shop front knows nothing about. Structured specs are filled in
-only when the row has none, so hand-written detail is never overwritten.
+What it will not touch: anything on a row that already exists. The feed seeds
+products the database has never seen; after that the admin owns them. It used
+to overwrite name, price and description from the feed every hour, which meant
+a price corrected in the admin was silently reverted — unnoticeable while the
+shop front rendered from the same file, and actively destructive once it
+renders from the database.
 """
 
 from __future__ import annotations
@@ -30,8 +33,9 @@ logger = logging.getLogger(__name__)
 
 TIMEOUT = 20.0
 
-# Columns the shop front owns. Anything not listed here is left as the admin set it.
-SYNCED = (
+# Filled in on a row the feed has never seen before. Never used to overwrite:
+# once a product exists, the admin is the only thing that changes it.
+SEEDED = (
     "name",
     "category",
     "brand",
@@ -67,8 +71,11 @@ async def fetch_catalog() -> list[dict]:
 
 
 def apply_catalog(db: Session, items: list[dict]) -> dict:
-    """Upsert `items`. Returns a small summary for the log."""
-    created = updated = 0
+    """Create products the database has never seen. Returns a summary for the log.
+
+    Existing rows are left exactly as they are — see the module docstring.
+    """
+    created = skipped = 0
 
     for item in items:
         slug = str(item["slug"])
@@ -105,30 +112,22 @@ def apply_catalog(db: Session, items: list[dict]) -> dict:
             created += 1
             continue
 
-        changed = False
-        for col in SYNCED:
-            new = values[col]
-            old = getattr(row, col)
-            if col.endswith("_ugx") and old is not None:
-                old = int(old)
-            if old != new:
-                setattr(row, col, new)
-                changed = True
+        # It exists, so it is the admin's now. Only fill a gap the admin has
+        # not filled themselves.
         if item.get("specs") and not row.specs:
             row.specs = item["specs"]
-            changed = True
-        if changed:
-            updated += 1
+        else:
+            skipped += 1
 
-    if created or updated:
+    if created:
         try:
             db.commit()
         except SQLAlchemyError as exc:
             db.rollback()
             logger.warning("Catalog sync commit failed: %s", exc)
-            return {"created": 0, "updated": 0, "error": str(exc)[:200]}
+            return {"created": 0, "skipped": skipped, "error": str(exc)[:200]}
 
-    return {"received": len(items), "created": created, "updated": updated}
+    return {"received": len(items), "created": created, "left_alone": skipped}
 
 
 async def sync(db: Session) -> dict:
@@ -139,6 +138,6 @@ async def sync(db: Session) -> dict:
     if not items:
         return {"skipped": "no items"}
     result = apply_catalog(db, items)
-    if result.get("created") or result.get("updated"):
+    if result.get("created"):
         logger.info("Catalog sync: %s", result)
     return result

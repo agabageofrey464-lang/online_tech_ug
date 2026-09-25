@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ExploreMore } from "@/components/explore-more";
 import { notFound } from "next/navigation";
 import { Check, Truck, MapPin, RotateCcw, ShieldCheck, Package, Phone } from "lucide-react";
-import { products, productImage } from "@/lib/data";
+import { products as seedProducts, productImage, type Product } from "@/lib/data";
+import { getProduct, getProducts } from "@/lib/catalog";
 import { ugx, whatsappLink, site } from "@/lib/site";
 import { Badge, Stars, Button } from "@/components/ui";
 import { AddToCartButton } from "@/components/add-to-cart-button";
@@ -18,9 +19,14 @@ import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
 
+// Pre-build the catalogue we ship with; anything added in the admin later is
+// rendered on first request and then cached like the rest.
 export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.id }));
+  return seedProducts.map((p) => ({ slug: p.id }));
 }
+
+export const dynamicParams = true;
+export const revalidate = 300; // keep in step with CATALOG_REVALIDATE
 
 export async function generateMetadata({
   params,
@@ -28,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = products.find((p) => p.id === slug);
+  const product = await getProduct(slug);
   if (!product) return { title: "Product not found" };
   const desc = `${product.name} — ${product.specs.join(", ")}. ${ugx(product.price)} at Online Tech Uganda. ${product.condition}, warranty & countrywide delivery.`;
   return {
@@ -45,7 +51,7 @@ export async function generateMetadata({
   };
 }
 
-function specRows(product: (typeof products)[number]): [string, string][] {
+function specRows(product: Product): [string, string][] {
   const d = product.details!;
   return [
     ["Type", d.type],
@@ -72,9 +78,10 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = products.find((p) => p.id === slug);
+  const product = await getProduct(slug);
   if (!product) notFound();
 
+  const products = await getProducts();
   const sameBrand = products.filter((p) => p.brand === product.brand && p.id !== product.id);
   const sameCat = products.filter(
     (p) => p.category === product.category && p.id !== product.id && p.brand !== product.brand,

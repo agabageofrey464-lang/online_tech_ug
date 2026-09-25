@@ -2,18 +2,15 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { products, productCategories } from "@/lib/data";
+import { products as seedProducts, productCategories, type Product } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 import { SidebarExtras } from "@/components/sidebar-extras";
 import { EmptyState } from "@/components/empty-state";
 
 type Sort = "popular" | "price-asc" | "price-desc" | "new";
 
-const BRANDS = Array.from(new Set(products.map((p) => p.brand))).sort();
-
 // Product conditions in a sensible order (only those that actually exist).
 const CONDITION_ORDER = ["Brand New", "UK Used", "Refurbished", "Premium Repack"];
-const CONDITIONS = CONDITION_ORDER.filter((c) => products.some((p) => p.condition === c));
 
 const PRICE_BANDS: { label: string; min: number; max: number }[] = [
   { label: "All prices", min: 0, max: Infinity },
@@ -26,8 +23,20 @@ const PRICE_BANDS: { label: string; min: number; max: number }[] = [
 
 const RATINGS = [0, 4, 3];
 
-export function ShopGrid() {
+export function ShopGrid({ items }: { items?: Product[] }) {
+  const products = items?.length ? items : seedProducts;
   const params = useSearchParams();
+
+  // Filters are built from what is actually on sale, so a brand that sells out
+  // stops being offered as a filter on its own.
+  const BRANDS = useMemo(
+    () => Array.from(new Set(products.map((p) => p.brand))).sort(),
+    [products],
+  );
+  const CONDITIONS = useMemo(
+    () => CONDITION_ORDER.filter((c) => products.some((p) => p.condition === c)),
+    [products],
+  );
   const [category, setCategory] = useState<string>("All");
   const [brands, setBrands] = useState<string[]>([]);
   const [conditions, setConditions] = useState<string[]>([]);
@@ -131,7 +140,7 @@ export function ShopGrid() {
       return [...list, ...related];
     }
     return list;
-  }, [category, brands, conditions, query, sort, priceIdx, minRating]);
+  }, [products, category, brands, conditions, query, sort, priceIdx, minRating]);
 
   const pageItems = filtered.slice(0, shown);
 
