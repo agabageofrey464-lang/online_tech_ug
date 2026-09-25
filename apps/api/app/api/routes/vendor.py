@@ -49,7 +49,13 @@ router = APIRouter()
 
 
 def require_vendor(user: User = Depends(get_current_user)) -> User:
-    if user.role != "vendor":
+    """A vendor, or the admin who runs the place.
+
+    `role` is one field doing two jobs, so making the owner an admin used to
+    cost them their own shop. An admin can already do all of this from the
+    admin app; refusing them here only stopped them using their own site.
+    """
+    if user.role not in ("vendor", "admin"):
         raise HTTPException(status_code=403, detail="Vendor account required")
     return user
 
@@ -60,7 +66,7 @@ def require_admin_key(x_admin_key: str = Header(default="")) -> None:
 
 
 def require_approved_vendor(user: User = Depends(require_vendor)) -> User:
-    if not user.vendor_approved:
+    if user.role != "admin" and not user.vendor_approved:
         raise HTTPException(status_code=403, detail="Your vendor account is pending approval")
     return user
 
