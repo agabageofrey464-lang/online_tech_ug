@@ -21,12 +21,14 @@ import { SafeImage } from "@/components/safe-image";
 function specLines(product: Product): { primary: string; secondary: string } {
   const d = product.details;
   if (d) {
+    // Not every product has a processor or a screen, so each part is read
+    // only if it is there and the card shows whatever it can.
     const cpu =
-      d.processor.match(/Core i\d|Ryzen \d|Apple M\d|Celeron|Pentium|Athlon|Xeon/i)?.[0] ?? "";
-    const ram = d.ram.split("(")[0].trim();
-    const storage = d.storage.split("(")[0].trim();
-    const screen = d.display.split(/[,(]/)[0].trim();
-    const os = d.os.split(/[,(]/)[0].trim();
+      d.processor?.match(/Core i\d|Ryzen \d|Apple M\d|Celeron|Pentium|Athlon|Xeon/i)?.[0] ?? "";
+    const ram = d.ram?.split("(")[0].trim() ?? "";
+    const storage = (d.storage ?? d.capacity)?.split("(")[0].trim() ?? "";
+    const screen = d.display?.split(/[,(]/)[0].trim() ?? "";
+    const os = (d.os ?? d.interface)?.split(/[,(]/)[0].trim() ?? "";
     return {
       primary: [cpu, ram, storage].filter(Boolean).join(" · "),
       secondary: [screen, os].filter(Boolean).join(" · "),

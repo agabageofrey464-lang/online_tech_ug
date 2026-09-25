@@ -52,24 +52,35 @@ export async function generateMetadata({
 }
 
 function specRows(product: Product): [string, string][] {
-  const d = product.details!;
-  return [
-    ["Type", d.type],
-    ["Brand", product.brand],
-    ["Processor", d.processor],
-    ["Generation", d.generation],
-    ["RAM", d.ram],
-    ["Storage", d.storage],
-    ["Graphics card", d.graphics],
-    ["Display", d.display],
-    ["Operating system", d.os],
-    ["Battery life", d.battery],
-    ["Ports & connectivity", d.ports],
-    ["Build quality", d.build],
-    ["Condition", product.condition],
-    ["Price", ugx(product.price)],
-    ["Best for", d.purpose],
-  ];
+  const d = product.details ?? {};
+  // Only rows with something in them — a router has no battery life, and an
+  // empty row reads as a missing answer rather than a detail that does not
+  // apply to this kind of product.
+  return (
+    [
+      ["Type", d.type],
+      ["Brand", product.brand],
+      ["Capacity", d.capacity],
+      ["Processor", d.processor],
+      ["Generation", d.generation],
+      ["RAM", d.ram],
+      ["Storage", d.storage],
+      ["Graphics card", d.graphics],
+      ["Display", d.display],
+      ["Interface", d.interface],
+      ["Speed", d.speed],
+      ["Operating system", d.os],
+      ["Battery", d.battery],
+      ["Ports & connectivity", d.ports],
+      ["Works with", d.compatibility],
+      ["Build quality", d.build],
+      ["In the box", d.inBox],
+      ["Condition", product.condition],
+      ["Warranty", d.warranty],
+      ["Price", ugx(product.price)],
+      ["Best for", d.purpose],
+    ] as [string, string | undefined][]
+  ).filter((r): r is [string, string] => Boolean(r[1]));
 }
 
 export default async function ProductDetailPage({

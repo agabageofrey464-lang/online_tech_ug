@@ -1,19 +1,34 @@
 // Catalog seed data. Slugs (id) are kept in sync with apps/api/app/services/catalog.py
 // so checkout price-validation matches. Computers span budget → high-end (UGX 550k+).
 
+/**
+ * A product's specification table.
+ *
+ * Every field is optional because this describes a router and a power bank as
+ * well as a laptop, and a "Processor: n/a" row on a memory stick is worse than
+ * no row at all. The product page prints only what is filled in.
+ */
 export type ProductDetails = {
-  type: string; // e.g. Business Ultrabook, Gaming Laptop, Desktop Tower
-  processor: string; // full CPU incl. i-Core / Ryzen model
-  generation: string; // e.g. 11th Gen, Apple M1
-  ram: string; // size + type
-  storage: string; // size + type (SSD/HDD)
-  graphics: string; // integrated or dedicated GPU
-  display: string; // size + resolution
-  os: string; // Windows / macOS
-  battery: string; // battery life
-  ports: string; // ports & connectivity
-  build: string; // build quality
-  purpose: string; // what the machine is best for
+  type?: string; // e.g. Business Ultrabook, Portable SSD, Wi-Fi Router
+  processor?: string; // full CPU incl. i-Core / Ryzen model
+  generation?: string; // e.g. 11th Gen, Apple M1
+  ram?: string; // size + type
+  storage?: string; // size + type (SSD/HDD)
+  graphics?: string; // integrated or dedicated GPU
+  display?: string; // size + resolution
+  os?: string; // Windows / macOS
+  battery?: string; // battery life or capacity
+  ports?: string; // ports & connectivity
+  build?: string; // build quality / materials
+  purpose?: string; // what it is best for
+
+  // For the things that are not computers.
+  capacity?: string; // 1TB, 20,000mAh, 8GB
+  interface?: string; // USB-C 3.2, SATA III, PCIe 4.0 NVMe
+  speed?: string; // read/write, Mbps, MHz
+  compatibility?: string; // what it fits or works with
+  inBox?: string; // what is supplied
+  warranty?: string; // cover we give
 };
 
 export type Product = {
@@ -852,6 +867,15 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.2,
     specs: ["Multiple tips", "65W–90W", "HP/Dell/Lenovo compatible"],
+    details: {
+      type: "Universal laptop charger",
+      speed: "65W–90W output",
+      compatibility: "HP, Dell, Lenovo, Asus, Acer and Toshiba — multiple tips supplied. Check your laptop's voltage before use.",
+      inBox: "Charger, mains cable and a set of interchangeable tips",
+      build: "Short-circuit, over-voltage and over-heat protection",
+      warranty: "6 months",
+      purpose: "One charger for a household or office with mixed laptops",
+    },
   },
   {
     image: "/products/ups-1.jpg", id: "mercury-ups-650va",
@@ -862,6 +886,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.3,
     specs: ["650VA / 360W", "Surge protection", "Backup for PC + router"],
+    details: {
+      type: "Line-interactive UPS",
+      capacity: "650VA / 360W",
+      battery: "Runs a desktop and router for roughly 10–20 minutes, depending on load",
+      interface: "Battery-backed and surge-only sockets",
+      compatibility: "One desktop PC plus a router or modem. Not for laser printers.",
+      build: "Automatic voltage regulation and surge protection",
+      warranty: "6 months",
+      purpose: "Saving your work and shutting down properly when the power cuts",
+    },
   },
   { image: "/products/charger_usbc-1.jpg",
     id: "usb-c-charger-65w",
@@ -873,6 +907,15 @@ export const products: Product[] = [
     rating: 4.5,
     badge: "New",
     specs: ["65W USB-C PD", "Fast charging", "Laptops, tablets & phones"],
+    details: {
+      type: "USB-C laptop charger",
+      speed: "65W USB Power Delivery",
+      interface: "USB-C PD 3.0",
+      compatibility: "Any laptop, tablet or phone that charges over USB-C — MacBook Air, Dell XPS, HP Spectre, Android phones.",
+      inBox: "65W USB-C charger and cable",
+      warranty: "6 months",
+      purpose: "Replacing a lost charger, or one small charger for every device you own",
+    },
   },
   { image: "/products/charger_ac-2.jpg",
     id: "laptop-charger-pin-90w",
@@ -883,6 +926,15 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.3,
     specs: ["90W output", "HP / Dell / Lenovo tips", "Surge-safe"],
+    details: {
+      type: "Pin laptop charger",
+      speed: "90W output",
+      compatibility: "HP, Dell and Lenovo laptops with a barrel (pin) socket. Bring your old charger or laptop so we match the tip.",
+      inBox: "Charger, mains cable and tip",
+      build: "Surge and over-current protection",
+      warranty: "6 months",
+      purpose: "The replacement for an older laptop that does not charge over USB-C",
+    },
   },
   { image: "/products/powerbank-1.jpg",
     id: "power-bank-20000",
@@ -893,6 +945,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.5,
     specs: ["20,000mAh", "Fast charge", "Dual USB + USB-C"],
+    details: {
+      type: "Power bank",
+      capacity: "20,000mAh",
+      speed: "Fast charge output",
+      interface: "2 × USB-A out, USB-C in/out",
+      compatibility: "Phones, tablets and USB-C laptops that accept power-bank charging.",
+      inBox: "Power bank and charging cable",
+      warranty: "6 months",
+      purpose: "Four to five phone charges, or a day away from a socket",
+    },
   },
   { image: "/products/powerbank-2.jpg",
     id: "power-bank-10000",
@@ -903,6 +965,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.4,
     specs: ["10,000mAh", "Slim & portable", "USB-C in/out"],
+    details: {
+      type: "Power bank",
+      capacity: "10,000mAh",
+      speed: "Fast charge output",
+      interface: "USB-C in/out, USB-A out",
+      compatibility: "Phones and tablets.",
+      inBox: "Power bank and charging cable",
+      warranty: "6 months",
+      purpose: "Slim enough for a pocket — two full phone charges",
+    },
   },
 
   // ── Components (RAM & SSD upgrades) ──────────────────────────
@@ -916,6 +988,16 @@ export const products: Product[] = [
     rating: 4.7,
     badge: "Upgrade",
     specs: ["8GB DDR4", "SODIMM (laptop)", "3200MHz"],
+    details: {
+      type: "Laptop memory (SODIMM)",
+      capacity: "8GB",
+      speed: "3200MHz (PC4-25600)",
+      interface: "DDR4 SODIMM, 260-pin",
+      compatibility: "Most laptops from 2016 onwards with a free DDR4 slot. Runs at your laptop's supported speed.",
+      inBox: "1 × 8GB DDR4 SODIMM module",
+      warranty: "12 months",
+      purpose: "The cheapest way to stop a slow laptop swapping to disk — doubles most 4GB machines",
+    },
   },
   { image: "/products/ram-2.jpg",
     id: "ram-ddr4-16gb-sodimm",
@@ -926,6 +1008,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.7,
     specs: ["16GB DDR4", "SODIMM (laptop)", "3200MHz"],
+    details: {
+      type: "Laptop memory (SODIMM)",
+      capacity: "16GB",
+      speed: "3200MHz (PC4-25600)",
+      interface: "DDR4 SODIMM, 260-pin",
+      compatibility: "Laptops with a free DDR4 slot. Check your maximum supported memory before buying.",
+      inBox: "1 × 16GB DDR4 SODIMM module",
+      warranty: "12 months",
+      purpose: "Heavy multitasking, design work and virtual machines on a laptop",
+    },
   },
   { image: "/products/ram-3.jpg",
     id: "ram-ddr4-8gb-dimm",
@@ -936,6 +1028,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.6,
     specs: ["8GB DDR4", "DIMM (desktop)", "3200MHz"],
+    details: {
+      type: "Desktop memory (DIMM)",
+      capacity: "8GB",
+      speed: "3200MHz (PC4-25600)",
+      interface: "DDR4 DIMM, 288-pin",
+      compatibility: "Desktop motherboards with DDR4 slots. Not compatible with DDR3 or DDR5 boards.",
+      inBox: "1 × 8GB DDR4 DIMM module",
+      warranty: "12 months",
+      purpose: "A straightforward desktop upgrade for office and home machines",
+    },
   },
   { image: "/products/ssd-extra-6.jpg",
     id: "ssd-nvme-500gb",
@@ -947,6 +1049,16 @@ export const products: Product[] = [
     rating: 4.8,
     badge: "Fast",
     specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"],
+    details: {
+      type: "Internal SSD",
+      capacity: "500GB",
+      speed: "Up to 3,500MB/s read",
+      interface: "NVMe PCIe 3.0 ×4, M.2 2280",
+      compatibility: "Any laptop or desktop with an M.2 NVMe slot. Will not work in an M.2 SATA-only slot.",
+      inBox: "1 × M.2 NVMe SSD",
+      warranty: "12 months",
+      purpose: "The single biggest speed upgrade an older machine can be given",
+    },
   },
   { image: "/products/ssd-extra-3.jpg",
     id: "ssd-480gb-sata",
@@ -957,6 +1069,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.7,
     specs: ['480GB', '2.5" SATA', "Up to 550MB/s"],
+    details: {
+      type: "Internal SSD",
+      capacity: "480GB",
+      speed: "Up to 550MB/s read",
+      interface: "SATA III 6Gb/s, 2.5\"",
+      compatibility: "Any laptop or desktop with a 2.5-inch drive bay — the direct replacement for an old hard disk.",
+      inBox: "1 × 2.5-inch SATA SSD",
+      warranty: "12 months",
+      purpose: "Bringing a machine with a mechanical hard disk back to life",
+    },
   },
 
   // ── Networking ──────────────────────────────────────────────
@@ -970,6 +1092,16 @@ export const products: Product[] = [
     rating: 4.6,
     badge: "New",
     specs: ["AC1200 dual-band", "4 antennas", "MU-MIMO"],
+    details: {
+      type: "Wi-Fi router",
+      speed: "AC1200 — 867Mbps (5GHz) + 300Mbps (2.4GHz)",
+      interface: "4 × Gigabit LAN, 1 × Gigabit WAN",
+      build: "4 external antennas with MU-MIMO and beamforming",
+      compatibility: "Any fibre or LTE connection with an Ethernet hand-off.",
+      inBox: "Router, power adapter and Ethernet cable",
+      warranty: "TP-Link 12-month warranty",
+      purpose: "A home or small office of up to about four rooms",
+    },
   },
   { image: "/products/switch-1.jpg",
     id: "tp-link-tl-sg108",
@@ -980,6 +1112,16 @@ export const products: Product[] = [
     condition: "Brand New",
     rating: 4.6,
     specs: ["8 × Gigabit ports", "Plug & play", "Metal case"],
+    details: {
+      type: "Gigabit network switch",
+      speed: "8 × 10/100/1000Mbps",
+      interface: "8 Gigabit Ethernet ports, unmanaged",
+      build: "Metal case, fanless and silent",
+      compatibility: "Plug and play — no configuration.",
+      inBox: "Switch and power adapter",
+      warranty: "TP-Link 12-month warranty",
+      purpose: "Splitting one office network point into eight",
+    },
   },
 
   // ── Storage ─────────────────────────────────────────────────
@@ -1047,22 +1189,22 @@ export const products: Product[] = [
   // ── More brand products ─────────────────────────────────────
   // Kingston
   { image: "/products/ssd-extra-2.jpg", id: "kingston-ssd-480gb", name: "Kingston A400 480GB SSD", category: "Storage", price: 220000, brand: "Kingston", condition: "Brand New", rating: 4.7, specs: ["480GB SATA SSD", "Up to 500MB/s", "2.5\" laptop/desktop"] },
-  { image: "/products/ssd-extra-5.jpg", id: "kingston-nvme-500gb", name: "Kingston NV2 500GB NVMe SSD", category: "Components", price: 280000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"] },
+  { image: "/products/ssd-extra-5.jpg", id: "kingston-nvme-500gb", name: "Kingston NV2 500GB NVMe SSD", category: "Components", price: 280000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["500GB", "NVMe M.2", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "500GB", speed: "Up to 3,500MB/s read, 2,100MB/s write", interface: "NVMe PCIe 4.0 ×4 (backwards compatible), M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × Kingston NV2 SSD", warranty: "Kingston 3-year limited warranty", purpose: "A fast, well-priced branded drive for everyday upgrades" } },
   { image: "/products/flash-3.jpg", id: "kingston-flash-64gb", name: "Kingston 64GB Flash Drive", category: "Storage", price: 38000, brand: "Kingston", condition: "Brand New", rating: 4.5, specs: ["64GB", "USB 3.2", "Compact"] },
   // Logitech
   { image: "/products/mouse-1.jpg", id: "logitech-m170-mouse", name: "Logitech M170 Wireless Mouse", category: "Accessories", price: 45000, brand: "Logitech", condition: "Brand New", rating: 4.5, specs: ["2.4GHz wireless", "Plug & play", "Long battery life"] },
   { image: "/products/keyboard-1.jpg", id: "logitech-k380-keyboard", name: "Logitech K380 Bluetooth Keyboard", category: "Accessories", price: 130000, brand: "Logitech", condition: "Brand New", rating: 4.6, specs: ["Bluetooth", "Multi-device", "Compact"] },
   { id: "logitech-h111-headset", name: "Logitech H111 Stereo Headset", category: "Accessories", price: 70000, brand: "Logitech", condition: "Brand New", rating: 4.4, specs: ["3.5mm", "Mic + volume control", "Lightweight"] },
   // Mercury
-  { id: "mercury-ups-850va", name: "Mercury 850VA UPS", category: "Power", price: 230000, brand: "Mercury", condition: "Brand New", rating: 4.4, specs: ["850VA / 480W", "Surge protection", "Backup for PC + router"] },
-  { image: "/products/powerbank-3.jpg", id: "mercury-power-bank", name: "Mercury 10,000mAh Power Bank", category: "Power", price: 95000, brand: "Mercury", condition: "Brand New", rating: 4.3, specs: ["10,000mAh", "Dual USB", "Fast charge"] },
+  { id: "mercury-ups-850va", name: "Mercury 850VA UPS", category: "Power", price: 230000, brand: "Mercury", condition: "Brand New", rating: 4.4, specs: ["850VA / 480W", "Surge protection", "Backup for PC + router"], details: { type: "Line-interactive UPS", capacity: "850VA / 480W", battery: "Runs a desktop and router for roughly 15–25 minutes, depending on load", interface: "Battery-backed and surge-only sockets", compatibility: "A desktop, monitor and router. Not for laser printers.", build: "Automatic voltage regulation and surge protection", warranty: "6 months", purpose: "A fuller workstation, or longer cover on a lighter load" } },
+  { image: "/products/powerbank-3.jpg", id: "mercury-power-bank", name: "Mercury 10,000mAh Power Bank", category: "Power", price: 95000, brand: "Mercury", condition: "Brand New", rating: 4.3, specs: ["10,000mAh", "Dual USB", "Fast charge"], details: { type: "Power bank", capacity: "10,000mAh", speed: "Fast charge output", interface: "2 × USB-A out, micro-USB and USB-C in", compatibility: "Phones and tablets.", inBox: "Power bank and charging cable", warranty: "6 months", purpose: "An affordable everyday power bank from a brand widely serviced locally" } },
   // SanDisk
   { image: "/products/flash-4.jpg", id: "sandisk-flash-128gb", name: "SanDisk Ultra 128GB Flash Drive", category: "Storage", price: 60000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "USB 3.0", "Up to 130MB/s"] },
   { image: "/products/microsd-2.jpg", id: "sandisk-microsd-128gb", name: "SanDisk 128GB MicroSD Card", category: "Storage", price: 70000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["128GB", "Class 10 / U1", "SD adapter included"] },
   { image: "/products/ssd-sata-1.jpg", id: "sandisk-ssd-500gb", name: "SanDisk SSD Plus 500GB", category: "Storage", price: 345000, brand: "SanDisk", condition: "Brand New", rating: 4.7, specs: ["500GB", "Portable SSD", "USB-C"] },
   // TP-Link
-  { image: "/products/router-2.jpg", id: "tp-link-archer-c20", name: "TP-Link Archer C20 Router", category: "Networking", price: 110000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["AC750 dual-band", "3 antennas", "Easy setup"] },
-  { image: "/products/router-3.jpg", id: "tp-link-re200-extender", name: "TP-Link RE200 WiFi Extender", category: "Networking", price: 95000, brand: "TP-Link", condition: "Brand New", rating: 4.5, badge: "New", specs: ["AC750", "Extends Wi-Fi range", "Plug-in"] },
+  { image: "/products/router-2.jpg", id: "tp-link-archer-c20", name: "TP-Link Archer C20 Router", category: "Networking", price: 110000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["AC750 dual-band", "3 antennas", "Easy setup"], details: { type: "Wi-Fi router", speed: "AC750 — 433Mbps (5GHz) + 300Mbps (2.4GHz)", interface: "4 × 100Mbps LAN, 1 × 100Mbps WAN", build: "3 external antennas", compatibility: "Home fibre and LTE connections.", inBox: "Router, power adapter and Ethernet cable", warranty: "TP-Link 12-month warranty", purpose: "A small home where a few phones and a laptop share the line" } },
+  { image: "/products/router-3.jpg", id: "tp-link-re200-extender", name: "TP-Link RE200 WiFi Extender", category: "Networking", price: 95000, brand: "TP-Link", condition: "Brand New", rating: 4.5, badge: "New", specs: ["AC750", "Extends Wi-Fi range", "Plug-in"], details: { type: "Wi-Fi range extender", speed: "AC750 — 433Mbps (5GHz) + 300Mbps (2.4GHz)", interface: "Plugs into a wall socket; 1 × 100Mbps Ethernet port", compatibility: "Works with any router, whatever the brand.", inBox: "Extender unit", warranty: "TP-Link 12-month warranty", purpose: "The back room or upstairs where the router's signal gives out" } },
   // Western Digital
   { image: "/products/hdd_ext-2.jpg", id: "wd-elements-2tb", name: "WD Elements 2TB External HDD", category: "Storage", price: 320000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["2TB", "USB 3.0", "Plug & play"] },
   { image: "/products/hdd_ext-3.jpg", id: "wd-passport-1tb", name: "WD My Passport 1TB", category: "Storage", price: 260000, brand: "Western Digital", condition: "Brand New", rating: 4.7, specs: ["1TB", "USB 3.0", "Password protection"] },
@@ -1071,25 +1213,25 @@ export const products: Product[] = [
   // ── High-capacity SSDs — 1TB (from 580k) & 2TB (1M+). Fixed prices, Brand New ──
   { image: "/products/ssd-sata-8.jpg", id: "samsung-870evo-1tb", name: "Samsung 870 EVO 1TB SATA SSD", category: "Storage", price: 580000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "1TB", specs: ["1TB", "2.5\" SATA III", "Up to 560MB/s"] },
   { image: "/products/ssd-sata-9.jpg", id: "crucial-mx500-1tb", name: "Crucial MX500 1TB SATA SSD", category: "Storage", price: 610000, brand: "Crucial", condition: "Brand New", rating: 4.8, specs: ["1TB", "2.5\" SATA III", "Reliable upgrade"] },
-  { image: "/products/ssd-nvme-4.jpg", id: "kingston-nv2-1tb", name: "Kingston NV2 1TB NVMe SSD", category: "Components", price: 650000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["1TB", "NVMe M.2 Gen4", "Up to 3500MB/s"] },
-  { image: "/products/ssd-nvme-6.jpg", id: "wd-blue-sn570-1tb", name: "WD Blue SN570 1TB NVMe SSD", category: "Components", price: 690000, brand: "Western Digital", condition: "Brand New", rating: 4.8, specs: ["1TB", "NVMe M.2", "Up to 3500MB/s"] },
-    { image: "/products/ssd-nvme-1.jpg", id: "samsung-980-1tb-nvme", name: "Samsung 980 1TB NVMe SSD", category: "Components", price: 780000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "Top", specs: ["1TB", "NVMe M.2", "Up to 3500MB/s"] },
+  { image: "/products/ssd-nvme-4.jpg", id: "kingston-nv2-1tb", name: "Kingston NV2 1TB NVMe SSD", category: "Components", price: 650000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["1TB", "NVMe M.2 Gen4", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "1TB", speed: "Up to 3,500MB/s read, 2,800MB/s write", interface: "NVMe PCIe 4.0 ×4, M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × Kingston NV2 SSD", warranty: "Kingston 3-year limited warranty", purpose: "Room for a full working library of projects and photos" } },
+  { image: "/products/ssd-nvme-6.jpg", id: "wd-blue-sn570-1tb", name: "WD Blue SN570 1TB NVMe SSD", category: "Components", price: 690000, brand: "Western Digital", condition: "Brand New", rating: 4.8, specs: ["1TB", "NVMe M.2", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "1TB", speed: "Up to 3,500MB/s read, 3,000MB/s write", interface: "NVMe PCIe 3.0 ×4, M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × WD Blue SN570 SSD", warranty: "WD 5-year limited warranty", purpose: "Creative work — sustained write speed holds up on long transfers" } },
+    { image: "/products/ssd-nvme-1.jpg", id: "samsung-980-1tb-nvme", name: "Samsung 980 1TB NVMe SSD", category: "Components", price: 780000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "Top", specs: ["1TB", "NVMe M.2", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "1TB", speed: "Up to 3,500MB/s read, 3,000MB/s write", interface: "NVMe PCIe 3.0 ×4, M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × Samsung 980 SSD", warranty: "Samsung 5-year limited warranty", purpose: "Samsung reliability at PCIe 3.0 prices" } },
   { image: "/products/ssd-extra-7.jpg", id: "samsung-870evo-2tb", name: "Samsung 870 EVO 2TB SATA SSD", category: "Storage", price: 1000000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "2TB", specs: ["2TB", "2.5\" SATA III", "Up to 560MB/s"] },
   { image: "/products/ssd-extra-8.jpg", id: "crucial-mx500-2tb", name: "Crucial MX500 2TB SATA SSD", category: "Storage", price: 1080000, brand: "Crucial", condition: "Brand New", rating: 4.8, specs: ["2TB", "2.5\" SATA III", "Huge fast storage"] },
-  { image: "/products/ssd-nvme-5.jpg", id: "kingston-nv2-2tb", name: "Kingston NV2 2TB NVMe SSD", category: "Components", price: 1180000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["2TB", "NVMe M.2 Gen4", "Up to 3500MB/s"] },
-  { image: "/products/ssd-nvme-7.jpg", id: "wd-blue-sn570-2tb", name: "WD Blue SN570 2TB NVMe SSD", category: "Components", price: 1280000, brand: "Western Digital", condition: "Brand New", rating: 4.8, specs: ["2TB", "NVMe M.2", "Up to 3500MB/s"] },
+  { image: "/products/ssd-nvme-5.jpg", id: "kingston-nv2-2tb", name: "Kingston NV2 2TB NVMe SSD", category: "Components", price: 1180000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "Fast", specs: ["2TB", "NVMe M.2 Gen4", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "2TB", speed: "Up to 3,500MB/s read, 2,800MB/s write", interface: "NVMe PCIe 4.0 ×4, M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × Kingston NV2 SSD", warranty: "Kingston 3-year limited warranty", purpose: "Video and photo work that outgrew a 1TB drive" } },
+  { image: "/products/ssd-nvme-7.jpg", id: "wd-blue-sn570-2tb", name: "WD Blue SN570 2TB NVMe SSD", category: "Components", price: 1280000, brand: "Western Digital", condition: "Brand New", rating: 4.8, specs: ["2TB", "NVMe M.2", "Up to 3500MB/s"], details: { type: "Internal SSD", capacity: "2TB", speed: "Up to 3,500MB/s read, 3,000MB/s write", interface: "NVMe PCIe 3.0 ×4, M.2 2280", compatibility: "Laptops and desktops with an M.2 NVMe slot.", inBox: "1 × WD Blue SN570 SSD", warranty: "WD 5-year limited warranty", purpose: "A large, dependable working drive for editing and archives" } },
   { image: "/products/ssd-sata-5.jpg", id: "sandisk-extreme-2tb-portable", name: "SanDisk Extreme 2TB Portable SSD", category: "Storage", price: 1565000, brand: "SanDisk", condition: "Brand New", rating: 4.8, badge: "Portable", specs: ["2TB", "USB-C portable", "Up to 1050MB/s"] },
-  { image: "/products/ssd-nvme-2.jpg", id: "samsung-990pro-2tb", name: "Samsung 990 PRO 2TB NVMe SSD", category: "Components", price: 1650000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "Top", specs: ["2TB", "NVMe M.2 Gen4", "Up to 7450MB/s"] },
+  { image: "/products/ssd-nvme-2.jpg", id: "samsung-990pro-2tb", name: "Samsung 990 PRO 2TB NVMe SSD", category: "Components", price: 1650000, brand: "Samsung", condition: "Brand New", rating: 4.9, badge: "Top", specs: ["2TB", "NVMe M.2 Gen4", "Up to 7450MB/s"], details: { type: "Internal SSD", capacity: "2TB", speed: "Up to 7,450MB/s read, 6,900MB/s write", interface: "NVMe PCIe 4.0 ×4, M.2 2280", compatibility: "PCIe 4.0 laptops and desktops. Runs in a PCIe 3.0 slot at PCIe 3.0 speed.", inBox: "1 × Samsung 990 PRO SSD", warranty: "Samsung 5-year limited warranty", purpose: "The fastest drive we stock — 4K editing and large game libraries" } },
 
   // ── Extra stock (web images; sync to backend catalog before enabling checkout) ──
   { id: "lenovo-thinkpad-t480", name: "Lenovo ThinkPad T480", category: "Laptops", price: 1030000, oldPrice: 1100000, brand: "Lenovo", condition: "UK Used", rating: 4.6, badge: "Popular", image: "/web/photo-1496181133206-80ce9b88a853.jpg", specs: ["Core i5 8th Gen", "8GB RAM", "256GB SSD", "14\" FHD", "Windows 11"] },
   { id: "macbook-air-2017", name: "Apple MacBook Air 13\" (2017)", category: "Laptops", price: 2050000, brand: "Apple", condition: "Refurbished", rating: 4.7, image: "/web/photo-1517336714731-489689fd1ca8.jpg", specs: ["Core i5", "8GB RAM", "128GB SSD", "13.3\" display", "macOS"] },
   { id: "dell-optiplex-3070-micro", name: "Dell OptiPlex 3070 Micro", category: "Desktops", price: 900000, brand: "Dell", condition: "UK Used", rating: 4.5, image: "/web/photo-1544197150-b99a580bb7a8.jpg", specs: ["Core i5 9th Gen", "8GB RAM", "256GB SSD", "Tiny form factor", "Windows 11"] },
   { id: "hp-prodesk-400-g5", name: "HP ProDesk 400 G5 Tower", category: "Desktops", price: 1100000, brand: "HP", condition: "Refurbished", rating: 4.5, image: "/products/desktop-1.jpg", specs: ["Core i5 8th Gen", "8GB RAM", "1TB HDD", "Tower", "Windows 11"] },
-  { id: "kingston-fury-8gb-ddr4", name: "Kingston FURY 8GB DDR4 RAM", category: "Components", price: 150000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "New", image: "/products/ram-4.jpg", specs: ["8GB DDR4", "3200MHz", "Desktop DIMM"] },
-  { id: "crucial-mx500-500gb", name: "Crucial MX500 500GB SSD", category: "Components", price: 260000, brand: "Crucial", condition: "Brand New", rating: 4.8, image: "/products/ssd-extra-1.jpg", specs: ["500GB", "2.5\" SATA", "Fast boot upgrade"] },
-  { id: "anker-powerbank-20000", name: "Anker 20,000mAh Power Bank", category: "Power", price: 185000, brand: "Anker", condition: "Brand New", rating: 4.7, badge: "Bestseller", image: "/products/powerbank-4.jpg", specs: ["20,000mAh", "USB-C PD", "Fast charge"] },
-  { id: "usb-c-65w-charger", name: "65W USB-C Laptop Charger", category: "Power", price: 90000, brand: "Generic", condition: "Brand New", rating: 4.4, image: "/products/charger_usbc-2.jpg", specs: ["65W", "USB-C PD", "Universal laptops"] },
+  { id: "kingston-fury-8gb-ddr4", name: "Kingston FURY 8GB DDR4 RAM", category: "Components", price: 150000, brand: "Kingston", condition: "Brand New", rating: 4.8, badge: "New", image: "/products/ram-4.jpg", specs: ["8GB DDR4", "3200MHz", "Desktop DIMM"], details: { type: "Desktop gaming memory (DIMM)", capacity: "8GB", speed: "3200MHz, CL16", interface: "DDR4 DIMM, 288-pin, XMP 2.0", compatibility: "DDR4 desktop boards. Enable XMP in BIOS to run at the rated speed.", build: "Low-profile heat spreader that clears most CPU coolers", inBox: "1 × 8GB Kingston FURY Beast module", warranty: "Kingston limited lifetime warranty", purpose: "Gaming and editing desktops where memory speed matters" } },
+  { id: "crucial-mx500-500gb", name: "Crucial MX500 500GB SSD", category: "Components", price: 260000, brand: "Crucial", condition: "Brand New", rating: 4.8, image: "/products/ssd-extra-1.jpg", specs: ["500GB", "2.5\" SATA", "Fast boot upgrade"], details: { type: "Internal SSD", capacity: "500GB", speed: "Up to 560MB/s read, 510MB/s write", interface: "SATA III 6Gb/s, 2.5\"", compatibility: "Any machine with a 2.5-inch bay — the standard replacement for a hard disk.", inBox: "1 × Crucial MX500 SSD", warranty: "Crucial 5-year limited warranty", purpose: "A branded SATA upgrade with hardware encryption built in" } },
+  { id: "anker-powerbank-20000", name: "Anker 20,000mAh Power Bank", category: "Power", price: 185000, brand: "Anker", condition: "Brand New", rating: 4.7, badge: "Bestseller", image: "/products/powerbank-4.jpg", specs: ["20,000mAh", "USB-C PD", "Fast charge"], details: { type: "Power bank", capacity: "20,000mAh", speed: "USB-C Power Delivery, fast charge", interface: "USB-C PD in/out, 2 × USB-A out", compatibility: "Phones, tablets and USB-C laptops.", inBox: "Power bank, USB-C cable and travel pouch", build: "Anker MultiProtect safety system", warranty: "Anker 18-month warranty", purpose: "Charging a laptop away from mains power, not just a phone" } },
+  { id: "usb-c-65w-charger", name: "65W USB-C Laptop Charger", category: "Power", price: 90000, brand: "Generic", condition: "Brand New", rating: 4.4, image: "/products/charger_usbc-2.jpg", specs: ["65W", "USB-C PD", "Universal laptops"], details: { type: "USB-C laptop charger", speed: "65W USB Power Delivery", interface: "USB-C PD 3.0", compatibility: "Laptops, tablets and phones that charge over USB-C.", inBox: "65W USB-C charger and cable", warranty: "6 months", purpose: "A spare charger for the bag, so one stays at home" } },
   { id: "redragon-k552-keyboard", name: "Redragon K552 Mechanical Keyboard", category: "Accessories", price: 135000, brand: "Redragon", condition: "Brand New", rating: 4.7, badge: "Gaming", image: "/products/keyboard-2.jpg", specs: ["Mechanical", "RGB backlight", "Compact TKL"] },
   { id: "hd-1080p-webcam", name: "1080p HD Webcam", category: "Accessories", price: 120000, brand: "Generic", condition: "Brand New", rating: 4.4, image: "/products/webcam-2.jpg", specs: ["1080p", "Built-in mic", "Clip-on"] },
   { id: "seagate-expansion-1tb", name: "Seagate Expansion 1TB HDD", category: "Storage", price: 250000, brand: "Seagate", condition: "Brand New", rating: 4.7, image: "/products/hdd_ext-4.jpg", specs: ["1TB", "USB 3.0", "Plug & play"] },
@@ -1103,14 +1245,14 @@ export const products: Product[] = [
   { image: "/web/photo-1527864550417-7fd91fc51a46.jpg", id: "aluminium-laptop-stand", name: "Adjustable Aluminium Laptop Stand", category: "Accessories", price: 95000, brand: "Generic", condition: "Brand New", rating: 4.7, badge: "New", specs: ["Ergonomic", "Foldable", "Fits up to 17\""] },
   { image: "/products/type-headset.jpg", id: "hp-h100-headset", name: "HP Stereo Headset H100", category: "Accessories", price: 60000, brand: "HP", condition: "Brand New", rating: 4.4, specs: ["Stereo sound", "Inline mic", "3.5mm jack"] },
   { image: "/products/monitor-1.jpg", id: "samsung-24-fhd-monitor", name: "Samsung 24\" Full HD Monitor", category: "Accessories", price: 480000, brand: "Samsung", condition: "Brand New", rating: 4.7, badge: "New", specs: ["24\" IPS", "1920 x 1080", "HDMI / VGA"] },
-  { image: "/products/powerbank-5.jpg", id: "oraimo-20000-powerbank", name: "Oraimo 20,000mAh Power Bank", category: "Power", price: 130000, brand: "Oraimo", condition: "Brand New", rating: 4.5, specs: ["20,000mAh", "Dual USB + Type-C", "Fast charge"] },
-  { image: "/products/ups-2.jpg", id: "apc-650va-ups", name: "APC 650VA UPS Backup", category: "Power", price: 350000, brand: "APC", condition: "Brand New", rating: 4.6, badge: "New", specs: ["650VA battery backup", "Surge protection", "Auto-restart"] },
-  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg", id: "surge-extension-6way", name: "6-Way Surge Protected Extension", category: "Power", price: 55000, brand: "Generic", condition: "Brand New", rating: 4.4, specs: ["6 sockets", "Surge protection", "1.8m cable"] },
-  { image: "/products/router-4.jpg", id: "tp-link-ac1200-usb", name: "TP-Link AC1200 USB WiFi Adapter", category: "Networking", price: 65000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["Dual-band 1200Mbps", "USB 3.0", "Plug & play"] },
-  { image: "/products/switch-2.jpg", id: "netgear-gs308-switch", name: "Netgear 8-Port Gigabit Switch", category: "Networking", price: 150000, brand: "Netgear", condition: "Brand New", rating: 4.6, specs: ["8 ports", "Gigabit", "Metal case"] },
+  { image: "/products/powerbank-5.jpg", id: "oraimo-20000-powerbank", name: "Oraimo 20,000mAh Power Bank", category: "Power", price: 130000, brand: "Oraimo", condition: "Brand New", rating: 4.5, specs: ["20,000mAh", "Dual USB + Type-C", "Fast charge"], details: { type: "Power bank", capacity: "20,000mAh", speed: "Fast charge output", interface: "2 × USB-A out, USB-C and micro-USB in", compatibility: "Phones and tablets.", inBox: "Power bank and charging cable", warranty: "Oraimo 12-month warranty", purpose: "A well-supported brand in Uganda with service centres in Kampala" } },
+  { image: "/products/ups-2.jpg", id: "apc-650va-ups", name: "APC 650VA UPS Backup", category: "Power", price: 350000, brand: "APC", condition: "Brand New", rating: 4.6, badge: "New", specs: ["650VA battery backup", "Surge protection", "Auto-restart"], details: { type: "Line-interactive UPS", capacity: "650VA", battery: "Auto-restart once mains returns; replaceable battery", interface: "Battery-backed and surge-only sockets", compatibility: "A desktop PC and router or modem.", build: "APC surge protection with automatic voltage regulation", warranty: "APC warranty, serviced locally", purpose: "The brand most offices standardise on, with batteries easy to replace" } },
+  { image: "/web/photo-1609091839311-d5365f9ff1c5.jpg", id: "surge-extension-6way", name: "6-Way Surge Protected Extension", category: "Power", price: 55000, brand: "Generic", condition: "Brand New", rating: 4.4, specs: ["6 sockets", "Surge protection", "1.8m cable"], details: { type: "Surge-protected extension", capacity: "6 sockets", build: "Surge protection with a 1.8m cable and individual switching", compatibility: "Computers, TVs and routers — anything you would rather not lose to a spike.", inBox: "Extension unit with 1.8m mains cable", warranty: "6 months", purpose: "The cheapest insurance there is against Kampala's power spikes" } },
+  { image: "/products/router-4.jpg", id: "tp-link-ac1200-usb", name: "TP-Link AC1200 USB WiFi Adapter", category: "Networking", price: 65000, brand: "TP-Link", condition: "Brand New", rating: 4.5, specs: ["Dual-band 1200Mbps", "USB 3.0", "Plug & play"], details: { type: "USB Wi-Fi adapter", speed: "AC1200 — 867Mbps (5GHz) + 300Mbps (2.4GHz)", interface: "USB 3.0", compatibility: "Windows and most Linux desktops. Adds Wi-Fi to a desktop with none, or replaces a failed card.", inBox: "USB adapter and driver disc", warranty: "TP-Link 12-month warranty", purpose: "Getting a desktop onto Wi-Fi without running a cable" } },
+  { image: "/products/switch-2.jpg", id: "netgear-gs308-switch", name: "Netgear 8-Port Gigabit Switch", category: "Networking", price: 150000, brand: "Netgear", condition: "Brand New", rating: 4.6, specs: ["8 ports", "Gigabit", "Metal case"], details: { type: "Gigabit network switch", speed: "8 × 10/100/1000Mbps", interface: "8 Gigabit Ethernet ports, unmanaged", build: "Metal case, fanless and silent", compatibility: "Plug and play — no configuration.", inBox: "Switch and power adapter", warranty: "NETGEAR limited lifetime warranty", purpose: "An office switch backed by a lifetime warranty" } },
   { image: "/products/type-hdd-internal.jpg", id: "wd-blue-1tb-hdd", name: "WD Blue 1TB Internal HDD", category: "Storage", price: 180000, brand: "WD", condition: "Brand New", rating: 4.6, specs: ["1TB", "7200 RPM", "3.5\" SATA"] },
-  { image: "/products/ram-5.jpg", id: "crucial-8gb-ddr4-sodimm", name: "Crucial 8GB DDR4 Laptop RAM", category: "Components", price: 130000, brand: "Crucial", condition: "Brand New", rating: 4.7, specs: ["8GB", "DDR4 3200MHz", "SODIMM"] },
-  { image: "/products/ram-6.jpg", id: "crucial-16gb-ddr4-sodimm", name: "Crucial 16GB DDR4 Laptop RAM", category: "Components", price: 240000, brand: "Crucial", condition: "Brand New", rating: 4.8, badge: "New", specs: ["16GB", "DDR4 3200MHz", "SODIMM"] },
+  { image: "/products/ram-5.jpg", id: "crucial-8gb-ddr4-sodimm", name: "Crucial 8GB DDR4 Laptop RAM", category: "Components", price: 130000, brand: "Crucial", condition: "Brand New", rating: 4.7, specs: ["8GB", "DDR4 3200MHz", "SODIMM"], details: { type: "Laptop memory (SODIMM)", capacity: "8GB", speed: "3200MHz (PC4-25600)", interface: "DDR4 SODIMM, 260-pin", compatibility: "Tested against Crucial's compatibility list for most 2016+ laptops.", inBox: "1 × 8GB Crucial SODIMM module", warranty: "Crucial limited lifetime warranty", purpose: "A dependable branded upgrade when a generic module will not do" } },
+  { image: "/products/ram-6.jpg", id: "crucial-16gb-ddr4-sodimm", name: "Crucial 16GB DDR4 Laptop RAM", category: "Components", price: 240000, brand: "Crucial", condition: "Brand New", rating: 4.8, badge: "New", specs: ["16GB", "DDR4 3200MHz", "SODIMM"], details: { type: "Laptop memory (SODIMM)", capacity: "16GB", speed: "3200MHz (PC4-25600)", interface: "DDR4 SODIMM, 260-pin", compatibility: "Laptops with a free DDR4 slot; check your maximum supported memory.", inBox: "1 × 16GB Crucial SODIMM module", warranty: "Crucial limited lifetime warranty", purpose: "Serious multitasking on a laptop, from a brand that stands behind it" } },
 
   // ── NEW ARRIVALS — from your uploaded product photos (public/products/*).
   //    ⚠️ PRICES & SPECS ARE ESTIMATES — please confirm/adjust each one. ──

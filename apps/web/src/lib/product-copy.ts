@@ -171,14 +171,19 @@ export function keyFeatures(p: Product): string[] {
   const d = p.details;
   if (!d) return p.specs;
 
+  // Each line only appears if the product actually has that property — these
+  // now describe routers and power banks as well as laptops.
   const out = [
-    `${d.processor} (${d.generation})`,
-    `${d.ram} RAM`,
-    `${d.storage} storage`,
+    d.processor ? `${d.processor}${d.generation ? ` (${d.generation})` : ""}` : "",
+    d.ram ? `${d.ram} RAM` : "",
+    d.storage ? `${d.storage} storage` : "",
+    d.capacity ? `${d.capacity} capacity` : "",
     d.graphics,
     d.display,
+    d.interface,
+    d.speed,
     d.os,
-  ].filter(Boolean);
+  ].filter((x): x is string => Boolean(x));
 
   // Battery is meaningless on a mains-powered desktop.
   if (d.battery && !/not applicable/i.test(d.battery)) out.push(`Battery: ${d.battery}`);
