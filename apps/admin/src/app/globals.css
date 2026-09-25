@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 @theme {
+  /* Same brand ramp as the storefront — the admin only had 500 and 600, so any
+     gradient using 400 or 700 faded to nothing. */
+  --color-brand-400: #fa7547;
   --color-brand-500: #f15a29;
   --color-brand-600: #d9430f;
+  --color-brand-700: #b3340a;
   --color-ink-600: #282363;
   --color-ink-700: #211d52;
   --color-ink-50: #eeeef6;

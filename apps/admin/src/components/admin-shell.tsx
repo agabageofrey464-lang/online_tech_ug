@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BrandLogo } from "@/components/brand-logo";
+import { BrandLockup } from "@/components/brand-lockup";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -116,12 +116,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   );
 
   const brand = (
-    <Link href="/" className="flex items-center gap-2 px-2">
-      <BrandLogo className="h-10 w-10 shrink-0 text-white" />
-      <span className="text-sm font-extrabold leading-tight">
-        Online Tech
-        <span className="block text-[10px] font-semibold uppercase tracking-widest text-brand-500">Admin</span>
-      </span>
+    <Link href="/" className="flex items-center px-2">
+      <BrandLockup />
     </Link>
   );
 

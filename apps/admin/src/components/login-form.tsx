@@ -1,6 +1,6 @@
 "use client";
 
-import { BrandLogo } from "@/components/brand-logo";
+import { BrandLockup } from "@/components/brand-lockup";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -44,9 +44,9 @@ export function LoginForm() {
         className="w-full max-w-sm rounded-2xl bg-white p-7 shadow-xl"
       >
         <div className="mb-6 flex flex-col items-center text-center">
-          <BrandLogo className="h-12 w-12 text-ink-600" />
-          <h1 className="mt-3 text-lg font-extrabold text-ink-600">Online Tech Admin</h1>
-          <p className="text-sm text-ink-600/60">Sign in to manage your store</p>
+          <BrandLockup onLight className="scale-110" />
+          <h1 className="mt-4 text-lg font-extrabold text-ink-600">Sign in</h1>
+          <p className="text-sm text-ink-600/60">Manage your store, courses and orders</p>
         </div>
 
         <label className="mb-3 block text-sm">
