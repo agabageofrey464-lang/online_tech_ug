@@ -82,7 +82,7 @@ function QuotationInner() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -159,7 +159,7 @@ function QuotationInner() {
     doc.triangle(W, 0, W, HB, W - 74, 0, "F");
 
     if (logo.current) {
-      doc.addImage(logo.current, "PNG", M, 6, 58, 21);
+      doc.addImage(logo.current, "PNG", M, 8, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(17);

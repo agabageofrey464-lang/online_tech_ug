@@ -137,3 +137,70 @@ export function bumpNumber(key: string) {
     /* nothing to do */
   }
 }
+
+
+/**
+ * The "how to pay" band printed at the foot of a document.
+ *
+ * Every document that asks for money should say where it goes, in the same
+ * shape each time — a client who has to ring up to ask for the Mobile Money
+ * number is a client who has not paid yet.
+ *
+ * Returns the height used, so the caller can carry on beneath it.
+ */
+export function paymentBand(
+  doc: {
+    setFillColor: (r: number, g: number, b: number) => void;
+    setTextColor: (r: number, g: number, b: number) => void;
+    setFont: (f: string, s: string) => void;
+    setFontSize: (n: number) => void;
+    text: (t: string, x: number, y: number, o?: object) => void;
+    roundedRect: (x: number, y: number, w: number, h: number, rx: number, ry: number, s: string) => void;
+    rect: (x: number, y: number, w: number, h: number, s: string) => void;
+  },
+  x: number,
+  y: number,
+  w: number,
+): number {
+  const H = 30;
+  const fill = (c: readonly number[]) => doc.setFillColor(c[0], c[1], c[2]);
+
+  fill(TEAL);
+  doc.roundedRect(x, y, w, H, 2, 2, "F");
+  fill(ORANGE);
+  doc.rect(x, y + H - 2.2, w, 2.2, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.text("HOW TO PAY", x + 5, y + 7.5);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
+  doc.setTextColor(198, 232, 241);
+  doc.text("Mobile Money only. Keep your confirmation message.", x + 33, y + 7.5);
+
+  const colW = (w - 10) / 2;
+
+  // MTN — its own tile, so the two accounts are never misread as one line.
+  doc.setFillColor(255, 205, 0);
+  doc.roundedRect(x + 5, y + 10.5, colW - 3, 13, 1.5, 1.5, "F");
+  doc.setTextColor(40, 30, 0);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.4);
+  doc.text("MTN MOBILE MONEY", x + 8, y + 15.2);
+  doc.setFontSize(8.6);
+  doc.text(MOMO.mtn, x + 8, y + 20.4);
+
+  // Airtel
+  doc.setFillColor(214, 32, 39);
+  doc.roundedRect(x + 8 + colW, y + 10.5, colW - 3, 13, 1.5, 1.5, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.4);
+  doc.text("AIRTEL MONEY", x + 11 + colW, y + 15.2);
+  doc.setFontSize(8.6);
+  doc.text(MOMO.airtel, x + 11 + colW, y + 20.4);
+
+  return H;
+}

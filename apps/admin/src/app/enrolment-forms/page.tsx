@@ -28,7 +28,7 @@ export default function EnrolmentFormsPage() {
   const logo = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
   }, []);
 
   const course = COURSES[idx];
@@ -183,7 +183,7 @@ function drawForm(doc: Doc, course: AdminCourse, logo: HTMLImageElement | null) 
   doc.rect(0, 0, W, 30, "F");
   doc.setFillColor(12, 93, 117);
   doc.triangle(W, 0, W, 30, W - 68, 0, "F");
-  if (logo) doc.addImage(logo, "PNG", M, 4, 50, 18);
+  if (logo) doc.addImage(logo, "PNG", M, 7, 50, 11.6);
 
   if (!logo) {
     doc.setTextColor(255, 255, 255);

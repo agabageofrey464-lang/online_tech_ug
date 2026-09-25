@@ -2,9 +2,9 @@ import jsPDF from "jspdf";
 import {
   COMPANY,
   INK,
-  MOMO,
   MUTED,
   ORANGE,
+  paymentBand,
   RULE,
   TEAL,
   TEAL_DARK,
@@ -48,7 +48,7 @@ const SUPPORT = [
   },
 ];
 
-export function buildServices(opts: { logo?: HTMLImageElement | null } = {}): jsPDF {
+export function buildServices(opts: { logo?: HTMLImageElement | string | null } = {}): jsPDF {
   const logo = opts.logo ?? null;
 
   const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -68,7 +68,7 @@ export function buildServices(opts: { logo?: HTMLImageElement | null } = {}): js
     doc.triangle(W, 0, W, HB, W - 62, 0, "F");
 
     if (logo) {
-      doc.addImage(logo, "PNG", M, 5, 50, 18);
+      doc.addImage(logo, "PNG", M, 7, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
@@ -241,9 +241,9 @@ export function buildServices(opts: { logo?: HTMLImageElement | null } = {}): js
   y += 6;
 
   /* ── How to start ───────────────────────────────────────────── */
-  if (y + 26 < H - 22) {
+  if (y + 22 < H - 22) {
     fill(TEAL_PALE);
-    doc.roundedRect(M, y, W - M * 2, 24, 2, 2, "F");
+    doc.roundedRect(M, y, W - M * 2, 20, 2, 2, "F");
     col(TEAL);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.2);
@@ -261,8 +261,15 @@ export function buildServices(opts: { logo?: HTMLImageElement | null } = {}): js
       M + 4,
       y + 15.6,
     );
-    doc.text(`Pay by MTN ${MOMO.mtn}  ·  Airtel ${MOMO.airtel}`, M + 4, y + 20, {});
   }
+
+  y += 28;
+  if (y + 32 > H - 22) {
+    doc.addPage();
+    header("SOFTWARE & IT SERVICES", "continued");
+    y = 55;
+  }
+  paymentBand(doc, M, y, W - M * 2);
 
   const pages = doc.getNumberOfPages();
   for (let p = 1; p <= pages; p++) {

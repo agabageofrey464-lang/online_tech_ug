@@ -68,7 +68,7 @@ export default function CertificatesPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup-dark.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
     try {
       const raw = localStorage.getItem("otu_issued_certs");
@@ -104,7 +104,7 @@ export default function CertificatesPage() {
       doc.rect(11, 11, W - 22, 210 - 22);
 
       if (logo.current) {
-        doc.addImage(logo.current, "PNG", cx - 32, 18, 64, 23);
+        doc.addImage(logo.current, "PNG", cx - 37, 17, 74, 17.2);
       } else {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(12);

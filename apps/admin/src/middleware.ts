@@ -25,5 +25,5 @@ export const config = {
   // cookies, so a redirect to /login means it can never register, and
   // without it there are no alerts on the owner's phone. The worker holds
   // no data of its own — the alerts it displays are pushed to it.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|sw.js).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|logo-lockup.png|logo-lockup-dark.png|sw.js).*)"],
 };

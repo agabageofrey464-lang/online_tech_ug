@@ -3,6 +3,7 @@ import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ProductRail } from "@/components/product-rail";
+import { BandPreview } from "@/components/band-preview";
 import { ShopGrid } from "@/components/shop-grid";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
@@ -39,10 +40,13 @@ const BAND_COLORS = [
 function Panel({
   title,
   href,
+  items,
   children,
 }: {
   title: string;
   href?: string;
+  /** The section's own products, rotating in the header like a strip. */
+  items?: Product[];
   children: React.ReactNode;
 }) {
   // Same coloured deal-band treatment as the rails, with a colour picked per
@@ -54,6 +58,7 @@ function Panel({
     <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
       <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
         <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
+        {items && items.length > 0 && <BandPreview items={items} />}
         {href && (
           <Link
             href={href}
@@ -103,33 +108,7 @@ function DealBand({
           <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
           {subtitle && <p className="text-xs font-semibold text-white/85 sm:text-sm">{subtitle}</p>}
         </div>
-        {/* The band was a title at one end and a button at the other with a
-            stripe of empty colour between. These are the actual products in
-            the rail below, so the header advertises instead of labelling. */}
-        {items && items.length > 0 && (
-          <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
-            {items.slice(0, 5).map((p) => (
-              <Link
-                key={p.id}
-                href={`/shop/${p.id}`}
-                title={p.name}
-                className="group flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 ring-1 ring-white/30 transition hover:ring-2 hover:ring-white"
-              >
-                <SafeImage
-                  src={productImage(p)}
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="h-8 w-8 object-contain transition duration-300 group-hover:scale-110"
-                />
-              </Link>
-            ))}
-            <span className="ml-1 shrink-0 rounded-full bg-black/20 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide ring-1 ring-white/20">
-              From {ugx(Math.min(...items.map((x) => x.price)))}
-            </span>
-          </div>
-        )}
-
+        {items && items.length > 0 && <BandPreview items={items} />}
 
         {href && (
           <Link
@@ -393,9 +372,9 @@ export default function HomePage() {
           title={g.brand}
           subtitle="Top Deals"
           href={`/shop?brand=${encodeURIComponent(g.brand)}`}
-          items={g.items.slice(0, 8)}
+          items={g.items}
         >
-          <Rail items={g.items.slice(0, 8)} />
+          <Rail items={g.items} />
         </DealBand>
       ))}
 
@@ -438,19 +417,19 @@ export default function HomePage() {
       </section>
 
       {/* Category sections (Jumia-style horizontal rails) */}
-      <Panel title="Laptops" href="/shop?cat=Laptops">
+      <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
         <Rail items={byCat("Laptops").slice(0, 8)} />
       </Panel>
 
-      <Panel title="Desktops & PCs" href="/shop?cat=Desktops">
+      <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
         <Rail items={byCat("Desktops").slice(0, 8)} />
       </Panel>
 
-      <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components">
+      <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>
         <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, 8)} />
       </Panel>
 
-      <Panel title="Accessories, Networking & Storage" href="/shop">
+      <Panel title="Accessories, Networking & Storage" href="/shop" items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")]}>
         <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 8)} />
       </Panel>
 

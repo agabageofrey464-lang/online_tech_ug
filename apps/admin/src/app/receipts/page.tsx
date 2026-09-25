@@ -160,7 +160,7 @@ export default function ReceiptsPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -203,7 +203,7 @@ export default function ReceiptsPage() {
     if (logo.current) {
       // The logo is a wide lockup drawn for dark backgrounds, so on the teal
       // band it needs no tile — and it already carries the company name.
-      doc.addImage(logo.current, "PNG", M, 6, 58, 21);
+      doc.addImage(logo.current, "PNG", M, 8, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(17);

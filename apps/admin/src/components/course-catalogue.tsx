@@ -29,7 +29,7 @@ export function CourseCatalogue({ courses }: Props) {
   const [intake, setIntake] = useState("");
 
   useEffect(() => {
-    loadImg("/logo-mark.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
   }, []);
 
   async function build() {

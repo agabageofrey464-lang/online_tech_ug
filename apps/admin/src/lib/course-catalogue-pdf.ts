@@ -2,9 +2,9 @@ import jsPDF from "jspdf";
 import {
   COMPANY,
   INK,
-  MOMO,
   MUTED,
   ORANGE,
+  paymentBand,
   REGISTRATION_FEE,
   RULE,
   TEAL,
@@ -31,7 +31,7 @@ import type { AdminCourse } from "@/lib/api";
 
 export const ugx = (n: number) => `UGX ${Math.round(n).toLocaleString("en-UG")}`;
 
-type Opts = { intake?: string; logo?: HTMLImageElement | null };
+type Opts = { intake?: string; logo?: HTMLImageElement | string | null };
 
 export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
   const intake = opts.intake ?? "";
@@ -54,7 +54,7 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
     doc.triangle(W, 0, W, HB, W - 62, 0, "F");
 
     if (logo) {
-      doc.addImage(logo, "PNG", M, 5, 50, 18);
+      doc.addImage(logo, "PNG", M, 7, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
@@ -112,20 +112,7 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
       : "What each course costs — physical or online, certificate on completion",
   );
 
-  /* ── How it works ───────────────────────────────────────────── */
   let y = 55;
-  fill(TEAL_PALE);
-  doc.roundedRect(M, y, W - M * 2, 17, 2, 2, "F");
-  col(TEAL);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8.2);
-  doc.text("HOW TO PAY", M + 4, y + 5.6);
-  col(INK);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.8);
-  doc.text(`MTN  ${MOMO.mtn}`, M + 4, y + 10.6);
-  doc.text(`Airtel  ${MOMO.airtel}`, M + 4, y + 14.4);
-  y += 23;
 
   /* ── Grouped by fee ─────────────────────────────────────────── */
   const tiers = new Map<number, AdminCourse[]>();
@@ -220,21 +207,28 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
   ].forEach((line, i) => doc.text(`•  ${line}`, M + 4, y + 11.4 + i * 4.2));
   y += 34;
 
-  if (y + 20 < H - 22) {
-    col(TEAL);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.text("TO REGISTER", M, y + 4);
-    col(INK);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.text(
-      `Call or WhatsApp ${COMPANY.phone} / ${COMPANY.phoneAlt}, visit us in ${COMPANY.address},`,
-      M,
-      y + 10,
-    );
-    doc.text(`or register at ${COMPANY.site}/learn and we will confirm your place.`, M, y + 15);
+  if (y + 52 > H - 22) {
+    doc.addPage();
+    header("COURSE FEES", "continued");
+    y = 55;
   }
+
+  col(TEAL);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.text("TO REGISTER", M, y + 4);
+  col(INK);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text(
+    `Call or WhatsApp ${COMPANY.phone} / ${COMPANY.phoneAlt}, visit us in ${COMPANY.address},`,
+    M,
+    y + 10,
+  );
+  doc.text(`or register at ${COMPANY.site}/learn and we will confirm your place.`, M, y + 15);
+  y += 21;
+
+  paymentBand(doc, M, y, W - M * 2);
 
   const pages = doc.getNumberOfPages();
   for (let p = 1; p <= pages; p++) {
