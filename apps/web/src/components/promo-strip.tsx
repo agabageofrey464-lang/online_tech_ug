@@ -1,29 +1,52 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
-// Rotating festival-style offers. Each shows a headline + a bold deal pill, so
-// the strip advertises something different every few seconds.
-const OFFERS = [
-  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-teal-600" },
-  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-teal-700" },
-  { title: "Storage Deals", deal: "1TB SSD · UGX 580,000", note: "Genuine, warranted", href: "/shop?cat=Storage", bg: "bg-teal-800" },
-  { title: "Learn & Earn", deal: "22 COURSES", note: "Physical or online · certificates", href: "/learn", bg: "bg-teal-600" },
-  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-teal-700" },
-  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-teal-800" },
-  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-teal-600" },
-  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-teal-700" },
-  { title: "Free Delivery Zone", deal: "COUNTRYWIDE", note: "Fee by distance · fast", href: "/shop", bg: "bg-teal-800" },
-  { title: "Power & Backup", deal: "UPS FROM UGX 180,000", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-teal-600" },
-  { title: "Accessories Sale", deal: "FROM UGX 20,000", note: "Mice · keyboards · bags", href: "/shop?cat=Accessories", bg: "bg-teal-700" },
-  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-teal-800" },
-  { title: "Websites & Software", deal: "FROM UGX 500,000", note: "Built for your business", href: "/services", bg: "bg-teal-600" },
-  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-teal-700" },
-  { title: "Refer & Earn", deal: "GET REWARDED", note: "Invite friends, earn cash", href: "/refer", bg: "bg-teal-800" },
+/**
+ * The festival strip at the top of the site.
+ *
+ * It used to be type on a flat teal band, which reads as a notice rather than
+ * an offer. Each offer now carries the thing it is selling: a real product
+ * photograph, cut out on the right of the strip, plus a tinted wash so the
+ * band still changes colour as it rotates.
+ *
+ * The images are the same files the shop already ships, so this costs no new
+ * assets — and they are small, fixed-size and lazily decoded so a banner never
+ * delays the page.
+ */
+
+type Offer = {
+  title: string;
+  deal: string;
+  note: string;
+  href: string;
+  /** Tailwind background for the band. */
+  bg: string;
+  /** A product photo from /public/products, without the extension. */
+  img: string;
+};
+
+const OFFERS: Offer[] = [
+  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-teal-600", img: "hp-elitebook-840-g8" },
+  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-teal-700", img: "hp-elitebook-840-g3" },
+  { title: "Storage Deals", deal: "1TB SSD · UGX 580,000", note: "Genuine, warranted", href: "/shop?cat=Storage", bg: "bg-teal-800", img: "ssd-480gb-sata" },
+  { title: "Learn & Earn", deal: "22 COURSES", note: "Physical or online · certificates", href: "/learn", bg: "bg-teal-600", img: "asus-vivobook-15" },
+  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-teal-700", img: "ram-ddr4-8gb-sodimm" },
+  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-teal-800", img: "macbook-air-m1" },
+  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-teal-600", img: "lenovo-legion-5-15" },
+  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-teal-700", img: "ram-ddr4-8gb-dimm" },
+  { title: "Desktops In Stock", deal: "FROM UGX 750,000", note: "Office & home towers", href: "/shop?cat=Desktops", bg: "bg-teal-800", img: "hp-280-g6-desktop" },
+  { title: "Power & Backup", deal: "POWER BANKS & UPS", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-teal-600", img: "power-bank-20000" },
+  { title: "Accessories Sale", deal: "FROM UGX 20,000", note: "Mice · keyboards · bags", href: "/shop?cat=Accessories", bg: "bg-teal-700", img: "logitech-mk270" },
+  { title: "Carry It Safely", deal: "BAGS & SLEEVES", note: "Padded, water-resistant", href: "/shop?cat=Accessories", bg: "bg-teal-800", img: "laptop-sleeve-grey" },
+  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-teal-600", img: "tp-link-archer-c6" },
+  { title: "Charge Anywhere", deal: "65W USB-C", note: "Fast, universal chargers", href: "/shop?cat=Power", bg: "bg-teal-700", img: "usb-c-charger-65w" },
+  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-teal-800", img: "asus-zenbook-14" },
 ];
 
 export function PromoStrip() {
@@ -43,9 +66,26 @@ export function PromoStrip() {
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
         style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 14px)" }}
       />
-      <div key={i} className="ad-fade container-wide relative flex min-h-[46px] items-center justify-between gap-3 py-2 sm:min-h-[58px] sm:py-2.5">
+
+      <div
+        key={i}
+        className="ad-fade container-wide relative flex min-h-[46px] items-center justify-between gap-3 py-2 sm:min-h-[62px] sm:py-2.5"
+      >
         {/* Rotating offer */}
-        <Link href={o.href} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <Link href={o.href} className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3.5">
+          {/* The product itself. Small, round and lit from behind so it reads
+              as a picture on a banner rather than a thumbnail in a list. */}
+          <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/95 shadow-[0_0_0_3px_rgba(255,255,255,0.18)] sm:h-11 sm:w-11">
+            <Image
+              src={`/products/${o.img}.webp`}
+              alt=""
+              width={44}
+              height={44}
+              loading="lazy"
+              className="h-7 w-7 object-contain sm:h-9 sm:w-9"
+            />
+          </span>
+
           <span className="truncate font-display text-[15px] font-black uppercase tracking-tight drop-shadow-sm sm:text-xl">
             {o.title}
           </span>
