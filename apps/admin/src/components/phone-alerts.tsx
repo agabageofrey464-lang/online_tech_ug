@@ -59,15 +59,11 @@ export function PhoneAlerts() {
         return;
       }
 
-      const keyRes = await fetch("/api/push/stats", { cache: "no-store" });
-      await keyRes.json().catch(() => ({}));
-
       // The VAPID public key is public by design — it identifies us to the
       // browser's push service and cannot be used to send anything.
-      const pk = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? ""}/api/v1/push/public-key`,
-        { cache: "no-store" },
-      ).then((r) => r.json());
+      const pk = await fetch("/api/push/alerts/key", { cache: "no-store" }).then((r) =>
+        r.json(),
+      );
       if (!pk?.key) {
         setMsg("Push isn't switched on for the server yet.");
         return;
