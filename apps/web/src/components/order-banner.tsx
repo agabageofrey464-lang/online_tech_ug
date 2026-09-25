@@ -1,7 +1,18 @@
+import Image from "next/image";
+import Link from "next/link";
 import { Phone } from "lucide-react";
 import { site, whatsappLink, whatsappAltLink } from "@/lib/site";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
+
+// What people ring up about most. Shown in the middle of the banner, which was
+// empty on desktop — a phone number alone does not say what we sell.
+const POPULAR = [
+  { img: "hp-elitebook-840-g3", label: "Laptops", href: "/shop?cat=Laptops" },
+  { img: "ssd-480gb-sata", label: "SSDs", href: "/shop?cat=Storage" },
+  { img: "ram-ddr4-8gb-dimm", label: "RAM", href: "/shop?cat=Components" },
+  { img: "tp-link-archer-c6", label: "Routers", href: "/shop?cat=Networking" },
+];
 
 /**
  * Graphical "Order now" banner for the home page — the business number shown
@@ -49,6 +60,32 @@ export function OrderBanner() {
               WhatsApp: {site.whatsappAltDisplay}
             </a>
           </div>
+        </div>
+
+        {/* What we actually sell, between the number and the buttons. */}
+        <div className="hidden items-center gap-2 lg:flex">
+          {POPULAR.map((p) => (
+            <Link
+              key={p.img}
+              href={p.href}
+              className="group flex flex-col items-center gap-1"
+              title={p.label}
+            >
+              <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white/95 ring-1 ring-white/30 transition group-hover:ring-2 group-hover:ring-white">
+                <Image
+                  src={`/products/${p.img}.webp`}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  className="h-9 w-9 object-contain transition duration-300 group-hover:scale-110"
+                />
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-wide text-white/75">
+                {p.label}
+              </span>
+            </Link>
+          ))}
         </div>
 
         <div className="flex shrink-0 gap-2">

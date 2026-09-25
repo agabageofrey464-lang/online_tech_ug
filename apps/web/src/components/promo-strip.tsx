@@ -58,6 +58,10 @@ export function PromoStrip() {
   }, []);
 
   const o = OFFERS[i];
+  // The bar is wide and the offer only fills its left end, so the middle sat
+  // empty on desktop. These are the next two deals in the rotation, shown
+  // small — the strip advertises three things at once instead of one.
+  const upNext = [OFFERS[(i + 1) % OFFERS.length], OFFERS[(i + 2) % OFFERS.length]];
 
   return (
     <div className={`relative overflow-hidden text-white transition-colors duration-500 ${o.bg}`}>
@@ -72,7 +76,7 @@ export function PromoStrip() {
         className="ad-fade container-wide relative flex min-h-[46px] items-center justify-between gap-3 py-2 sm:min-h-[62px] sm:py-2.5"
       >
         {/* Rotating offer */}
-        <Link href={o.href} className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3.5">
+        <Link href={o.href} className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3.5 lg:flex-none">
           {/* The product itself. Small, round and lit from behind so it reads
               as a picture on a banner rather than a thumbnail in a list. */}
           <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/95 shadow-[0_0_0_3px_rgba(255,255,255,0.18)] sm:h-11 sm:w-11">
@@ -94,6 +98,35 @@ export function PromoStrip() {
           </span>
           <span className="hidden text-xs font-medium text-white/90 md:inline">{o.note}</span>
         </Link>
+
+        {/* What is coming up next, so the middle of the bar carries offers
+            instead of empty teal. Desktop only — there is no room on a phone. */}
+        <div className="hidden shrink-0 items-center gap-2 lg:flex">
+          {upNext.map((n) => (
+            <Link
+              key={n.title}
+              href={n.href}
+              className="group flex items-center gap-2 rounded-full bg-black/15 py-1 pl-1 pr-3 ring-1 ring-white/15 transition hover:bg-black/25"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/95">
+                <Image
+                  src={`/products/${n.img}.webp`}
+                  alt=""
+                  width={28}
+                  height={28}
+                  loading="lazy"
+                  className="h-5 w-5 object-contain"
+                />
+              </span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-[10.5px] font-bold uppercase tracking-wide text-white/70">
+                  {n.title}
+                </span>
+                <span className="text-[11.5px] font-extrabold">{n.deal}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
 
         {/* Call to order — always visible on desktop */}
         <a

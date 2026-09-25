@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 
@@ -19,6 +20,8 @@ type Strip = {
   cta: string;
   href: string;
   bg: string;
+  /** A picture of what is on offer. Live campaigns bring their own. */
+  img?: string;
   /** ISO date after which this stops showing — for dated intakes. */
   until?: string;
 };
@@ -31,6 +34,7 @@ const FALLBACK: Strip[] = [
     cta: "Reserve a place",
     href: "/learn",
     bg: "bg-teal-600",
+    img: "/courses/computer-basics.webp",
     until: "2026-09-29",
   },
   {
@@ -38,14 +42,15 @@ const FALLBACK: Strip[] = [
     cta: "Register now",
     href: "/learn",
     bg: "bg-teal-700",
+    img: "/courses/graphic-design.jpg",
     until: "2026-10-16",
   },
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-teal-600" },
-  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700" },
-  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-teal-600" },
-  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-teal-800" },
-  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-teal-600" },
-  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-700" },
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-teal-600", img: "/products/hp-elitebook-840-g3.webp" },
+  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700", img: "/products/dell-xps-13-9310.webp" },
+  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-teal-600", img: "/courses/microsoft-office.webp" },
+  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-teal-800", img: "/products/ram-ddr4-8gb-dimm.webp" },
+  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-teal-600", img: "/courses/python-programming.png" },
+  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-700", img: "/products/ssd-480gb-sata.webp" },
 ];
 
 const DISMISS_KEY = "otu_strip_closed";
@@ -85,6 +90,7 @@ export function FestivalStrip() {
             cta: c.cta_label || "See offer",
             href: c.link_url || "/shop",
             bg: c.bg_color || "bg-teal-600",
+            img: c.image_url || undefined,
           })),
         );
       })
@@ -122,6 +128,19 @@ export function FestivalStrip() {
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
+          {s.img && (
+            <span className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 shadow-[0_0_0_2px_rgba(255,255,255,0.2)]">
+              <Image
+                src={s.img}
+                alt=""
+                width={28}
+                height={28}
+                loading="lazy"
+                unoptimized={s.img.startsWith("http")}
+                className="h-full w-full object-cover"
+              />
+            </span>
+          )}
           <span className="text-[12.5px] font-semibold leading-snug sm:text-[13px]">{s.text}</span>
           <span className="whitespace-nowrap rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-bold ring-1 ring-white/25 transition group-hover:bg-white group-hover:text-ink-900">
             {s.cta} →
