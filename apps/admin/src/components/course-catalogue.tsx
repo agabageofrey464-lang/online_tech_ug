@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { loadImg, todayISO } from "@/lib/doc-kit";
 import { buildCatalogue } from "@/lib/course-catalogue-pdf";
+import { buildServices } from "@/lib/services-pdf";
 import type { AdminCourse } from "@/lib/api";
 
 /**
@@ -41,12 +42,22 @@ export function CourseCatalogue({ courses }: Props) {
     }
   }
 
+  async function buildSvc() {
+    setBusy(true);
+    try {
+      const doc = buildServices({ logo: logo.current });
+      doc.save(`Online-Tech-Uganda-Services-${todayISO()}.pdf`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <section className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
       <h2 className="text-base font-extrabold text-ink-600">Course list for students</h2>
       <p className="mt-1 text-sm text-ink-600/65">
-        A one-page PDF of all {courses.length} courses with fees, on your letterhead — send it to
-        anyone asking what you teach and what it costs.
+        Two separate lists on your letterhead: course fees for students, and project prices
+        for a client pricing a website, app or system.
       </p>
 
       <label className="mt-4 block text-sm font-semibold text-ink-700">
@@ -59,13 +70,22 @@ export function CourseCatalogue({ courses }: Props) {
         />
       </label>
 
-      <button
-        onClick={build}
-        disabled={busy || courses.length === 0}
-        className="mt-4 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60"
-      >
-        {busy ? "Building…" : "Download course list (PDF)"}
-      </button>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={build}
+          disabled={busy || courses.length === 0}
+          className="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60"
+        >
+          {busy ? "Building…" : "Course fees (PDF)"}
+        </button>
+        <button
+          onClick={buildSvc}
+          disabled={busy}
+          className="rounded-lg bg-ink-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-ink-600 disabled:opacity-60"
+        >
+          {busy ? "Building…" : "Software & IT services (PDF)"}
+        </button>
+      </div>
 
       <p className="mt-3 text-[12px] text-ink-600/55">
         Fees come from the courses in your database — the same figures a student is charged when
