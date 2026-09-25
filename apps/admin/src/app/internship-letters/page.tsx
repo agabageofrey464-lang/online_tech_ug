@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { logoPlate } from "@/lib/doc-kit";
 
 /**
  * Internship letters.
@@ -66,7 +67,7 @@ export default function InternshipLettersPage() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup-dark.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -89,7 +90,7 @@ export default function InternshipLettersPage() {
       doc.setFillColor(12, 93, 117);
       doc.triangle(W, 0, W, 34, W - 74, 0, "F");
       if (logo.current) {
-        doc.addImage(logo.current, "PNG", M, 8, 52, 12.1);
+        logoPlate(doc, logo.current, M, 8.5, 52, 12.1);
       } else {
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");

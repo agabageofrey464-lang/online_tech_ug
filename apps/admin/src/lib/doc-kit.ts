@@ -1,3 +1,5 @@
+import type jsPDF from "jspdf";
+
 /**
  * Shared furniture for the documents we hand to clients.
  *
@@ -149,15 +151,7 @@ export function bumpNumber(key: string) {
  * Returns the height used, so the caller can carry on beneath it.
  */
 export function paymentBand(
-  doc: {
-    setFillColor: (r: number, g: number, b: number) => void;
-    setTextColor: (r: number, g: number, b: number) => void;
-    setFont: (f: string, s: string) => void;
-    setFontSize: (n: number) => void;
-    text: (t: string, x: number, y: number, o?: object) => void;
-    roundedRect: (x: number, y: number, w: number, h: number, rx: number, ry: number, s: string) => void;
-    rect: (x: number, y: number, w: number, h: number, s: string) => void;
-  },
+  doc: jsPDF,
   x: number,
   y: number,
   w: number,
@@ -203,4 +197,29 @@ export function paymentBand(
   doc.text(MOMO.airtel, x + 11 + colW, y + 20.4);
 
   return H;
+}
+
+
+/**
+ * The logo, set on a white plate.
+ *
+ * The mark is dark ink on white — that is the artwork, and it is what gets
+ * printed on a business card. Dropping it straight onto the teal letterhead
+ * would make the wordmark disappear, so the letterhead gives it a white panel
+ * to sit on rather than the brand being redrawn to suit the background.
+ *
+ * `h` is the logo's drawn height; the plate is sized around it.
+ */
+export function logoPlate(
+  doc: jsPDF,
+  logo: string | HTMLImageElement,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+): void {
+  const pad = 2.4;
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(x - pad, y - pad, w + pad * 2, h + pad * 2, 1.8, 1.8, "F");
+  doc.addImage(logo, "PNG", x, y, w, h);
 }

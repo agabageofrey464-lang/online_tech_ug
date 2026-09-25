@@ -4,28 +4,29 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   COMPANY,
+  INK,
   MOMO,
+  MUTED,
+  ORANGE,
+  PEN,
+  RULE,
+  SOFT,
+  STAMP,
   TEAL,
   TEAL_DARK,
   TEAL_PALE,
-  ORANGE,
-  INK,
-  MUTED,
-  RULE,
   ZEBRA,
-  SOFT,
-  PEN,
-  STAMP,
-  type RGB,
-  todayISO,
   addDays,
-  long,
-  ugx,
-  loadImg,
-  inWords,
-  nextNumber,
   bumpNumber,
+  inWords,
+  loadImg,
+  logoPlate,
+  long,
+  nextNumber,
+  todayISO,
   type Line,
+  type RGB,
+  ugx,
 } from "@/lib/doc-kit";
 import { PRESETS, detectJob } from "@/lib/quote-presets";
 
@@ -82,7 +83,7 @@ function QuotationInner() {
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    loadImg("/logo-lockup.png").then((i) => (logo.current = i));
+    loadImg("/logo-lockup-dark.png").then((i) => (logo.current = i));
     loadImg("/signature.png").then((i) => (sign.current = i));
   }, []);
 
@@ -159,7 +160,7 @@ function QuotationInner() {
     doc.triangle(W, 0, W, HB, W - 74, 0, "F");
 
     if (logo.current) {
-      doc.addImage(logo.current, "PNG", M, 8, 56, 13);
+      logoPlate(doc, logo.current, M, 8.5, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(17);

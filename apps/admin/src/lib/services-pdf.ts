@@ -4,13 +4,14 @@ import {
   INK,
   MUTED,
   ORANGE,
-  paymentBand,
   RULE,
   TEAL,
   TEAL_DARK,
   TEAL_PALE,
   ZEBRA,
+  logoPlate,
   long,
+  paymentBand,
   todayISO,
 } from "@/lib/doc-kit";
 import { PRESETS } from "@/lib/quote-presets";
@@ -68,7 +69,7 @@ export function buildServices(opts: { logo?: HTMLImageElement | string | null } 
     doc.triangle(W, 0, W, HB, W - 62, 0, "F");
 
     if (logo) {
-      doc.addImage(logo, "PNG", M, 7, 56, 13);
+      logoPlate(doc, logo, M, 7.5, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);

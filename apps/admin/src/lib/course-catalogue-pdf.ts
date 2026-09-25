@@ -4,13 +4,14 @@ import {
   INK,
   MUTED,
   ORANGE,
-  paymentBand,
   REGISTRATION_FEE,
   RULE,
   TEAL,
   TEAL_DARK,
   TEAL_PALE,
+  logoPlate,
   long,
+  paymentBand,
   todayISO,
 } from "@/lib/doc-kit";
 import type { AdminCourse } from "@/lib/api";
@@ -54,7 +55,7 @@ export function buildCatalogue(courses: AdminCourse[], opts: Opts = {}): jsPDF {
     doc.triangle(W, 0, W, HB, W - 62, 0, "F");
 
     if (logo) {
-      doc.addImage(logo, "PNG", M, 7, 56, 13);
+      logoPlate(doc, logo, M, 7.5, 56, 13);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
