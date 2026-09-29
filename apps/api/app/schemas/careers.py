@@ -29,3 +29,23 @@ class FreelancerIn(BaseModel):
 
 class StatusIn(BaseModel):
     status: str
+
+
+class FreelancerPatch(BaseModel):
+    """A change to one freelancer, field by field.
+
+    Every field is optional and ``None`` means "leave this alone", so a caller
+    can correct one thing without resending — and risking overwriting — the
+    rest of someone's profile. The lengths match FreelancerIn.
+    """
+
+    name: str | None = Field(default=None, min_length=2, max_length=160)
+    title: str | None = Field(default=None, max_length=160)
+    skills: str | None = Field(default=None, max_length=4000)
+    bio: str | None = Field(default=None, max_length=8000)
+    rate: str | None = Field(default=None, max_length=80)
+    location: str | None = Field(default=None, max_length=120)
+    phone: str | None = Field(default=None, max_length=40)
+    email: str | None = Field(default=None, max_length=200)
+    portfolio_url: str | None = Field(default=None, max_length=500)
+    image_url: str | None = Field(default=None, max_length=500)

@@ -20,6 +20,8 @@ type Freelancer = {
   image_url: string;
   approved: boolean;
   subscription_ends: string | null;
+  /** How many visitors were handed off to them from the public directory. */
+  contacts?: number;
 };
 
 const emptyForm = { name: "", title: "", skills: "", bio: "", rate: "", location: "Uganda", phone: "", email: "", portfolio_url: "", image_url: "" };
@@ -32,14 +34,32 @@ export default function FreelancersAdminPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
+  const [loadErr, setLoadErr] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/freelancers", { cache: "no-store" });
+      // An expired session does not fail this fetch — the middleware answers
+      // with a redirect to /login, fetch follows it, and we get a page of HTML
+      // back with status 200. Parsing that threw, and the old catch turned it
+      // into an empty list, so a signed-out admin was shown "no freelancers"
+      // for a directory that was full. Say what actually happened instead.
+      if (res.redirected && res.url.includes("/login")) {
+        setLoadErr("Your session has expired. Sign in again to see the directory.");
+        setList([]);
+        return;
+      }
+      if (!res.ok) {
+        setLoadErr(`Couldn't load the directory (error ${res.status}).`);
+        setList([]);
+        return;
+      }
       const data = await res.json();
+      setLoadErr("");
       setList(Array.isArray(data) ? data : []);
     } catch {
+      setLoadErr("Couldn't reach the server. Check your connection, then reload.");
       setList([]);
     } finally {
       setLoading(false);
@@ -120,13 +140,21 @@ export default function FreelancersAdminPage() {
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-ink-600">Freelancers</h1>
-          <p className="text-sm text-ink-600/60">{list.length} listed · {pending} awaiting approval. Approved freelancers show in the public directory.</p>
+          <p className="text-sm text-ink-600/60">{list.length} listed · {pending} awaiting approval · {list.reduce((n, f) => n + (f.contacts ?? 0), 0)} customer contacts. Approved freelancers show in the public directory.</p>
         </div>
         <button onClick={() => { setShowForm(true); setErr(""); setForm(emptyForm); }} className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">+ Add freelancer</button>
       </header>
 
       {loading ? (
         <p className="rounded-2xl border border-ink-600/10 bg-white p-8 text-center text-ink-600/50">Loading…</p>
+      ) : loadErr ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
+          <p className="font-bold text-red-700">{loadErr}</p>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <button onClick={load} className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">Try again</button>
+            <a href="/login" className="rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-white">Sign in</a>
+          </div>
+        </div>
       ) : list.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-ink-600/20 bg-white p-10 text-center text-ink-600/60">No freelancers yet.</div>
       ) : (
@@ -137,6 +165,14 @@ export default function FreelancersAdminPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-bold text-ink-600">{f.name}</p>
                   <span className="text-sm text-ink-600/60">{f.title}</span>
+                  {typeof f.contacts === "number" && (
+                    <span
+                      title="Customers who opened this freelancer's WhatsApp, phone, email or portfolio from the public directory"
+                      className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${f.contacts > 0 ? "bg-brand-50 text-brand-600" : "bg-ink-50 text-ink-600/50"}`}
+                    >
+                      {f.contacts > 0 ? `${f.contacts} contact${f.contacts === 1 ? "" : "s"}` : "No contacts yet"}
+                    </span>
+                  )}
                   {f.approved ? (
                     <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">Approved</span>
                   ) : (

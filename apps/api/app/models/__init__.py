@@ -16,6 +16,7 @@ from app.models.contact import ContactMessage
 from app.models.discussion import DiscussionPost
 from app.models.coupon import Coupon
 from app.models.freelancer import Freelancer
+from app.models.freelancer_contact import FreelancerContact
 from app.models.course import Course
 from app.models.job import Job
 from app.models.order import Order, OrderItem, PaymentTransaction
@@ -49,6 +50,7 @@ __all__ = [
     "DiscussionPost",
     "Coupon",
     "Freelancer",
+    "FreelancerContact",
     "Course",
     "Job",
     "Order",

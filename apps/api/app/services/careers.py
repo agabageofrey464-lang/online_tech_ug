@@ -5,12 +5,13 @@ import re
 import secrets
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.application import Application
 from app.models.freelancer import Freelancer
+from app.models.freelancer_contact import FreelancerContact
 
 ALLOWED_CV_EXT = {".pdf", ".doc", ".docx"}
 MAX_CV_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -96,6 +97,53 @@ def list_freelancers(db: Session, include_unapproved: bool = False) -> list[dict
 def create_freelancer(db: Session, data: dict, approved: bool = False) -> Freelancer:
     row = Freelancer(approved=approved, **data)
     db.add(row)
+    db.commit()
+    db.refresh(row)
+    return row
+
+
+CONTACT_CHANNELS = ("whatsapp", "phone", "email", "portfolio")
+
+
+def record_contact(db: Session, freelancer_id: int, channel: str) -> Freelancer | None:
+    """Log that a visitor was handed off to this freelancer. Returns the row, or None.
+
+    Only listed (approved) freelancers count — an unapproved profile is not
+    reachable from the directory, so a contact on one would be a bad request,
+    not a lead.
+    """
+    if channel not in CONTACT_CHANNELS:
+        return None
+    row = db.get(Freelancer, freelancer_id)
+    if not row or not row.approved:
+        return None
+    db.add(FreelancerContact(freelancer_id=freelancer_id, channel=channel))
+    db.commit()
+    return row
+
+
+def contact_counts(db: Session) -> dict[int, int]:
+    """How many times each freelancer has been contacted, for the admin list."""
+    rows = db.execute(
+        select(FreelancerContact.freelancer_id, func.count(FreelancerContact.id)).group_by(
+            FreelancerContact.freelancer_id
+        )
+    ).all()
+    return {fid: n for fid, n in rows}
+
+
+def update_freelancer(db: Session, freelancer_id: int, changes: dict) -> Freelancer | None:
+    """Apply the given fields to one freelancer. Returns None if there is no such row.
+
+    Only keys actually present are written, so a caller correcting a dead photo
+    URL cannot accidentally blank out somebody's bio by omitting it.
+    """
+    row = db.get(Freelancer, freelancer_id)
+    if not row:
+        return None
+    for field, value in changes.items():
+        if value is not None and hasattr(row, field):
+            setattr(row, field, value)
     db.commit()
     db.refresh(row)
     return row

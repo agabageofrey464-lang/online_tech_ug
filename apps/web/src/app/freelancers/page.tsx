@@ -7,6 +7,32 @@ import Link from "next/link";
 
 const waFromPhone = (p: string) => `https://wa.me/${p.replace(/\D/g, "").replace(/^0/, "256")}`;
 
+/**
+ * Tell the office a visitor is being handed off to this freelancer.
+ *
+ * Every button here leaves the site — WhatsApp, the dialler, a mail client —
+ * so the owner had no way of knowing whether the directory was working at all,
+ * or whether someone paying for a listing had ever been clicked once.
+ *
+ * sendBeacon is what this needs: the browser takes the request and delivers it
+ * even as the page goes away, without the click waiting on a round trip. Where
+ * it is unavailable we fall back to a keepalive fetch. Either way the failure
+ * mode is "we did not hear about it", never "the customer could not get
+ * through" — so nothing here is awaited and nothing throws.
+ */
+function trackContact(id: number, channel: "whatsapp" | "phone" | "email" | "portfolio") {
+  const url = `/_api/careers/freelancers/${id}/contact?channel=${channel}`;
+  try {
+    if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+      navigator.sendBeacon(url);
+      return;
+    }
+    void fetch(url, { method: "POST", keepalive: true }).catch(() => {});
+  } catch {
+    /* never let a metric get between a customer and a freelancer */
+  }
+}
+
 type Freelancer = {
   id: number;
   name: string;
@@ -104,16 +130,17 @@ export default function FreelancersPage() {
                       href={`${waFromPhone(f.phone)}?text=${encodeURIComponent(`Hi ${f.name}, I found you on Online Tech Uganda and I'd like to hire you.`)}`}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => trackContact(f.id, "whatsapp")}
                       className="inline-flex items-center gap-1.5 rounded-md bg-[#25D366] px-3 py-1.5 text-xs font-bold text-white hover:brightness-105"
                     >
                       <MessageCircle size={13} /> WhatsApp
                     </a>
                   ) : f.email ? (
-                    <a href={`mailto:${f.email}`} className="rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600">Contact</a>
+                    <a href={`mailto:${f.email}`} onClick={() => trackContact(f.id, "email")} className="rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600">Contact</a>
                   ) : null}
-                  {f.phone && <a href={`tel:${f.phone}`} className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Call"><Phone size={14} /></a>}
-                  {f.email && <a href={`mailto:${f.email}`} className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Email"><Mail size={14} /></a>}
-                  {f.portfolio_url && <a href={f.portfolio_url} target="_blank" rel="noreferrer" className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Portfolio"><Globe size={14} /></a>}
+                  {f.phone && <a href={`tel:${f.phone}`} onClick={() => trackContact(f.id, "phone")} className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Call"><Phone size={14} /></a>}
+                  {f.email && <a href={`mailto:${f.email}`} onClick={() => trackContact(f.id, "email")} className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Email"><Mail size={14} /></a>}
+                  {f.portfolio_url && <a href={f.portfolio_url} target="_blank" rel="noreferrer" onClick={() => trackContact(f.id, "portfolio")} className="rounded-md border border-ink-600/20 p-1.5 text-ink-700 hover:bg-ink-50" aria-label="Portfolio"><Globe size={14} /></a>}
                 </div>
               </div>
             ))}
