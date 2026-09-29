@@ -12,7 +12,7 @@ const url = (path: string) => `${BASE}${path === "/" ? "" : path}`;
 // Public, indexable routes.
 const PUBLIC_PATHS = [
   "/", "/shop", "/find", "/categories", "/marketplace", "/sell", "/learn", "/development", "/community", "/jobs",
-  "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
+  "/internship", "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
   "/news", "/blog", "/about", "/help", "/refer", "/pay", "/invoice", "/contact",
 ];
 

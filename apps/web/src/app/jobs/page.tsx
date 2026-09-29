@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   MapPin,
   Briefcase,
@@ -14,7 +15,6 @@ import {
 import { PageHeader } from "@/components/page-header";
 import { ExploreMore } from "@/components/explore-more";
 import { JobApply } from "@/components/job-apply";
-import { InternshipPanel } from "@/components/internship-panel";
 import { jobs as seedJobs } from "@/lib/jobs";
 import { whatsappLink } from "@/lib/site";
 
@@ -122,9 +122,32 @@ export default async function JobsPage() {
         subtitle="Industrial training for university students, and openings at Online Tech Uganda."
       />
 
-      {/* ── Internship programme ───────────────────────────────── */}
+      {/* Industrial training has its own page now; this is the pointer to it
+          so a student landing on /jobs still finds it. */}
       <section className="container-page pt-10">
-        <InternshipPanel />
+        <Link
+          href="/internship"
+          className="card-lift flex flex-wrap items-center gap-4 rounded-card bg-ink-700 p-5 text-white shadow-sm sm:p-6"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#FCDC04] text-ink-900">
+            <GraduationCap size={22} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[11px] font-black uppercase tracking-[0.22em] text-white/60">
+              For university students
+            </span>
+            <span className="block font-display text-xl font-black leading-tight">
+              Industrial training — UGX 150,000 for 2 months
+            </span>
+            <span className="mt-0.5 block text-[13px] text-white/75">
+              Software, IT and design on real client work. Acceptance and completion letters
+              signed for every university.
+            </span>
+          </span>
+          <span className="rounded-lg bg-brand-500 px-6 py-3 text-sm font-black">
+            See the programme →
+          </span>
+        </Link>
       </section>
 
       {/* ── Placement areas ────────────────────────────────────── */}
