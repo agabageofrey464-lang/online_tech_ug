@@ -47,6 +47,7 @@ const OFFERS: Offer[] = [
   { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-green-700", img: "tp-link-archer-c6" },
   { title: "Charge Anywhere", deal: "65W USB-C", note: "Fast, universal chargers", href: "/shop?cat=Power", bg: "bg-brand-700", img: "usb-c-charger-65w" },
   { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-ink-700", img: "asus-zenbook-14" },
+  { title: "Industrial Training", deal: "UGX 150,000 · 2 MONTHS", note: "Software & IT — every university welcome", href: "/jobs", bg: "bg-green-700", img: "dell-xps-13-9310" },
 ];
 
 export function PromoStrip() {

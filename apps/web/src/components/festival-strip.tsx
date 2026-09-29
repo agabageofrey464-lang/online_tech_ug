@@ -49,7 +49,12 @@ const FALLBACK: Strip[] = [
   { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700", img: "/products/dell-xps-13-9310.webp" },
   { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-700", img: "/courses/microsoft-office.webp" },
   { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-brand-700", img: "/products/ram-ddr4-8gb-dimm.webp" },
-  { text: "University student? Do your industrial training with us", cta: "Apply now", href: "/jobs", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
+  // Industrial training, aimed squarely at the universities. Software first,
+  // because that is most of what an intern here actually does.
+  { text: "Industrial training — UGX 150,000 for 2 months, software & IT", cta: "Apply now", href: "/jobs", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
+  { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — internships open now", cta: "See placements", href: "/jobs", bg: "bg-green-700", img: "/courses/web-development.webp" },
+  { text: "Intern on real client software — websites, systems and databases", cta: "Apply for a place", href: "/jobs", bg: "bg-teal-700", img: "/courses/computer-networking.webp" },
+  { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/jobs", bg: "bg-brand-700", img: "/courses/graphic-design.webp" },
   { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-800", img: "/products/ssd-480gb-sata.webp" },
 ];
 

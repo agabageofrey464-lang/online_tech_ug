@@ -14,6 +14,7 @@ import {
 import { PageHeader } from "@/components/page-header";
 import { ExploreMore } from "@/components/explore-more";
 import { JobApply } from "@/components/job-apply";
+import { InternshipPanel } from "@/components/internship-panel";
 import { jobs as seedJobs } from "@/lib/jobs";
 import { whatsappLink } from "@/lib/site";
 
@@ -123,52 +124,7 @@ export default async function JobsPage() {
 
       {/* ── Internship programme ───────────────────────────────── */}
       <section className="container-page pt-10">
-        <div className="relative overflow-hidden rounded-card bg-ink-700 p-6 text-white sm:p-9">
-          <span className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand-500/25 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
-              <GraduationCap size={13} /> Industrial training
-            </span>
-            <h2 className="mt-3 text-2xl font-black leading-tight sm:text-3xl">
-              Do your internship with a working IT company
-            </h2>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/85">
-              We take students from <b>any university or institution</b> in Uganda for industrial
-              training. You won&apos;t be making tea — you&apos;ll sit with our team and work on
-              real client jobs, supervised, with your school&apos;s paperwork properly handled.
-            </p>
-
-            <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
-              {[
-                "Signed & stamped acceptance letter",
-                "Assessment forms completed",
-                "Completion letter at the end",
-                "Real client work, not filing",
-              ].map((x) => (
-                <p key={x} className="flex items-center gap-2 text-sm text-white/90">
-                  <Check size={16} className="shrink-0 text-green-400" />
-                  {x}
-                </p>
-              ))}
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-2.5">
-              <JobApply
-                jobTitle="Industrial Training / Internship"
-                label="Apply for internship"
-                className="press inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 transition hover:bg-white/90"
-              />
-              <a
-                href={applyLink}
-                target="_blank"
-                rel="noreferrer"
-                className="press inline-flex items-center gap-2 rounded-md border border-white/40 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
-              >
-                <MessageCircle size={16} /> Ask a question
-              </a>
-            </div>
-          </div>
-        </div>
+        <InternshipPanel />
       </section>
 
       {/* ── Placement areas ────────────────────────────────────── */}
