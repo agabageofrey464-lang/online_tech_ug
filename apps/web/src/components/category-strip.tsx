@@ -26,6 +26,7 @@ export function CategoryStrip({ className = "" }: { className?: string }) {
     Object.entries({
       Laptops: "/products/hp-elitebook-840-g3.webp",
       Desktops: "/products/hp-280-g6-desktop.webp",
+      Phones: "/products/samsung-galaxy-a35-5g.webp",
       Components: "/products/ram-ddr4-8gb-dimm.webp",
       Power: "/products/power-bank-20000.webp",
       Accessories: "/products/logitech-mk270.webp",

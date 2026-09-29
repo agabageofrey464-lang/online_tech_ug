@@ -4,10 +4,28 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  Menu, User, ShoppingCart, Phone, Heart, Package, Star, HelpCircle, ChevronDown,
+  BatteryCharging,
+  ChevronDown,
+  Code2,
+  Cpu,
+  GraduationCap,
+  HardDrive,
+  Headphones,
+  Heart,
+  HelpCircle,
+  Laptop,
   LayoutGrid,
-  ShoppingBag, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive, BatteryCharging,
-  Store, GraduationCap, Code2,
+  Menu,
+  Monitor,
+  Package,
+  Phone,
+  ShoppingBag,
+  ShoppingCart,
+  Smartphone,
+  Star,
+  Store,
+  User,
+  Wifi,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
@@ -25,6 +43,7 @@ const CATEGORIES = [
   { href: "/shop", label: "All Products", icon: LayoutGrid },
   { href: "/shop?cat=Laptops", label: "Laptops", icon: Laptop },
   { href: "/shop?cat=Desktops", label: "Desktops", icon: Monitor },
+  { href: "/shop?cat=Phones", label: "Phones", icon: Smartphone },
   { href: "/shop?cat=Components", label: "Components", icon: Cpu },
   { href: "/shop?cat=Accessories", label: "Accessories", icon: Headphones },
   { href: "/shop?cat=Networking", label: "Networking", icon: Wifi },

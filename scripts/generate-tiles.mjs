@@ -35,6 +35,10 @@ const ICONS = {
     <rect x="30" y="20" width="40" height="46" rx="6"/>
     <path d="M40 66h20v14H40z"/>
     <path d="M44 30h12M44 40h12" stroke-linecap="round"/></g>`,
+  phone: `<g fill="none" stroke="${ORANGE}" stroke-width="6" stroke-linejoin="round">
+    <rect x="32" y="14" width="36" height="72" rx="7"/>
+    <path d="M44 22h12" stroke-linecap="round"/>
+    <circle cx="50" cy="76" r="3.5" fill="${ORANGE}" stroke="none"/></g>`,
   sd: `<g fill="none" stroke="${ORANGE}" stroke-width="6" stroke-linejoin="round">
     <path d="M30 22h28l14 14v42a4 4 0 0 1-4 4H30a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4z"/>
     <path d="M40 30v8M50 30v8M60 34v4" stroke-linecap="round"/></g>`,
@@ -54,6 +58,16 @@ const TILES = {
   "sandisk-flash-64gb": { icon: "usb", title: "64GB Flash Drive", sub: "USB 3.0" },
   "kingston-flash-32gb": { icon: "usb", title: "32GB Flash Drive", sub: "USB 2.0" },
   "microsd-64gb": { icon: "sd", title: "64GB MicroSD Card", sub: "Class 10 + adapter" },
+
+  // Phones — real photos replace these as stock is shot.
+  "tecno-spark-20": { icon: "phone", title: "Tecno Spark 20", sub: "8GB + 256GB · 50MP" },
+  "infinix-hot-40i": { icon: "phone", title: "Infinix Hot 40i", sub: "8GB + 256GB · 5000mAh" },
+  "samsung-galaxy-a15": { icon: "phone", title: "Samsung Galaxy A15", sub: "6GB + 128GB · AMOLED" },
+  "samsung-galaxy-a35-5g": { icon: "phone", title: "Samsung Galaxy A35 5G", sub: "8GB + 256GB · 5G" },
+  "redmi-note-13": { icon: "phone", title: "Redmi Note 13", sub: "8GB + 256GB · 108MP" },
+  "itel-a70": { icon: "phone", title: "itel A70", sub: "4GB + 128GB · Budget" },
+  "iphone-13-128gb": { icon: "phone", title: "iPhone 13 128GB", sub: "A15 Bionic · UK Used" },
+  "iphone-15-128gb": { icon: "phone", title: "iPhone 15 128GB", sub: "A16 · USB-C · Sealed" },
 };
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

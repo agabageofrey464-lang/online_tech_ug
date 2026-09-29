@@ -13,6 +13,7 @@ import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
+import { AcademyFestival } from "@/components/academy-festival";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
@@ -277,6 +278,11 @@ export default function HomePage() {
           to sit here are hidden, since the header search, mega-menu and mobile
           tab bar already cover category browsing. */}
       <PromoBanners />
+
+      {/* The academy, ahead of the shop rails. Training is the side of the
+          business being pushed now, and it had one rotating slide inside a
+          carousel it shared with laptop deals. */}
+      <AcademyFestival />
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
