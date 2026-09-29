@@ -101,14 +101,19 @@ export async function getProducts(): Promise<Product[]> {
     // holds everything — silently truncating the shop is how products go
     // missing without anybody noticing.
     const all: ApiProduct[] = [];
-    for (let offset = 0; offset < 1000; offset += 100) {
-      const res = await fetch(`${API}/api/v1/products?limit=100&offset=${offset}`, {
+    // One page, not three. Each of these is a network round trip made while a
+    // visitor waits for the page, so the fewer the better — the endpoint now
+    // allows 500, comfortably more than the catalogue. The loop stays, because
+    // silently truncating the shop is how products go missing unnoticed.
+    const PAGE = 500;
+    for (let offset = 0; offset < 5000; offset += PAGE) {
+      const res = await fetch(`${API}/api/v1/products?limit=${PAGE}&offset=${offset}`, {
         next: { revalidate: CATALOG_REVALIDATE },
       });
       if (!res.ok) throw new Error(`products ${res.status}`);
       const page: ApiProduct[] = await res.json();
       all.push(...page);
-      if (page.length < 100) break;
+      if (page.length < PAGE) break;
     }
     if (all.length === 0) throw new Error("empty catalogue");
     // Out of stock never reaches a listing. A shop front filled with things

@@ -1,65 +1,31 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import Link from "next/link";
 import { ShopGrid } from "@/components/shop-grid";
 import { FeaturedProducts } from "@/components/featured-products";
-import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ShopHeading } from "@/components/shop-heading";
+import { UnfilteredOnly } from "@/components/unfiltered-only";
 import { getProducts } from "@/lib/catalog";
 
 // Rebuilt in the background every few minutes, so a product added or
 // repriced in the admin reaches the shop without a deploy.
 export const revalidate = 300; // keep in step with CATALOG_REVALIDATE
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{ cat?: string; brand?: string; q?: string; deals?: string; sort?: string }>;
-}): Promise<Metadata> {
-  const sp = await searchParams;
-  const cat = typeof sp.cat === "string" ? sp.cat : "";
-  const brand = typeof sp.brand === "string" ? sp.brand : "";
-  const q = typeof sp.q === "string" ? sp.q : "";
-  const focus = q ? `“${q}”` : brand || cat || "";
-  const title = focus ? `${focus} — Shop` : "Shop Computers & Accessories";
-  const description = focus
-    ? `Buy ${focus} in Uganda at Online Tech Uganda — quality-checked, warranty included, countrywide delivery & flexible payment.`
-    : "Buy laptops, desktops, accessories, networking and storage in Uganda. Quality-checked, with delivery and flexible payment options.";
-  return {
-    title,
-    description,
-    // Canonical points to the base shop page so query-filtered views don't create
-    // duplicate-content pages in search.
-    alternates: { canonical: "/shop" },
-  };
-}
+// Static, deliberately. This page used to read searchParams on the server,
+// which meant it could never be cached: every visitor waited for a function to
+// start, call the API and render the whole catalogue — about a second before
+// anything appeared, against 0.4s for the cached home page. The filters, the
+// heading and the breadcrumb all read the query string in the browser instead,
+// which is where the grid was already doing it.
+export const metadata: Metadata = {
+  title: "Shop Computers & Accessories",
+  description:
+    "Buy laptops, desktops, accessories, networking and storage in Uganda. Quality-checked, with delivery and flexible payment options.",
+  // Filtered views are variations of this page, not pages of their own.
+  alternates: { canonical: "/shop" },
+};
 
-export default async function ShopPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ cat?: string; brand?: string; q?: string; deals?: string; sort?: string }>;
-}) {
-  const sp = await searchParams;
+export default async function ShopPage() {
   const products = await getProducts();
-  const cat = typeof sp.cat === "string" ? sp.cat : "";
-  const brand = typeof sp.brand === "string" ? sp.brand : "";
-  const q = typeof sp.q === "string" ? sp.q : "";
-  const deals = sp.deals === "1" || sp.deals === "true";
-  const isNew = sp.sort === "new";
-
-  // The page reads as a proper Jumia category/results page — the heading and
-  // breadcrumb reflect exactly what the shopper chose.
-  const title = q
-    ? `Search: “${q}”`
-    : brand
-      ? brand
-      : cat
-        ? cat
-        : deals
-          ? "Top Deals"
-          : isNew
-            ? "New Arrivals"
-            : "Computers & Accessories";
-  const isFiltered = Boolean(q || brand || cat || deals || isNew);
 
   const brandCount = new Set(products.map((p) => p.brand)).size;
   const stats = [
@@ -71,61 +37,17 @@ export default async function ShopPage({
 
   return (
     <div className="container-wide py-3">
-      <div className="mb-3">
-        <Breadcrumbs items={isFiltered ? [{ label: "Shop", href: "/shop" }, { label: title }] : [{ label: "Shop" }]} />
-      </div>
+      {/* useSearchParams needs a Suspense boundary to prerender. */}
+      <Suspense fallback={<div className="mb-3 h-40 rounded-lg bg-ink-600/10" />}>
+        <ShopHeading stats={stats} />
+      </Suspense>
 
-      {/* Not everyone knows what specs they need — many shoppers know only what
-          they can spend, so offer that route before the grid. */}
-      <Link
-        href="/find"
-        className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 transition hover:shadow-md"
-      >
-        <span className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-lg text-white">
-            🔎
-          </span>
-          <span>
-            <span className="block font-extrabold text-ink-900">
-              Not sure which one? Tell us your budget
-            </span>
-            <span className="block text-sm text-ink-700/70">
-              We&apos;ll show what genuinely fits — and say so if it doesn&apos;t.
-            </span>
-          </span>
-        </span>
-        <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">
-          Find my laptop →
-        </span>
-      </Link>
+      <Suspense fallback={null}>
+        <UnfilteredOnly>
+          <FeaturedProducts />
+        </UnfilteredOnly>
+      </Suspense>
 
-      {/* Category / results banner — reflects the chosen category, brand or search */}
-      <section className="mb-3 overflow-hidden rounded-lg bg-gradient-to-r from-ink-700 to-ink-600 text-white shadow-sm">
-        <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-          <div>
-            <h1 className="flex items-center gap-2 text-lg font-extrabold sm:text-2xl">
-              {isFiltered ? title : <>💻 Computers &amp; Accessories</>}
-            </h1>
-            <p className="mt-1 max-w-xl text-sm text-white/80">
-              {isFiltered
-                ? `Browse ${title} at Online Tech Uganda — quality-checked, warranty & countrywide delivery.`
-                : "Genuine laptops, desktops, components & accessories — quality-checked, with delivery and flexible payments."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {stats.map((s) => (
-              <span
-                key={s}
-                className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/15"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {!isFiltered && <FeaturedProducts />}
       <Suspense fallback={<div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">Loading…</div>}>
         <ShopGrid items={products} />
       </Suspense>

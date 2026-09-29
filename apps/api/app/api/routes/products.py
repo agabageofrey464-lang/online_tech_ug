@@ -26,7 +26,11 @@ def get_products(
     category: str | None = Query(default=None),
     search: str | None = Query(default=None),
     sort: str = Query(default="popular", pattern="^(popular|price-asc|price-desc)$"),
-    limit: int = Query(default=24, ge=1, le=100),
+    # The shop front walks this endpoint to build its catalogue. Capped at 100
+    # it had to make three round trips to list ~210 products, each one a
+    # separate call across the network from wherever the site renders. The
+    # default stays small for ordinary callers; the ceiling is what matters.
+    limit: int = Query(default=24, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
 ) -> list[dict]:

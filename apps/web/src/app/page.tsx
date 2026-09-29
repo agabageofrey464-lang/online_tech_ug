@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Suspense, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ProductRail } from "@/components/product-rail";
 import { BandPreview } from "@/components/band-preview";
-import { ShopGrid } from "@/components/shop-grid";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
@@ -20,7 +19,6 @@ import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
-import { ProductGridSkeleton } from "@/components/skeleton";
 import { listedProducts as products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -207,6 +205,10 @@ export default function HomePage() {
     { title: "Customer Favourites", subtitle: "Highest rated picks" },
   ];
   const trending = TRENDING_TITLES[slot % TRENDING_TITLES.length];
+
+  // Newest first: products are appended to the catalogue, so the tail is the
+  // most recent stock.
+  const newest = [...inStock].reverse().slice(0, 12);
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -531,10 +533,15 @@ export default function HomePage() {
             See All →
           </Link>
         </div>
+        {/* A rail, not the whole shop. This slot used to render <ShopGrid />,
+            the same component the /shop page uses, with the entire catalogue
+            and its filter sidebar — a complete second copy of the shop inside
+            the home page. It put 422 product cards and 308 images into one
+            document and pushed the HTML past a megabyte, which on a Ugandan
+            mobile connection is several seconds before anything appears.
+            "See All" goes to the real shop, which is what it is for. */}
         <div className="p-3">
-          <Suspense fallback={<ProductGridSkeleton />}>
-            <ShopGrid />
-          </Suspense>
+          <Rail items={newest} />
         </div>
       </Reveal>
 
