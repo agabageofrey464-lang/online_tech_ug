@@ -9,6 +9,7 @@ import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { CourseBrowser } from "@/components/course-browser";
+import { SafeImage } from "@/components/safe-image";
 import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -171,39 +172,64 @@ export default function LearnPage() {
       <section className="container-page py-10">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
+            // A picture each, because four white cards with a small orange
+            // glyph read as a diagram of the process rather than an invitation
+            // into it. Each one shows the step actually happening.
             {
               icon: Smartphone,
               title: "Pick your course",
               body: "Enrol on the full taught programme, or unlock single lessons and study at your own pace.",
+              img: "/web/photo-1516321318423-f06f85e504b3.webp",
             },
             {
               icon: Building2,
               title: "Physical or online",
               body: "Attend classes at our Kampala centre, or learn fully online — same tutors, same certificate.",
+              img: "/hero/hero-6.webp",
             },
             {
               icon: Wallet,
               title: "Pay by Mobile Money",
               body: "MTN MoMo or Airtel Money. We confirm your place and send your materials.",
+              img: "/web/photo-1609091839311-d5365f9ff1c5.webp",
             },
             {
               icon: Award,
               title: "Finish & get certified",
               body: "Complete the course with us and we issue your certificate, signed and stamped.",
+              img: "/hero/hero-5.webp",
             },
           ].map((s, i) => (
             <div
               key={s.title}
-              className="relative rounded-card border border-ink-600/10 bg-white p-5 shadow-sm"
+              className="card-lift relative flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm"
             >
-              <span className="absolute right-4 top-3 text-4xl font-black text-ink-600/[0.07]">
-                {i + 1}
+              <span className="relative block h-28 w-full overflow-hidden bg-ink-50">
+                <SafeImage
+                  src={s.img}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-ink-900/55 to-transparent" />
+                <span className="absolute right-3 top-2 text-3xl font-black text-white/45">
+                  {i + 1}
+                </span>
               </span>
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                <s.icon size={22} />
+
+              {/* The badge sits on the seam so the photo and the text below read
+                  as one card rather than a picture with a caption. It has to
+                  live outside the image, whose overflow-hidden — there to keep
+                  the photo inside the rounded corner — was slicing it in half.
+                  7rem is the image height, less half the badge. */}
+              <span className="absolute left-4 top-[5.625rem] flex h-11 w-11 items-center justify-center rounded-xl bg-white text-brand-600 shadow-md ring-1 ring-ink-600/10">
+                <s.icon size={21} />
               </span>
-              <h2 className="mt-3 font-extrabold text-ink-900">{s.title}</h2>
-              <p className="mt-1 text-sm text-ink-700/70">{s.body}</p>
+              <span className="flex flex-1 flex-col p-5 pt-7">
+                <h2 className="font-extrabold text-ink-900">{s.title}</h2>
+                <p className="mt-1 text-sm text-ink-700/70">{s.body}</p>
+              </span>
             </div>
           ))}
         </div>
