@@ -14,6 +14,8 @@ import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { AcademyFestival } from "@/components/academy-festival";
+import { LearningBrochures } from "@/components/learning-brochures";
+import { CourseShowcase } from "@/components/course-showcase";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
@@ -284,6 +286,10 @@ export default function HomePage() {
           carousel it shared with laptop deals. */}
       <AcademyFestival />
 
+      {/* The brochure itself, open on the page. Somebody here to buy a laptop
+          will not click through to /learn to find out that we teach. */}
+      <LearningBrochures />
+
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
         <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
@@ -476,43 +482,7 @@ export default function HomePage() {
 
       {/* Learn */}
       <Panel title="Learn Computer Skills" href="/learn">
-        <div className="grid-cards-lg gap-2.5 p-3">
-          {courses.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/learn/${c.slug}`}
-              className="group/course flex flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm card-lift"
-            >
-              {/* Cover photo fills what used to be empty card space */}
-              <span className="relative block h-24 w-full overflow-hidden bg-ink-50 sm:h-28">
-                <SafeImage
-                  src={c.cover ?? `/courses/${c.slug}.webp`}
-                  alt={c.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover transition duration-300 group-hover/course:scale-105"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-ink-900/55 to-transparent" />
-                <span className="absolute bottom-1.5 left-1.5 flex h-7 w-7 items-center justify-center rounded-lg bg-white text-brand-600 shadow">
-                  <Icon name={c.emoji} size={16} />
-                </span>
-              </span>
-              <div className="flex flex-1 flex-col p-3">
-                <p className="clamp-2 text-sm font-bold leading-snug text-ink-900">{c.title}</p>
-                {/* How long the taught programme runs is the first thing
-                    someone enrolling asks, so it belongs on the card. */}
-                <p className="mt-0.5 text-[11px] text-ink-700/60">
-                  {c.level} · {c.lessons} lessons
-                  {c.durationMonths ? ` · ${c.durationMonths} months` : ""}
-                </p>
-                <p className="mt-1.5 inline-flex w-fit rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-700">
-                  Certificate included
-                </p>
-                <p className="mt-auto pt-2 text-sm font-extrabold text-brand-600">{ugx(c.price)}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <CourseShowcase />
       </Panel>
 
       {/* Browse all products — same coloured deal-band treatment as the rails */}

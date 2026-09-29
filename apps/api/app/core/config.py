@@ -26,8 +26,10 @@ class Settings(BaseSettings):
     # Shared key required for admin write operations (create/update/delete products)
     admin_api_key: str = ""
 
-    # Marketplace: platform commission taken from each vendor sale (0.10 = 10%)
-    platform_commission_rate: float = 0.10
+    # Marketplace: vendors pay a flat subscription and we take nothing from a
+    # sale. Kept as a setting so a commission could be reinstated per-tenant,
+    # but it is zero and the sell page promises that.
+    platform_commission_rate: float = 0.0
 
     # Where uploaded CVs are stored (relative to the API working directory).
     upload_dir: str = "uploads"

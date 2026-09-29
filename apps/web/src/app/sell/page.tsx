@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ContactOptions } from "@/components/contact-options";
-import { whatsappLink } from "@/lib/site";
+import { ugx, whatsappLink } from "@/lib/site";
 import Link from "next/link";
 import {
   Store, Wallet, TrendingUp, ShieldCheck, Package, ImageIcon, BarChart3,
@@ -10,12 +10,17 @@ import {
 export const metadata: Metadata = {
   title: "Sell on OnlineTechUg — Become a Vendor",
   description:
-    "Sell on Online Tech Uganda. Open a store on our marketplace with no monthly fee, keep 90% of every sale, and get paid by Mobile Money once the customer has their order.",
+    "Sell on Online Tech Uganda. A flat vendor subscription from UGX 20,000 a week, 0% commission on every sale, and payment by Mobile Money once the customer has their order.",
 };
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
-const COMMISSION = 10;
+// We charge a flat vendor subscription and take nothing from a sale. The
+// plans themselves live in components/pricing-section.tsx so the sell page
+// and the pricing page can never quote different figures.
+const WEEKLY = 20000;
+const MONTHLY = 60000;
+const YEARLY = 600000;
 
 type MItem = { vendor_name: string; vendor_verified?: boolean; image_url: string };
 type VStore = { name: string; verified: boolean; count: number; image: string };
@@ -42,7 +47,7 @@ async function getTopStores(): Promise<VStore[]> {
 const perks = [
   { icon: TrendingUp, title: "Our customers see your stock", text: "Your products sit alongside ours on the marketplace, and go out in the campaigns we run." },
   { icon: Store, title: "Your own online store", text: "A storefront on our marketplace — no website or tech skills needed." },
-  { icon: Wallet, title: "Keep most of every sale", text: `You keep ${100 - COMMISSION}% — we take just a ${COMMISSION}% fee per item sold.` },
+  { icon: Wallet, title: "Keep every shilling you sell", text: `0% commission. You pay a flat subscription from ${ugx(WEEKLY)} a week and the whole sale price is yours.` },
   { icon: ShieldCheck, title: "Trusted & supported", text: "We handle secure orders, customer care and delivery together with you." },
 ];
 
@@ -61,13 +66,13 @@ const steps = [
   { n: 1, t: "Register", d: "Create your vendor account in a couple of minutes." },
   { n: 2, t: "Get approved", d: "We review your details and activate your store." },
   { n: 3, t: "List products", d: "Add items, photos and prices from your dashboard." },
-  { n: 4, t: "Sell & get paid", d: `Customers order & pay; we deduct ${COMMISSION}% and pay you the rest.` },
+  { n: 4, t: "Sell & get paid", d: "Customers order and pay; the full sale price comes to you by Mobile Money." },
 ];
 
 const faqs = [
   { q: "Who can become a vendor?", a: "Any business or individual in Uganda selling genuine products — electronics, phones, fashion, home items and more. You don't need a website or technical skills." },
-  { q: "How much does it cost?", a: `You can start on commission (we keep ${COMMISSION}% per sale, no monthly fee) or pick a flat weekly, monthly or yearly subscription with 0% commission. See our Pricing page for details.` },
-  { q: "How do I get paid?", a: "After a sale is delivered and confirmed, we deduct our fee and pay you your balance via Mobile Money or bank transfer." },
+  { q: "How much does it cost?", a: `A flat vendor subscription: ${ugx(WEEKLY)} for a week, ${ugx(MONTHLY)} a month for unlimited listings, or ${ugx(YEARLY)} a year which adds featured placement. There is no commission on any sale and no fee per item.` },
+  { q: "How do I get paid?", a: "Once a sale is delivered and confirmed, the full amount goes to you by Mobile Money or bank transfer. Nothing is deducted — your subscription is the only thing you pay us." },
   { q: "Do I handle delivery?", a: "We coordinate delivery with you. You prepare and dispatch the order; we help get it to the customer and keep everyone updated." },
   { q: "How long until my store is live?", a: "Once you register, our team reviews and approves your account — usually within a day. Then you can list products right away." },
 ];
@@ -86,8 +91,9 @@ export default async function SellPage() {
             </span>
             <h1 className="mt-4 text-3xl font-black leading-tight sm:text-5xl">Put your products in front of our customers</h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85 sm:text-base">
-              Open a store on our marketplace in minutes. No website, no monthly fee, no contract —
-              you keep 90% of every sale and we pay you once the customer has their order.
+              Open a store on our marketplace in minutes. No website and no contract — a flat
+              subscription from UGX 20,000 a week, 0% commission, and the full sale price paid to
+              you once the customer has their order.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-lg transition hover:bg-brand-600">
@@ -117,8 +123,8 @@ export default async function SellPage() {
             how soon they see money — that belongs above the sales pitch. */}
         <section className="-mt-6 grid gap-3 sm:grid-cols-3">
           {[
-            { big: `${100 - COMMISSION}%`, t: "is yours", d: `We keep ${COMMISSION}% of an item's price when it sells. Nothing else.` },
-            { big: "UGX 0", t: "to start", d: "No monthly fee on commission, no listing fee, no contract. Leave whenever you like." },
+            { big: "100%", t: "of the sale is yours", d: "We take no commission and no fee per item. What the customer pays, you keep." },
+            { big: ugx(MONTHLY), t: "a month", d: `Unlimited listings. Or ${ugx(WEEKLY)} for a week to try it, or ${ugx(YEARLY)} a year with featured placement.` },
             { big: "On delivery", t: "you're paid", d: "Once the customer has the order, your money goes out by Mobile Money or bank." },
           ].map((k) => (
             <div key={k.t} className="rounded-card border border-ink-600/10 bg-white p-5 text-center shadow-sm">

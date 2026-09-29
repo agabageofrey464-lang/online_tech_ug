@@ -9,6 +9,7 @@ import secrets
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.models.order import Order, OrderItem
 from app.models.vendor_product import VendorProduct
 from app.schemas.order import OrderCreate
@@ -35,14 +36,14 @@ class OrderError(Exception):
 
 
 def commission_rate_for(line_total: int) -> float:
-    """Tiered platform commission by line value (higher value → lower %). Range 5–10%."""
-    if line_total < 100_000:
-        return 0.10
-    if line_total < 500_000:
-        return 0.08
-    if line_total < 2_000_000:
-        return 0.06
-    return 0.05
+    """What we take from a vendor's sale.
+
+    Nothing. Vendors pay a flat weekly, monthly or yearly subscription and keep
+    the whole sale price, which is what the sell page promises them. The tiered
+    5–10% this used to return is gone; the column stays on order_items so past
+    orders still read correctly.
+    """
+    return settings.platform_commission_rate
 
 
 def commission_for(line_total: int) -> int:
