@@ -344,9 +344,9 @@ h1, h2, h3, .font-display {
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 80rem;
+  max-width: 100rem;
   /* Responsive gutter so text never sits flush to the screen edge (mobile → desktop) */
-  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-inline: clamp(1rem, 3.5vw, 2.5rem);
 }
 
 /* Brand gradient used in hero / CTAs */
@@ -368,12 +368,12 @@ h1, h2, h3, .font-display {
 @utility container-wide {
   width: 100%;
   margin-inline: auto;
-  max-width: 88rem;
+  max-width: 112rem;
   /* Responsive gutter so content keeps clear of the screen edge on all sizes */
-  padding-inline: clamp(0.875rem, 3vw, 1.5rem);
+  padding-inline: clamp(0.875rem, 2.5vw, 2rem);
 }
 @media (min-width: 1700px) {
-  .container-wide { max-width: 96rem; }
+  .container-wide { max-width: 120rem; }
 }
 
 /* Full-bleed on mobile: cancel a container's side gutter so a grid reaches the

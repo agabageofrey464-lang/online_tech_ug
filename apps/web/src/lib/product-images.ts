@@ -204,8 +204,8 @@ export const productImages: Record<string, string[]> = {
   ],
   "macbook-pro-14-m3": [
     "/products/macbook-pro-14-m3.webp",
-    "/products/058fa929c75d4167b1b4f503a59bcd90.jpg",
-    "/products/c7faba20f628428a852d645265987c55.jpg"
+    "/products/058fa929c75d4167b1b4f503a59bcd90.webp",
+    "/products/c7faba20f628428a852d645265987c55.webp"
   ],
   "mercury-power-bank": [
     "/products/mercury-power-bank.webp",
@@ -313,65 +313,65 @@ export const productImages: Record<string, string[]> = {
     "/products/wd-passport-1tb-3.webp"
   ],
   "hp-omen-16-gaming-1eda59": [
-    "/products/1eda5933b40c45718dde7e071a6b6be9.jpg",
-    "/products/326387147e1f493b8729ba8f8dd9372a.jpg",
-    "/products/592db15d034a49d6aa62c4151e9369c4.jpg"
+    "/products/1eda5933b40c45718dde7e071a6b6be9.webp",
+    "/products/326387147e1f493b8729ba8f8dd9372a.webp",
+    "/products/592db15d034a49d6aa62c4151e9369c4.webp"
   ],
   "hp-elitebook-1040-g8": [
-    "/products/67c6404b77b341fda95fdce0ec62eb6f.jpg",
-    "/products/3554a77ee5594a1fbff86bd2f53563f3.jpg"
+    "/products/67c6404b77b341fda95fdce0ec62eb6f.webp",
+    "/products/3554a77ee5594a1fbff86bd2f53563f3.webp"
   ],
   "macbook-air-art-22d580": [
-    "/products/22d5808cb1f549b08347a15d3c256cc2.jpg",
-    "/products/5c3389bf482250fcac863ff23698bf16_6.jpeg"
+    "/products/22d5808cb1f549b08347a15d3c256cc2.webp",
+    "/products/5c3389bf482250fcac863ff23698bf16_6.webp"
   ],
   "macbook-air-pattern-20631b": [
-    "/products/20631b37ebab4d2d90c8cac2a5803cc3.jpg",
-    "/products/723e61f9a83373d683a1b469bbf12f2f_7.jpeg"
+    "/products/20631b37ebab4d2d90c8cac2a5803cc3.webp",
+    "/products/723e61f9a83373d683a1b469bbf12f2f_7.webp"
   ],
   "hp-elitebook-x360-1030-2296f4": [
-    "/products/2296f410e65d4727a21ea1aed8ce8c86.jpg",
-    "/products/5fd66f0dd0944932961f93e0431ed990.jpg",
-    "/products/61fc2e2ce53a445caf236c5e9e956e74.jpg"
+    "/products/2296f410e65d4727a21ea1aed8ce8c86.webp",
+    "/products/5fd66f0dd0944932961f93e0431ed990.webp",
+    "/products/61fc2e2ce53a445caf236c5e9e956e74.webp"
   ],
   "lenovo-yoga-9i-46bede": [
-    "/products/46bede053d52446da676cee58bfbd26f.jpg",
-    "/products/6229c4041b53490d9d7d527c2ee4f0a2.jpg"
+    "/products/46bede053d52446da676cee58bfbd26f.webp",
+    "/products/6229c4041b53490d9d7d527c2ee4f0a2.webp"
   ],
   "hp-omnibook-x-ryzen-3d2b31": [
-    "/products/3d2b3105bd2d44129eef4c9cfd58eba1.jpg",
-    "/products/7381a61f01a84c4eb23def56286bb9b3.jpg"
+    "/products/3d2b3105bd2d44129eef4c9cfd58eba1.webp",
+    "/products/7381a61f01a84c4eb23def56286bb9b3.webp"
   ],
   "hp-elite-x2-546aff": [
-    "/products/546aff47fe49479cb89200c3a7f90476.jpg",
-    "/products/74c4c09e334c4aef952fa928d41c11f7.jpg"
+    "/products/546aff47fe49479cb89200c3a7f90476.webp",
+    "/products/74c4c09e334c4aef952fa928d41c11f7.webp"
   ],
   "hp-elitebook-840-g9-vpro-57c378": [
-    "/products/57c378bb3b4f4013a9ad04df965939fb.jpg",
-    "/products/7d2c6230e03d4cc3950f9678c7ec747a.jpg"
+    "/products/57c378bb3b4f4013a9ad04df965939fb.webp",
+    "/products/7d2c6230e03d4cc3950f9678c7ec747a.webp"
   ],
   "hp-envy-x360-15-i5-3d188a": [
-    "/products/3d188a1a0d0a4b20acbead38c7246ff3.jpg",
-    "/products/7fa92af49d1f4cdaaea22e817bdacca0.jpg"
+    "/products/3d188a1a0d0a4b20acbead38c7246ff3.webp",
+    "/products/7fa92af49d1f4cdaaea22e817bdacca0.webp"
   ],
   "hp-pavilion-x360-rose-351b81": [
-    "/products/351b813429714c5e8af948986c083d79.jpg",
-    "/products/838e0b26816949d3a59ccb6e3394c134.jpg",
-    "/products/88d080fef2b1470b818e0bb84343a52f.jpg"
+    "/products/351b813429714c5e8af948986c083d79.webp",
+    "/products/838e0b26816949d3a59ccb6e3394c134.webp",
+    "/products/88d080fef2b1470b818e0bb84343a52f.webp"
   ],
   "hp-elitebook-x360-i5-398321": [
-    "/products/398321c010d640f0b3bb653272a6ca7d.jpg",
-    "/products/75912f8d3334441da204185062aeb3ed.jpg",
-    "/products/897de4ee6650067a6c27017b4b0dfc9d_1.jpeg",
-    "/products/c7abcf558a9e702ade8a2671e84b0b10_0.jpeg"
+    "/products/398321c010d640f0b3bb653272a6ca7d.webp",
+    "/products/75912f8d3334441da204185062aeb3ed.webp",
+    "/products/897de4ee6650067a6c27017b4b0dfc9d_1.webp",
+    "/products/c7abcf558a9e702ade8a2671e84b0b10_0.webp"
   ],
   "thinkpad-x1-yoga-1f763c": [
-    "/products/1f763c58d06340ca87f571702cc7d669.jpg",
-    "/products/87b16d6e6b684ada8352eb20499bd074.jpg",
-    "/products/cfa5d3a000b6411c8553e2f5cbf29bfe.jpg"
+    "/products/1f763c58d06340ca87f571702cc7d669.webp",
+    "/products/87b16d6e6b684ada8352eb20499bd074.webp",
+    "/products/cfa5d3a000b6411c8553e2f5cbf29bfe.webp"
   ],
   "dell-latitude-2in1-vpro-1b6ccc": [
-    "/products/1b6ccc1017bf4ba7b063c00a976366f4.jpg",
-    "/products/cc2c82bcb9854b5ea368335521757b1b.jpg"
+    "/products/1b6ccc1017bf4ba7b063c00a976366f4.webp",
+    "/products/cc2c82bcb9854b5ea368335521757b1b.webp"
   ]
 };

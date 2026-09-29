@@ -22,8 +22,8 @@ export function Certificate({ courseTitle }: { courseTitle: string }) {
 
   useEffect(() => {
     setName(learnerName());
-    loadImg("/logo.png").then((i) => (logo.current = i));
-    loadImg("/signature.png").then((i) => (sign.current = i));
+    loadImg("/logo.webp").then((i) => (logo.current = i));
+    loadImg("/signature.webp").then((i) => (sign.current = i));
   }, []);
 
   async function download() {

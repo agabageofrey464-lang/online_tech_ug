@@ -17,7 +17,7 @@ const SLIDES = [
     pill: "Easy Mobile Money",
     cta: "Shop now",
     href: "/shop",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
     icon: ShieldCheck,
   },
   {
@@ -28,7 +28,7 @@ const SLIDES = [
     pill: "First lesson free",
     cta: "Start learning",
     href: "/learn",
-    img: "/hero/hero-4.jpg",
+    img: "/hero/hero-4.webp",
     icon: GraduationCap,
   },
   {
@@ -39,7 +39,7 @@ const SLIDES = [
     pill: "From UGX 30,000",
     cta: "Book a repair",
     href: "/services",
-    img: "/hero/hero-5.jpg",
+    img: "/hero/hero-5.webp",
     icon: Truck,
   },
   {
@@ -50,7 +50,7 @@ const SLIDES = [
     pill: "Verified vendors",
     cta: "Explore marketplace",
     href: "/marketplace",
-    img: "/hero/hero-6.jpg",
+    img: "/hero/hero-6.webp",
     icon: Store,
   },
   {
@@ -61,7 +61,7 @@ const SLIDES = [
     pill: "Brand new stock",
     cta: "Shop upgrades",
     href: "/shop?cat=Components",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
     icon: Cpu,
   },
 ];

@@ -21,7 +21,7 @@ const BANNERS = [
     href: "/learn",
     bg: "bg-green-600",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
   },
   {
     program: "Online Tech Academy",
@@ -36,7 +36,7 @@ const BANNERS = [
     href: "/learn",
     bg: "bg-teal-600",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Festival",
@@ -51,7 +51,7 @@ const BANNERS = [
     href: "/shop?deals=1",
     bg: "bg-teal-700",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-2.jpg",
+    img: "/hero/hero-4.webp",
   },
   {
     program: "Back to School",
@@ -66,7 +66,7 @@ const BANNERS = [
     href: "/shop?cat=Laptops",
     bg: "bg-teal-800",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Academy",
@@ -81,7 +81,7 @@ const BANNERS = [
     href: "/learn",
     bg: "bg-teal-600",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
   },
   {
     program: "Online Tech Festival",
@@ -96,7 +96,7 @@ const BANNERS = [
     href: "/shop?deals=1",
     bg: "bg-teal-700",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-2.jpg",
+    img: "/hero/hero-5.webp",
   },
   {
     program: "Business Ready",
@@ -111,7 +111,7 @@ const BANNERS = [
     href: "/services",
     bg: "bg-teal-800",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Festival",
@@ -126,7 +126,7 @@ const BANNERS = [
     href: "/contact",
     bg: "bg-teal-600",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
   },
   {
     program: "Repair Centre",
@@ -141,7 +141,7 @@ const BANNERS = [
     href: "/services#repairs-support",
     bg: "bg-teal-700",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-2.jpg",
+    img: "/hero/hero-6.webp",
   },
   {
     program: "Online Tech Festival",
@@ -156,7 +156,7 @@ const BANNERS = [
     href: "/shop?cat=Accessories",
     bg: "bg-teal-800",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Festival",
@@ -171,7 +171,7 @@ const BANNERS = [
     href: "/shop?cat=Laptops",
     bg: "bg-teal-600",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
   },
   {
     program: "Online Tech Storage",
@@ -186,7 +186,7 @@ const BANNERS = [
     href: "/shop?cat=Storage",
     bg: "bg-teal-700",
     panel: "bg-[#22d3ee]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Academy",
@@ -201,7 +201,7 @@ const BANNERS = [
     href: "/learn",
     bg: "bg-teal-800",
     panel: "bg-[#fb7185]",
-    img: "/hero/hero-4.jpg",
+    img: "/hero/hero-4.webp",
   },
   {
     program: "Online Tech Care",
@@ -216,7 +216,7 @@ const BANNERS = [
     href: "/services#repairs-support",
     bg: "bg-teal-600",
     panel: "bg-[#282363]",
-    img: "/hero/hero-5.jpg",
+    img: "/hero/hero-5.webp",
   },
   {
     program: "Online Tech Marketplace",
@@ -231,7 +231,7 @@ const BANNERS = [
     href: "/sell",
     bg: "bg-teal-700",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-6.jpg",
+    img: "/hero/hero-6.webp",
   },
   {
     program: "Online Tech Certified",
@@ -246,7 +246,7 @@ const BANNERS = [
     href: "/shop?q=uk used",
     bg: "bg-teal-800",
     panel: "bg-[#86efac]",
-    img: "/hero/hero-1.jpg",
+    img: "/hero/hero-1.webp",
   },
   {
     program: "Online Tech Business",
@@ -261,7 +261,7 @@ const BANNERS = [
     href: "/contact",
     bg: "bg-teal-600",
     panel: "bg-[#93c5fd]",
-    img: "/hero/hero-6.jpg",
+    img: "/hero/hero-6.webp",
   },
   {
     program: "Online Tech Student",
@@ -276,7 +276,7 @@ const BANNERS = [
     href: "/shop?cat=Laptops",
     bg: "bg-teal-700",
     panel: "bg-[#FCDC04]",
-    img: "/hero/hero-4.jpg",
+    img: "/hero/hero-4.webp",
   },
   {
     program: "Online Tech Upgrade",
@@ -291,7 +291,7 @@ const BANNERS = [
     href: "/shop?cat=Components",
     bg: "bg-teal-800",
     panel: "bg-[#fcd34d]",
-    img: "/hero/hero-3.jpg",
+    img: "/hero/hero-3.webp",
   },
   {
     program: "Online Tech Digital",
@@ -306,7 +306,7 @@ const BANNERS = [
     href: "/portfolio",
     bg: "bg-teal-600",
     panel: "bg-[#f15a29]",
-    img: "/hero/hero-5.jpg",
+    img: "/hero/hero-5.webp",
   },
 ];
 
@@ -357,7 +357,7 @@ export function PromoBanners() {
             small: c.small || "",
             cta: c.cta_label || "Shop now",
             href: c.link_url || "/shop",
-            img: c.image_url || "/hero/hero-1.jpg",
+            img: c.image_url || "/hero/hero-1.webp",
             bg: "",
             panel: "",
             bgHex: c.bg_color || "#0e7490",

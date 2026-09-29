@@ -17,7 +17,7 @@ export const site = {
     name: "Agaba Geofrey",
     title: "Founder & CEO · IT Specialist",
     email: "agabageofrey464@gmail.com",
-    photo: "/agaba.jpeg", // CEO headshot
+    photo: "/agaba.webp", // CEO headshot
   },
   // Where customers/vendors send payments. Update anytime.
   payment: {

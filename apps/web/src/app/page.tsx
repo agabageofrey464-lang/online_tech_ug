@@ -14,7 +14,6 @@ import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { AcademyFestival } from "@/components/academy-festival";
-import { LearningBrochures } from "@/components/learning-brochures";
 import { CourseShowcase } from "@/components/course-showcase";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
@@ -286,9 +285,6 @@ export default function HomePage() {
           carousel it shared with laptop deals. */}
       <AcademyFestival />
 
-      {/* The brochure itself, open on the page. Somebody here to buy a laptop
-          will not click through to /learn to find out that we teach. */}
-      <LearningBrochures />
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">

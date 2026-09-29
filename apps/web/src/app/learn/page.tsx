@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ExploreMore } from "@/components/explore-more";
 import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check, Building2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { LearningBrochures } from "@/components/learning-brochures";
 import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
@@ -156,6 +157,12 @@ export default function LearnPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* The four study tracks, moved off the home page so that page stays a
+          shop and this one carries the teaching. */}
+      <section className="container-page pt-10">
+        <LearningBrochures />
       </section>
 
       {/* ── How it works ───────────────────────────────────────── */}
