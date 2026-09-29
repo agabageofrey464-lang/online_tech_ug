@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SERVICE_FROM } from "@/lib/service-prices";
 import { Check, Star } from "lucide-react";
 import { site, whatsappLink, ugx } from "@/lib/site";
 
@@ -53,10 +54,10 @@ export const postingCharges: Plan[] = [
 
 // Software / development services — project-based "from" prices.
 export const servicePlans: Plan[] = [
-  { name: "Website", price: `From ${ugx(1000000)}`, desc: "Business sites, portfolios & landing pages.", features: ["Responsive design", "Up to ~6 pages", "Contact & WhatsApp", "1 year support"], popular: true },
-  { name: "E-commerce / Online Shop", price: `From ${ugx(1800000)}`, desc: "Sell online with payments & delivery.", features: ["Product catalog & cart", "Mobile Money / card", "Orders dashboard", "Training included"] },
-  { name: "Custom Software / System", price: `From ${ugx(2500000)}`, desc: "Management systems, POS, dashboards.", features: ["Tailored to your workflow", "User accounts & roles", "Reports & analytics", "Deployment & support"] },
-  { name: "Mobile App", price: `From ${ugx(3500000)}`, desc: "Android/iOS apps for your business.", features: ["Android & iOS", "Backend & admin", "Play Store publishing", "Maintenance plan"] },
+  { name: "Website", price: `From ${ugx(SERVICE_FROM.website)}`, desc: "Business sites, portfolios & landing pages.", features: ["Responsive design", "Up to ~6 pages", "Contact & WhatsApp", "1 year support"], popular: true },
+  { name: "E-commerce / Online Shop", price: `From ${ugx(SERVICE_FROM.ecommerce)}`, desc: "Sell online with payments & delivery.", features: ["Product catalog & cart", "Mobile Money / card", "Orders dashboard", "Training included"] },
+  { name: "Custom Software / System", price: `From ${ugx(SERVICE_FROM.managementSystem)}`, desc: "Management systems, POS, dashboards.", features: ["Tailored to your workflow", "User accounts & roles", "Reports & analytics", "Deployment & support"] },
+  { name: "Mobile App", price: `From ${ugx(SERVICE_FROM.mobileApp)}`, desc: "Android/iOS apps for your business.", features: ["Android & iOS", "Backend & admin", "Play Store publishing", "Maintenance plan"] },
   { name: "Branding & Design", price: `From ${ugx(300000)}`, desc: "Logos, graphics & social media content.", features: ["Logo & brand kit", "Social media designs", "Business cards / flyers", "Revisions included"] },
   { name: "IT Support & Setup", price: `From ${ugx(30000)}`, desc: "Networks, repairs, installations.", features: ["Onsite & remote", "Repairs & upgrades", "Network setup", "Per-visit or contract"] },
 ];

@@ -9,7 +9,16 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Keep user-only / transactional pages out of search results.
-      disallow: ["/account", "/wishlist", "/checkout", "/learn/dashboard", "/refer", "/login", "/signup", "/_api/"],
+      disallow: [
+        // Signed-in areas
+        "/account", "/wishlist", "/cart", "/checkout", "/login", "/signup",
+        "/vendor", "/academy", "/learn/dashboard", "/learn/codes",
+        // One-off pages that mean nothing to a stranger arriving from search:
+        // somebody else's receipt, a gated notes page, an unsubscribe link.
+        "/learn/*/registered", "/learn/*/success", "/learn/*/notes",
+        "/unsubscribe", "/advertise/create", "/refer",
+        "/_api/",
+      ],
     },
     sitemap: `${BASE}/sitemap.xml`,
     host: BASE,

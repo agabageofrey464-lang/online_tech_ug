@@ -1922,7 +1922,7 @@ export const services: Service[] = [
     summary:
       "Fast, modern, mobile-friendly websites that win customers — business sites, e-commerce, and web apps.",
     bullets: ["Business & landing sites", "E-commerce stores", "SEO & analytics", "Maintenance plans"],
-    startingFrom: 500000,
+    startingFrom: 2500000, // SERVICE_FROM.website
     image: "/web/photo-1547658719-da2b51169166.webp", // web design / wireframe
   },
   {
@@ -1931,7 +1931,7 @@ export const services: Service[] = [
     title: "Mobile App Development",
     summary: "Android & iOS apps that put your service in your customers' pockets.",
     bullets: ["Cross-platform apps", "Push notifications", "Payments integration", "App store launch"],
-    startingFrom: 2500000,
+    startingFrom: 4500000, // SERVICE_FROM.mobileApp
     image: "/web/photo-1512941937669-90a1b58e7e9c.webp", // smartphone app
   },
   {

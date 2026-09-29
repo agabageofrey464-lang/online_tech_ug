@@ -14,6 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { SERVICE_FROM } from "@/lib/service-prices";
 import { ExploreMore } from "@/components/explore-more";
 import { portfolio } from "@/lib/portfolio";
 import { SafeImage } from "@/components/safe-image";
@@ -39,42 +40,42 @@ const WHAT_WE_BUILD = [
     title: "Custom Software & Systems",
     body: "Systems built around how your business actually works — POS, inventory, HR, payroll, membership, records and reporting.",
     examples: ["Point of sale & stock", "SACCO / membership systems", "HR & payroll", "Records & reporting"],
-    from: 2500000,
+    from: SERVICE_FROM.managementSystem,
   },
   {
     icon: Smartphone,
     title: "Mobile App Development",
     body: "Android and iOS apps for ordering, delivery, payments, bookings and field work — built to run on the phones your customers actually have.",
     examples: ["Ordering & delivery apps", "Payment & wallet apps", "Booking systems", "Field data collection"],
-    from: 3500000,
+    from: SERVICE_FROM.mobileApp,
   },
   {
     icon: Globe,
     title: "Websites",
     body: "Business websites, portfolios, NGO and school sites — fast on mobile data, easy for you to update, and built to be found on Google.",
     examples: ["Business & corporate sites", "Portfolios & profiles", "NGO & church sites", "Landing pages"],
-    from: 2500000,
+    from: SERVICE_FROM.website,
   },
   {
     icon: ShoppingCart,
     title: "E-commerce Shops",
     body: "Online shops that take real payments — MTN Mobile Money, Airtel Money and card — with stock, orders and delivery handled properly.",
     examples: ["Online shops", "Mobile Money checkout", "Stock & order management", "Delivery tracking"],
-    from: 2000000,
+    from: SERVICE_FROM.ecommerce,
   },
   {
     icon: Database,
     title: "Management Systems",
     body: "School management, clinic records, church membership, property and fleet systems — the software institutions here are usually still doing on paper.",
     examples: ["School management", "Clinic & patient records", "Church membership", "Property & fleet"],
-    from: 3000000,
+    from: SERVICE_FROM.managementSystem,
   },
   {
     icon: GraduationCap,
     title: "Student Final-Year Projects",
     body: "Working systems for your final-year project, built with you so you can defend every part of it — plus documentation and a walkthrough.",
     examples: ["Working system", "Documentation", "Code walkthrough", "Defence preparation"],
-    from: 900000,
+    from: SERVICE_FROM.studentProject,
   },
 ];
 
