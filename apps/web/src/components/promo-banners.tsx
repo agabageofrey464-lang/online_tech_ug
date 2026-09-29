@@ -128,6 +128,55 @@ const BANNERS = [
     panel: "bg-[#FCDC04]",
     img: "/hero/hero-1.webp",
   },
+  // ── Office skills ───────────────────────────────────────────
+  // The panel artwork is each course's own cover, so these read as different
+  // offers rather than the same picture under four headlines.
+  {
+    program: "Online Tech Academy",
+    badge: "Office",
+    badgeSub: "Skills",
+    dates: "Enrolling now",
+    title: "Excel Pays The Bills",
+    pill: "MICROSOFT EXCEL · UGX 530,000",
+    note: "Formulas, charts and the reports an employer asks for",
+    small: "2 months · certificate included",
+    cta: "Enrol now",
+    href: "/learn/microsoft-excel",
+    bg: "bg-green-700",
+    panel: "bg-[#FCDC04]",
+    img: "/courses/microsoft-excel.webp",
+  },
+  {
+    program: "Online Tech Academy",
+    badge: "Full",
+    badgeSub: "Suite",
+    dates: "Most popular",
+    title: "Learn The Whole Office",
+    pill: "WORD · EXCEL · POWERPOINT · ACCESS",
+    note: "One programme, five applications, one certificate",
+    small: "From UGX 530,000",
+    cta: "See the programme",
+    href: "/learn/microsoft-office",
+    bg: "bg-brand-600",
+    panel: "bg-[#FCDC04]",
+    img: "/courses/microsoft-office.webp",
+  },
+  {
+    program: "Online Tech Academy",
+    badge: "Present",
+    badgeSub: "Like A Pro",
+    dates: "Evenings & weekends",
+    title: "Slides That Win The Room",
+    pill: "POWERPOINT FROM SCRATCH",
+    note: "Design, animate and deliver — without reading off the screen",
+    small: "Physical or online",
+    cta: "Start learning",
+    href: "/learn/microsoft-powerpoint",
+    bg: "bg-brand-700",
+    panel: "bg-[#FCDC04]",
+    img: "/courses/microsoft-powerpoint.webp",
+  },
+
   // ── iPhones ─────────────────────────────────────────────────
   // The panel artwork is the series line-up itself, so a shopper can see which
   // model is which before they click. Photographs live in public/promos.

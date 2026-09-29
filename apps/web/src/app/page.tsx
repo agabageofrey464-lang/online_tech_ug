@@ -479,7 +479,7 @@ export default function HomePage() {
 
       {/* Services */}
       <Panel title="Our Services" href="/services">
-        <div className="grid-cards-sm gap-3 p-3">
+        <div className="grid-cards-fit gap-3 p-3">
           {services.map((s) => (
             <Link
               key={s.slug}

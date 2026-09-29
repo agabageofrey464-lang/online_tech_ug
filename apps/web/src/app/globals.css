@@ -443,6 +443,16 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
 }
+/* A row that fills its width. `auto-fill` keeps empty tracks, so six service
+   cards on a wide screen stayed narrow and left a third of the band blank;
+   `auto-fit` collapses the empty tracks and lets the cards grow into the
+   space. The floor is wide enough for a title, a sentence and a price without
+   breaking a word in half. */
+@utility grid-cards-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
 @utility grid-cards-lg {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
