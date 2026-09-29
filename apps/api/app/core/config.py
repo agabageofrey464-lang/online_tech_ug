@@ -22,7 +22,12 @@ class Settings(BaseSettings):
 
     # Security
     secret_key: str = "change-me"
-    access_token_expire_minutes: int = 60
+    # A shop is not a bank. At 60 minutes a customer who signed in, browsed,
+    # and came back after lunch was silently signed out — and because the token
+    # is the whole session, a vendor mid-way through adding a product lost it.
+    # Two weeks, with /auth/me renewing an active session before it lapses, so
+    # somebody who uses the site regularly is never asked to sign in again.
+    access_token_expire_minutes: int = 60 * 24 * 14
     # Shared key required for admin write operations (create/update/delete products)
     admin_api_key: str = ""
 

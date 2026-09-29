@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
+import time
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from app.core import ratelimit
+from app.core.config import settings
 from app.core.security import create_token, decode_token
 from app.db.session import get_db
 from app.models.user import User
@@ -107,7 +110,32 @@ def login_verify(payload: LoginOtpIn, request: Request, db: Session = Depends(ge
 
 
 @router.get("/me", response_model=UserOut)
-def me(user: User = Depends(get_current_user)) -> User:
+def me(
+    response: Response,
+    authorization: str = Header(default=""),
+    user: User = Depends(get_current_user),
+) -> User:
+    """The signed-in user, renewing the session if it is past halfway.
+
+    The token *is* the session — there is no refresh token and no server-side
+    store — so when it lapsed the customer was simply signed out wherever they
+    happened to be. The web app calls this on every load, which makes it the
+    natural place to hand back a fresh token: anyone using the site regularly
+    is never asked to sign in again, while a session left alone still expires.
+
+    It goes back as a header so the response body keeps its shape for the other
+    apps that read this endpoint.
+    """
+    _, _, token = authorization.partition(" ")
+    data = decode_token(token) if token else None
+    if data:
+        total = settings.access_token_expire_minutes * 60
+        remaining = int(data.get("exp", 0)) - int(time.time())
+        if remaining < total // 2:
+            response.headers["X-Refreshed-Token"] = create_token(user.id, user.role)
+            # Without this the browser cannot read the header on a cross-origin
+            # reply, and the renewal would silently never arrive.
+            response.headers["Access-Control-Expose-Headers"] = "X-Refreshed-Token"
     return user
 
 

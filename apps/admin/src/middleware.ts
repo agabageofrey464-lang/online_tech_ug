@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { makeToken, COOKIE, adminUser, adminSecret } from "@/lib/auth";
+import { verifyToken, makeToken, COOKIE, adminSecret } from "@/lib/auth";
 
 const PUBLIC = ["/login", "/api/login", "/api/logout"];
 
@@ -9,14 +9,36 @@ export async function middleware(req: NextRequest) {
   if (PUBLIC.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
   const cookie = req.cookies.get(COOKIE)?.value;
-  const expected = await makeToken(adminUser(), adminSecret());
+  const session = cookie ? await verifyToken(cookie, adminSecret()) : null;
 
-  if (cookie && cookie === expected) return NextResponse.next();
+  if (!session) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("from", pathname);
+    // Clear whatever was there so a stale or forged cookie is not sent again.
+    const res = NextResponse.redirect(url);
+    if (cookie) res.cookies.set(COOKIE, "", { httpOnly: true, path: "/", maxAge: 0 });
+    return res;
+  }
 
-  const url = req.nextUrl.clone();
-  url.pathname = "/login";
-  url.searchParams.set("from", pathname);
-  return NextResponse.redirect(url);
+  const res = NextResponse.next();
+
+  // Slide the session forward while it is being used, keeping the original
+  // issue time so the absolute cap still applies. Only past halfway, so we are
+  // not re-signing a cookie on every single request.
+  const now = Math.floor(Date.now() / 1000);
+  const life = session.exp - session.iat;
+  if (session.exp - now < life / 2) {
+    res.cookies.set(COOKIE, await makeToken(session.u, adminSecret(), session.iat), {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      // No maxAge: a session cookie, so closing the browser ends the session.
+    });
+  }
+
+  return res;
 }
 
 export const config = {

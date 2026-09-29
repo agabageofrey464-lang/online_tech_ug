@@ -52,12 +52,46 @@ function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-/** Authenticated fetch helper — attaches the bearer token if present. */
+/** Fired when the server rejects our token, so the UI can stop pretending. */
+export const SESSION_EXPIRED = "otu:session-expired";
+
+/**
+ * Authenticated fetch helper — attaches the bearer token if present.
+ *
+ * It also handles the two things that made an expired session look like a
+ * broken site. A dead token used to sit in localStorage for good, so every
+ * later request carried it and quietly came back empty — a vendor would open
+ * their dashboard to no products and a save that did nothing, with no sign
+ * that they had simply been signed out. And a renewed token handed back by the
+ * server was ignored, so sessions lapsed even for people using the site daily.
+ */
 export async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const token = getToken();
   const headers = new Headers(init.headers);
   if (token) headers.set("Authorization", `Bearer ${token}`);
-  return fetch(`${base()}${path}`, { ...init, headers });
+  const res = await fetch(`${base()}${path}`, { ...init, headers });
+
+  // The server renews an active session before it lapses; keep the new token.
+  const renewed = res.headers.get("X-Refreshed-Token");
+  if (renewed) {
+    try {
+      localStorage.setItem(TOKEN_KEY, renewed);
+    } catch {
+      /* private mode — the session just ends when the token does */
+    }
+  }
+
+  // Rejected: drop the dead token and tell the app, once.
+  if (res.status === 401 && token) {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+    } catch {
+      /* ignore */
+    }
+    window.dispatchEvent(new Event(SESSION_EXPIRED));
+  }
+
+  return res;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -76,6 +110,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((u) => setUser(u))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
+  }, []);
+
+  // Any rejected request signs the whole app out, so the header, the account
+  // page and the vendor dashboard cannot disagree about who is signed in.
+  useEffect(() => {
+    const onExpired = () => setUser(null);
+    window.addEventListener(SESSION_EXPIRED, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED, onExpired);
   }, []);
 
   async function post(path: string, body: unknown) {
