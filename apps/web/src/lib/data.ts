@@ -2596,7 +2596,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 450000,
     blurb: "Design logos, posters, flyers and social media graphics like a pro — from Canva basics to Photoshop & Illustrator.",
-    emoji: "monitor",
+    emoji: "palette",
     unlockCode: "GD-2026",
     syllabus: [
       { title: "What is graphic design? Tools & careers", minutes: 30 },
@@ -2705,7 +2705,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 400000,
     blurb: "Turn raw data into insights — advanced formulas, PivotTables, charts and dashboards that impress employers.",
-    emoji: "office",
+    emoji: "chart",
     unlockCode: "DATA-2026",
     syllabus: [
       { title: "Excel for analysis — the workflow", minutes: 30 },
@@ -2810,7 +2810,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 400000,
     blurb: "Edit professional videos for YouTube, TikTok and business — cuts, transitions, text, music and colour.",
-    emoji: "monitor",
+    emoji: "video",
     unlockCode: "VID-2026",
     syllabus: [
       { title: "Video editing overview & gear", minutes: 30 },
@@ -2915,7 +2915,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 450000,
     blurb: "Draft professional 2D plans and 3D models — for engineering, architecture and construction.",
-    emoji: "monitor",
+    emoji: "ruler",
     unlockCode: "CAD-2026",
     cover: "/courses/autocad.webp",
     syllabus: [
@@ -2950,7 +2950,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 400000,
     blurb: "Manage your business books like a pro — invoices, expenses, VAT and reports with QuickBooks.",
-    emoji: "card",
+    emoji: "wallet",
     unlockCode: "QB-2026",
     cover: "/courses/quickbooks-accounting.webp",
     syllabus: [
@@ -2984,7 +2984,7 @@ export const courses: Course[] = [
     durationMonths: 2,
     trainingFee: 350000,
     blurb: "Work smarter with Microsoft 365 — OneDrive, Outlook, Teams meetings, and collaborating in the cloud.",
-    emoji: "office",
+    emoji: "team",
     unlockCode: "M365-2026",
     cover: "/courses/microsoft-365-teams.webp",
     syllabus: [
@@ -3018,7 +3018,7 @@ export const courses: Course[] = [
     durationMonths: 3,
     trainingFee: 400000,
     blurb: "Take stunning photos with any camera or phone, then edit them like a pro with Lightroom & Snapseed.",
-    emoji: "monitor",
+    emoji: "camera",
     unlockCode: "PHOTO-2026",
     cover: "/courses/photography-editing.webp",
     syllabus: [

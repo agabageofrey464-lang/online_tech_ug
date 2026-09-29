@@ -32,6 +32,13 @@ import {
   Database,
   Package,
   type LucideIcon,
+  Palette,
+  Video,
+  Camera,
+  Ruler,
+  Wallet,
+  BarChart3,
+  Users,
 } from "lucide-react";
 
 const map: Record<string, LucideIcon> = {
@@ -77,6 +84,15 @@ const map: Record<string, LucideIcon> = {
   user: User,
   keyboard: Keyboard,
   office: FileSpreadsheet,
+  // Design, video, photo, CAD and accounting all fell back to a plain monitor,
+  // so four different courses in the same panel showed the same picture.
+  palette: Palette,
+  video: Video,
+  camera: Camera,
+  ruler: Ruler,
+  wallet: Wallet,
+  chart: BarChart3,
+  team: Users,
   code: Code2,
   shop: ShoppingBag,
 };

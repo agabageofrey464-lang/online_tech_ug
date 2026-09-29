@@ -161,7 +161,9 @@ export default function LearnPage() {
 
       {/* The four study tracks, moved off the home page so that page stays a
           shop and this one carries the teaching. */}
-      <section className="container-page pt-10">
+      {/* The hero ends on a hard colour edge, so this needs real clearance —
+          at pt-10 the heading read as part of the banner above it. */}
+      <section className="container-page pt-12 sm:pt-16">
         <LearningBrochures />
       </section>
 

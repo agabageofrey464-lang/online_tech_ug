@@ -11,7 +11,7 @@ import {
   Sparkles,
   Wallet,
 } from "lucide-react";
-import { SafeImage } from "@/components/safe-image";
+import { Icon } from "@/components/icon";
 import { courses, courseTotal } from "@/lib/data";
 import { ugx } from "@/lib/site";
 
@@ -35,6 +35,7 @@ const TRACKS = [
     slugs: ["computer-basics", "microsoft-office", "microsoft-excel", "typing-skills"],
     icon: Laptop2,
     bg: "from-teal-600 to-teal-800",
+    chip: "bg-teal-50 text-teal-700",
   },
   {
     key: "creative",
@@ -44,6 +45,7 @@ const TRACKS = [
     slugs: ["graphic-design", "video-editing", "photography-editing", "digital-marketing"],
     icon: Sparkles,
     bg: "from-brand-500 to-brand-700",
+    chip: "bg-brand-50 text-brand-600",
   },
   {
     key: "tech",
@@ -53,6 +55,7 @@ const TRACKS = [
     slugs: ["web-development", "python-programming", "computer-networking", "cybersecurity-basics"],
     icon: GraduationCap,
     bg: "from-ink-600 to-ink-700",
+    chip: "bg-ink-50 text-ink-700",
   },
   {
     key: "business",
@@ -62,6 +65,7 @@ const TRACKS = [
     slugs: ["quickbooks-accounting", "data-analysis-excel", "autocad", "microsoft-365-teams"],
     icon: Wallet,
     bg: "from-green-700 to-green-800",
+    chip: "bg-green-50 text-green-700",
   },
 ];
 
@@ -144,14 +148,14 @@ export function LearningBrochures() {
                       href={`/learn/${c.slug}`}
                       className="group flex items-center gap-3 px-3 py-2.5 transition hover:bg-brand-50/60"
                     >
-                      <span className="relative h-10 w-14 shrink-0 overflow-hidden rounded-md bg-ink-50">
-                        <SafeImage
-                          src={c.cover ?? `/courses/${c.slug}.webp`}
-                          alt=""
-                          fill
-                          sizes="56px"
-                          className="object-cover transition duration-500 group-hover:scale-110"
-                        />
+                      {/* An icon in the track's colour, not a 56px crop of a
+                          dark photograph. At this size the covers read as grey
+                          smudges and several are dark stock shots of a keyboard,
+                          so four rows looked like four of the same thing. */}
+                      <span
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${t.chip} transition group-hover:scale-105`}
+                      >
+                        <Icon name={c.emoji} size={19} />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[13px] font-bold text-ink-900">
@@ -163,8 +167,13 @@ export function LearningBrochures() {
                             : c.level}
                         </span>
                       </span>
-                      <span className="shrink-0 text-[13px] font-black text-brand-600">
-                        {ugx(courseTotal(c))}
+                      <span className="shrink-0 text-right">
+                        <span className="block text-[13px] font-black text-brand-600">
+                          {ugx(courseTotal(c))}
+                        </span>
+                        <span className="block text-[10px] font-semibold text-ink-700/45">
+                          certificate
+                        </span>
                       </span>
                     </Link>
                   </li>
