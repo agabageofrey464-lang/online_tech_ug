@@ -71,6 +71,7 @@ export function OrderRowActions({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState("");
+  const [removing, setRemoving] = useState(false);
 
   const step = NEXT[status];
 
@@ -94,6 +95,38 @@ export function OrderRowActions({
       setDone("failed");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function remove() {
+    // An order is a record of money, so the confirmation names exactly what
+    // is about to go — reference, customer and total — and says plainly that
+    // a paid order takes its revenue with it. Cancelling keeps both.
+    const money = new Intl.NumberFormat("en-UG").format(total);
+    const paidWarning =
+      paymentStatus === "paid"
+        ? `\n\nThis order is marked PAID. Deleting it removes UGX ${money} from your sales reports. To keep the record, set it to Cancelled instead.`
+        : "";
+    const ok = confirm(
+      `Delete order ${reference} permanently?\n\n${customerName} — UGX ${money}` +
+        paidWarning +
+        `\n\nThis cannot be undone.`,
+    );
+    if (!ok) return;
+
+    setRemoving(true);
+    setDone("");
+    try {
+      const res = await fetch(`/api/orders/${reference}`, { method: "DELETE" });
+      if (res.ok) {
+        router.refresh();
+        return; // the row is about to disappear; nothing to put back
+      }
+      setDone(res.status === 404 ? "already gone" : "failed");
+    } catch {
+      setDone("failed");
+    } finally {
+      setRemoving(false);
     }
   }
 
@@ -127,6 +160,18 @@ export function OrderRowActions({
           items_summary: itemsSummary,
         })}
       />
+      <button
+        onClick={remove}
+        disabled={removing || busy}
+        title={`Delete order ${reference} permanently`}
+        aria-label={`Delete order ${reference}`}
+        className="whitespace-nowrap rounded-md border border-red-200 px-2 py-1 text-[11px] font-bold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+      >
+        {removing ? "…" : "Delete"}
+      </button>
+      {done === "failed" || done === "already gone" ? (
+        <span className="text-[10px] font-semibold text-red-500">{done}</span>
+      ) : null}
     </div>
   );
 }

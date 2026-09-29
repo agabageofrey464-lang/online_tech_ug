@@ -14,3 +14,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ refere
   const data = await res.json().catch(() => ({}));
   return NextResponse.json(data, { status: res.status });
 }
+
+// Removes an order permanently. Guarded by the same admin auth middleware as
+// the rest of /api; the API refuses it without the admin key regardless.
+export async function DELETE(_req: Request, { params }: { params: Promise<{ reference: string }> }) {
+  const { reference } = await params;
+  const res = await fetch(`${API}/api/v1/orders/${encodeURIComponent(reference)}`, {
+    method: "DELETE",
+    headers: { "X-Admin-Key": process.env.ADMIN_API_KEY ?? "" },
+  });
+  const data = await res.json().catch(() => ({}));
+  return NextResponse.json(data, { status: res.status });
+}

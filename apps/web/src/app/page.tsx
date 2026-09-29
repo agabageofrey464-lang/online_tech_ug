@@ -26,7 +26,8 @@ import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function byCat(cat: Product["category"]) {
-  return products.filter((p) => p.category === cat);
+  // Out-of-stock items never lead a rail — see the note in shop-grid.
+  return products.filter((p) => p.category === cat && p.inStock !== false);
 }
 
 // Jumia-style deal-band colours — cycled per band so rails look varied.
@@ -139,6 +140,22 @@ export const metadata: Metadata = {
 export const revalidate = 600; // 10 minutes
 
 /** Rotate an array by `by` places — deterministic, no randomness to hydrate. */
+/** Alternate two lists — laptop, phone, laptop, phone — so a mixed rail
+ *  actually reads as mixed. Sorting a merged list by price looks mixed until
+ *  a price band happens to be all one kind, and then it silently is not. */
+function mix(a: Product[], b: Product[], take: number): Product[] {
+  const inStock = (p: Product) => p.inStock !== false;
+  const best = (list: Product[]) =>
+    list.filter(inStock).sort((x, y) => (y.rating ?? 0) - (x.rating ?? 0));
+  const [ls, ps] = [best(a), best(b)];
+  const out: Product[] = [];
+  for (let i = 0; out.length < take && (i < ls.length || i < ps.length); i += 1) {
+    if (ls[i]) out.push(ls[i]);
+    if (out.length < take && ps[i]) out.push(ps[i]);
+  }
+  return out;
+}
+
 function rotate<T>(arr: T[], by: number): T[] {
   if (arr.length === 0) return arr;
   const n = ((by % arr.length) + arr.length) % arr.length;
@@ -429,8 +446,27 @@ export default function HomePage() {
         <Rail items={byCat("Laptops").slice(0, 8)} />
       </Panel>
 
+      {/* Phones sit between the two computer rails on purpose. They had no
+          panel here at all, so the only way to see one was to go looking for
+          the Phones page — and somebody buying a laptop never did. Most people
+          replacing a laptop are carrying a phone that is older than it. */}
+      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
+        <Rail items={byCat("Phones").slice(0, 8)} />
+      </Panel>
+
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
         <Rail items={byCat("Desktops").slice(0, 8)} />
+      </Panel>
+
+      {/* A laptop and a phone in one rail, cheapest first. The category panels
+          keep each kind in its own box, which is fine for somebody who knows
+          what they want and useless for somebody kitting themselves out. */}
+      <Panel
+        title="Work & Talk — a laptop and a phone"
+        href="/shop"
+        items={[...byCat("Laptops"), ...byCat("Phones")]}
+      >
+        <Rail items={mix(byCat("Laptops"), byCat("Phones"), 8)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>

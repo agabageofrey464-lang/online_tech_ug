@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
@@ -7,6 +9,8 @@ from app.schemas.order import OrderCreate, OrderOut, OrderSummary, OrderUpdate
 from app.services import orders as orders_service
 from app.services.email import send_order_confirmation
 from app.services import notify, push, whatsapp
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -86,3 +90,23 @@ async def update_order(
         await notify.order_status_changed(order, payload.status, db)
 
     return order
+
+
+@router.delete("/{reference}", dependencies=[Depends(require_admin)])
+def delete_order(reference: str, db: Session = Depends(get_db)) -> dict:
+    """Admin: delete an order permanently, with its line items.
+
+    There was no way to remove one at all, so test orders and duplicates sat in
+    the list for good and made the counts on the dashboard wrong.
+
+    This is a real delete, not a status change. Cancelling an order keeps the
+    record and the revenue; this removes both, which is what is wanted for a
+    test order and almost never what is wanted for a real one. The admin says
+    so on the button, and the deleted order is returned so the action can be
+    reported precisely rather than as "done".
+    """
+    removed = orders_service.delete_order(db, reference)
+    if removed is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    logger.info("Order deleted: %s", removed)
+    return {"ok": True, "deleted": removed}

@@ -1345,6 +1345,7 @@ export const products: Product[] = [
   // ── Phones ── all from UGX 450,000 up ───────────
   {
     id: "itel-p65",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "itel P65",
     category: "Phones",
     price: 470000,
@@ -1368,6 +1369,7 @@ export const products: Product[] = [
   },
   {
     id: "tecno-spark-20",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Tecno Spark 20",
     category: "Phones",
     price: 520000,
@@ -1393,6 +1395,7 @@ export const products: Product[] = [
   },
   {
     id: "infinix-hot-40i",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Infinix Hot 40i",
     category: "Phones",
     price: 560000,
@@ -1417,6 +1420,7 @@ export const products: Product[] = [
   },
   {
     id: "xiaomi-redmi-14c",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Xiaomi Redmi 14C",
     category: "Phones",
     price: 580000,
@@ -1441,6 +1445,7 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-a06",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Samsung Galaxy A06",
     category: "Phones",
     price: 620000,
@@ -1465,6 +1470,7 @@ export const products: Product[] = [
   },
   {
     id: "tecno-spark-30",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Tecno Spark 30",
     category: "Phones",
     price: 690000,
@@ -1489,6 +1495,7 @@ export const products: Product[] = [
   },
   {
     id: "infinix-hot-50",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Infinix Hot 50",
     category: "Phones",
     price: 700000,
@@ -1514,6 +1521,7 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-a15",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Samsung Galaxy A15",
     category: "Phones",
     price: 780000,
@@ -1538,6 +1546,7 @@ export const products: Product[] = [
   },
   {
     id: "tecno-camon-30",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Tecno Camon 30",
     category: "Phones",
     price: 850000,
@@ -1563,6 +1572,7 @@ export const products: Product[] = [
   },
   {
     id: "redmi-note-13",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Xiaomi Redmi Note 13",
     category: "Phones",
     price: 850000,
@@ -1589,6 +1599,7 @@ export const products: Product[] = [
   },
   {
     id: "infinix-note-40",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Infinix Note 40",
     category: "Phones",
     price: 920000,
@@ -1614,6 +1625,7 @@ export const products: Product[] = [
   },
   {
     id: "oppo-a60",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "OPPO A60",
     category: "Phones",
     price: 950000,
@@ -1639,6 +1651,7 @@ export const products: Product[] = [
   },
   {
     id: "redmi-note-14",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Xiaomi Redmi Note 14",
     category: "Phones",
     price: 980000,
@@ -1665,6 +1678,7 @@ export const products: Product[] = [
   },
   {
     id: "tecno-pova-6",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Tecno Pova 6",
     category: "Phones",
     price: 1050000,
@@ -1690,6 +1704,7 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-a25-5g",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Samsung Galaxy A25 5G",
     category: "Phones",
     price: 1150000,
@@ -1714,6 +1729,7 @@ export const products: Product[] = [
   },
   {
     id: "iphone-11-64gb",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Apple iPhone 11 64GB",
     category: "Phones",
     price: 1250000,
@@ -1739,6 +1755,7 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-a35-5g",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Samsung Galaxy A35 5G",
     category: "Phones",
     price: 1380000,
@@ -1764,6 +1781,7 @@ export const products: Product[] = [
   },
   {
     id: "iphone-12-128gb",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Apple iPhone 12 128GB",
     category: "Phones",
     price: 1650000,
@@ -1789,6 +1807,7 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-a55-5g",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Samsung Galaxy A55 5G",
     category: "Phones",
     price: 1850000,
@@ -1815,6 +1834,7 @@ export const products: Product[] = [
   },
   {
     id: "iphone-13-128gb",
+    inStock: false, // placeholder artwork only — relist once the handset is photographed
     name: "Apple iPhone 13 128GB",
     category: "Phones",
     price: 2150000,

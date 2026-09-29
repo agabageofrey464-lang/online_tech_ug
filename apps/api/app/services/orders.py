@@ -325,6 +325,35 @@ _ALLOWED_STATUS = {"pending", "confirmed", "processing", "shipped", "delivered",
 _ALLOWED_PAYMENT = {"pending", "unpaid", "paid", "refunded", "failed", "cancelled", "reversed"}
 
 
+def delete_order(db: Session, reference: str) -> dict | None:
+    """Admin: remove an order and its line items. Returns a summary, or None if missing.
+
+    An order is a record of money, so the caller is told what it destroyed —
+    the reference, the customer and the total — and that is what the admin puts
+    in front of whoever pressed the button before it happens.
+
+    Line items are deleted explicitly rather than relying on a cascade, because
+    the relationship does not declare one and an orphaned item row would keep
+    counting toward reports built from the items table.
+    """
+    order = get_order(db, reference)
+    if not order:
+        return None
+
+    summary = {
+        "reference": order.reference,
+        "customer_name": order.customer_name,
+        "total": float(order.total or 0),
+        "status": order.status,
+        "payment_status": order.payment_status,
+    }
+
+    db.query(OrderItem).filter(OrderItem.order_id == order.id).delete(synchronize_session=False)
+    db.delete(order)
+    db.commit()
+    return summary
+
+
 def update_order(
     db: Session, reference: str, status: str | None = None, payment_status: str | None = None
 ) -> Order | None:

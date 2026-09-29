@@ -101,7 +101,15 @@ export function ShopGrid({ items }: { items?: Product[] }) {
 
   const filtered = useMemo(() => {
     const band = PRICE_BANDS[priceIdx];
-    let list = products.filter((p) => (category === "All" ? true : p.category === category));
+    // Anything out of stock is left out of the listing entirely rather than
+    // shown greyed with a badge. A shop that fills its shelves with things it
+    // cannot sell reads as a shop with nothing in it — and the handsets we
+    // have no photograph of are exactly the ones we do not want leading the
+    // Phones page. The product page still answers on a direct link, so an
+    // existing link or search result never dead-ends.
+    let list = products
+      .filter((p) => p.inStock !== false)
+      .filter((p) => (category === "All" ? true : p.category === category));
     if (brands.length) list = list.filter((p) => brands.includes(p.brand));
     if (conditions.length) list = list.filter((p) => p.condition != null && conditions.includes(p.condition));
     list = list.filter((p) => p.price >= band.min && p.price < band.max);
