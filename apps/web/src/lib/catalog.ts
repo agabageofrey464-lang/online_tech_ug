@@ -1,4 +1,4 @@
-import { products as seedProducts, type Product } from "@/lib/data";
+import { products as seedProducts, productCategories, type Product } from "@/lib/data";
 
 /**
  * The shop's products, from the database the admin edits.
@@ -35,22 +35,17 @@ type ApiProduct = {
   specs?: Record<string, string> | null;
 };
 
-const CATEGORIES = [
-  "Laptops",
-  "Desktops",
-  "Components",
-  "Power",
-  "Accessories",
-  "Networking",
-  "Storage",
-] as const;
+// Derived from the one list the rest of the app filters by, rather than typed
+// out again here. A hand-copied second list is how every phone in the shop
+// ended up filed under Accessories: "Phones" was missing from this array, so
+// asCategory() sent all 23 handsets to the fallback and ?cat=Phones — the
+// category link in the main navigation — returned nothing at all.
+const CATEGORIES: readonly string[] = productCategories.filter((c) => c !== "All");
 
 const CONDITIONS = ["Brand New", "UK Used", "Refurbished"] as const;
 
 function asCategory(value: string): Product["category"] {
-  return (CATEGORIES as readonly string[]).includes(value)
-    ? (value as Product["category"])
-    : "Accessories";
+  return CATEGORIES.includes(value) ? (value as Product["category"]) : "Accessories";
 }
 
 function asCondition(value: string): Product["condition"] {
