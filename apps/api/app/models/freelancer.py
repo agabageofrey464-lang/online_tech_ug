@@ -14,7 +14,9 @@ class Freelancer(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(160))
     title: Mapped[str] = mapped_column(String(160), default="")  # e.g. "Web Developer"
-    skills: Mapped[str] = mapped_column(String(400), default="")  # comma separated
+    # Prose, not a short field: people paste their whole skill set in here.
+    # It was varchar(400) and a 952-character list returned a 500.
+    skills: Mapped[str] = mapped_column(Text, default="")  # comma separated
     bio: Mapped[str] = mapped_column(Text, default="")
     rate: Mapped[str] = mapped_column(String(80), default="")  # e.g. "From UGX 50,000/day"
     location: Mapped[str] = mapped_column(String(120), default="Uganda")

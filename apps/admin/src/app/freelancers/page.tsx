@@ -82,9 +82,21 @@ export default function FreelancersAdminPage() {
         setErr(
           typeof detail === "string" && detail
             ? detail
-            : res.status === 401
-              ? "Not authorised — check the admin key in Settings."
-              : `Couldn't add (error ${res.status}). Please try again.`,
+            : // A 422 arrives as a list of field errors, not a sentence. Reading
+              // only the string case sent every validation failure to the
+              // generic "try again" message, which is the one piece of advice
+              // guaranteed not to help: the same input fails the same way.
+              Array.isArray(detail) && detail.length
+              ? detail
+                  .map((d: { loc?: (string | number)[]; msg?: string }) => {
+                    const field = d.loc?.filter((x) => x !== "body").join(" ") ?? "";
+                    return field ? `${field}: ${d.msg ?? "is not valid"}` : (d.msg ?? "");
+                  })
+                  .filter(Boolean)
+                  .join("; ")
+              : res.status === 401
+                ? "Not authorised — check the admin key in Settings."
+                : `Couldn't add (error ${res.status}). Please try again.`,
         );
       }
     } catch {

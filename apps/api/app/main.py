@@ -98,6 +98,16 @@ async def lifespan(app: FastAPI):
             conn.execute(text("SELECT 1"))
         Base.metadata.create_all(bind=engine)
         logger.info("Database connected and tables ensured.")
+        # create_all() never alters a table that already exists, so a column
+        # declared too narrow stays too narrow on every deployed database.
+        try:
+            from app.db.schema_fixes import apply_widenings
+
+            widened = apply_widenings(engine)
+            if widened:
+                logger.info("Widened %d column(s) to match the models.", widened)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Schema widening skipped (%s).", exc)
         # Seed courses into the DB if the table is empty (idempotent).
         try:
             from app.db.session import SessionLocal
