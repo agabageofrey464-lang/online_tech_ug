@@ -1,4 +1,4 @@
-import { products, type Product } from "@/lib/data";
+import { listedProducts as products, type Product } from "@/lib/data";
 
 /**
  * Budget-first laptop matching.

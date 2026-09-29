@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { products as seedProducts, productCategories, type Product } from "@/lib/data";
+import { listedProducts as seedProducts, productCategories, type Product } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 import { SidebarExtras } from "@/components/sidebar-extras";
 import { EmptyState } from "@/components/empty-state";
@@ -107,9 +107,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     // have no photograph of are exactly the ones we do not want leading the
     // Phones page. The product page still answers on a direct link, so an
     // existing link or search result never dead-ends.
-    let list = products
-      .filter((p) => p.inStock !== false)
-      .filter((p) => (category === "All" ? true : p.category === category));
+    let list = products.filter((p) => (category === "All" ? true : p.category === category));
     if (brands.length) list = list.filter((p) => brands.includes(p.brand));
     if (conditions.length) list = list.filter((p) => p.condition != null && conditions.includes(p.condition));
     list = list.filter((p) => p.price >= band.min && p.price < band.max);

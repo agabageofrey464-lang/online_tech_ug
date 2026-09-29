@@ -2071,6 +2071,23 @@ export const products: Product[] = [
   },
 ];
 
+/**
+ * The products a shopper may be shown.
+ *
+ * `products` above is the whole catalogue and stays that way: the API sync
+ * feed has to know a product exists in order to be told it is out of stock,
+ * and a product page must still answer on a direct link so an old link or a
+ * search result never dead-ends.
+ *
+ * Listings are different. Filling a page with things that cannot be bought
+ * reads as a shop with nothing in it, and it wasted the best positions on the
+ * home page — the twenty handsets we have no photograph of were sitting in
+ * rails that should have been selling the eight we do.
+ *
+ * Every grid, rail and carousel should read from this.
+ */
+export const listedProducts: Product[] = products.filter((p) => p.inStock !== false);
+
 export const productCategories = [
   "All",
   "Laptops",

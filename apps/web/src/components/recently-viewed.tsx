@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { products } from "@/lib/data";
+import { listedProducts as products } from "@/lib/data";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { ProductCard } from "@/components/product-card";
 

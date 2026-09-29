@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
-import { products, courses } from "@/lib/data";
+// Only what can actually be bought. An out-of-stock product page still
+// answers on a direct link, but there is no reason to put it in front of a
+// search engine as something we sell; it comes back here the moment it is
+// relisted.
+import { listedProducts as products, courses } from "@/lib/data";
 import { portfolio } from "@/lib/portfolio";
 import { articles } from "@/lib/blog";
 

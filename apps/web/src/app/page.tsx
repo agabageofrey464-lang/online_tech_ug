@@ -21,13 +21,13 @@ import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
 import { ProductGridSkeleton } from "@/components/skeleton";
-import { products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
+import { listedProducts as products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function byCat(cat: Product["category"]) {
   // Out-of-stock items never lead a rail — see the note in shop-grid.
-  return products.filter((p) => p.category === cat && p.inStock !== false);
+  return products.filter((p) => p.category === cat);
 }
 
 // Jumia-style deal-band colours — cycled per band so rails look varied.
@@ -169,7 +169,7 @@ export default function HomePage() {
   // Which slot of the day we're in — advances every 10 minutes.
   const slot = Math.floor(Date.now() / (revalidate * 1000));
 
-  const inStock = products.filter((p) => p.inStock !== false);
+  const inStock = products;
 
   // Flash sales: rotate through the well-rated, photographed stock.
   const flashPool = inStock.filter((p) => (p.rating ?? 0) >= 4.4);
@@ -412,7 +412,7 @@ export default function HomePage() {
         <div className="flex gap-2.5 overflow-x-auto px-4 pb-4 no-scrollbar">
           {["Dell", "HP", "Lenovo", "Apple", "ASUS", "TP-Link", "SanDisk", "Kingston", "Logitech"].map((b) => {
             // Show a real product from that brand so the tile is a picture, not a word.
-            const hero = products.find((p) => p.brand === b && p.inStock !== false) ?? products.find((p) => p.brand === b);
+            const hero = products.find((p) => p.brand === b);
             const count = products.filter((p) => p.brand === b).length;
             return (
               <Link

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { products, productCategories, productImage } from "@/lib/data";
+import { listedProducts as products, productCategories, productImage } from "@/lib/data";
 
 /**
  * Categories, as a row you can thumb through.

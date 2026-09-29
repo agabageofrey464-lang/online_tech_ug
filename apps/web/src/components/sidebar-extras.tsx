@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SafeImage } from "@/components/safe-image";
-import { products, productImage } from "@/lib/data";
+import { listedProducts as products, productImage } from "@/lib/data";
 import { ugx } from "@/lib/site";
 
 /**

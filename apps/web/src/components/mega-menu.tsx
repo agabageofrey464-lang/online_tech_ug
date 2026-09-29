@@ -6,7 +6,7 @@ import {
   Menu, ChevronRight, Laptop, Monitor, Cpu, Headphones, Wifi, HardDrive,
   BatteryCharging, Wrench, GraduationCap, Store, Briefcase, Newspaper,
 } from "lucide-react";
-import { products } from "@/lib/data";
+import { listedProducts as products } from "@/lib/data";
 
 type Group = {
   key: string;

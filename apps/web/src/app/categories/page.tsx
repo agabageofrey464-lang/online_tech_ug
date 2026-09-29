@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { products, productCategories, productImage } from "@/lib/data";
+import { listedProducts as products, productCategories, productImage } from "@/lib/data";
 import { SafeImage } from "@/components/safe-image";
 import { ugx } from "@/lib/site";
 

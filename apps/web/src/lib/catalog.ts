@@ -1,4 +1,9 @@
-import { products as seedProducts, productCategories, type Product } from "@/lib/data";
+import {
+  products as seedProducts,
+  listedProducts,
+  productCategories,
+  type Product,
+} from "@/lib/data";
 
 /**
  * The shop's products, from the database the admin edits.
@@ -106,9 +111,16 @@ export async function getProducts(): Promise<Product[]> {
       if (page.length < 100) break;
     }
     if (all.length === 0) throw new Error("empty catalogue");
-    return all.map((row) => toProduct(row, seedBySlug.get(row.slug)));
+    // Out of stock never reaches a listing. A shop front filled with things
+    // nobody can buy reads as a shop with nothing in it, and it spends the
+    // best positions on the page advertising what we cannot sell. The product
+    // page uses getProduct() below, which does not filter, so a direct link or
+    // a search result still resolves.
+    return all
+      .map((row) => toProduct(row, seedBySlug.get(row.slug)))
+      .filter((p) => p.inStock !== false);
   } catch {
-    return seedProducts;
+    return listedProducts;
   }
 }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { products } from "@/lib/data";
+import { listedProducts as products } from "@/lib/data";
 
 /** Curated featured products (best-rated + discounted) shown atop the shop. */
 export function FeaturedProducts() {
