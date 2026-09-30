@@ -47,5 +47,10 @@ export const config = {
   // cookies, so a redirect to /login means it can never register, and
   // without it there are no alerts on the owner's phone. The worker holds
   // no data of its own — the alerts it displays are pushed to it.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|logo-lockup.png|logo-lockup-dark.png|sw.js).*)"],
+  //
+  // internship-photo.jpg is the picture the brochure PDF embeds. It is
+  // loaded into an <img> by the page that builds the document; behind the
+  // guard that fetch came back as the login page and the brochure printed
+  // with an empty frame.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|logo-lockup.png|logo-lockup-dark.png|internship-photo.jpg|sw.js).*)"],
 };
