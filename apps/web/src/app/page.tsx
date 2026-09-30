@@ -13,6 +13,7 @@ import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { AcademyFestival } from "@/components/academy-festival";
+import { IntakeAdverts } from "@/components/intake-adverts";
 import { CourseShowcase } from "@/components/course-showcase";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
@@ -294,11 +295,6 @@ export default function HomePage() {
           and "Explore our top categories" covers browsing for everyone. */}
 
 
-      {/* "Don't Miss Out!" now occupies this slot — the category circles that used
-          to sit here are hidden, since the header search, mega-menu and mobile
-          tab bar already cover category browsing. */}
-      <PromoBanners />
-
       {/* Phones, first — every one we stock, not a trimmed rail.
 
           They used to sit two thirds of the way down, below the flash sales,
@@ -306,10 +302,23 @@ export default function HomePage() {
           every brand. Nobody scrolls that far to discover a shop sells
           phones. A phone is the cheapest and most frequent thing we sell, so
           it is what belongs in front of a visitor who has not yet decided
-          what they came for. */}
+          what they came for.
+
+          Above the campaign banners, not below them: on a phone it was landing
+          732px down, which is a screen and a bit of scrolling before a visitor
+          learns we sell phones at all. */}
       <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
         <Rail items={byCat("Phones")} />
       </Panel>
+
+      {/* "Don't Miss Out!" now occupies this slot — the category circles that used
+          to sit here are hidden, since the header search, mega-menu and mobile
+          tab bar already cover category browsing. */}
+      <PromoBanners />
+
+      {/* An advert per upcoming intake, generated from the intake list so a
+          date that has passed stops being advertised on its own. */}
+      <IntakeAdverts />
 
       {/* The academy, ahead of the shop rails. Training is the side of the
           business being pushed now, and it had one rotating slide inside a

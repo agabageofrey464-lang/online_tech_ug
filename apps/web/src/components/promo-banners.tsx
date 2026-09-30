@@ -8,36 +8,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // Big campaign banners ("Don't Miss Out!") — bold badge, headline, a white offer
 // pill and a photo panel. Colours come from the Online Tech Uganda palette.
 const BANNERS = [
-  {
-    program: "Online Tech Academy",
-    badge: "Online",
-    badgeSub: "Intake",
-    dates: "Starts 28 September",
-    title: "New Online Classes",
-    pill: "REGISTER BEFORE 28 SEPTEMBER",
-    note: "Learn from anywhere — same tutors, same certificate",
-    small: "Limited places",
-    cta: "Reserve a place",
-    href: "/learn",
-    bg: "bg-green-600",
-    panel: "bg-[#FCDC04]",
-    img: "/hero/hero-1.webp",
-  },
-  {
-    program: "Online Tech Academy",
-    badge: "October",
-    badgeSub: "Intake",
-    dates: "Starts 15 October",
-    title: "Next Online Intake",
-    pill: "15 OCTOBER · REGISTER EARLY",
-    note: "Microsoft Office, design, web development and more",
-    small: "Registration UGX 180,000",
-    cta: "Register now",
-    href: "/learn",
-    bg: "bg-teal-600",
-    panel: "bg-[#FCDC04]",
-    img: "/hero/hero-3.webp",
-  },
+  // Intake slides used to live here, typed out by hand with their dates in
+  // the copy. They could not expire, so this carousel was still inviting
+  // people to classes that had already started. Intakes are advertised by
+  // <IntakeAdverts /> now, generated from the one dated list.
   {
     program: "Online Tech Festival",
     badge: "Weekend",

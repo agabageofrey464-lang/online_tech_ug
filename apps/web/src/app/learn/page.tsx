@@ -12,6 +12,7 @@ import { CourseBrowser } from "@/components/course-browser";
 import { SafeImage } from "@/components/safe-image";
 import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
+import { upcomingIntakes as listIntakes } from "@/lib/intakes";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function fmtDate(iso: string) {
@@ -36,11 +37,6 @@ export const metadata: Metadata = {
 // deploy, and people could register for a session that already happened.
 export const revalidate = 3600;
 
-/** Upcoming online intakes. Each drops off once its date has passed. */
-const INTAKES = [
-  { date: "2026-09-28", label: "28 September 2026", note: "Online classes — register before the 28th" },
-  { date: "2026-10-15", label: "15 October 2026", note: "Next online intake — limited places" },
-];
 
 const FAQ = [
   {
@@ -82,7 +78,7 @@ export default function LearnPage() {
   const withNotes = Object.keys(courseNotes);
   // Only advertise intakes that haven't started yet.
   const today = new Date().toISOString().slice(0, 10);
-  const upcomingIntakes = INTAKES.filter((i) => i.date >= today);
+  const upcomingIntakes = listIntakes();
 
   // Programmes run two months for the short courses and three or four for the
   // harder ones — stated up front, because it decides whether someone can

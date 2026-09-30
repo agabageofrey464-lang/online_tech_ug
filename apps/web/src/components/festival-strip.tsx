@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { thumb } from "@/lib/thumb";
+import { upcomingIntakes } from "@/lib/intakes";
 import Link from "next/link";
 import { X } from "lucide-react";
 
@@ -28,23 +30,6 @@ type Strip = {
 
 /** Used until the live campaigns load, and whenever none are running. */
 const FALLBACK: Strip[] = [
-  // Dated intakes — these drop off by themselves once the date passes.
-  {
-    text: "New ONLINE classes start 28 September — register now",
-    cta: "Reserve a place",
-    href: "/learn",
-    bg: "bg-teal-600",
-    img: "/courses/computer-basics.webp",
-    until: "2026-09-29",
-  },
-  {
-    text: "Next ONLINE intake: 15 October — limited places",
-    cta: "Register now",
-    href: "/learn",
-    bg: "bg-brand-600",
-    img: "/courses/graphic-design.webp",
-    until: "2026-10-16",
-  },
   { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-ink-600", img: "/products/hp-elitebook-840-g3.webp" },
   { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700", img: "/products/dell-xps-13-9310.webp" },
   { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-700", img: "/courses/microsoft-office.webp" },
@@ -82,8 +67,22 @@ const live = (list: Strip[]) => {
   return list.filter((s) => !s.until || s.until >= today);
 };
 
+/**
+ * A strip per upcoming intake, from the same list the Learn page and the home
+ * page adverts read. These used to be typed out here by hand, which is how the
+ * September intake was still being advertised after it had started.
+ */
+const intakeStrips = (): Strip[] =>
+  upcomingIntakes().map((i) => ({
+    text: `${i.title} starts ${i.label.replace(/ \d{4}$/, "")} — ${i.small.toLowerCase()}`,
+    cta: "Reserve a place",
+    href: "/learn",
+    bg: i.bg,
+    img: i.img,
+  }));
+
 export function FestivalStrip() {
-  const [strips, setStrips] = useState<Strip[]>(() => live(FALLBACK));
+  const [strips, setStrips] = useState<Strip[]>(() => [...intakeStrips(), ...live(FALLBACK)]);
   const [i, setI] = useState(0);
   // Shown by default so it renders server-side and the page doesn't jump once
   // hydration runs; only a visitor who actually dismissed it sees it hidden.
@@ -150,12 +149,16 @@ export function FestivalStrip() {
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
           {s.img && (
             <span className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 shadow-[0_0_0_2px_rgba(255,255,255,0.2)]">
+              {/* Eager, and the 96px copy. This sits at the top of every page,
+                  so deferring it meant arriving to a white disc — which reads
+                  as a broken image — while a full-size photograph downloaded
+                  to fill 28 pixels. */}
               <Image
-                src={s.img}
+                src={thumb(s.img)}
                 alt=""
                 width={28}
                 height={28}
-                loading="lazy"
+                loading="eager"
                 unoptimized={s.img.startsWith("http")}
                 className="h-full w-full object-cover"
               />

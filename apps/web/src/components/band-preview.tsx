@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { thumb } from "@/lib/thumb";
 import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
@@ -49,12 +50,15 @@ export function BandPreview({ items }: { items: Product[] }) {
           title={p.name}
           className="ad-fade group flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 ring-1 ring-white/30 transition hover:ring-2 hover:ring-white"
         >
+          {/* The 96px copy: these are 44px circles, and pulling the full
+              photograph for each was most of what made a panel header sit
+              empty on a slow connection. */}
           <Image
-            src={productImage(p)}
+            src={thumb(productImage(p))}
             alt=""
             width={44}
             height={44}
-            loading="lazy"
+            loading="eager"
             className="h-8 w-8 object-contain transition duration-300 group-hover:scale-110"
           />
         </Link>
