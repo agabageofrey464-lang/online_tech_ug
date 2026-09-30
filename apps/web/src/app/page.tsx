@@ -299,6 +299,18 @@ export default function HomePage() {
           tab bar already cover category browsing. */}
       <PromoBanners />
 
+      {/* Phones, first — every one we stock, not a trimmed rail.
+
+          They used to sit two thirds of the way down, below the flash sales,
+          the deals band, the trust strip, the trending rail and a band for
+          every brand. Nobody scrolls that far to discover a shop sells
+          phones. A phone is the cheapest and most frequent thing we sell, so
+          it is what belongs in front of a visitor who has not yet decided
+          what they came for. */}
+      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
+        <Rail items={byCat("Phones")} />
+      </Panel>
+
       {/* The academy, ahead of the shop rails. Training is the side of the
           business being pushed now, and it had one rotating slide inside a
           carousel it shared with laptop deals. */}
@@ -443,17 +455,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category sections (Jumia-style horizontal rails).
-
-          Phones lead. They had no panel here at all until recently, so the
-          only way to see one was to go looking for the Phones page — and
-          somebody who came for a laptop never did. A phone is also the
-          cheaper, more frequent purchase, so it is the better thing to put
-          in front of someone who has not decided what they came for. */}
-      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
-        <Rail items={byCat("Phones").slice(0, 8)} />
-      </Panel>
-
+      {/* Category sections (Jumia-style horizontal rails). Phones are not here
+          — they lead the whole page, above the campaign banners. */}
       <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
         <Rail items={byCat("Laptops").slice(0, 8)} />
       </Panel>
