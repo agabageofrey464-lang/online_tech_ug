@@ -3,6 +3,7 @@ import { type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ProductRail } from "@/components/product-rail";
+import { ProductCard } from "@/components/product-card";
 import { BandPreview } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
@@ -308,7 +309,16 @@ export default function HomePage() {
           732px down, which is a screen and a bit of scrolling before a visitor
           learns we sell phones at all. */}
       <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
-        <Rail items={byCat("Phones")} />
+        {/* A grid, not a rail. In a horizontal scroller a phone screen shows
+            two handsets and the rest are behind a swipe most people never
+            make — so the section that leads the page was showing a sixth of
+            what it had. Laid out like this the whole range is reached by
+            scrolling down, which is what someone is already doing. */}
+        <div className="grid-cards gap-2 p-2 sm:gap-3 sm:p-3">
+          {byCat("Phones").map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
       </Panel>
 
       {/* "Don't Miss Out!" now occupies this slot — the category circles that used
