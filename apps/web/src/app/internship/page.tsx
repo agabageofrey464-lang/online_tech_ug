@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/page-header";
 import {
   InternshipPanel,
   INTERNSHIP_FEE,
-  INTERNSHIP_MONTHS,
+  INTERNSHIP_WEEKS,
   INTERNSHIP_WINDOW,
 } from "@/components/internship-panel";
 import { ContactOptions } from "@/components/contact-options";
@@ -26,8 +26,8 @@ import { ugx } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Industrial Training & Internship in Kampala",
   description:
-    `Online industrial training for university students in Uganda — ${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months, ` +
-    `${INTERNSHIP_WINDOW} intake. ` +
+    `Online industrial training for university students in Uganda — ${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_WEEKS} weeks, ` +
+    `${INTERNSHIP_WINDOW}. ` +
     "Software development, IT support, networking and design, supervised on real client work. " +
     "Acceptance and completion letters provided for Makerere, Kyambogo, MUBS, UCU, Ndejje and every other institution.",
   alternates: { canonical: "/internship" },
@@ -105,7 +105,7 @@ const FAQS = [
   },
   {
     q: `Why is there a ${ugx(INTERNSHIP_FEE)} fee?`,
-    a: "It pays for a supervisor's time across the two months, the review of your work, and the paperwork your school needs. We keep intakes small so everybody gets properly supervised, and that only works if the placement covers its own cost.",
+    a: "It pays for a supervisor's time across the placement, the review of your work, and the paperwork your school needs. We keep intakes small so everybody gets properly supervised, and that only works if the placement covers its own cost.",
   },
   {
     q: "Do I need to know how to code already?",
@@ -113,7 +113,7 @@ const FAQS = [
   },
   {
     q: "When does it run, and do I have to come to Kampala?",
-    a: `This intake runs ${INTERNSHIP_WINDOW} — the standard recess term — and it is entirely online, so you can do it from home, from campus or from your home district. You need a computer and a working internet connection; nothing else. If your school requires different dates, tell us when you apply and we will work with them.`,
+    a: `This intake runs ${INTERNSHIP_WINDOW} — ${INTERNSHIP_WEEKS} weeks over the recess term — and it is entirely online, so you can do it from home, from campus or from your home district. You need a computer and a working internet connection; nothing else. If your school requires different dates, tell us when you apply and we will work with them.`,
   },
   {
     q: "Will I get a job afterwards?",
@@ -127,7 +127,7 @@ export default function InternshipPage() {
       <PageHeader
         eyebrow="Careers"
         title="Industrial Training & Internship"
-        subtitle={`${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months, online — ${INTERNSHIP_WINDOW} intake. Software, IT and design, on real client work.`}
+        subtitle={`${ugx(INTERNSHIP_FEE)} · online · ${INTERNSHIP_WINDOW}. Software, IT and design, on real client work.`}
         crumbs={[{ label: "Internship" }]}
       />
 

@@ -21,9 +21,18 @@ import { site, ugx, whatsappLink } from "@/lib/site";
  */
 
 export const INTERNSHIP_FEE = 150_000;
-export const INTERNSHIP_MONTHS = 2;
-/** The recess term most Ugandan schools share. */
-export const INTERNSHIP_WINDOW = "November & December";
+/** The dates this intake actually runs. */
+export const INTERNSHIP_START = "1 November";
+export const INTERNSHIP_END = "18 December 2026";
+export const INTERNSHIP_WINDOW = `${INTERNSHIP_START} – ${INTERNSHIP_END}`;
+/**
+ * Seven weeks, not two months.
+ *
+ * 1 November to 18 December is 47 days. The page and the brochure both said
+ * "2 months", which overstates it by a fortnight — and a school with a minimum
+ * placement length will hold a student to what we printed.
+ */
+export const INTERNSHIP_WEEKS = 7;
 /** This intake runs remotely — nobody is expected at the Kampala office. */
 export const INTERNSHIP_MODE = "Online";
 
@@ -113,7 +122,7 @@ export function InternshipPanel() {
               Placement fee
             </p>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 text-[11px] font-bold text-teal-700">
-              <CalendarDays size={12} /> {INTERNSHIP_MONTHS} months · {INTERNSHIP_WINDOW}
+              <CalendarDays size={12} /> {INTERNSHIP_WEEKS} weeks · {INTERNSHIP_WINDOW}
             </span>
           </div>
 
@@ -121,7 +130,7 @@ export function InternshipPanel() {
             {ugx(INTERNSHIP_FEE)}
           </p>
           <p className="mt-1.5 text-[13px] text-ink-700/70">
-            One payment for the whole {INTERNSHIP_MONTHS}-month placement. Nothing further to pay.
+            One payment for the whole {INTERNSHIP_WEEKS}-week placement. Nothing further to pay.
           </p>
 
           <ul className="mt-5 space-y-2">
@@ -146,7 +155,7 @@ export function InternshipPanel() {
 
           <div className="mt-5 flex flex-col gap-2 sm:flex-row">
             <JobApply
-              jobTitle={`Industrial Training / Internship (${INTERNSHIP_MONTHS} months)`}
+              jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
               label="Apply for a place"
               className="press inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm transition hover:bg-brand-600"
             />

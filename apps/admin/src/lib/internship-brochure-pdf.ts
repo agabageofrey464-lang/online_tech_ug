@@ -28,12 +28,19 @@ import {
  * same thing.
  */
 
-// Must match INTERNSHIP_FEE / INTERNSHIP_MONTHS in
-// apps/web/src/components/internship-panel.tsx.
+// Must match the constants in apps/web/src/components/internship-panel.tsx —
+// a brochure quoting different dates or a different length from the page is
+// the kind of thing a student turns up holding.
 export const INTERNSHIP_FEE = 150_000;
-export const INTERNSHIP_MONTHS = 2;
-/** When placements actually run — the recess term most schools share. */
-export const INTERNSHIP_WINDOW = "November & December";
+export const INTERNSHIP_START = "1 November";
+export const INTERNSHIP_END = "18 December 2026";
+export const INTERNSHIP_WINDOW = `${INTERNSHIP_START} - ${INTERNSHIP_END}`;
+/**
+ * Seven weeks, not two months: 1 November to 18 December is 47 days. This
+ * said "2 months", which overstates it by a fortnight, and a school with a
+ * minimum placement length will hold a student to what we printed.
+ */
+export const INTERNSHIP_WEEKS = 7;
 /** This intake runs remotely — nobody is expected at the Kampala office. */
 export const INTERNSHIP_MODE = "Online";
 
@@ -153,20 +160,20 @@ export function buildInternshipBrochure(opts: Options = {}): jsPDF {
   ink(MUTED);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.text(`One payment · ${INTERNSHIP_MONTHS} months · nothing more to pay`, M + 6, y + 19);
+  doc.text(`One payment · ${INTERNSHIP_WEEKS} weeks · nothing more to pay`, M + 6, y + 19);
 
   // The window, set in the brand yellow so it is the second thing read after
   // the fee — a student's next question is always "when".
-  doc.setFillColor(252, 220, 4);
-  doc.roundedRect(M + feeW + 8, y - 1, 52, 8.5, 1.4, 1.4, "F");
-  ink([30, 26, 10]);
+  // Sized to its text: the badge was a fixed 52mm and the dates outgrew it,
+  // so the year sat outside the yellow.
+  const badge = `${INTERNSHIP_MODE.toUpperCase()} · ${INTERNSHIP_WINDOW.toUpperCase()}`;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7.6);
-  doc.text(
-    `${INTERNSHIP_MODE.toUpperCase()} · INTAKE ${INTERNSHIP_WINDOW.toUpperCase()}`,
-    M + feeW + 11,
-    y + 4.6,
-  );
+  const badgeW = doc.getTextWidth(badge) + 7;
+  doc.setFillColor(252, 220, 4);
+  doc.roundedRect(M + feeW + 8, y - 1, badgeW, 8.5, 1.4, 1.4, "F");
+  ink([30, 26, 10]);
+  doc.text(badge, M + feeW + 11.5, y + 4.6);
 
   // The pitch, beside the fee.
   // The photograph: real work, on a real machine. Placed at 34mm wide, which
