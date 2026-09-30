@@ -29,7 +29,49 @@ export function OrderBanner() {
         style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 16px)" }}
       />
 
-      <div className="relative flex flex-col items-center gap-3 px-4 py-4 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
+      {/* ── Phones: one compact row ─────────────────────────────
+          Stacked, the eyebrow, the number, the WhatsApp line and a pair of
+          pill buttons ran to about 170px — a fifth of a phone screen spent on
+          a phone number, before anything we sell. Tapping anywhere here opens
+          WhatsApp, with the number itself still dialling. */}
+      <div className="relative sm:hidden">
+        <a
+          href={whatsappLink("Hi Online Tech Uganda! I'd like to place an order.")}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-3 px-3 py-2.5"
+        >
+          <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15">
+            <Phone size={16} className="text-white" />
+            <span className="absolute inset-0 animate-ping rounded-full ring-2 ring-white/40" />
+          </span>
+
+          <span className="min-w-0 flex-1 leading-tight">
+            <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-brand-200">
+              <span className="inline-block h-1.5 w-1.5 animate-soft-blink rounded-full bg-green-400" />
+              Order now — tap to WhatsApp
+            </span>
+            <span className="block truncate font-display text-[17px] font-black tracking-tight">
+              {site.phoneDisplay}
+            </span>
+          </span>
+
+          <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-2 text-[13px] font-bold text-white shadow-sm">
+            <svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" aria-hidden>
+              <path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-2.1c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3z" />
+            </svg>
+            Order
+          </span>
+        </a>
+        {/* Sits over the link so the number still dials rather than chatting. */}
+        <a
+          href={telHref(site.phoneDisplay)}
+          aria-label={`Call ${site.phoneDisplay}`}
+          className="absolute bottom-2 left-[3.25rem] right-[6.5rem] top-[1.6rem]"
+        />
+      </div>
+
+      <div className="relative hidden flex-col items-center gap-3 px-4 py-4 text-center sm:flex sm:flex-row sm:justify-between sm:px-6 sm:text-left">
         <div className="flex items-center gap-3">
           {/* Pulsing call icon */}
           <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15">
