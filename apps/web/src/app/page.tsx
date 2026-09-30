@@ -443,17 +443,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category sections (Jumia-style horizontal rails) */}
-      <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
-        <Rail items={byCat("Laptops").slice(0, 8)} />
-      </Panel>
+      {/* Category sections (Jumia-style horizontal rails).
 
-      {/* Phones sit between the two computer rails on purpose. They had no
-          panel here at all, so the only way to see one was to go looking for
-          the Phones page — and somebody buying a laptop never did. Most people
-          replacing a laptop are carrying a phone that is older than it. */}
+          Phones lead. They had no panel here at all until recently, so the
+          only way to see one was to go looking for the Phones page — and
+          somebody who came for a laptop never did. A phone is also the
+          cheaper, more frequent purchase, so it is the better thing to put
+          in front of someone who has not decided what they came for. */}
       <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
         <Rail items={byCat("Phones").slice(0, 8)} />
+      </Panel>
+
+      <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
+        <Rail items={byCat("Laptops").slice(0, 8)} />
       </Panel>
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
@@ -464,11 +466,11 @@ export default function HomePage() {
           keep each kind in its own box, which is fine for somebody who knows
           what they want and useless for somebody kitting themselves out. */}
       <Panel
-        title="Work & Talk — a laptop and a phone"
+        title="Work & Talk — a phone and a laptop"
         href="/shop"
         items={[...byCat("Laptops"), ...byCat("Phones")]}
       >
-        <Rail items={mix(byCat("Laptops"), byCat("Phones"), 8)} />
+        <Rail items={mix(byCat("Phones"), byCat("Laptops"), 8)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>

@@ -26,7 +26,11 @@ export function CategoryStrip({ className = "" }: { className?: string }) {
     Object.entries({
       Laptops: "/products/hp-elitebook-840-g3.webp",
       Desktops: "/products/hp-280-g6-desktop.webp",
-      Phones: "/products/samsung-galaxy-a35-5g.webp",
+      // A real photograph, and of a phone we actually list — this pointed at
+      // the Galaxy A35, which is one of the handsets hidden for want of a
+      // photo, so the category was fronted by a drawing of a phone nobody
+      // could buy.
+      Phones: "/products/iphone-16-128gb.webp",
       Components: "/products/ram-ddr4-8gb-dimm.webp",
       Power: "/products/power-bank-20000.webp",
       Accessories: "/products/logitech-mk270.webp",
@@ -43,12 +47,19 @@ export function CategoryStrip({ className = "" }: { className?: string }) {
     if (best) face.set(c, productImage(best));
   }
 
-  // Busiest first: what we actually have most of is what most people want.
+  // Phones lead, then busiest first. Sorting purely by how many we stock put
+  // Laptops in front, which is a fact about our shelves rather than about what
+  // someone arriving on the home page is most likely to be after.
+  const LEAD = "Phones";
   const cats = productCategories
     .filter((c) => c !== "All")
     .map((c) => ({ name: c, count: counts.get(c) ?? 0, img: face.get(c) }))
     .filter((c) => c.count > 0)
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => {
+      if (a.name === LEAD) return -1;
+      if (b.name === LEAD) return 1;
+      return b.count - a.count;
+    });
 
   if (cats.length === 0) return null;
 

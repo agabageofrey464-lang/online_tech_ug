@@ -1740,7 +1740,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A13 Bionic (6-core)",
-      ram: "4GB",
       storage: "64GB",
       display: "6.1\" Liquid Retina HD",
       graphics: "Dual 12MP camera, 12MP front",
@@ -1792,7 +1791,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A14 Bionic (6-core)",
-      ram: "4GB",
       storage: "128GB",
       display: "6.1\" Super Retina XDR OLED",
       graphics: "Dual 12MP camera, 12MP front",
@@ -1846,7 +1844,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A15 Bionic (6-core)",
-      ram: "4GB",
       storage: "128GB",
       display: "6.1\" Super Retina XDR OLED",
       graphics: "Dual 12MP camera with sensor-shift stabilisation, 12MP front",
@@ -1871,7 +1868,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A15 Bionic (5-core GPU)",
-      ram: "6GB",
       storage: "128GB",
       display: "6.1\" Super Retina XDR OLED",
       graphics: "Dual 12MP camera with Photonic Engine, 12MP front",
@@ -1897,7 +1893,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A16 Bionic (6-core)",
-      ram: "6GB",
       storage: "128GB",
       display: "6.1\" Super Retina XDR OLED with Dynamic Island",
       graphics: "48MP main camera with 2× telephoto, 12MP front",
@@ -1927,7 +1922,6 @@ export const products: Product[] = [
     details: {
       type: "Large-screen smartphone",
       processor: "Apple A15 Bionic (5-core GPU)",
-      ram: "6GB",
       storage: "128GB",
       display: "6.7\" Super Retina XDR OLED",
       graphics: "Dual 12MP camera with Photonic Engine, 12MP front",
@@ -1953,7 +1947,6 @@ export const products: Product[] = [
     details: {
       type: "Flagship smartphone",
       processor: "Apple A16 Bionic (6-core)",
-      ram: "6GB",
       storage: "256GB",
       display: "6.7\" Super Retina XDR OLED, 120Hz ProMotion, always-on",
       graphics: "48MP main with 3× telephoto and ultra-wide, 12MP front",
@@ -1978,7 +1971,6 @@ export const products: Product[] = [
     details: {
       type: "Flagship smartphone",
       processor: "Apple A17 Pro (6-core, hardware ray tracing)",
-      ram: "8GB",
       storage: "256GB",
       display: "6.1\" Super Retina XDR OLED, 120Hz ProMotion, always-on",
       graphics: "48MP main with 3× telephoto and ultra-wide, 12MP front",
@@ -2004,7 +1996,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A18 (6-core)",
-      ram: "8GB",
       storage: "128GB",
       display: "6.1\" Super Retina XDR OLED with Dynamic Island",
       graphics: "48MP Fusion main with 2× telephoto and ultra-wide, 12MP front",
@@ -2030,7 +2021,6 @@ export const products: Product[] = [
     details: {
       type: "Flagship smartphone",
       processor: "Apple A18 Pro (6-core, hardware ray tracing)",
-      ram: "8GB",
       storage: "256GB",
       display: "6.9\" Super Retina XDR OLED, 120Hz ProMotion, always-on",
       graphics: "48MP Fusion with 5× tetraprism telephoto and 48MP ultra-wide",
@@ -2056,7 +2046,6 @@ export const products: Product[] = [
     details: {
       type: "Smartphone",
       processor: "Apple A19 (6-core)",
-      ram: "8GB",
       storage: "256GB",
       display: "6.3\" Super Retina XDR OLED, 120Hz ProMotion, always-on",
       graphics: "48MP Fusion main and 48MP ultra-wide, 18MP Center Stage front",
