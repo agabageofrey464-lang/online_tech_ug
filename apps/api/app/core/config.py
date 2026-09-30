@@ -102,6 +102,14 @@ class Settings(BaseSettings):
     # a campaign by hand from the admin.
     campaign_auto_email: bool = False
 
+    # The daily "what's new" digest. Unlike the campaign email above, this one
+    # only goes out when something has actually appeared since the last send —
+    # new stock, a new course, a new post — so a quiet week is silent rather
+    # than four identical mails, which is what got the old one turned off.
+    daily_digest_enabled: bool = True
+    # Hour (UTC) it may go out from. 05:00 UTC is 08:00 in Kampala.
+    daily_digest_hour: int = 5
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

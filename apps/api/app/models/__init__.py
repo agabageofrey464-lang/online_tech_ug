@@ -15,6 +15,7 @@ from app.models.campaign import Campaign
 from app.models.contact import ContactMessage
 from app.models.discussion import DiscussionPost
 from app.models.coupon import Coupon
+from app.models.digest import DailyDigest
 from app.models.freelancer import Freelancer
 from app.models.freelancer_contact import FreelancerContact
 from app.models.course import Course
@@ -49,6 +50,7 @@ __all__ = [
     "ContactMessage",
     "DiscussionPost",
     "Coupon",
+    "DailyDigest",
     "Freelancer",
     "FreelancerContact",
     "Course",

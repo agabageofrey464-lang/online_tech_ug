@@ -61,3 +61,30 @@ async def admin_broadcast(payload: BroadcastIn, db: Session = Depends(get_db)) -
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
+
+
+@router.get("/admin/digest/preview", dependencies=[Depends(require_admin)])
+def digest_preview(db: Session = Depends(get_db)) -> dict:
+    """What today's digest would say, without sending it.
+
+    Worth being able to look before it goes to the whole list.
+    """
+    from app.services import daily_digest
+
+    composed = daily_digest.compose(db)
+    if composed is None:
+        return {"would_send": False, "reason": "nothing new since the last digest"}
+    subject, body, marks = composed
+    return {"would_send": True, "subject": subject, "html": body, "marks": marks}
+
+
+@router.post("/admin/digest/send", dependencies=[Depends(require_admin)])
+async def digest_send(db: Session = Depends(get_db)) -> dict:
+    """Send today's digest now rather than waiting for the worker.
+
+    Still one per day: if it has already gone out today this reports that
+    instead of mailing everybody twice.
+    """
+    from app.services import daily_digest
+
+    return await daily_digest.run(db)

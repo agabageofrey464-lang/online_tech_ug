@@ -30,7 +30,7 @@ async def _campaign_worker() -> None:
     from datetime import datetime
 
     from app.db.session import SessionLocal
-    from app.services import campaign_auto, catalog_sync, newsletter, push
+    from app.services import campaign_auto, catalog_sync, daily_digest, newsletter, push
 
     while True:
         try:
@@ -48,6 +48,17 @@ async def _campaign_worker() -> None:
                     await catalog_sync.sync_courses(db)
                 except Exception as exc:  # noqa: BLE001
                     logger.warning("Course sync failed: %s", exc)
+
+                # The daily "what's new" digest. Checked every hour but it
+                # writes one row per day, so a restart cannot send twice, and
+                # it stays quiet on a day with no news.
+                if datetime.utcnow().hour >= settings.daily_digest_hour:
+                    try:
+                        outcome = await daily_digest.run(db)
+                        if outcome.get("sent"):
+                            logger.info("Daily digest: %s", outcome)
+                    except Exception as exc:  # noqa: BLE001
+                        logger.warning("Daily digest failed: %s", exc)
 
                 campaign_auto.refresh_auto_campaigns(db)
 
