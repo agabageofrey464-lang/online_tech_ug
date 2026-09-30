@@ -2064,9 +2064,9 @@ export const products: Product[] = [
   // most new mid-rangers at the same money.
   {
     id: "samsung-galaxy-s20-fe-5g",
-    name: "Samsung Galaxy S20 FE 5G",
+    name: "Samsung Galaxy S20 FE 5G (128GB)",
     category: "Phones",
-    price: 1150000,
+    price: 450000,
     brand: "Samsung",
     condition: "UK Used",
     rating: 4.7,
@@ -2089,9 +2089,9 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-s20-plus-5g",
-    name: "Samsung Galaxy S20+ 5G",
+    name: "Samsung Galaxy S20+ 5G (128GB)",
     category: "Phones",
-    price: 1450000,
+    price: 520000,
     brand: "Samsung",
     condition: "UK Used",
     rating: 4.7,
@@ -2114,9 +2114,9 @@ export const products: Product[] = [
   },
   {
     id: "samsung-galaxy-s20-ultra-5g",
-    name: "Samsung Galaxy S20 Ultra 5G",
+    name: "Samsung Galaxy S20 Ultra 5G (128GB)",
     category: "Phones",
-    price: 1850000,
+    price: 620000,
     brand: "Samsung",
     condition: "UK Used",
     rating: 4.8,
