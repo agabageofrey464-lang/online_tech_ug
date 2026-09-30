@@ -36,9 +36,9 @@ const FALLBACK: Strip[] = [
   { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-brand-700", img: "/products/ram-ddr4-8gb-dimm.webp" },
   // Industrial training, aimed squarely at the universities. Software first,
   // because that is most of what an intern here actually does.
-  { text: "Industrial training — UGX 150,000 for 2 months, software & IT", cta: "Apply now", href: "/internship", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
-  { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — internships open now", cta: "See placements", href: "/internship", bg: "bg-green-700", img: "/courses/web-development.webp" },
-  { text: "Intern on real client software — websites, systems and databases", cta: "Apply for a place", href: "/internship", bg: "bg-teal-700", img: "/courses/computer-networking.webp" },
+  { text: "ONLINE industrial training — UGX 150,000, Nov & Dec intake", cta: "Apply now", href: "/internship", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
+  { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — online internships, Nov & Dec", cta: "See placements", href: "/internship", bg: "bg-green-700", img: "/courses/web-development.webp" },
+  { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "bg-teal-700", img: "/courses/computer-networking.webp" },
   { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/internship", bg: "bg-brand-700", img: "/courses/graphic-design.webp" },
   // Office skills — the courses that actually fill the classroom. Each points
   // at its own cover now, so the thumbnails differ instead of repeating one

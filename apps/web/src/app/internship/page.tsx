@@ -14,14 +14,20 @@ import {
   Wrench,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { InternshipPanel, INTERNSHIP_FEE, INTERNSHIP_MONTHS } from "@/components/internship-panel";
+import {
+  InternshipPanel,
+  INTERNSHIP_FEE,
+  INTERNSHIP_MONTHS,
+  INTERNSHIP_WINDOW,
+} from "@/components/internship-panel";
 import { ContactOptions } from "@/components/contact-options";
 import { ugx } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Industrial Training & Internship in Kampala",
   description:
-    `Industrial training for university students in Uganda — ${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months. ` +
+    `Online industrial training for university students in Uganda — ${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months, ` +
+    `${INTERNSHIP_WINDOW} intake. ` +
     "Software development, IT support, networking and design, supervised on real client work. " +
     "Acceptance and completion letters provided for Makerere, Kyambogo, MUBS, UCU, Ndejje and every other institution.",
   alternates: { canonical: "/internship" },
@@ -52,14 +58,14 @@ const AREAS = [
   {
     icon: Network,
     title: "Networking & IT Support",
-    body: "Wi-Fi and office LAN setup, structured cabling, CCTV, and supporting users who need their problem solved today.",
-    tag: "Hardware",
+    body: "Network design, configuration and troubleshooting, plus remote support for users — practised on simulators and live systems.",
+    tag: "Networking",
   },
   {
     icon: Wrench,
-    title: "Computer Repair",
-    body: "Diagnosis, upgrades and board-level maintenance on the machines that come through the shop.",
-    tag: "Hardware",
+    title: "Technical Writing & Support",
+    body: "Documentation, user guides and handling real support queries — the part of every IT job nobody trains you for.",
+    tag: "Support",
   },
   {
     icon: Briefcase,
@@ -88,7 +94,7 @@ const STEPS = [
   {
     icon: Award,
     title: "Train, then get certified",
-    body: "Work with the team on real jobs. At the end we complete your assessment forms and issue a completion letter.",
+    body: "Work with the team on real jobs, online. At the end we complete your assessment forms and issue a completion letter.",
   },
 ];
 
@@ -99,15 +105,15 @@ const FAQS = [
   },
   {
     q: `Why is there a ${ugx(INTERNSHIP_FEE)} fee?`,
-    a: "It pays for a supervisor's time, your workstation and internet for the two months, and the paperwork. We keep intakes small so everybody gets properly supervised, and that only works if the placement covers its own cost.",
+    a: "It pays for a supervisor's time across the two months, the review of your work, and the paperwork your school needs. We keep intakes small so everybody gets properly supervised, and that only works if the placement covers its own cost.",
   },
   {
     q: "Do I need to know how to code already?",
     a: "No. Tell us what you have covered at school and we place you where you will learn fastest. Students arrive at every level, including people who have never written a line.",
   },
   {
-    q: "Can I do it during the holiday only?",
-    a: `The programme runs ${INTERNSHIP_MONTHS} months, which fits the standard recess term. If your school requires different dates, tell us when you apply and we will work with them.`,
+    q: "When does it run, and do I have to come to Kampala?",
+    a: `This intake runs ${INTERNSHIP_WINDOW} — the standard recess term — and it is entirely online, so you can do it from home, from campus or from your home district. You need a computer and a working internet connection; nothing else. If your school requires different dates, tell us when you apply and we will work with them.`,
   },
   {
     q: "Will I get a job afterwards?",
@@ -121,7 +127,7 @@ export default function InternshipPage() {
       <PageHeader
         eyebrow="Careers"
         title="Industrial Training & Internship"
-        subtitle={`${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months — software, IT and design, on real client work.`}
+        subtitle={`${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_MONTHS} months, online — ${INTERNSHIP_WINDOW} intake. Software, IT and design, on real client work.`}
         crumbs={[{ label: "Internship" }]}
       />
 
@@ -133,8 +139,8 @@ export default function InternshipPage() {
       <section className="container-page pt-12">
         <h2 className="font-display text-xl font-black text-ink-900">Where you can be placed</h2>
         <p className="mt-1 text-sm text-ink-700/65">
-          Most of our work is software, so most placements are too. Tell us what interests you when
-          you apply — places in each area are limited.
+          Most of our work is software, so most placements are too. Everything here is supervised
+          online. Tell us what interests you when you apply — places in each area are limited.
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

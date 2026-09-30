@@ -137,7 +137,7 @@ export default async function JobsPage() {
               For university students
             </span>
             <span className="block font-display text-xl font-black leading-tight">
-              Industrial training — UGX 150,000 for 2 months
+              Online industrial training — UGX 150,000 for 2 months, Nov &amp; Dec
             </span>
             <span className="mt-0.5 block text-[13px] text-white/75">
               Software, IT and design on real client work. Acceptance and completion letters

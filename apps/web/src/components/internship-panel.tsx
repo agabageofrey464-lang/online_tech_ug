@@ -22,17 +22,21 @@ import { site, ugx, whatsappLink } from "@/lib/site";
 
 export const INTERNSHIP_FEE = 150_000;
 export const INTERNSHIP_MONTHS = 2;
+/** The recess term most Ugandan schools share. */
+export const INTERNSHIP_WINDOW = "November & December";
+/** This intake runs remotely — nobody is expected at the Kampala office. */
+export const INTERNSHIP_MODE = "Online";
 
 const GUARANTEES = [
   { icon: FileCheck2, t: "Acceptance letter", d: "Signed and stamped for your school, usually same week." },
   { icon: BadgeCheck, t: "Assessment forms", d: "Filled in and signed by your supervisor here." },
   { icon: GraduationCap, t: "Completion letter", d: "Issued at the end, on our letterhead." },
-  { icon: Users, t: "Real client work", d: "Live jobs with your name on the commit, not filing." },
+  { icon: Users, t: "Real client work", d: "Live tickets with your name on the commit, not filing." },
 ];
 
 const COVERS = [
-  "A supervisor who sits with you, for the whole period",
-  "A workstation and internet while you are here",
+  "A supervisor assigned to you, reachable through the whole placement",
+  "Daily check-ins, code review and real tickets from the team's board",
   "Every school form signed and stamped, on time",
   "Work you can put in a portfolio and a reference you can use",
   "First look at any job we open after you finish",
@@ -58,8 +62,13 @@ export function InternshipPanel() {
           />
 
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider">
-              <GraduationCap size={13} /> Industrial training
+            <span className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider">
+                <GraduationCap size={13} /> Industrial training
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FCDC04] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-ink-900">
+                {INTERNSHIP_MODE} · {INTERNSHIP_WINDOW}
+              </span>
             </span>
 
             <h2 className="mt-3 font-display text-2xl font-black leading-tight sm:text-3xl">
@@ -69,15 +78,16 @@ export function InternshipPanel() {
 
             <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/85">
               Students come to us from <b>every university and institution in Uganda</b> — Makerere,
-              Kyambogo, MUBS, Ndejje, UCU, the technical colleges. You will not be sent to
-              photocopy. You sit with the team, on live client jobs, and by the end you have
-              something real to show and people who will vouch for you.
+              Kyambogo, MUBS, Ndejje, UCU, the technical colleges. It runs <b>entirely online</b>,
+              so you can do it from home, from campus or from your home district. You will not be
+              sent a reading list: you take real tickets from the same board as the team, and by
+              the end you have something to show and people who will vouch for you.
             </p>
 
             <p className="mt-2.5 max-w-xl text-[13.5px] leading-relaxed text-white/70">
               Most of it is software — websites, systems, databases, the apps we are shipping that
-              month — with enough hardware and networking that you can set up an office, not just
-              talk about one.
+              month — with networking, design and digital marketing for anyone whose course points
+              that way.
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -103,7 +113,7 @@ export function InternshipPanel() {
               Placement fee
             </p>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 text-[11px] font-bold text-teal-700">
-              <CalendarDays size={12} /> {INTERNSHIP_MONTHS} months
+              <CalendarDays size={12} /> {INTERNSHIP_MONTHS} months · {INTERNSHIP_WINDOW}
             </span>
           </div>
 
@@ -129,7 +139,8 @@ export function InternshipPanel() {
             </p>
             <p className="mt-1 text-[12.5px] leading-relaxed text-ink-700/75">
               Mobile Money to <b className="text-ink-900">{site.payment.momo.number}</b> (
-              {site.payment.momo.name}), or pay at our {site.address} office when you come in to sign.
+              {site.payment.momo.name}). Send the confirmation on WhatsApp and we will start your
+              paperwork the same day — there is nowhere to travel to for this intake.
             </p>
           </div>
 

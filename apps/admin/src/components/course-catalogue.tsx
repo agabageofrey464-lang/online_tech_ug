@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { loadImg, todayISO } from "@/lib/doc-kit";
 import { buildCatalogue } from "@/lib/course-catalogue-pdf";
 import { buildServices } from "@/lib/services-pdf";
+import { buildInternshipBrochure } from "@/lib/internship-brochure-pdf";
 import type { AdminCourse } from "@/lib/api";
 
 /**
@@ -25,11 +26,13 @@ type Props = { courses: AdminCourse[] };
 
 export function CourseCatalogue({ courses }: Props) {
   const logo = useRef<HTMLImageElement | null>(null);
+  const photo = useRef<HTMLImageElement | null>(null);
   const [busy, setBusy] = useState(false);
   const [intake, setIntake] = useState("");
 
   useEffect(() => {
     loadImg("/logo-lockup-dark.png").then((i) => (logo.current = i));
+    loadImg("/internship-photo.jpg").then((i) => (photo.current = i));
   }, []);
 
   async function build() {
@@ -37,6 +40,16 @@ export function CourseCatalogue({ courses }: Props) {
     try {
       const doc = buildCatalogue(courses, { intake, logo: logo.current });
       doc.save(`Online-Tech-Uganda-Courses-${todayISO()}.pdf`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function buildIntern() {
+    setBusy(true);
+    try {
+      const doc = buildInternshipBrochure({ logo: logo.current, photo: photo.current, intake });
+      doc.save(`Online-Tech-Uganda-Internship-${todayISO()}.pdf`);
     } finally {
       setBusy(false);
     }
@@ -56,8 +69,9 @@ export function CourseCatalogue({ courses }: Props) {
     <section className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
       <h2 className="text-base font-extrabold text-ink-600">Course list for students</h2>
       <p className="mt-1 text-sm text-ink-600/65">
-        Two separate lists on your letterhead: course fees for students, and project prices
-        for a client pricing a website, app or system.
+        Three documents on your letterhead: course fees for students, project prices for a
+        client pricing a website or system, and a one-page internship brochure to send to
+        university students.
       </p>
 
       <label className="mt-4 block text-sm font-semibold text-ink-700">
@@ -84,6 +98,13 @@ export function CourseCatalogue({ courses }: Props) {
           className="rounded-lg bg-ink-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-ink-600 disabled:opacity-60"
         >
           {busy ? "Building…" : "Software & IT services (PDF)"}
+        </button>
+        <button
+          onClick={buildIntern}
+          disabled={busy}
+          className="rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-700 disabled:opacity-60"
+        >
+          {busy ? "Building…" : "Internship brochure (PDF)"}
         </button>
       </div>
 
