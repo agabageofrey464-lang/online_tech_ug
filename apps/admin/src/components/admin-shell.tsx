@@ -27,6 +27,7 @@ const sections = [
   { href: "/quotations", label: "Quotations", icon: "📑" },
   { href: "/receipts", label: "Receipts", icon: "🧾" },
   { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
+  { href: "/lessons", label: "Lessons", icon: "🎓", attention: true },
   { href: "/community", label: "Community", icon: "💬", attention: true },
   { href: "/newsletter", label: "Notifications", icon: "📣" },
   { href: "/campaigns", label: "Campaigns", icon: "🎯" },

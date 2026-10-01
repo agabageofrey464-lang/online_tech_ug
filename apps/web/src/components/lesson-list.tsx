@@ -18,6 +18,17 @@ export function LessonList({ course }: { course: Course }) {
   const [err, setErr] = useState("");
   const [okMsg, setOkMsg] = useState("");
   const [checking, setChecking] = useState(false);
+  /**
+   * Which lessons the owner has cleared for sale.
+   *
+   * Every lesson used to carry a price whether or not there was anything
+   * behind it: 269 lessons were on sale and eleven had a video, so a learner
+   * could pay for a lesson and be shown a notice saying the video was coming.
+   * A lesson is only offered once it has been checked and published in the
+   * admin. `null` means we have not heard back yet, and nothing is offered
+   * until we have — the safe way round.
+   */
+  const [publishedIdx, setPublishedIdx] = useState<number[] | null>(null);
 
   function refresh() {
     setDone(doneLessons(slug));
@@ -25,6 +36,17 @@ export function LessonList({ course }: { course: Course }) {
     setOpenSet(lessonUnlocks(slug));
   }
   useEffect(refresh, [slug]);
+
+  useEffect(() => {
+    let alive = true;
+    fetch(`/_api/courses/${slug}/lessons/status`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { published: [] }))
+      .then((d) => alive && setPublishedIdx(Array.isArray(d.published) ? d.published : []))
+      .catch(() => alive && setPublishedIdx([]));
+    return () => {
+      alive = false;
+    };
+  }, [slug]);
 
   function mark(idx: number, value: boolean) {
     toggleLesson(slug, idx, value);
@@ -107,6 +129,10 @@ export function LessonList({ course }: { course: Course }) {
         {syllabus.map((lesson: Lesson, i) => {
           const price = lessonPrice(lesson.minutes);
           const watchable = canWatch(i);
+          // Not yet checked by the owner, so not for sale. Shown as coming,
+          // without a price, rather than quietly hidden — the course outline
+          // is still worth reading before you enrol.
+          const forSale = publishedIdx !== null && publishedIdx.includes(i);
           const isDone = done.includes(i);
           return (
             <li key={lesson.title} className={`flex items-start gap-3 p-3.5 transition sm:items-center sm:p-4 ${isDone ? "bg-green-50/40" : "hover:bg-ink-50/50"}`}>
@@ -142,7 +168,7 @@ export function LessonList({ course }: { course: Course }) {
                 >
                   <Play size={13} /> Watch
                 </button>
-              ) : (
+              ) : forSale ? (
                 <button
                   onClick={() => {
                     setTarget(i);
@@ -153,6 +179,10 @@ export function LessonList({ course }: { course: Course }) {
                 >
                   <Lock size={13} /> {ugx(price)}
                 </button>
+              ) : (
+                <span className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-ink-50 px-3 py-2 text-xs font-bold text-ink-700/55">
+                  Coming soon
+                </span>
               )}
             </li>
           );

@@ -4,7 +4,11 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from sqlalchemy import select
+from pydantic import BaseModel
+
 from app.core.config import settings
+from app.models.lesson import LessonStatus
 from app.db.session import get_db
 from app.schemas.course import CourseOut
 from app.services import courses, unlock_codes
@@ -13,6 +17,12 @@ router = APIRouter()
 
 # Written course notes live on the SERVER (not in the browser bundle), so the
 # full content is only ever sent to a paid learner or the owner.
+def require_admin(x_admin_key: str = Header(default="")) -> None:
+    """Owner-only. Same shared key the rest of the admin uses."""
+    if not settings.admin_api_key or x_admin_key != settings.admin_api_key:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
 _NOTES_PATH = Path(__file__).resolve().parents[2] / "data" / "course_notes.json"
 
 # Fixed per-course codes (kept in step with the storefront's course.unlockCode).
@@ -79,3 +89,67 @@ def get_course(slug: str, db: Session = Depends(get_db)) -> dict:
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     return course
+
+
+# ── Lesson publishing ───────────────────────────────────────────
+#
+# Lessons live in the shop front's course file, not in a table, so the only
+# thing stored here is the owner's decision about each one. Absence of a row
+# means unpublished: a lesson nobody has checked must not be sellable.
+
+class LessonPublishIn(BaseModel):
+    course_slug: str
+    lesson_index: int
+    published: bool
+    note: str = ""
+
+
+@router.get("/{slug}/lessons/status")
+def lesson_status(slug: str, db: Session = Depends(get_db)) -> dict:
+    """Which lessons of this course are cleared for sale. Public — the shop
+    front needs it to decide whether to offer a lesson at all."""
+    rows = (
+        db.execute(select(LessonStatus).where(LessonStatus.course_slug == slug))
+        .scalars()
+        .all()
+    )
+    return {
+        "slug": slug,
+        "published": sorted(r.lesson_index for r in rows if r.published),
+    }
+
+
+@router.post("/lessons/publish", dependencies=[Depends(require_admin)])
+def set_lesson_published(payload: LessonPublishIn, db: Session = Depends(get_db)) -> dict:
+    """Admin: clear a lesson for sale, or pull it back."""
+    row = db.execute(
+        select(LessonStatus).where(
+            LessonStatus.course_slug == payload.course_slug,
+            LessonStatus.lesson_index == payload.lesson_index,
+        )
+    ).scalar_one_or_none()
+
+    if row is None:
+        row = LessonStatus(
+            course_slug=payload.course_slug, lesson_index=payload.lesson_index
+        )
+        db.add(row)
+    row.published = payload.published
+    row.note = payload.note[:300]
+    db.commit()
+    return {
+        "course_slug": row.course_slug,
+        "lesson_index": row.lesson_index,
+        "published": row.published,
+    }
+
+
+@router.get("/lessons/overview", dependencies=[Depends(require_admin)])
+def lessons_overview(db: Session = Depends(get_db)) -> dict:
+    """Admin: how many lessons are cleared, per course."""
+    rows = db.execute(select(LessonStatus)).scalars().all()
+    by_course: dict[str, list[int]] = {}
+    for r in rows:
+        if r.published:
+            by_course.setdefault(r.course_slug, []).append(r.lesson_index)
+    return {"published": {k: sorted(v) for k, v in by_course.items()}}
