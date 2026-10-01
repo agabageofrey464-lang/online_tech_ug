@@ -63,12 +63,19 @@ function asCondition(value: string): Product["condition"] {
 function toProduct(row: ApiProduct, seed?: Product): Product {
   // Card bullets: the seed's hand-written ones read better than anything
   // generated from columns, so they win where we have them.
+  // A card bullet is a label, not a sentence. Taking the spec table's values
+  // in order handed the card whole clauses — "iOS — the longest software
+  // support of any phone we sell" — which the card then cut off mid-word at
+  // 188px. Short values first, and nothing long enough to be prose.
+  const BULLET_MAX = 34;
   const specs =
     seed?.specs?.length
       ? seed.specs
       : Object.values(row.specs ?? {})
-          .filter((v) => typeof v === "string" && v.trim())
-          .slice(0, 4);
+          .filter((v): v is string => typeof v === "string" && v.trim().length > 0)
+          .map((v) => v.trim())
+          .filter((v) => v.length <= BULLET_MAX)
+          .slice(0, 3);
 
   return {
     id: row.slug,

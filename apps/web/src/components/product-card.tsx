@@ -18,6 +18,64 @@ import { SafeImage } from "@/components/safe-image";
  * with screen and OS as a second line. Everything else falls back to the
  * product's own spec bullets, so accessories still say something useful.
  */
+/**
+ * The label at the front of a spec, not the sentence behind it.
+ *
+ * These fields are written for the full specification table, where prose is
+ * welcome: a phone's `os` reads "iOS — the longest software support of any
+ * phone we sell", and its `display` reads "6.8\" QHD+ Dynamic AMOLED 2X,
+ * 120Hz, HDR10+". Dropped onto a card, the two together ran to 256px inside a
+ * 126px box and were cut mid-word.
+ *
+ * A card has room for roughly twenty-four characters on a line, so each field
+ * is reduced to the part that identifies it and the joined line is checked
+ * against that budget rather than each piece separately — two parts that each
+ * fit can still overflow together.
+ */
+function head(value: string | undefined): string {
+  if (!value) return "";
+  return value.split(/[,(—–]|\s-\s/)[0].trim();
+}
+
+/**
+ * A screen, in the two facts that matter: how big, and what panel.
+ *
+ * Taking the size plus whatever word followed it gave "6.1\" Super" — from
+ * "6.1\" Super Retina XDR OLED" — which tells a buyer nothing. The panel type
+ * is looked for by name instead, wherever it sits in the string.
+ */
+function screenOf(display: string | undefined): string {
+  const h = head(display);
+  const size = h.match(/\d+(?:\.\d+)?\s*"/)?.[0]?.replace(/\s+/g, "") ?? "";
+  const panel = h.match(/(AMOLED|OLED|IPS|LCD|Retina|LED)/i)?.[1] ?? "";
+  const joined = [size, panel].filter(Boolean).join(" ");
+  return joined || h;
+}
+
+/** "Android with One UI" -> "Android"; "Windows 11 Pro" -> "Windows 11" */
+function osOf(value: string | undefined): string {
+  const h = head(value);
+  const m = h.match(/^(Windows\s*\d+|macOS|Android|iOS|Chrome\s*OS|Linux)/i);
+  return m ? m[1] : h.split(/\s+/).slice(0, 2).join(" ");
+}
+
+/** "16GB unified memory" -> "16GB" */
+function sizeOf(value: string | undefined): string {
+  const h = head(value);
+  return h.match(/^\s*(\d+\s?(?:GB|TB|MB))/i)?.[1]?.replace(/\s+/g, "") ?? h;
+}
+
+/** Join what fits, dropping from the end rather than cutting a word in half. */
+function fit(parts: string[], max: number): string {
+  const kept: string[] = [];
+  for (const p of parts.filter(Boolean)) {
+    const next = [...kept, p].join(" · ");
+    if (next.length > max && kept.length > 0) break;
+    kept.push(p);
+  }
+  return kept.join(" · ");
+}
+
 function specLines(product: Product): { primary: string; secondary: string } {
   const d = product.details;
   if (d) {
@@ -25,20 +83,22 @@ function specLines(product: Product): { primary: string; secondary: string } {
     // only if it is there and the card shows whatever it can.
     const cpu =
       d.processor?.match(/Core i\d|Ryzen \d|Apple M\d|Celeron|Pentium|Athlon|Xeon/i)?.[0] ?? "";
-    const ram = d.ram?.split("(")[0].trim() ?? "";
-    const storage = (d.storage ?? d.capacity)?.split("(")[0].trim() ?? "";
-    const screen = d.display?.split(/[,(]/)[0].trim() ?? "";
-    const os = (d.os ?? d.interface)?.split(/[,(]/)[0].trim() ?? "";
+    const ram = sizeOf(d.ram);
+    const storage = sizeOf(d.storage ?? d.capacity);
+    const screen = screenOf(d.display);
+    const os = osOf(d.os ?? d.interface);
     return {
-      primary: [cpu, ram, storage].filter(Boolean).join(" · "),
-      secondary: [screen, os].filter(Boolean).join(" · "),
+      primary: fit([cpu, ram, storage], 28),
+      secondary: fit([screen, os], 24),
     };
   }
+  // Products without a spec table fall back to their hand-written bullets.
+  // Those are short individually but "Padded laptop compartment · Durable grey
+  // fabric" still overran the card, so the same budget applies.
   const bullets = product.specs ?? [];
-  return {
-    primary: bullets.slice(0, 2).join(" · "),
-    secondary: bullets.slice(2, 4).join(" · "),
-  };
+  const primary = fit(bullets.slice(0, 2), 28);
+  const used = primary ? primary.split(" · ").length : 0;
+  return { primary, secondary: fit(bullets.slice(used, used + 2), 24) };
 }
 
 /** Rating: one gold star, the score, then how many people rated it. */

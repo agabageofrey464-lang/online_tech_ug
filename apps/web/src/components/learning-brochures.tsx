@@ -158,7 +158,11 @@ export function LearningBrochures() {
                         <Icon name={c.emoji} size={19} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[13px] font-bold text-ink-900">
+                        {/* Two lines, not one truncated. On a phone this box is
+                            about 200px, and `truncate` cut the longer names to
+                            "Graphic Design (Photoshop, Illustr…" — the part that
+                            says which programs you learn is the part it dropped. */}
+                        <span className="line-clamp-2 block text-[13px] font-bold leading-snug text-ink-900">
                           {c.title}
                         </span>
                         <span className="block text-[11px] text-ink-700/55">
