@@ -15,6 +15,7 @@ import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { AcademyFestival } from "@/components/academy-festival";
 import { IntakeAdverts } from "@/components/intake-adverts";
+import { DailyUpdates } from "@/components/daily-updates";
 import { CourseShowcase } from "@/components/course-showcase";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
@@ -329,6 +330,10 @@ export default function HomePage() {
       {/* An advert per upcoming intake, generated from the intake list so a
           date that has passed stops being advertised on its own. */}
       <IntakeAdverts />
+
+      {/* The standing offer to be told what is new, placed where someone has
+          just finished reading what is coming up. */}
+      <DailyUpdates />
 
       {/* The academy, ahead of the shop rails. Training is the side of the
           business being pushed now, and it had one rotating slide inside a

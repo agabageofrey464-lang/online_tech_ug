@@ -5,7 +5,11 @@ export type Crumb = { label: string; href?: string };
 
 export function Breadcrumbs({ items, light = false }: { items: Crumb[]; light?: boolean }) {
   const base = light ? "text-white/70" : "text-ink-700/60";
-  const link = light ? "hover:text-white" : "hover:text-brand-600";
+  // -mx-1 keeps the row looking the same width while the padding gives each
+  // crumb something a thumb can actually land on.
+  const link =
+    "-mx-1 inline-block rounded px-1 py-1 " +
+    (light ? "hover:text-white" : "hover:text-brand-600");
   const current = light ? "text-white" : "text-ink-800";
   const sep = light ? "text-white/40" : "text-ink-700/40";
 

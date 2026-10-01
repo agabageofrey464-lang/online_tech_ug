@@ -22,6 +22,13 @@ const TILES = {
   "samsung-galaxy-s20-ultra-5g": "S20 Ultra (1).jpeg",
   "samsung-galaxy-s21-plus-5g": "Samsung-Galaxy-S21-Plus (1).jpg",
   "samsung-galaxy-s21-ultra-5g": "S21 Ultra- 2.jpeg",
+  // Second batch. The base S20 is listed now — it was only ever in a line-up
+  // shot before, and a photo of three phones is not a photo of the one
+  // somebody is buying.
+  "samsung-galaxy-s20-5g": "S20 - 1.png",
+  "samsung-galaxy-note-9-128gb": "Note 9 - 5.jpg",
+  "samsung-galaxy-note-9-512gb": "Note 9 - 5.jpg",
+  "samsung-galaxy-s9-plus": "S9+ - 2.jpeg",
 };
 
 let n = 0;

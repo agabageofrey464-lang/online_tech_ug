@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
+import { card } from "@/lib/thumb";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { SafeImage } from "@/components/safe-image";
@@ -132,7 +133,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="relative aspect-square overflow-hidden bg-white">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           <SafeImage
-            src={productImage(product)}
+            src={card(productImage(product))}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"

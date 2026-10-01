@@ -139,7 +139,13 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-2.5 text-sm">
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <Link href={l.href} className="text-ink-700/70 transition hover:text-brand-600">
+                  {/* The padding is the tap target. These were 16px tall, which is
+                      under the 24px a thumb needs, and they sit in a close
+                      column where the wrong one is easy to hit. */}
+                  <Link
+                    href={l.href}
+                    className="-mx-1 inline-block rounded px-1 py-1.5 text-ink-700/70 transition hover:text-brand-600"
+                  >
                     {l.label.replace("{site}", site.name)}
                   </Link>
                 </li>

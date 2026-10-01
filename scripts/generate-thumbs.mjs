@@ -18,44 +18,59 @@ const require = createRequire("e:/Projects/onlinetech_ug/");
 const sharp = require("e:/Projects/onlinetech_ug/node_modules/.pnpm/sharp@0.34.5/node_modules/sharp/lib/index.js");
 
 const PUB = "e:/Projects/onlinetech_ug/apps/web/public";
-const SIZE = 96;
-// Drawn at 28–40px on a 2x screen, so 96 is already generous.
+// Two derived sizes, because nothing on a listing page needs the full file.
+//   96px  — the offer strip and panel-header circles, drawn at 28-44px.
+//   400px — product and course cards, drawn at 136-204px.
+// Image optimisation is off site-wide (we exhausted the quota), so without
+// these every card pulls the original: 284 images on the home page came to
+// 12.4MB, which on a Ugandan mobile connection reads as pictures missing.
+const SIZES = [
+  { dir: "thumbs", px: 96, quality: 74 },
+  { dir: "cards", px: 400, quality: 80 },
+];
 const DIRS = ["products", "courses"];
 
 let written = 0;
 let skipped = 0;
 
-for (const dir of DIRS) {
-  const from = path.join(PUB, dir);
-  const to = path.join(PUB, "thumbs", dir);
-  if (!fs.existsSync(from)) continue;
-  fs.mkdirSync(to, { recursive: true });
+for (const size of SIZES) {
+  for (const dir of DIRS) {
+    const from = path.join(PUB, dir);
+    const to = path.join(PUB, size.dir, dir);
+    if (!fs.existsSync(from)) continue;
+    fs.mkdirSync(to, { recursive: true });
 
-  for (const file of fs.readdirSync(from)) {
-    if (!file.toLowerCase().endsWith(".webp")) continue;
-    const src = path.join(from, file);
-    const dst = path.join(to, file);
+    for (const file of fs.readdirSync(from)) {
+      if (!file.toLowerCase().endsWith(".webp")) continue;
+      const src = path.join(from, file);
+      const dst = path.join(to, file);
 
-    // Only redo a thumbnail when its source is newer, so re-running is cheap.
-    try {
-      if (fs.statSync(dst).mtimeMs >= fs.statSync(src).mtimeMs) {
-        skipped += 1;
-        continue;
+      // Only redo one when its source is newer, so re-running is cheap.
+      try {
+        if (fs.statSync(dst).mtimeMs >= fs.statSync(src).mtimeMs) {
+          skipped += 1;
+          continue;
+        }
+      } catch {
+        /* not generated yet */
       }
-    } catch {
-      /* no thumbnail yet */
-    }
 
-    try {
-      await sharp(src)
-        .resize(SIZE, SIZE, { fit: "cover", position: "centre" })
-        .webp({ quality: 74 })
-        .toFile(dst);
-      written += 1;
-    } catch (err) {
-      console.warn("could not thumbnail", dir + "/" + file, String(err).slice(0, 80));
+      try {
+        // The small one is cropped square for a circle; the card keeps the
+        // whole photo, since a cropped product is a misleading product.
+        const pipe = sharp(src);
+        await (size.px <= 96
+          ? pipe.resize(size.px, size.px, { fit: "cover", position: "centre" })
+          : pipe.resize(size.px, size.px, { fit: "inside", withoutEnlargement: true })
+        )
+          .webp({ quality: size.quality })
+          .toFile(dst);
+        written += 1;
+      } catch (err) {
+        console.warn("could not resize", dir + "/" + file, String(err).slice(0, 80));
+      }
     }
   }
 }
 
-console.log(`thumbnails written: ${written}, already current: ${skipped}`);
+console.log(`derived images written: ${written}, already current: ${skipped}`);

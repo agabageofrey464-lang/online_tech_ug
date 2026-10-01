@@ -3,6 +3,7 @@ import { ArrowRight, Award, BookOpen, Clock } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
 import { Icon } from "@/components/icon";
 import { courses, courseTotal, type Course } from "@/lib/data";
+import { card } from "@/lib/thumb";
 import { ugx } from "@/lib/site";
 
 /**
@@ -30,7 +31,7 @@ function CourseCard({ c }: { c: Course }) {
     >
       <span className="relative block h-32 w-full overflow-hidden bg-ink-50 sm:h-36">
         <SafeImage
-          src={c.cover ?? `/courses/${c.slug}.webp`}
+          src={card(c.cover ?? `/courses/${c.slug}.webp`)}
           alt={c.title}
           fill
           sizes="(max-width: 640px) 50vw, 25vw"

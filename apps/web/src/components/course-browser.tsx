@@ -6,6 +6,7 @@ import { Search, Clock, BookOpen, Award, FileText, ArrowRight, Building2, X } fr
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui";
 import { ugx } from "@/lib/site";
+import { card } from "@/lib/thumb";
 import { REGISTRATION_FEE, courseTotal, type Course } from "@/lib/data";
 
 /**
@@ -167,7 +168,7 @@ export function CourseBrowser({
             >
               <div className="relative h-36 w-full overflow-hidden">
                 <SafeImage
-                  src={c.cover ?? `/courses/${c.slug}.webp`}
+                  src={card(c.cover ?? `/courses/${c.slug}.webp`)}
                   alt={c.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 33vw"

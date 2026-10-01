@@ -22,7 +22,7 @@ export function NewsletterSignup() {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setState("done");
-        setMsg("You're in! We'll send you new arrivals and offers.");
+        setMsg("You're in. The next update comes the day something new lands.");
         setEmail("");
       } else {
         setState("error");
@@ -36,9 +36,13 @@ export function NewsletterSignup() {
 
   return (
     <div className="text-center sm:text-left">
-      <p className="text-base font-extrabold text-ink-900">New to Online Tech Uganda?</p>
+      {/* Says what arrives and how often. "Deals, new arrivals & tech tips"
+          told a visitor neither, and the honest part — that nothing is sent on
+          a quiet day — is the part that makes signing up easy. */}
+      <p className="text-base font-extrabold text-ink-900">Get the daily update</p>
       <p className="mt-0.5 text-sm text-ink-700/60">
-        Sign up for our newsletter — deals, new arrivals &amp; tech tips.
+        New machines, new courses and intake dates — emailed the day they land, and not
+        at all on the days nothing does.
       </p>
       <form onSubmit={submit} className="mx-auto mt-3 flex max-w-md gap-2 sm:mx-0">
         <input
