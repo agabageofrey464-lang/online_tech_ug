@@ -27,13 +27,16 @@ export function thumb(src: string): string {
 }
 
 /**
- * The 400px copy, for product and course cards.
+ * The card copy — 560px wide — for product and course cards.
  *
- * Cards draw these between 136 and 204px but were loading the original, and
- * with image optimisation off that is the whole file. The home page alone
- * carries 284 of them — 12.4MB of pictures, which on a slow connection does
- * not read as "loading", it reads as missing. The same images at 400px come
- * to 6.3MB across the entire catalogue.
+ * Cards were loading the original, and with image optimisation off that is the
+ * whole file. The home page alone carries 284 of them — 12.4MB of pictures,
+ * which on a slow connection does not read as "loading", it reads as missing.
+ *
+ * These were capped at 400px on the longest side, which was the wrong axis:
+ * an upright phone photo came out 225px wide for a slot 207px across, so on
+ * any retina screen it was stretched and looked blurred. They are now cut to
+ * width, so a card is at least twice the pixels of the box that draws it.
  *
  * Product and course *pages* keep the full file: there the picture is the
  * thing being examined.

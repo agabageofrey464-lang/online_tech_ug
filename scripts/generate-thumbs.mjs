@@ -20,13 +20,27 @@ const sharp = require("e:/Projects/onlinetech_ug/node_modules/.pnpm/sharp@0.34.5
 const PUB = "e:/Projects/onlinetech_ug/apps/web/public";
 // Two derived sizes, because nothing on a listing page needs the full file.
 //   96px  — the offer strip and panel-header circles, drawn at 28-44px.
-//   400px — product and course cards, drawn at 136-204px.
+//   560px — product and course cards.
 // Image optimisation is off site-wide (we exhausted the quota), so without
 // these every card pulls the original: 284 images on the home page came to
 // 12.4MB, which on a Ugandan mobile connection reads as pictures missing.
+//
+// The card figure is a WIDTH, not a bounding box, because width is what the
+// grid fixes: a slot is about 200px across and the picture fills it however
+// tall it happens to be. Constraining the longest side instead — which is what
+// this did at first — starved the upright photos. A 608×1080 phone shot fitted
+// inside 400×400 comes out 225px wide, and a 225px file in a 207px slot on a
+// 2× screen is stretched to 414. That is why the phones looked blurred.
+//
+// 560 is what the measurements asked for: the widest slot drawn is 220px, so
+// 440 on a 2× screen, and 511 for a 170px slot on an Android phone at 3×.
+// Going further costs bytes for detail no screen can show — 640 would put
+// 3.9MB of pictures on the home page against 3.2MB here. withoutEnlargement
+// leaves a narrower photo at its own width rather than blowing it up, which
+// would add weight and no detail.
 const SIZES = [
   { dir: "thumbs", px: 96, quality: 74 },
-  { dir: "cards", px: 400, quality: 80 },
+  { dir: "cards", width: 560, quality: 82 },
 ];
 const DIRS = ["products", "courses"];
 
@@ -59,9 +73,9 @@ for (const size of SIZES) {
         // The small one is cropped square for a circle; the card keeps the
         // whole photo, since a cropped product is a misleading product.
         const pipe = sharp(src);
-        await (size.px <= 96
-          ? pipe.resize(size.px, size.px, { fit: "cover", position: "centre" })
-          : pipe.resize(size.px, size.px, { fit: "inside", withoutEnlargement: true })
+        await (size.width
+          ? pipe.resize({ width: size.width, withoutEnlargement: true })
+          : pipe.resize(size.px, size.px, { fit: "cover", position: "centre" })
         )
           .webp({ quality: size.quality })
           .toFile(dst);
