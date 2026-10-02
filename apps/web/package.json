@@ -19,10 +19,14 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@csstools/postcss-cascade-layers": "^6.0.1",
+    "@csstools/postcss-color-mix-function": "^4.0.14",
+    "@csstools/postcss-oklab-function": "^5.0.14",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "postcss-lab-function": "^8.0.14",
     "rimraf": "^6.0.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.0.0",
