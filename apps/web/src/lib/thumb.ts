@@ -8,7 +8,8 @@
  * which is why they sat there as white discs until the network caught up.
  *
  * scripts/generate-thumbs.mjs writes one of these for every file under
- * /products and /courses, so a mapped path always exists. Anything outside
+ * /products and /courses, so a mapped path always exists. The build runs it,
+ * so the derived copies are not kept in the repository. Anything outside
  * those folders is returned untouched.
  */
 const DERIVED = ["/products/", "/courses/"];
