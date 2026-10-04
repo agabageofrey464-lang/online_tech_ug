@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, orderDate, type AdminOrder } from "@/lib/api";
+import { apiGetAdmin, ugx, orderDate, type AdminOrder } from "@/lib/api";
 import { OrderRowActions } from "@/components/order-row-actions";
 
 
@@ -49,7 +49,7 @@ export default async function OrdersPage({
   const { status } = await searchParams;
   const activeDef = FILTERS.find((f) => f.key === status) ?? FILTERS[0];
   const active = activeDef.key;
-  const all = (await apiGet<AdminOrder[]>("/api/v1/orders")) ?? [];
+  const all = (await apiGetAdmin<AdminOrder[]>("/api/v1/orders")) ?? [];
   const orders = all.filter(activeDef.match);
   const revenue = orders.reduce((s, o) => s + o.total, 0);
   const countFor = (f: (o: AdminOrder) => boolean) => all.filter(f).length;

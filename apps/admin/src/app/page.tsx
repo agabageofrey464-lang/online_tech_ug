@@ -40,7 +40,7 @@ const ATTENTION: { key: string; label: string; href: string; icon: string }[] = 
 export default async function DashboardPage() {
   const [health, orders, products, leads, commissions, counts] = await Promise.all([
     getHealth(),
-    apiGet<AdminOrder[]>("/api/v1/orders"),
+    apiGetAdmin<AdminOrder[]>("/api/v1/orders"),
     apiGet<AdminProduct[]>("/api/v1/products"),
     apiGetAdmin<AdminLead[]>("/api/v1/contact"),
     apiGetAdmin<Commissions>("/api/v1/vendor/admin/commissions"),

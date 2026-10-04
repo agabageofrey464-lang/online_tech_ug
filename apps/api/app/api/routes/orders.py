@@ -39,7 +39,7 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
     return order
 
 
-@router.get("", response_model=list[OrderSummary])
+@router.get("", response_model=list[OrderSummary], dependencies=[Depends(require_admin)])
 def list_orders(db: Session = Depends(get_db)) -> list[OrderSummary]:
     """Admin: recent orders, each tagged with a fraud/risk level."""
     orders = orders_service.list_orders(db)
