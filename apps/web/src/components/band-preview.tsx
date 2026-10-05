@@ -22,7 +22,10 @@ import { ugx } from "@/lib/site";
 const STEP_MS = 1400;
 const SHOWN = 5;
 
-export function BandPreview({ items }: { items: Product[] }) {
+/** All a 44px thumbnail needs to know about a product. */
+export type BandItem = Pick<Product, "id" | "name" | "price" | "image">;
+
+export function BandPreview({ items }: { items: BandItem[] }) {
   const [i, setI] = useState(0);
 
   useEffect(() => {

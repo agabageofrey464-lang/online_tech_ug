@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
-import { BandPreview } from "@/components/band-preview";
+import { BandPreview, type BandItem } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
@@ -62,7 +62,7 @@ function Panel({
     <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
       <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
         <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
-        {items && items.length > 0 && <BandPreview items={items} />}
+        {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
         {href && (
           <Link
             href={href}
@@ -75,6 +75,14 @@ function Panel({
       {children}
     </Reveal>
   );
+}
+
+// A band header gets a whole category, not a rail of eight, and whatever is
+// handed to a client component is written into the page a second time for the
+// browser. Its thumbnails show a picture and a price, so that is all they are
+// sent — not the spec sheet of every product in the category.
+function bandItems(items: Product[]): BandItem[] {
+  return items.map(({ id, name, price, image }) => ({ id, name, price, image }));
 }
 
 // Jumia-style horizontal product rail — fixed-width cards, ‹ › arrows on desktop.
@@ -112,7 +120,7 @@ function DealBand({
           <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
           {subtitle && <p className="text-xs font-semibold text-white/85 sm:text-sm">{subtitle}</p>}
         </div>
-        {items && items.length > 0 && <BandPreview items={items} />}
+        {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
 
         {href && (
           <Link
