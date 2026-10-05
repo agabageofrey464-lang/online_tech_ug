@@ -20,10 +20,23 @@
  * These run after Tailwind, on its generated CSS. Nothing in the source
  * changes: the design, the tokens in globals.css and the class names are
  * untouched.
+ *
+ * The plugins below only understand flat CSS. A production build hands them
+ * that, because Tailwind lowers its nested rules as part of optimising. In
+ * `next dev` it does not, so every responsive utility arrived still nested —
+ *
+ *   .lg\:hidden { @media (width >= 64rem) { display: none } }
+ *
+ * — and the layer pass dropped it. The live site was fine while the same code
+ * on a developer's machine showed the phone layout at every width. Asking
+ * Tailwind to optimise in development too (without minifying, so the output
+ * stays readable) gives both the same input.
  */
+const dev = process.env.NODE_ENV !== "production";
+
 const config = {
   plugins: {
-    "@tailwindcss/postcss": {},
+    "@tailwindcss/postcss": dev ? { optimize: { minify: false } } : {},
     "@csstools/postcss-color-mix-function": { preserve: false },
     "@csstools/postcss-oklab-function": { preserve: false },
     "postcss-lab-function": { preserve: false },
