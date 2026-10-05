@@ -70,7 +70,10 @@ def compute_delivery_fee(town: str, subtotal: int) -> int:
 
 
 def _generate_reference() -> str:
-    return "OTU-" + secrets.token_hex(3).upper()  # e.g. OTU-9F2A1C
+    # The reference is all a customer needs to open their order, name and
+    # address included, so it has to be too long to find by guessing. Orders
+    # placed before this keep their six-character one.
+    return "OTU-" + secrets.token_hex(4).upper()  # e.g. OTU-9F2A1C3B
 
 
 def create_order(db: Session, payload: OrderCreate) -> Order:

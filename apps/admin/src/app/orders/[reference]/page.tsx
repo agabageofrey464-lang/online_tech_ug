@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { apiGet, ugx, orderDate, type AdminOrderDetail } from "@/lib/api";
+import { apiGetAdmin, ugx, orderDate, type AdminOrderDetail } from "@/lib/api";
 import { OrderStatusControls } from "@/components/order-status-controls";
 
 
@@ -18,7 +18,7 @@ export default async function OrderDetailPage({
   params: Promise<{ reference: string }>;
 }) {
   const { reference } = await params;
-  const order = await apiGet<AdminOrderDetail>(`/api/v1/orders/${reference}`);
+  const order = await apiGetAdmin<AdminOrderDetail>(`/api/v1/orders/${reference}`);
 
   if (!order) {
     return (

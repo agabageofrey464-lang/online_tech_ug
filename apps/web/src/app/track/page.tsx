@@ -48,7 +48,7 @@ export default async function TrackPage({
         <div className="rounded-card border border-ink-600/10 bg-white p-6 shadow-sm">
           <h2 className="mb-1 text-center text-lg font-extrabold text-ink-900">Track your order</h2>
           <p className="mb-4 text-center text-sm text-ink-700/60">
-            Enter the order number from your confirmation (e.g. OTU-AC4C98) to see its live status.
+            Enter the order number from your confirmation (e.g. OTU-AC4C98E1) to see its live status.
           </p>
           <OrderTracker initialRef={ref ?? ""} />
         </div>

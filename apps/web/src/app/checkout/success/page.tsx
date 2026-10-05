@@ -18,8 +18,6 @@ function orderWhatsAppText(order: Order | null, ref: string | null): string {
     ...order.items.map((i) => `- ${i.quantity} x ${i.name}`),
     "",
     `Total: ${ugx(order.total)}`,
-    `Name: ${order.customer_name}`,
-    `Phone: ${order.phone}`,
   ];
   if (order.delivery_town) parts.push(`Deliver to: ${order.delivery_town}`);
   return parts.join("\n");

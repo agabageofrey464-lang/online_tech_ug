@@ -26,12 +26,7 @@ router = APIRouter()
 TOO_MANY = "Too many attempts. Please wait a few minutes and try again."
 
 
-def _client_ip(request: Request) -> str:
-    """Real client IP, honouring the nginx X-Forwarded-For header."""
-    fwd = request.headers.get("x-forwarded-for", "")
-    if fwd:
-        return fwd.split(",")[0].strip()
-    return request.client.host if request.client else "unknown"
+_client_ip = ratelimit.client_ip
 
 
 def _limit(key: str, limit: int, window: int) -> None:

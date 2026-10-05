@@ -1,8 +1,9 @@
 import logging
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy.orm import Session
 
+from app.core import ratelimit
 from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.order import OrderCreate, OrderOut, OrderSummary, OrderUpdate
@@ -62,12 +63,54 @@ def sales_report(days: int = 14, db: Session = Depends(get_db)) -> dict:
     return orders_service.sales_report(db, days=days)
 
 
+TOO_MANY = "Too many attempts. Please wait a few minutes and try again."
+
+
 @router.get("/{reference}", response_model=OrderOut)
-def get_order(reference: str, db: Session = Depends(get_db)) -> OrderOut:
+def get_order(
+    reference: str,
+    request: Request,
+    x_admin_key: str = Header(default=""),
+    db: Session = Depends(get_db),
+) -> OrderOut:
+    """Public: a customer tracks an order by the reference we sent them.
+
+    A reference gets forwarded, screenshotted and read out over the phone, so
+    it opens the order's progress and what was bought — not who bought it. The
+    tracker greets by first name; the phone, email, address and notes stay
+    with the admin, who sends the key.
+
+    Guessing still has to be slow. A customer looks up one order a few times;
+    a script trying references gets them wrong, and it is the wrong ones that
+    are counted against the address it connects from.
+    """
+    is_admin = bool(settings.admin_api_key) and x_admin_key == settings.admin_api_key
+    misses = f"order-miss:{ratelimit.peer_ip(request)}"
+    if not is_admin:
+        if ratelimit.exceeded(misses, limit=30, window_seconds=600):
+            raise HTTPException(status_code=429, detail=TOO_MANY)
+        if not ratelimit.allow(
+            f"order-lookup:{ratelimit.client_ip(request)}", limit=40, window_seconds=300
+        ):
+            raise HTTPException(status_code=429, detail=TOO_MANY)
+
     order = orders_service.get_order(db, reference)
     if not order:
+        if not is_admin:
+            ratelimit.allow(misses, limit=30, window_seconds=600)
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    if is_admin:
+        return order
+    return OrderOut.model_validate(order).model_copy(
+        update={
+            "customer_name": order.customer_name.split(" ")[0],
+            "phone": "",
+            "email": "",
+            "delivery_address": "",
+            "notes": "",
+            "pesapal_tracking_id": "",
+        }
+    )
 
 
 @router.patch("/{reference}", response_model=OrderOut, dependencies=[Depends(require_admin)])

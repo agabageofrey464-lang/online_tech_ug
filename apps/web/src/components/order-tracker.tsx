@@ -59,7 +59,7 @@ export function OrderTracker({ initialRef = "" }: { initialRef?: string }) {
         <input
           value={ref}
           onChange={(e) => setRef(e.target.value)}
-          placeholder="Enter your order number (e.g. OTU-AC4C98)"
+          placeholder="Enter your order number (e.g. OTU-AC4C98E1)"
           className="flex-1 rounded-md border border-ink-600/15 px-4 py-2.5 text-sm uppercase tracking-wide focus:border-brand-500 focus:outline-none"
         />
         <button
