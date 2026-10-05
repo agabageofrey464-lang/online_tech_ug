@@ -234,7 +234,7 @@ function LoginInner() {
           </div>
 
           <p className="mt-6 text-center text-xs text-ink-700/50">
-            By continuing you agree to Online Tech Uganda&apos;s terms & privacy policy.
+            By continuing you agree to Online Tech Uganda&apos;s{" "}<Link href="/terms" className="underline hover:text-brand-600">terms</Link> &amp;{" "}<Link href="/privacy" className="underline hover:text-brand-600">privacy policy</Link>.
           </p>
         </div>
       </main>

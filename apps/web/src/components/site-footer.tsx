@@ -186,6 +186,17 @@ export function SiteFooter() {
       <div className="border-t border-ink-600/10 bg-white">
         <div className="container-wide flex flex-col items-center justify-between gap-2 py-5 text-xs text-ink-700/55 sm:flex-row">
           <p>© {new Date().getFullYear()} {site.legalName}. All rights reserved.</p>
+          <nav aria-label="Policies" className="flex flex-wrap items-center justify-center gap-x-4">
+            {[
+              { label: "Privacy Policy", href: "/privacy" },
+              { label: "Terms & Conditions", href: "/terms" },
+              { label: "Returns & Refunds", href: "/returns" },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="py-1.5 hover:text-brand-600">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
           <p>Kampala, Uganda 🇺🇬</p>
         </div>
       </div>

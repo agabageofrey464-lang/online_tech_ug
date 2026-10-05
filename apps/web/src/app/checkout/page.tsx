@@ -369,7 +369,10 @@ export default function CheckoutPage() {
                 : (pesapalReady ? `PAY NOW · ${ugx(total)}` : "Confirm order")}
             </button>
             <p className="mt-3 text-center text-[11px] text-ink-700/50">
-              By proceeding, you accept our Terms &amp; Conditions and privacy policy.
+              By proceeding, you accept our{" "}
+              <Link href="/terms" target="_blank" className="underline hover:text-brand-600">Terms &amp; Conditions</Link>{" "}
+              and{" "}
+              <Link href="/privacy" target="_blank" className="underline hover:text-brand-600">Privacy Policy</Link>.
             </p>
           </aside>
         </form>
