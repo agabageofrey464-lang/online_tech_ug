@@ -15,7 +15,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] `packages/ui`, `packages/types`
 - [x] `docker-compose.yml` (PostgreSQL for local dev)
 - [ ] CI (GitHub Actions: lint, typecheck, build, pytest)
-- [ ] Deploy web → Vercel; api → VPS (Docker + Caddy/Nginx + systemd)
+- [x] Deploy web → Vercel; api → VPS (Docker + Nginx)
 - [ ] Domain + DNS + SPF/DKIM/DMARC for Resend
 - [ ] Error monitoring (Sentry) + uptime checks
 

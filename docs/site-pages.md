@@ -34,7 +34,10 @@ Use this as a walkthrough order when recording a screen video of the system.
 ## Admin panel (https://admin.onlinetechug.com)
 - Dashboard, Products (add/list), Orders, Courses (unlock-code manager), Leads, Settings.
 
-## ⚠️ Not yet live end-to-end
-Login / Sign up / Vendor / course auto-code all call the backend API. The **API still needs
-redeploying** (adds `/auth`, `/vendor`, `/unlock-codes` routes + `users`/`vendor_products` tables).
-Until then those submit actions will error on the live site; everything else works.
+## Backend status
+The API at https://api.onlinetechug.com is deployed with the `/auth`, `/vendor` and
+`/unlock-codes` routes, so Login, Sign up, Vendor and the course auto-code are live.
+(Checked 2026-10-05: every page above returned 200 and no link or image on them was broken.)
+
+Backend changes only reach the live site when `bash deploy/deploy.sh` is run — pushing to
+GitHub updates the two Vercel apps, not the API.
