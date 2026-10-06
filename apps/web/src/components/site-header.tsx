@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   BatteryCharging,
+  Briefcase,
   ChevronDown,
   Code2,
   Cpu,
@@ -123,7 +124,28 @@ export function SiteHeader() {
 
           <nav className="flex min-w-0 flex-1 items-center gap-x-4 overflow-x-auto no-scrollbar">
             {/* What we do — these earn the emphasis */}
-            {PRIMARY_LINKS.map((it) => (
+            {PRIMARY_LINKS.map((it) =>
+              it.href === "/internship" ? (
+                // Internships get a badge of their own. In a row of plain
+                // white links a student scanning for the placement page read
+                // straight past it; yellow is used for nothing else up here,
+                // and the live dot says the intake is open.
+                <Link
+                  key={it.href}
+                  href={it.href}
+                  aria-current={pathname.startsWith(it.href) ? "page" : undefined}
+                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FCDC04] px-3 py-1 font-extrabold text-ink-900 shadow-sm transition hover:brightness-105 ${
+                    pathname.startsWith(it.href) ? "ring-2 ring-white" : "ring-1 ring-black/10"
+                  }`}
+                >
+                  <Briefcase size={12} strokeWidth={2.6} />
+                  {it.label}
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75 motion-reduce:hidden" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
+                  </span>
+                </Link>
+              ) : (
               <Link
                 key={it.href}
                 href={it.href}
@@ -135,7 +157,8 @@ export function SiteHeader() {
               >
                 {it.label}
               </Link>
-            ))}
+              ),
+            )}
 
             <span className="h-3 w-px shrink-0 bg-white/25" aria-hidden />
 
@@ -350,7 +373,22 @@ export function SiteHeader() {
               ...navGroups
                 .flatMap((g) => g.items)
                 .filter((it) => !nav.some((n) => n.href === it.href)),
-            ].map((item) => (
+            ].map((item) =>
+              item.href === "/internship" ? (
+                // The same yellow badge as the desktop bar, as a full row.
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="my-1 flex items-center gap-2.5 rounded-md bg-[#FCDC04] px-3 py-3 text-base font-extrabold text-ink-900 shadow-sm"
+                >
+                  <Briefcase size={18} strokeWidth={2.4} />
+                  {item.label}
+                  <span className="ml-auto rounded-full bg-ink-900 px-2.5 py-0.5 text-[11px] font-bold text-white">
+                    Apply now →
+                  </span>
+                </Link>
+              ) : (
               <Link
                 key={item.href}
                 href={item.href}
@@ -361,7 +399,8 @@ export function SiteHeader() {
               >
                 {item.label}
               </Link>
-            ))}
+              ),
+            )}
             <a href={telHref(site.phoneDisplay)} className="flex items-center gap-2 rounded-md px-3 py-3 text-base font-medium text-ink-700">
               <Phone size={16} /> {site.phoneDisplay}
             </a>
