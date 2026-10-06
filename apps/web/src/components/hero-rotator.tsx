@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Truck, ShieldCheck, GraduationCap, Store, Cpu } from "lucide-react";
+import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Store, Cpu } from "lucide-react";
 
 // Jumia-style promotional banner slides. Solid brand-coloured panels with a
 // headline, a deal pill and a framed photo — kept in Online Tech Uganda's own
@@ -19,17 +19,6 @@ const SLIDES = [
     href: "/shop",
     img: "/hero/hero-1.webp",
     icon: ShieldCheck,
-  },
-  {
-    bg: "from-ink-600 via-ink-700 to-ink-800",
-    eyebrow: "Learn computer skills",
-    title: "Master Computers & Microsoft Office",
-    sub: "Structured courses, written notes and certificates you truly own.",
-    pill: "First lesson free",
-    cta: "Start learning",
-    href: "/learn",
-    img: "/hero/hero-4.webp",
-    icon: GraduationCap,
   },
   {
     bg: "from-brand-600 via-brand-700 to-ink-700",

@@ -16,6 +16,7 @@ import {
 import { PageHeader } from "@/components/page-header";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { ExploreMore } from "@/components/explore-more";
+import { ServicesGrid } from "@/components/services-grid";
 import { portfolio } from "@/lib/portfolio";
 import { SafeImage } from "@/components/safe-image";
 import { site, ugx, whatsappLink } from "@/lib/site";
@@ -209,6 +210,27 @@ export default function DevelopmentPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Everything else we do ── */}
+      {/* The services panel from the home page. A client who came for a
+          website often needs the machines, the network and the support that
+          go with it, and this is where they are deciding who to hire. */}
+      <section className="container-page pt-10">
+        <div className="flex items-end justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-extrabold text-ink-900">Our services</h2>
+            <p className="mt-1 text-sm text-ink-700/65">
+              Websites, apps and systems — and the repairs, networks and support that keep them running.
+            </p>
+          </div>
+          <Link href="/services" className="shrink-0 text-sm font-bold text-brand-600 hover:underline">
+            See all →
+          </Link>
+        </div>
+        <div className="mt-4">
+          <ServicesGrid />
         </div>
       </section>
 

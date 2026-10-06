@@ -9,10 +9,11 @@ import { Button, Badge } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { CourseBrowser } from "@/components/course-browser";
+import { IntakeAdverts } from "@/components/intake-adverts";
+import { PromoBanners } from "@/components/promo-banners";
 import { SafeImage } from "@/components/safe-image";
 import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
-import { upcomingIntakes as listIntakes } from "@/lib/intakes";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function fmtDate(iso: string) {
@@ -76,9 +77,6 @@ export default function LearnPage() {
 
   const totalLessons = courses.reduce((n, c) => n + c.lessons, 0);
   const withNotes = Object.keys(courseNotes);
-  // Only advertise intakes that haven't started yet.
-  const today = new Date().toISOString().slice(0, 10);
-  const upcomingIntakes = listIntakes();
 
   // Programmes run two months for the short courses and three or four for the
   // harder ones — stated up front, because it decides whether someone can
@@ -154,6 +152,14 @@ export default function LearnPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* When the next classes start — the first thing under the banner,
+          because a date is the one thing on this page that runs out. */}
+      <section className="container-page space-y-3 pt-8 sm:pt-10">
+        <IntakeAdverts />
+        {/* The course offers that used to rotate on the home page. */}
+        <PromoBanners zone="academy" />
       </section>
 
       {/* The four study tracks, moved off the home page so that page stays a
@@ -306,35 +312,6 @@ export default function LearnPage() {
             Open community →
           </span>
         </Link>
-        {upcomingIntakes.length > 0 && (
-          <div className="mb-4 overflow-hidden rounded-card border border-green-300 bg-green-50">
-            <div className="flex items-center gap-2 bg-green-600 px-4 py-2 text-white">
-              <CalendarClock size={16} />
-              <p className="text-sm font-extrabold">Upcoming online intakes</p>
-            </div>
-            <ul className="divide-y divide-green-200">
-              {upcomingIntakes.map((i) => (
-                <li key={i.date} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-                  <span>
-                    <span className="block font-extrabold text-ink-900">{i.label}</span>
-                    <span className="block text-sm text-ink-700/70">{i.note}</span>
-                  </span>
-                  <a
-                    href={whatsappLink(
-                      `Hi, I'd like to register for the online classes starting ${i.label}.`,
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="press shrink-0 rounded-md bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
-                  >
-                    Reserve a place
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         <CourseBrowser courses={courses} withNotes={withNotes} />
       </section>
 

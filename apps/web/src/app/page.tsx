@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { type ReactNode } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
 import { BandPreview, type BandItem } from "@/components/band-preview";
@@ -13,17 +12,13 @@ import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
-import { AcademyFestival } from "@/components/academy-festival";
-import { IntakeAdverts } from "@/components/intake-adverts";
 import { DailyUpdates } from "@/components/daily-updates";
-import { CourseShowcase } from "@/components/course-showcase";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
-import { listedProducts as products, services, courses, whyUs, productImage, type Product } from "@/lib/data";
-import { fallbackImage } from "@/lib/image-fallback";
+import { listedProducts as products, whyUs, productImage, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
 
 function byCat(cat: Product["category"]) {
@@ -152,6 +147,11 @@ export const revalidate = 600; // 10 minutes
 /** Alternate two lists — laptop, phone, laptop, phone — so a mixed rail
  *  actually reads as mixed. Sorting a merged list by price looks mixed until
  *  a price band happens to be all one kind, and then it silently is not. */
+// How many products a rail carries. It was eight while the page also held the
+// courses, the intakes and the services; with those on their own pages the
+// shop has the room, and eight read as a thin shelf.
+const RAIL = 14;
+
 function mix(a: Product[], b: Product[], take: number): Product[] {
   const inStock = (p: Product) => p.inStock !== false;
   const best = (list: Product[]) =>
@@ -188,7 +188,7 @@ export default function HomePage() {
 
   // Trending: top-rated, rotated so a different set leads each refresh.
   const topPool = [...inStock].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 40);
-  const topSelling = rotate(topPool, slot * 5).slice(0, 8);
+  const topSelling = rotate(topPool, slot * 5).slice(0, RAIL);
 
   // Weekend deals: genuine markdowns first, then top-rated stock so the band is
   // always full — a rail with one lonely card looks broken.
@@ -199,7 +199,7 @@ export default function HomePage() {
     inStock.filter((p) => !realDeals.some((d) => d.id === p.id)).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)),
     slot * 7,
   );
-  const deals = [...realDeals, ...dealFillers].slice(0, 8);
+  const deals = [...realDeals, ...dealFillers].slice(0, RAIL);
 
   // Brand bands: rotate WHICH brands get a band, so the page varies by visit.
   const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
@@ -219,7 +219,7 @@ export default function HomePage() {
 
   // Newest first: products are appended to the catalogue, so the tail is the
   // most recent stock.
-  const newest = [...inStock].reverse().slice(0, 12);
+  const newest = [...inStock].reverse().slice(0, 18);
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -300,6 +300,11 @@ export default function HomePage() {
         <HeroRotator />
       </div>
 
+      {/* The rotating offers, as a festival strip directly under the hero —
+          where an offer is seen — rather than a full campaign board halfway
+          down the page. */}
+      <PromoBanners />
+
       {/* Category quick-nav removed below desktop: 9 tiles left an orphan card
           on its own row and ate the first screen. Desktop keeps the sidebar,
           and "Explore our top categories" covers browsing for everyone. */}
@@ -329,25 +334,6 @@ export default function HomePage() {
           ))}
         </div>
       </Panel>
-
-      {/* "Don't Miss Out!" now occupies this slot — the category circles that used
-          to sit here are hidden, since the header search, mega-menu and mobile
-          tab bar already cover category browsing. */}
-      <PromoBanners />
-
-      {/* An advert per upcoming intake, generated from the intake list so a
-          date that has passed stops being advertised on its own. */}
-      <IntakeAdverts />
-
-      {/* The standing offer to be told what is new, placed where someone has
-          just finished reading what is coming up. */}
-      <DailyUpdates />
-
-      {/* The academy, ahead of the shop rails. Training is the side of the
-          business being pushed now, and it had one rotating slide inside a
-          carousel it shared with laptop deals. */}
-      <AcademyFestival />
-
 
       {/* Flash sales (Jumia-style) — leads the home on every device */}
       <section className="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -490,11 +476,11 @@ export default function HomePage() {
       {/* Category sections (Jumia-style horizontal rails). Phones are not here
           — they lead the whole page, above the campaign banners. */}
       <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
-        <Rail items={byCat("Laptops").slice(0, 8)} />
+        <Rail items={byCat("Laptops").slice(0, RAIL)} />
       </Panel>
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
-        <Rail items={byCat("Desktops").slice(0, 8)} />
+        <Rail items={byCat("Desktops").slice(0, RAIL)} />
       </Panel>
 
       {/* A laptop and a phone in one rail, cheapest first. The category panels
@@ -505,55 +491,15 @@ export default function HomePage() {
         href="/shop"
         items={[...byCat("Laptops"), ...byCat("Phones")]}
       >
-        <Rail items={mix(byCat("Phones"), byCat("Laptops"), 8)} />
+        <Rail items={mix(byCat("Phones"), byCat("Laptops"), RAIL)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>
-        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, 8)} />
+        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, RAIL)} />
       </Panel>
 
       <Panel title="Accessories, Networking & Storage" href="/shop" items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")]}>
-        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, 8)} />
-      </Panel>
-
-      {/* Services */}
-      <Panel title="Our Services" href="/services">
-        <div className="grid-cards-fit gap-3 p-3">
-          {services.map((s) => (
-            <Link
-              key={s.slug}
-              href={`/services#${s.slug}`}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-ink-600/10 bg-white text-center shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
-            >
-              {/* Service photo banner with the icon badge */}
-              <div className="relative h-24 w-full overflow-hidden bg-ink-50">
-                <Image
-                  src={s.image ?? fallbackImage(s.title)}
-                  alt={s.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                  className="object-cover transition duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-900/45 to-transparent" />
-                <span className="absolute bottom-2 left-1/2 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-white text-brand-600 shadow-md">
-                  <Icon name={s.icon} size={18} />
-                </span>
-              </div>
-              <div className="flex flex-col items-center p-3">
-                <p className="text-sm font-bold text-ink-900">{s.title}</p>
-                <p className="clamp-2 mt-1 text-[11px] leading-snug text-ink-700/60">{s.summary}</p>
-                <p className="mt-2 text-[11px] font-bold text-brand-600">
-                  {s.startingFrom ? `From ${ugx(s.startingFrom)}` : "Get a quote"}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </Panel>
-
-      {/* Learn */}
-      <Panel title="Learn Computer Skills" href="/learn">
-        <CourseShowcase />
+        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, RAIL)} />
       </Panel>
 
       {/* Browse all products — same coloured deal-band treatment as the rails */}
@@ -587,7 +533,11 @@ export default function HomePage() {
 
       {/* The rest of the business — the page used to stop dead after the grid,
           which on a phone is a long way to scroll for nothing. */}
-      <ExploreMore title="More from Online Tech Uganda" limit={6} />
+      <ExploreMore title="More from Online Tech Uganda" limit={6} exclude={["/learn"]} />
+
+      {/* The standing offer to be told what is new, as the page's closing
+          strip: someone who has read this far and not bought is who it is for. */}
+      <DailyUpdates />
 
       {/* WhatsApp CTA */}
       <section className="rounded bg-ink-700 px-6 py-8 text-center text-white">
