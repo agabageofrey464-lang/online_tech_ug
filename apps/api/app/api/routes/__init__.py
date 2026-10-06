@@ -14,6 +14,7 @@ from app.api.routes import (
     jobs,
     orders,
     discussion,
+    documents,
     newsletter,
     push,
     payments,
@@ -51,4 +52,5 @@ api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
 api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
 api_router.include_router(academy.router, prefix="/academy", tags=["academy"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
+api_router.include_router(documents.router, prefix="/documents", tags=["documents"])
 api_router.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])

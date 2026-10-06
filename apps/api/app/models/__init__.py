@@ -16,6 +16,7 @@ from app.models.contact import ContactMessage
 from app.models.discussion import DiscussionPost
 from app.models.coupon import Coupon
 from app.models.digest import DailyDigest
+from app.models.document import Document
 from app.models.lesson import LessonStatus
 from app.models.freelancer import Freelancer
 from app.models.freelancer_contact import FreelancerContact
@@ -52,6 +53,7 @@ __all__ = [
     "DiscussionPost",
     "Coupon",
     "DailyDigest",
+    "Document",
     "Freelancer",
     "LessonStatus",
     "FreelancerContact",

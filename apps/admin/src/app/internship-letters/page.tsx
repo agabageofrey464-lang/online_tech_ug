@@ -13,6 +13,17 @@ import { logoPlate } from "@/lib/doc-kit";
 
 type LetterKind = "acceptance" | "completion";
 
+/** A letter already issued, as the backend lists it. */
+type Issued = {
+  id: number;
+  kind: string;
+  title: string;
+  reference: string;
+  filename: string;
+  size: number;
+  created_at: string;
+};
+
 const FIELDS = [
   "Web Development",
   "Graphic Design",
@@ -62,6 +73,44 @@ export default function InternshipLettersPage() {
   const [supervisor, setSupervisor] = useState("Agaba Geofrey");
   const [dated, setDated] = useState(todayISO());
   const [busy, setBusy] = useState(false);
+  // Every letter issued is kept on the backend, privately. Before this the
+  // only copy was wherever the browser saved the download.
+  const [issued, setIssued] = useState<Issued[]>([]);
+  const [saved, setSaved] = useState<"" | "ok" | "failed">("");
+
+  async function loadIssued() {
+    try {
+      const res = await fetch("/api/documents?kind=internship", { cache: "no-store" });
+      if (res.ok) setIssued(await res.json());
+    } catch {
+      /* the list is a convenience; the page works without it */
+    }
+  }
+  useEffect(() => {
+    void loadIssued();
+  }, []);
+
+  async function keepCopy(blob: Blob, filename: string, title: string, reference: string) {
+    setSaved("");
+    try {
+      const fd = new FormData();
+      fd.append("file", blob, filename);
+      fd.append("kind", `internship-${kind}`);
+      fd.append("title", title);
+      fd.append("reference", reference);
+      const res = await fetch("/api/documents", { method: "POST", body: fd });
+      setSaved(res.ok ? "ok" : "failed");
+      if (res.ok) void loadIssued();
+    } catch {
+      setSaved("failed");
+    }
+  }
+
+  async function removeIssued(d: Issued) {
+    if (!confirm(`Delete the stored copy of "${d.filename}"? This cannot be undone.`)) return;
+    const res = await fetch(`/api/documents/${d.id}`, { method: "DELETE" });
+    if (res.ok) setIssued((list) => list.filter((x) => x.id !== d.id));
+  }
 
   const logo = useRef<HTMLImageElement | null>(null);
   const sign = useRef<HTMLImageElement | null>(null);
@@ -234,12 +283,17 @@ export default function InternshipLettersPage() {
         { align: "center" },
       );
 
+      const filename = `Internship-${kind}-${student.replace(/\s+/g, "-")}.pdf`;
+      // The copy for our records is taken before the print dialogue is added,
+      // so the stored file opens as a document rather than straight to print.
+      const copy = doc.output("blob");
       if (print) {
         doc.autoPrint();
         window.open(doc.output("bloburl") as unknown as string, "_blank");
       } else {
-        doc.save(`Internship-${kind}-${student.replace(/\s+/g, "-")}.pdf`);
+        doc.save(filename);
       }
+      void keepCopy(copy, filename, student, ref);
     } finally {
       setBusy(false);
     }
@@ -351,6 +405,16 @@ export default function InternshipLettersPage() {
               ⬇️ Download PDF
             </button>
           </div>
+          {saved === "ok" && (
+            <p className="mt-3 text-xs font-semibold text-green-700">
+              ✓ A copy is stored under &ldquo;Issued letters&rdquo; below.
+            </p>
+          )}
+          {saved === "failed" && (
+            <p className="mt-3 text-xs font-semibold text-red-600">
+              The letter was made, but we could not store a copy. Keep the downloaded file safe.
+            </p>
+          )}
         </section>
 
         <section className="h-fit rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
@@ -383,6 +447,54 @@ export default function InternshipLettersPage() {
           </p>
         </section>
       </div>
+
+      {/* ── Issued letters ─────────────────────────────────────── */}
+      <section className="mt-6 rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-extrabold text-ink-600">Issued letters</h2>
+          <p className="text-xs text-ink-600/55">
+            {issued.length} stored · kept privately, only visible here
+          </p>
+        </div>
+        {issued.length === 0 ? (
+          <p className="mt-3 rounded-md bg-ink-50 px-3 py-3 text-sm text-ink-600/65">
+            No letters stored yet. Every letter you print or download from now on is kept here.
+          </p>
+        ) : (
+          <ul className="mt-3 divide-y divide-ink-600/10">
+            {issued.map((d) => (
+              <li key={d.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${
+                    d.kind.endsWith("completion") ? "bg-green-100 text-green-700" : "bg-brand-50 text-brand-700"
+                  }`}
+                >
+                  {d.kind.replace("internship-", "")}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-bold text-ink-700">{d.title || d.filename}</span>
+                  <span className="block text-xs text-ink-600/55">
+                    {d.reference && <span className="font-mono">{d.reference} · </span>}
+                    {long(d.created_at.slice(0, 10))} · {Math.max(1, Math.round(d.size / 1024))} KB
+                  </span>
+                </span>
+                <a
+                  href={`/api/documents/${d.id}`}
+                  className="rounded-md border border-ink-600/20 px-3 py-1.5 text-xs font-bold text-ink-700 hover:border-brand-500 hover:text-brand-600"
+                >
+                  ⬇️ Download
+                </a>
+                <button
+                  onClick={() => removeIssued(d)}
+                  className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
