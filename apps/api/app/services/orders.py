@@ -16,9 +16,6 @@ from app.schemas.order import OrderCreate
 from app.services import catalog, coupons
 from app.services.catalog import get_product
 
-# Free delivery above this subtotal (UGX) — within the Kampala metro
-FREE_DELIVERY_THRESHOLD = 3_000_000
-
 # Distance-based transport: road-km from the shop (Liberty Tower, Kampala Road).
 # Keep in sync with apps/web/src/lib/delivery.ts
 TOWN_DISTANCE_KM = {
@@ -62,10 +59,11 @@ def _fee_for_km(km: int) -> int:
     return 75_000
 
 
-def compute_delivery_fee(town: str, subtotal: int) -> int:
+def compute_delivery_fee(town: str) -> int:
+    # Every order pays transport by distance, whatever its size. Large orders
+    # near Kampala used to go free here while checkout showed the customer a
+    # fee, so the total they agreed to was not the total they were charged.
     km = TOWN_DISTANCE_KM.get(town.strip().lower(), 150)  # unknown → mid-distance
-    if subtotal >= FREE_DELIVERY_THRESHOLD and km <= 25:
-        return 0
     return _fee_for_km(km)
 
 
@@ -127,7 +125,7 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         # Reduce inventory for tracked house products (no-op for seed/untracked items).
         catalog.decrement_stock(db, product["slug"], item.quantity)
 
-    delivery_fee = compute_delivery_fee(payload.delivery_town, subtotal)
+    delivery_fee = compute_delivery_fee(payload.delivery_town)
 
     # Apply a discount coupon if one was supplied (server recomputes & records usage).
     discount, coupon_code = 0, ""

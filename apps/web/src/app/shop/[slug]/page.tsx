@@ -342,7 +342,7 @@ export default async function ProductDetailPage({
               <div>
                 <p className="font-bold text-ink-900">Door Delivery</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">
-                  From {ugx(15000)} (Kampala) · {ugx(25000)} upcountry. <b>Free</b> on orders above {ugx(3000000)}.
+                  {ugx(10000)} in and around Kampala · {ugx(20000)}–{ugx(75000)} upcountry, by distance.
                 </p>
               </div>
             </div>

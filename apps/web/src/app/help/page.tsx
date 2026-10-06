@@ -42,7 +42,7 @@ const FAQS: Faq[] = [
   { cat: "payments", q: "What payment methods do you accept?", a: "MTN MoMo, Airtel Money, bank transfer or card, or cash when you collect from our shop in Kampala." },
   { cat: "payments", q: "Do you accept cash on delivery?", a: "No. We deliver orders that have already been paid for. Pay by Mobile Money, bank transfer or card and we'll bring it to you — or come to our shop in Kampala, check the item yourself, and pay there." },
   { cat: "delivery", q: "How long does delivery take?", a: "Kampala deliveries are usually same-day or next-day. Upcountry takes 1–3 days. We confirm timing on WhatsApp after you order." },
-  { cat: "delivery", q: "How much is delivery?", a: `From ${ugx(15000)} within Kampala and ${ugx(25000)} upcountry. Delivery is FREE on orders above ${ugx(3000000)}.` },
+  { cat: "delivery", q: "How much is delivery?", a: `${ugx(10000)} in and around Kampala, and ${ugx(20000)} to ${ugx(75000)} upcountry depending on distance. Checkout shows the exact fee for your town before you confirm.` },
   { cat: "delivery", q: "How do I track my order?", a: "Go to Track Project / your Account, or message us on WhatsApp with your order reference for a live update." },
   { cat: "returns", q: "What is your return policy?", a: "Eligible items can be returned within 7 days if faulty or not as described. Contact us to arrange the return." },
   { cat: "returns", q: "How do refunds work?", a: "Once a return is approved, refunds are processed to your Mobile Money or original payment method, usually within a few days." },

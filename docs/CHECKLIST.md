@@ -40,7 +40,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Checkout flow (details, delivery, payment method) + server-side price validation
 - [x] Orders: create + reference + status field + delivery-fee calc + order lookup/history
 - [~] Payments: cash-on-delivery + Mobile Money (instructions) done · MTN/Airtel/Flutterwave API pending
-- [~] Delivery: fee by town + free-over-3M done · rider assignment + tracking pending
+- [~] Delivery: fee by town (by distance, never free) done · rider assignment + tracking pending
 - [ ] Customer accounts (auth, profile, addresses, order history)
 - [ ] Reviews & ratings; wishlist
 - [~] Admin: product list + order list (read) done · product CRUD + status updates pending
