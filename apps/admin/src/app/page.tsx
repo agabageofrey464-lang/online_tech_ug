@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   const [health, orders, products, leads, commissions, counts] = await Promise.all([
     getHealth(),
     apiGetAdmin<AdminOrder[]>("/api/v1/orders"),
-    apiGet<AdminProduct[]>("/api/v1/products"),
+    apiGet<AdminProduct[]>("/api/v1/products?limit=500"),
     apiGetAdmin<AdminLead[]>("/api/v1/contact"),
     apiGetAdmin<Commissions>("/api/v1/vendor/admin/commissions"),
     apiGetAdmin<Record<string, number>>("/api/v1/stats/counts"),

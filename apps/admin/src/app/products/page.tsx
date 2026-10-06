@@ -5,7 +5,7 @@ import { apiGet, ugx, type AdminProduct } from "@/lib/api";
 const CATEGORY_ORDER = ["Laptops", "Desktops", "Components", "Power", "Accessories", "Networking", "Storage"];
 
 export default async function ProductsPage() {
-  const products = (await apiGet<AdminProduct[]>("/api/v1/products?limit=100")) ?? [];
+  const products = (await apiGet<AdminProduct[]>("/api/v1/products?limit=500")) ?? [];
 
   // Group products by category, in a sensible order (unknown categories last).
   const groups = new Map<string, AdminProduct[]>();
