@@ -3,6 +3,7 @@ import { type ReactNode } from "react";
 import Link from "next/link";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
+import { PhoneFestivalFill } from "@/components/phone-festival-fill";
 import { BandPreview, type BandItem } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
@@ -339,6 +340,8 @@ export default function HomePage() {
           {byCat("Phones").map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
+          {/* Whatever the last row has left over, as a strip for the range. */}
+          <PhoneFestivalFill count={byCat("Phones").length} />
         </div>
       </Panel>
 
