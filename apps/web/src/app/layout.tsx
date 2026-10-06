@@ -36,6 +36,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   manifest: "/manifest.json",
+  // Proves to Google Search Console that we own the site, so its sitemap can
+  // be submitted there. Removing this un-verifies the property.
+  verification: { google: "citscyrm2lQ5eMCrUWBhxPwX6Byfd_IduXwOPCQsH3o" },
   robots: {
     index: true,
     follow: true,
