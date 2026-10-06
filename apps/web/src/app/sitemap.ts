@@ -17,7 +17,7 @@ const url = (path: string) => `${BASE}${path === "/" ? "" : path}`;
 const PUBLIC_PATHS = [
   "/", "/shop", "/find", "/categories", "/marketplace", "/sell", "/learn", "/development", "/community", "/jobs",
   "/internship", "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
-  "/news", "/blog", "/about", "/help", "/refer", "/pay", "/invoice", "/contact",
+  "/news", "/blog", "/about", "/help", "/pay", "/invoice", "/contact",
   "/privacy", "/terms", "/returns",
 ];
 
