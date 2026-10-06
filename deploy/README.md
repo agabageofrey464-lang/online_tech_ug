@@ -1,5 +1,13 @@
 # Deploying the OnlineTechUg API (VPS)
 
+> **How it runs today (checked 2026-10-06).** The server does not use Docker. The API is a
+> systemd service, `onlinetech-api`, running uvicorn on `127.0.0.1:8010` from
+> `/home/ubuntu/onlinetech-api`, with PostgreSQL installed on the host. `bash deploy/deploy.sh`
+> deploys to that layout: it uploads the committed `apps/api` code, backs up what is live,
+> restarts the service and restores the backup if the health check fails. It uses the key at
+> `~/.ssh/onlinetech-deploy` (override with `SSH_KEY`). The Docker instructions below describe
+> the original plan and are kept for reference only.
+
 Backend-only deployment (FastAPI + PostgreSQL in Docker). Frontends go to Vercel.
 This server is **shared** with Beds & Beddings — the setup is isolated and does
 **not** modify existing nginx vhosts or services.
