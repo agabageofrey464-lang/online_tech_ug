@@ -48,6 +48,7 @@ export type AdminProduct = {
   condition: string;
   price_ugx: number;
   in_stock: boolean;
+  image_url?: string;
 };
 
 export type AdminOrder = {

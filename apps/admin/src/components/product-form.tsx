@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ImageUpload } from "@/components/image-upload";
+import { ProductPhoto } from "@/components/product-photo";
+import { productImage } from "@/lib/product-image";
+import { ugx } from "@/lib/api";
 import { EMPTY_SPECS, emptyValues, type ProductFormValues } from "@/lib/product-form-data";
 
 // Re-export so existing imports from this component keep working.
@@ -107,8 +110,53 @@ export function ProductForm({
     "w-full rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
   const isComputer = COMPUTER_CATS.includes(form.category);
 
+  const price = Number(form.price_ugx) || 0;
+  const oldPrice = Number(form.old_price_ugx) || 0;
+  const filledSpecs = SPEC_FIELDS.filter((f) => form.specs[f.key]);
+
   return (
-    <form onSubmit={submit} className="mt-6 grid gap-5 rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
+    <div className="mt-6 grid items-start gap-6 lg:grid-cols-[20rem_1fr]">
+      {/* The product as the shop shows it, beside the fields that change it.
+          Pricing forty laptops from their names alone means opening the shop
+          in another tab for each one to see which machine it is. It stays in
+          view while the form scrolls, and follows the price and specs as they
+          are typed. */}
+      <aside className="rounded-2xl border border-ink-600/10 bg-white p-4 shadow-sm lg:sticky lg:top-6">
+        <ProductPhoto
+          src={productImage(form.image_url, slug)}
+          alt={form.name}
+          className="aspect-square w-full rounded-xl border border-ink-600/10"
+          emptyLabel="No photo yet — upload one in the form"
+        />
+        <p className="mt-3 text-sm font-bold leading-snug text-ink-600">{form.name || "New product"}</p>
+        <p className="mt-0.5 text-xs text-ink-600/60">
+          {[form.brand, form.condition, form.category].filter(Boolean).join(" · ")}
+        </p>
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
+          <span className="text-lg font-extrabold text-brand-600">{price ? ugx(price) : "No price"}</span>
+          {oldPrice > price && <span className="text-xs text-ink-600/50 line-through">{ugx(oldPrice)}</span>}
+          {oldPrice > price && price > 0 && (
+            <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[11px] font-bold text-brand-700">
+              -{Math.round((1 - price / oldPrice) * 100)}%
+            </span>
+          )}
+        </div>
+        <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${form.in_stock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          {form.in_stock ? "In stock" : "Out of stock"}
+        </span>
+        {filledSpecs.length > 0 && (
+          <dl className="mt-3 space-y-1 border-t border-ink-600/10 pt-3 text-xs">
+            {filledSpecs.map((f) => (
+              <div key={f.key} className="flex gap-2">
+                <dt className="w-24 shrink-0 text-ink-600/50">{f.label}</dt>
+                <dd className="min-w-0 font-medium text-ink-600">{form.specs[f.key]}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </aside>
+
+    <form onSubmit={submit} className="grid min-w-0 gap-5 rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
       <div>
         <span className="mb-1.5 block text-sm font-medium text-ink-600">Product photo</span>
         <ImageUpload value={form.image_url} onChange={(url) => set("image_url", url)} />
@@ -196,5 +244,6 @@ export function ProductForm({
         )}
       </div>
     </form>
+    </div>
   );
 }

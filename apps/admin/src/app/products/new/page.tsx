@@ -4,7 +4,7 @@ import { emptyValues } from "@/lib/product-form-data";
 
 export default function NewProductPage() {
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-5xl">
       <Link href="/products" className="text-sm font-semibold text-brand-600 hover:underline">
         ← Back to products
       </Link>

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { apiGet, ugx, type AdminProduct } from "@/lib/api";
+import { ProductPhoto } from "@/components/product-photo";
+import { productThumb } from "@/lib/product-image";
 
 
 const CATEGORY_ORDER = ["Laptops", "Desktops", "Components", "Power", "Accessories", "Networking", "Storage"];
@@ -51,6 +53,7 @@ export default async function ProductsPage() {
                   <table className="w-full text-sm">
                     <thead className="border-b border-ink-600/10 bg-ink-50 text-left text-xs uppercase tracking-wider text-ink-600/60">
                       <tr>
+                        <th className="py-4 pl-4">Photo</th>
                         <th className="p-4">Name</th>
                         <th className="p-4">Brand</th>
                         <th className="p-4">Condition</th>
@@ -62,6 +65,16 @@ export default async function ProductsPage() {
                     <tbody>
                       {items.map((p) => (
                         <tr key={p.id} className="border-b border-ink-600/5 last:border-0 hover:bg-ink-50/50">
+                          <td className="py-2 pl-4">
+                            <Link href={`/products/${p.slug}`} aria-label={`Edit ${p.name}`}>
+                              <ProductPhoto
+                                src={productThumb(p.image_url, p.slug)}
+                                alt=""
+                                className="h-12 w-12 rounded-lg border border-ink-600/10"
+                                emptyLabel="—"
+                              />
+                            </Link>
+                          </td>
                           <td className="p-4 font-semibold text-ink-600">
                             <Link href={`/products/${p.slug}`} className="hover:text-brand-600 hover:underline">
                               {p.name}

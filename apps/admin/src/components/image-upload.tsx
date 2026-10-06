@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { productImage } from "@/lib/product-image";
 
 // Vercel caps a serverless request body at ~4.5 MB, and phone photos are often
 // bigger — so shrink in the browser before sending. Also makes uploads far
@@ -90,7 +91,7 @@ export function ImageUpload({ value, onChange }: { value: string; onChange: (url
         {value && !busy && (
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-600">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={value} alt="" className="h-7 w-7 rounded object-cover" /> Image added
+            <img src={productImage(value)} alt="" className="h-7 w-7 rounded object-cover" /> Image added
           </span>
         )}
       </div>
