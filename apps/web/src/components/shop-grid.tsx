@@ -45,9 +45,11 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   const [showFilters, setShowFilters] = useState(false);
   const [priceIdx, setPriceIdx] = useState(0);
   const [minRating, setMinRating] = useState(0);
-  // Render in pages — showing all ~180 products at once fires hundreds of image
-  // requests and makes the page crawl on mobile data.
-  const PAGE = 36;
+  // Render in pages — showing all ~200 products at once fires hundreds of image
+  // requests and makes the page crawl on mobile data. Sixty at a time, though:
+  // at thirty-six a shopper on a wide screen reached "Loading more products…"
+  // after six rows and read the shop as a small one.
+  const PAGE = 60;
   const [shown, setShown] = useState(PAGE);
   // Sentinel at the end of the grid: when it scrolls into view we reveal the
   // next batch, so the catalogue just keeps going.
@@ -93,7 +95,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
       (entries) => {
         if (entries[0]?.isIntersecting) setShown((n) => n + PAGE);
       },
-      { rootMargin: "600px 0px" }, // start loading before it is actually visible
+      { rootMargin: "1600px 0px" }, // the next batch is in place long before the end is on screen
     );
     io.observe(el);
     return () => io.disconnect();
