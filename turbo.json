@@ -6,6 +6,11 @@
   ],
   "tasks": {
     "build": {
+      "env": [
+        "NEXT_PUBLIC_*",
+        "ADMIN_*",
+        "BUILD_DIR"
+      ],
       "dependsOn": [
         "^build"
       ],
