@@ -152,6 +152,13 @@ export const revalidate = 600; // 10 minutes
 // shop has the room, and eight read as a thin shelf.
 const RAIL = 14;
 
+// How many products the closing grid shows. "See All" on any rail opens the
+// shop, and what is in the shop was not on this page: a visitor who never
+// clicked through saw a hundred or so of two hundred products. This puts a
+// good share of the catalogue here, newest first, without rendering all of it
+// — the whole shop on the home page is what once pushed it past a megabyte.
+const GRID = 60;
+
 function mix(a: Product[], b: Product[], take: number): Product[] {
   const inStock = (p: Product) => p.inStock !== false;
   const best = (list: Product[]) =>
@@ -219,7 +226,7 @@ export default function HomePage() {
 
   // Newest first: products are appended to the catalogue, so the tail is the
   // most recent stock.
-  const newest = [...inStock].reverse().slice(0, 18);
+  const newest = [...inStock].reverse().slice(0, GRID);
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -507,7 +514,7 @@ export default function HomePage() {
         <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
           <div className="min-w-0">
             <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
-            <p className="text-xs font-semibold text-white/85 sm:text-sm">Everything in stock</p>
+            <p className="text-xs font-semibold text-white/85 sm:text-sm">Newest first · {inStock.length} in stock</p>
           </div>
           <Link
             href="/shop"
@@ -516,16 +523,25 @@ export default function HomePage() {
             See All →
           </Link>
         </div>
-        {/* A rail, not the whole shop. This slot used to render <ShopGrid />,
-            the same component the /shop page uses, with the entire catalogue
-            and its filter sidebar — a complete second copy of the shop inside
-            the home page. It put 422 product cards and 308 images into one
-            document and pushed the HTML past a megabyte, which on a Ugandan
-            mobile connection is several seconds before anything appears.
-            "See All" goes to the real shop, which is what it is for. */}
-        <div className="p-3">
-          <Rail items={newest} />
+        {/* A grid, not a rail: the rails above each show a slice of one
+            category, and this is where the rest of the catalogue is seen
+            without leaving the page. Cards only — the shop's filters and
+            sidebar stay in the shop, which "See All" opens. */}
+        <div className="grid-cards gap-2 bg-[#fdf3ec] p-2 sm:p-3">
+          {newest.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
         </div>
+        {inStock.length > newest.length && (
+          <div className="bg-[#fdf3ec] px-3 pb-4 pt-1 text-center">
+            <Link
+              href="/shop"
+              className="press inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-600"
+            >
+              See all {inStock.length} products →
+            </Link>
+          </div>
+        )}
       </Reveal>
 
       {/* Your recently viewed items */}
