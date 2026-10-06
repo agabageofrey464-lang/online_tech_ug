@@ -32,7 +32,7 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
   return (
     <Link
       href={`/shop/${product.id}`}
-      className="group flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/10 transition duration-200 hover:shadow-[0_6px_22px_rgba(20,16,46,0.16)] hover:ring-brand-200"
+      className="group flex h-full flex-col overflow-hidden card-soft rounded-lg bg-white transition duration-200 hover:shadow-[0_6px_22px_rgba(20,16,46,0.16)]"
     >
       <div className="relative aspect-square overflow-hidden bg-white">
         <SafeImage

@@ -129,7 +129,7 @@ export function ProductCard({ product }: { product: Product }) {
   const spec = specLines(product);
 
   return (
-    <article className="group card-lift relative flex h-full w-full flex-col overflow-hidden rounded-md border border-ink-600/[0.08] bg-white shadow-[var(--shadow-1)] hover:z-10">
+    <article className="group card-lift relative flex h-full w-full flex-col overflow-hidden card-soft rounded-lg bg-white hover:z-10">
       <div className="relative aspect-square overflow-hidden bg-white">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           <SafeImage
