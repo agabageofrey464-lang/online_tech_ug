@@ -6,6 +6,8 @@ import { thumb } from "@/lib/thumb";
 import { upcomingIntakes } from "@/lib/intakes";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { isAcademyLink, offersFor } from "@/lib/academy-zone";
 
 /**
  * Slim rotating offer bar, shown on every page under the header.
@@ -82,7 +84,10 @@ const intakeStrips = (): Strip[] =>
   }));
 
 export function FestivalStrip() {
-  const [strips, setStrips] = useState<Strip[]>(() => [...intakeStrips(), ...live(FALLBACK)]);
+  const pathname = usePathname();
+  const [all, setStrips] = useState<Strip[]>(() => [...intakeStrips(), ...live(FALLBACK)]);
+  // Course and intake strips inside the academy; shop strips everywhere else.
+  const strips = offersFor(all, pathname, (s) => s.href);
   const [i, setI] = useState(0);
   // Shown by default so it renders server-side and the page doesn't jump once
   // hydration runs; only a visitor who actually dismissed it sees it hidden.
@@ -103,15 +108,16 @@ export function FestivalStrip() {
       .then((r) => (r.ok ? r.json() : []))
       .then((rows: Record<string, string>[]) => {
         if (!alive || !Array.isArray(rows) || rows.length === 0) return;
-        setStrips(
-          rows.slice(0, 8).map((c) => ({
-            text: [c.title, c.pill].filter(Boolean).join(" — "),
-            cta: c.cta_label || "See offer",
-            href: c.link_url || "/shop",
-            bg: c.bg_color || "bg-teal-600",
-            img: c.image_url || undefined,
-          })),
-        );
+        const campaigns = rows.slice(0, 8).map((c) => ({
+          text: [c.title, c.pill].filter(Boolean).join(" — "),
+          cta: c.cta_label || "See offer",
+          href: c.link_url || "/shop",
+          bg: c.bg_color || "bg-teal-600",
+          img: c.image_url || undefined,
+        }));
+        // Campaigns replace the built-in shop strips. The academy keeps its
+        // own — intake dates come from the intake list, not from a campaign.
+        setStrips((prev) => [...campaigns, ...prev.filter((s) => isAcademyLink(s.href))]);
       })
       .catch(() => {
         /* offline — the fallback strips stand in */

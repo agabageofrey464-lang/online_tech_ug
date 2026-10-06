@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { isAcademyLink } from "@/lib/academy-zone";
 
-// Big campaign banners ("Don't Miss Out!") — bold badge, headline, a white offer
-// pill and a photo panel. Colours come from the Online Tech Uganda palette.
+// The rotating campaign offers, drawn as a tall festival strip — a picture,
+// the headline, a white offer pill and the button, in one band. Colours come
+// from the Online Tech Uganda palette.
 const BANNERS = [
   // Intake slides used to live here, typed out by hand with their dates in
   // the copy. They could not expire, so this carousel was still inviting
@@ -409,12 +411,21 @@ type Banner = {
  *  still reads as a static advert, and shoppers stop seeing it. */
 const ROTATE_MS = 3500;
 
-export function PromoBanners() {
+/**
+ * `zone` picks the side of the business: the home page shows shop offers, and
+ * the Learn page shows the course offers that used to be mixed in with them.
+ */
+export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
+  const mine = useCallback(
+    (list: Banner[]) => list.filter((b) => isAcademyLink(b.href) === (zone === "academy")),
+    [zone],
+  );
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   // Campaigns created in the admin replace these built-ins the moment any are
-  // live; the hard-coded set stays as a fallback so the slot is never empty.
-  const [banners, setBanners] = useState<Banner[]>(BANNERS as Banner[]);
+  // live for this side; the hard-coded set stays as a fallback so the slot is
+  // never empty.
+  const [banners, setBanners] = useState<Banner[]>(() => mine(BANNERS as Banner[]));
   const n = banners.length;
 
   // Auto-advance. Pauses while the pointer is over the strip so a shopper
@@ -431,7 +442,7 @@ export function PromoBanners() {
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (!alive || !Array.isArray(rows) || rows.length === 0) return;
-        setBanners(
+        const campaigns = mine(
           rows.map((c: Record<string, string>) => ({
             program: c.program || "",
             badge: c.badge || "",
@@ -451,120 +462,90 @@ export function PromoBanners() {
             slug: c.slug,
           })),
         );
+        if (campaigns.length === 0) return;
+        setBanners(campaigns);
         setI(0);
       })
       .catch(() => {});
     return () => {
       alive = false;
     };
-  }, []);
+  }, [mine]);
   const go = useCallback((d: number) => setI((v) => (v + d + n) % n), [n]);
 
-  const b = banners[i];
+  const b = banners[i % Math.max(n, 1)];
   if (!b) return null;
 
   return (
-    <section>
-      <h2 className="mb-2 text-base font-extrabold text-ink-900 sm:text-lg">Don&apos;t Miss Out!</h2>
-
-      <div
-        className="group/promo relative overflow-hidden rounded-lg shadow-sm"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setPaused(false)}
+    // A festival strip, like the offer bar under the header, at about twice
+    // its height. This used to be a 260px campaign board with a photo panel,
+    // which pushed the shop a full screen down the page to say one thing. A
+    // strip says the same thing in a line: what it is, the offer, the button.
+    <section
+      aria-label="Offers"
+      className={`stripes group/promo relative overflow-hidden rounded-lg text-white shadow-sm transition-colors duration-500 ${b.bg}`}
+      style={b.bgHex ? { backgroundColor: b.bgHex } : undefined}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
+      <Link
+        key={i}
+        href={b.href}
+        className="ad-fade grid min-h-[5.75rem] grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 px-3 py-3 sm:min-h-[6.5rem] sm:px-12 lg:grid-cols-[auto_1fr_auto_auto] lg:gap-x-6"
       >
-        <div
-          className={`relative flex min-h-[190px] transition-colors duration-500 sm:min-h-[260px] ${b.bg}`}
-          style={b.bgHex ? { backgroundColor: b.bgHex } : undefined}
+        {/* What is on offer, as a picture. */}
+        <span
+          className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-white/40 sm:h-16 sm:w-16 ${b.panel}`}
+          style={b.panelHex ? { backgroundColor: b.panelHex } : undefined}
         >
-          {/* Soft wave texture, like a printed campaign board */}
-          <span
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{ backgroundImage: "repeating-linear-gradient(115deg, #fff 0 3px, transparent 3px 22px)" }}
-          />
+          <Image src={b.img} alt="" fill sizes="64px" className="object-cover" />
+        </span>
 
-          {/* Copy */}
-          <div key={i} className="ad-fade relative z-10 flex flex-1 flex-col justify-center gap-2 p-5 text-white sm:p-8">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/75 sm:text-xs">
-              {b.program}
-            </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded bg-white px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-ink-900 sm:text-xs">
-                {b.badge}
-              </span>
-              <span className="font-display text-lg font-black uppercase leading-none tracking-tight sm:text-2xl">
-                {b.badgeSub}
-              </span>
-              <span className="rounded-full border border-white/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide sm:text-[11px]">
+        {/* What it is. */}
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-black uppercase tracking-[0.16em] text-white/75 sm:text-[11px]">
+            {b.program}
+            {b.dates && (
+              <span className="rounded-full border border-white/40 px-2 py-px text-[9.5px] tracking-wide text-white sm:text-[10px]">
                 {b.dates}
               </span>
-            </div>
+            )}
+          </span>
+          <span className="mt-0.5 block truncate font-display text-lg font-black leading-tight sm:text-2xl">
+            {b.title}
+          </span>
+          <span className="mt-0.5 hidden truncate text-xs text-white/85 sm:block">{b.note}</span>
+        </span>
 
-            <h3 className="font-display text-2xl font-black leading-none tracking-tight drop-shadow-sm sm:text-4xl">
-              {b.title}
-            </h3>
+        {/* The offer and the button — a second row on a phone, the right-hand
+            side of the strip on a desktop. */}
+        <span className="col-span-2 flex items-center justify-between gap-2 lg:col-span-1 lg:contents">
+          <span className="min-w-0 truncate rounded-full bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
+            {b.pill}
+          </span>
+          <span className="press shrink-0 rounded-full bg-[#FCDC04] px-3.5 py-1.5 text-[11px] font-extrabold text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
+            {b.cta} →
+          </span>
+        </span>
+      </Link>
 
-            <span className="w-fit rounded-full bg-white px-4 py-1.5 text-sm font-black uppercase tracking-tight text-ink-900 shadow-sm sm:px-6 sm:py-2 sm:text-lg">
-              {b.pill}
-            </span>
-
-            <p className="max-w-md text-xs text-white/90 sm:text-sm">{b.note}</p>
-
-            <div className="mt-1 flex flex-wrap items-center gap-3">
-              <Link
-                href={b.href}
-                className="press rounded-full bg-white px-5 py-2 text-xs font-extrabold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
-              >
-                {b.cta} →
-              </Link>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-white/70">{b.small}</span>
-            </div>
-          </div>
-
-          {/* Photo panel (desktop) */}
-          <div
-            className={`relative hidden w-[38%] shrink-0 sm:block ${b.panel}`}
-            style={b.panelHex ? { backgroundColor: b.panelHex } : undefined}
-          >
-            <Image
-              src={b.img}
-              alt=""
-              fill
-              sizes="38vw"
-              className="object-cover mix-blend-multiply opacity-90"
-            />
-          </div>
-        </div>
-
-        {/* Arrows */}
-        <button
-          onClick={() => go(-1)}
-          aria-label="Previous banner"
-          className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/promo:opacity-100"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={() => go(1)}
-          aria-label="Next banner"
-          className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/promo:opacity-100"
-        >
-          <ChevronRight size={20} />
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-3 left-5 z-20 flex items-center gap-1.5 sm:left-8">
-          {banners.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setI(idx)}
-              aria-label={`Banner ${idx + 1}`}
-              className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Arrows — desktop, on hover */}
+      <button
+        onClick={() => go(-1)}
+        aria-label="Previous offer"
+        className="absolute left-1.5 top-1/2 z-20 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/promo:opacity-100 sm:flex"
+      >
+        <ChevronLeft size={18} />
+      </button>
+      <button
+        onClick={() => go(1)}
+        aria-label="Next offer"
+        className="absolute right-1.5 top-1/2 z-20 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/promo:opacity-100 sm:flex"
+      >
+        <ChevronRight size={18} />
+      </button>
     </section>
   );
 }
