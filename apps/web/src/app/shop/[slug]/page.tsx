@@ -19,6 +19,9 @@ import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
 import { ProductReviews } from "@/components/product-reviews";
+import { DeliveryCheck } from "@/components/delivery-check";
+import { StockAlert } from "@/components/stock-alert";
+import { StickyOrderBar } from "@/components/sticky-order-bar";
 import { API_URL } from "@/lib/api";
 
 /** Approved reviews of one product: its average and how many. Null if none. */
@@ -203,7 +206,7 @@ export default async function ProductDetailPage({
           </div>
 
           {/* Order now — Jumia orange, full width */}
-          <div className="mt-3 space-y-2">
+          <div id="order-now" className="mt-3 space-y-2">
             {inStock ? (
               <AddToCartButton
                 className="w-full justify-center !py-3.5 !text-base"
@@ -217,9 +220,12 @@ export default async function ProductDetailPage({
                 }}
               />
             ) : (
-              <button disabled className="w-full cursor-not-allowed rounded-lg bg-ink-100 py-3.5 font-bold text-ink-700/50">
-                Out of stock
-              </button>
+              <>
+                <button disabled className="w-full cursor-not-allowed rounded-lg bg-ink-100 py-3.5 font-bold text-ink-700/50">
+                  Out of stock
+                </button>
+                <StockAlert productName={product.name} slug={product.id} />
+              </>
             )}
             <div className="flex gap-2">
               <Button
@@ -345,22 +351,7 @@ export default async function ProductDetailPage({
             <p className="text-sm font-extrabold tracking-wide text-ink-900">DELIVERY &amp; RETURNS</p>
           </div>
           <div className="divide-y divide-ink-600/10 text-sm">
-            <div className="flex items-start gap-2.5 p-3">
-              <MapPin size={20} className="mt-0.5 shrink-0 text-brand-600" />
-              <div>
-                <p className="font-bold text-ink-900">Choose your location</p>
-                <p className="mt-0.5 text-xs text-ink-700/60">Kampala Region · Countrywide delivery available.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2.5 p-3">
-              <Truck size={20} className="mt-0.5 shrink-0 text-brand-600" />
-              <div>
-                <p className="font-bold text-ink-900">Door Delivery</p>
-                <p className="mt-0.5 text-xs text-ink-700/60">
-                  {ugx(10000)} in and around Kampala · {ugx(20000)}–{ugx(75000)} upcountry, by distance.
-                </p>
-              </div>
-            </div>
+            <DeliveryCheck />
             <div className="flex items-start gap-2.5 p-3">
               <RotateCcw size={20} className="mt-0.5 shrink-0 text-brand-600" />
               <div>
@@ -418,6 +409,19 @@ export default async function ProductDetailPage({
       </div>
 
       <ProductReviews slug={product.id} productName={product.name} />
+
+      {inStock && (
+        <StickyOrderBar
+          anchorId="order-now"
+          item={{
+            slug: product.id,
+            name: product.name,
+            price: product.price,
+            category: product.category,
+            condition: product.condition,
+          }}
+        />
+      )}
 
       {related.length > 0 && (
         <section className="mt-16">
