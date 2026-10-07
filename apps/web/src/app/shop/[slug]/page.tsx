@@ -18,6 +18,20 @@ import { ProductStructuredData, BreadcrumbStructuredData } from "@/components/st
 import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
+import { ProductReviews } from "@/components/product-reviews";
+import { API_URL } from "@/lib/api";
+
+/** Approved reviews of one product: its average and how many. Null if none. */
+async function reviewSummary(slug: string): Promise<{ average: number; count: number } | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/v1/reviews/summary`, { next: { revalidate: 300 } });
+    if (!res.ok) return null;
+    const all = (await res.json()) as Record<string, { average: number; count: number }>;
+    return all[slug]?.count ? all[slug] : null;
+  } catch {
+    return null;
+  }
+}
 
 // Pre-build the catalogue we ship with; anything added in the admin later is
 // rendered on first request and then cached like the rest.
@@ -100,21 +114,18 @@ export default async function ProductDetailPage({
   const related = [...sameBrand, ...sameCat].slice(0, 4);
   const inStock = product.inStock !== false;
   const copy = productCopy[product.id];
-  // Deterministic “social proof” figures so every product feels stocked/reviewed.
-  const reviews = Math.max(5, Math.round(product.rating * 11) + (product.name.length % 8) * 4);
-  const itemsLeft = 3 + (product.name.length % 12);
-  // Jumia-style anchor pricing (DESIGN only — real selling price unchanged).
-  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const synthPct = 6 + (seed % 15); // modest, design-only: 6%–20%
-  const oldPrice =
-    product.oldPrice && product.oldPrice > product.price
-      ? product.oldPrice
-      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
-  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
+  // Only what is true of this product. The page used to print a review count,
+  // an "items left" figure and a crossed-out price that were all arithmetic on
+  // the product's name and id — "social proof" for products nobody had
+  // reviewed, scarcity for stock nobody had counted. The old price shows when
+  // there was one; reviews come from customers (see <ProductReviews />).
+  const oldPrice = product.oldPrice && product.oldPrice > product.price ? product.oldPrice : null;
+  const discountPct = oldPrice ? Math.max(1, Math.round((1 - product.price / oldPrice) * 100)) : 0;
+  const ratings = await reviewSummary(product.id);
 
   return (
     <div className="container-page py-10">
-      <ProductStructuredData product={product} />
+      <ProductStructuredData product={product} rating={ratings} />
       <BreadcrumbStructuredData
         items={[
           { name: "Shop", href: "/shop" },
@@ -164,26 +175,30 @@ export default async function ProductDetailPage({
             <div className="p-4">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
-                <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-xs font-extrabold text-white">
-                  -{discountPct}%
-                </span>
+                {oldPrice && (
+                  <>
+                    <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+                    <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-xs font-extrabold text-white">
+                      -{discountPct}%
+                    </span>
+                  </>
+                )}
               </div>
               {inStock ? (
-                <div className="mt-2 max-w-xs">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-ink-100">
-                    <div className="h-full rounded-full bg-brand-500" style={{ width: `${Math.min(92, 100 - itemsLeft * 5)}%` }} />
-                  </div>
-                  <p className="mt-1 text-xs font-semibold text-ink-700/70">{itemsLeft} items left</p>
-                </div>
+                <p className="mt-2 text-sm font-bold text-green-700">In stock</p>
               ) : (
                 <p className="mt-2 text-sm font-bold text-red-500">Currently unavailable</p>
               )}
-              <p className="mt-2 text-xs text-ink-700/60">+ delivery from {ugx(15000)} within Kampala</p>
-              <div className="mt-2 flex items-center gap-1.5">
-                <Stars rating={product.rating} />
-                <span className="text-xs font-semibold text-brand-600">({reviews} verified ratings)</span>
-              </div>
+              <p className="mt-2 text-xs text-ink-700/60">+ delivery from {ugx(10000)} in and around Kampala</p>
+              <a href="#reviews" className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:underline">
+                {ratings ? (
+                  <>
+                    <Stars rating={ratings.average} />({ratings.count} verified {ratings.count === 1 ? "review" : "reviews"})
+                  </>
+                ) : (
+                  "No reviews yet — be the first"
+                )}
+              </a>
             </div>
           </div>
 
@@ -401,6 +416,8 @@ export default async function ProductDetailPage({
           </div>
         </aside>
       </div>
+
+      <ProductReviews slug={product.id} productName={product.name} />
 
       {related.length > 0 && (
         <section className="mt-16">

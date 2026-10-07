@@ -63,13 +63,9 @@ export function DealsOfTheDay({
         <DealsPanel />
 
         {items.map((p) => {
-          // Anchor price (design only — the real selling price is unchanged).
-          const seed = [...p.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-          const pct = 6 + (seed % 15);
-          const oldPrice =
-            p.oldPrice && p.oldPrice > p.price
-              ? p.oldPrice
-              : Math.round(p.price / (1 - pct / 100) / 100) * 100;
+          // The old price, when there really was one. Products filling out
+          // the row show their price alone.
+          const oldPrice = p.oldPrice && p.oldPrice > p.price ? p.oldPrice : null;
 
           return (
             <Link
@@ -86,8 +82,8 @@ export function DealsOfTheDay({
                   {ugx(p.price)}
                 </span>
               </div>
-              <p className="mt-0.5 text-[10px] font-semibold text-white/70 line-through">
-                {ugx(oldPrice)}
+              <p className="mt-0.5 min-h-[15px] text-[10px] font-semibold text-white/70 line-through">
+                {oldPrice ? ugx(oldPrice) : ""}
               </p>
 
               <div className="relative my-2 h-24 w-full sm:h-28">

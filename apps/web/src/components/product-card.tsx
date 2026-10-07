@@ -3,6 +3,7 @@ import { productImage, type Product } from "@/lib/data";
 import { card } from "@/lib/thumb";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
+import { ProductRating } from "@/components/product-rating";
 import { SafeImage } from "@/components/safe-image";
 
 /**
@@ -102,30 +103,14 @@ function specLines(product: Product): { primary: string; secondary: string } {
   return { primary, secondary: fit(bullets.slice(used, used + 2), 24) };
 }
 
-/** Rating: one gold star, the score, then how many people rated it. */
-function Rating({ rating, count }: { rating: number; count: number }) {
-  return (
-    <span className="flex items-center gap-1 text-[12.5px] leading-none">
-      <span className="text-[14px] leading-none text-[#f68b1e]">★</span>
-      <span className="font-bold text-ink-900">{rating.toFixed(1)}</span>
-      <span className="text-ink-700/50">({count.toLocaleString()})</span>
-    </span>
-  );
-}
-
 export function ProductCard({ product }: { product: Product }) {
   const inStock = product.inStock !== false;
-  // Deterministic per product, so the figure never shifts between renders.
-  const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
-
-  // Anchor pricing (DESIGN only — the real selling price is unchanged).
-  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const synthPct = 6 + (seed % 15); // modest: 6%–20%
-  const oldPrice =
-    product.oldPrice && product.oldPrice > product.price
-      ? product.oldPrice
-      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
-  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
+  // A crossed-out price is shown only when the product really was that price.
+  // Every card used to carry one, worked out from the product's id so that
+  // each looked 6-20% off — a discount on nothing. Likewise the review count
+  // beside the stars: see <ProductRating />.
+  const oldPrice = product.oldPrice && product.oldPrice > product.price ? product.oldPrice : null;
+  const discountPct = oldPrice ? Math.max(1, Math.round((1 - product.price / oldPrice) * 100)) : 0;
   const spec = specLines(product);
 
   return (
@@ -177,20 +162,20 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        <div className="mt-1.5">
-          <Rating rating={product.rating} count={reviews} />
-        </div>
+        <ProductRating slug={product.id} className="mt-1.5" />
 
         <p className="mt-1.5 text-[17px] font-extrabold leading-none tracking-tight text-ink-900">
           {ugx(product.price)}
         </p>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
-            -{discountPct}%
-          </span>
-        </div>
+        {oldPrice && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+            <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
+              -{discountPct}%
+            </span>
+          </div>
+        )}
       </Link>
     </article>
   );

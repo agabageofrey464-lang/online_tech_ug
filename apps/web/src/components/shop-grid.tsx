@@ -21,7 +21,6 @@ const PRICE_BANDS: { label: string; min: number; max: number }[] = [
   { label: "Over UGX 5,000,000", min: 5000000, max: Infinity },
 ];
 
-const RATINGS = [0, 4, 3];
 
 export function ShopGrid({ items }: { items?: Product[] }) {
   const products = items?.length ? items : seedProducts;
@@ -44,7 +43,6 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   const [sort, setSort] = useState<Sort>("popular");
   const [showFilters, setShowFilters] = useState(false);
   const [priceIdx, setPriceIdx] = useState(0);
-  const [minRating, setMinRating] = useState(0);
   // Render in pages — showing all ~200 products at once fires hundreds of image
   // requests and makes the page crawl on mobile data. Sixty at a time, though:
   // at thirty-six a shopper on a wide screen reached "Loading more products…"
@@ -68,13 +66,12 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   }, [params]);
 
   const anyFilter =
-    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || minRating !== 0;
+    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0;
   function clearAll() {
     setCategory("All");
     setBrands([]);
     setConditions([]);
     setPriceIdx(0);
-    setMinRating(0);
   }
   function toggleBrand(b: string) {
     setBrands((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
@@ -85,7 +82,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
 
   useEffect(() => {
     setShown(PAGE);
-  }, [category, brands, conditions, query, sort, priceIdx, minRating]);
+  }, [category, brands, conditions, query, sort, priceIdx]);
 
   // Infinite scroll — reveal the next batch as the shopper reaches the end.
   useEffect(() => {
@@ -113,7 +110,6 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     if (brands.length) list = list.filter((p) => brands.includes(p.brand));
     if (conditions.length) list = list.filter((p) => p.condition != null && conditions.includes(p.condition));
     list = list.filter((p) => p.price >= band.min && p.price < band.max);
-    if (minRating > 0) list = list.filter((p) => p.rating >= minRating);
     if (query.trim()) {
       const q = query.toLowerCase();
       // Match the whole product, not just its name — shoppers search for specs
@@ -148,7 +144,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
       return [...list, ...related];
     }
     return list;
-  }, [products, category, brands, conditions, query, sort, priceIdx, minRating]);
+  }, [products, category, brands, conditions, query, sort, priceIdx]);
 
   const pageItems = filtered.slice(0, shown);
 
@@ -289,28 +285,6 @@ export function ShopGrid({ items }: { items?: Product[] }) {
           ))}
         </div>
 
-        {/* Customer review */}
-        <p className="mt-5 text-sm font-bold text-ink-900">Customer Review</p>
-        <div className="mt-1.5 flex flex-col text-sm">
-          {RATINGS.map((r) => (
-            <button
-              key={r}
-              onClick={() => setMinRating(r)}
-              className={`flex items-center gap-1 py-1 text-left transition ${
-                minRating === r ? "font-bold text-ink-900" : "text-ink-700 hover:text-brand-600"
-              }`}
-            >
-              {r === 0 ? (
-                "All ratings"
-              ) : (
-                <>
-                  <span className="text-brand-500">{"★".repeat(r)}<span className="text-ink-600/25">{"★".repeat(5 - r)}</span></span>
-                  <span className="text-xs text-ink-700/60">&amp; Up</span>
-                </>
-              )}
-            </button>
-          ))}
-        </div>
 
         {anyFilter && (
           <button onClick={clearAll} className="mt-5 text-sm font-semibold text-brand-600 hover:underline">

@@ -49,7 +49,7 @@ const FAQS: Faq[] = [
   { cat: "products", q: "Are your products genuine?", a: "Yes — all devices are genuine and quality-checked before delivery." },
   { cat: "products", q: "Do products have warranty?", a: "Yes, most items include a warranty. New devices carry manufacturer warranty; UK-used/refurbished include a shop warranty. Ask us for specifics per product." },
   { cat: "account", q: "How do I create an account?", a: "Tap Account → Create account, or Sign up. Enter your name, email and a password. Vendors can pick 'Sell as vendor'." },
-  { cat: "account", q: "I forgot my password", a: "Message us on WhatsApp and we'll help you reset it." },
+  { cat: "account", q: "I forgot my password", a: "On the sign-in page, tap 'Forgot password?'. We email you a 6-digit code; enter it with your new password. The code works once and expires after 20 minutes." },
   { cat: "vouchers", q: "How do I use a voucher/promo code?", a: "Enter your code in the 'Enter code here' box on the checkout order summary and tap APPLY." },
   { cat: "sell", q: "How do I sell on Online Tech Uganda?", a: "Tap 'Sell with us' or Sign up as a vendor. Once approved, you can list your products from your vendor dashboard." },
 ];

@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
       // Keep user-only / transactional pages out of search results.
       disallow: [
         // Signed-in areas
-        "/account", "/wishlist", "/cart", "/checkout", "/login", "/signup",
+        "/account", "/wishlist", "/cart", "/checkout", "/login", "/signup", "/reset-password",
         "/vendor", "/academy", "/learn/dashboard", "/learn/codes",
         // One-off pages that mean nothing to a stranger arriving from search:
         // somebody else's receipt, a gated notes page, an unsubscribe link.

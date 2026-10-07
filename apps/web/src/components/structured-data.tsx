@@ -69,10 +69,22 @@ export function SiteStructuredData() {
   );
 }
 
-/** Per-product schema — enables price, availability and rating in search results. */
-export function ProductStructuredData({ product }: { product: Product }) {
+/**
+ * Per-product schema — enables price, availability and rating in search results.
+ *
+ * The rating is passed in, and is only ever the average of real, approved
+ * customer reviews. This used to send Google a review count computed from the
+ * product's name, which is exactly what its guidelines forbid and what earns a
+ * site a manual penalty. A product with no reviews sends no rating at all.
+ */
+export function ProductStructuredData({
+  product,
+  rating,
+}: {
+  product: Product;
+  rating?: { average: number; count: number } | null;
+}) {
   const url = `${site.url}/shop/${product.id}`;
-  const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
   const data = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -96,11 +108,9 @@ export function ProductStructuredData({ product }: { product: Product }) {
           : "https://schema.org/InStock",
       seller: { "@type": "Organization", name: site.name },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: reviews,
-    },
+    ...(rating && rating.count > 0
+      ? { aggregateRating: { "@type": "AggregateRating", ratingValue: rating.average, reviewCount: rating.count } }
+      : {}),
   };
   return jsonLd(data);
 }

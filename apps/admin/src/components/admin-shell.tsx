@@ -16,6 +16,7 @@ const sections = [
   { href: "/products", label: "Products", icon: "🛒", count: "products" },
   { href: "/inventory", label: "Inventory", icon: "📊", count: "inventory" },
   { href: "/orders", label: "Orders", icon: "📦", count: "orders", attention: true },
+  { href: "/reviews", label: "Reviews", icon: "⭐", count: "reviews", attention: true },
   { href: "/reports", label: "Sales report", icon: "📈" },
   { href: "/coupons", label: "Coupons", icon: "🏷️", count: "coupons" },
   { href: "/courses", label: "Courses", icon: "🎓", count: "courses" },

@@ -2,32 +2,20 @@ import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
 import { ugx } from "@/lib/site";
 import { SafeImage } from "@/components/safe-image";
-
-/** Rating line: a single gold star, the score, then the number of ratings. */
-function Rating({ rating, count }: { rating: number; count: number }) {
-  return (
-    <span className="flex items-center gap-1 text-[12px] leading-none">
-      <span className="text-[14px] leading-none text-[#f68b1e]">★</span>
-      <span className="font-bold text-ink-900">{rating.toFixed(1)}</span>
-      <span className="text-ink-700/50">({count.toLocaleString()})</span>
-    </span>
-  );
-}
+import { ProductRating } from "@/components/product-rating";
 
 /**
- * Flash-sale tile. Same layout as the standard product card (big square photo,
- * rating, loud price) plus the stock bar that makes a flash sale feel urgent.
+ * Flash-sale tile. Same layout as the standard product card: big square photo,
+ * the rating customers have given it, a loud price.
+ *
+ * It used to end in a stock bar and "23 items left", and carry a crossed-out
+ * price — all three worked out from the product's id. The price beside the
+ * strike-through is real only when the product has a recorded old price, and
+ * that is the only time one is shown.
  */
-export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?: number }) {
-  // Anchor pricing (DESIGN only — the real selling price is unchanged).
-  const seed = [...product.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const synthPct = 8 + (seed % 15); // modest, design-only: 8%–22%
-  const oldPrice =
-    product.oldPrice && product.oldPrice > product.price
-      ? product.oldPrice
-      : Math.round(product.price / (1 - synthPct / 100) / 100) * 100;
-  const discountPct = Math.max(1, Math.round((1 - product.price / oldPrice) * 100));
-  const reviews = Math.max(6, Math.round(product.rating * 13) + (product.name.length % 9) * 5);
+export function FlashSaleCard({ product }: { product: Product }) {
+  const oldPrice = product.oldPrice && product.oldPrice > product.price ? product.oldPrice : null;
+  const discountPct = oldPrice ? Math.max(1, Math.round((1 - product.price / oldPrice) * 100)) : 0;
 
   return (
     <Link
@@ -49,28 +37,20 @@ export function FlashSaleCard({ product, sold = 70 }: { product: Product; sold?:
           {product.name}
         </h3>
 
-        <div className="mt-1.5">
-          <Rating rating={product.rating} count={reviews} />
-        </div>
+        <ProductRating slug={product.id} className="mt-1.5 text-[12px]" />
 
         <p className="mt-1.5 text-[16px] font-extrabold leading-none tracking-tight text-ink-900">
           {ugx(product.price)}
         </p>
 
-        <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-          <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
-            -{discountPct}%
-          </span>
-        </div>
-
-        {/* Stock bar — what separates a flash sale from an ordinary listing. */}
-        <div className="mt-auto pt-2.5">
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-brand-100">
-            <div className="h-full rounded-full bg-brand-500" style={{ width: `${sold}%` }} />
+        {oldPrice && (
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+            <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+            <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
+              -{discountPct}%
+            </span>
           </div>
-          <p className="mt-1 text-[11px] font-medium text-ink-700/60">{100 - sold} items left</p>
-        </div>
+        )}
       </div>
     </Link>
   );

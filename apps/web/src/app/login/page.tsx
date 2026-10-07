@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck, Truck, GraduationCap, ArrowLeft } from "lucide-react";
 import { BrandLogoFull } from "@/components/brand-logo-full";
 import { useAuth } from "@/lib/auth";
-import { whatsappLink } from "@/lib/site";
 
 const field =
   "w-full rounded-lg border border-ink-600/15 bg-white py-3 pl-10 pr-3 text-sm text-ink-900 placeholder-ink-700/40 transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
@@ -177,14 +176,12 @@ function LoginInner() {
                   <div>
                     <div className="mb-1 flex items-center justify-between">
                       <label className="block text-xs font-bold text-ink-800">Password</label>
-                      <a
-                        href={whatsappLink("Hello Online Tech Uganda, I need help resetting my account password.")}
-                        target="_blank"
-                        rel="noreferrer"
+                      <Link
+                        href={`/reset-password${form.email ? `?email=${encodeURIComponent(form.email)}` : ""}`}
                         className="text-xs font-semibold text-brand-600 hover:underline"
                       >
                         Forgot password?
-                      </a>
+                      </Link>
                     </div>
                     <div className="relative">
                       <Lock size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/40" />

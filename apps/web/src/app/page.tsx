@@ -180,7 +180,6 @@ function rotate<T>(arr: T[], by: number): T[] {
 }
 
 // "Sold" bar figures — stable per product so the bar doesn't jump around.
-const soldFor = (id: string) => 55 + ([...id].reduce((a, c) => a + c.charCodeAt(0), 0) % 40);
 
 export default function HomePage() {
   // Which slot of the day we're in — advances every 10 minutes.
@@ -190,9 +189,7 @@ export default function HomePage() {
 
   // Flash sales: rotate through the well-rated, photographed stock.
   const flashPool = inStock.filter((p) => (p.rating ?? 0) >= 4.4);
-  const flash = rotate(flashPool, slot * 3)
-    .slice(0, 8)
-    .map((p) => ({ p, sold: soldFor(p.id) }));
+  const flash = rotate(flashPool, slot * 3).slice(0, 8);
 
   // Trending: top-rated, rotated so a different set leads each refresh.
   const topPool = [...inStock].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 40);
@@ -360,9 +357,9 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
-          {flash.map(({ p, sold }) => (
+          {flash.map((p) => (
             <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-[15rem] lg:w-[13.5rem]">
-              <FlashSaleCard product={p} sold={sold} />
+              <FlashSaleCard product={p} />
             </div>
           ))}
         </div>
