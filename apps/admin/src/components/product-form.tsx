@@ -80,7 +80,7 @@ export function ProductForm({
       setSaving(false);
     }
     if (ok) {
-      router.push("/products");
+      router.push(mode === "edit" && slug ? `/products#p-${slug}` : "/products");
       router.refresh();
     }
   }
@@ -234,7 +234,7 @@ export function ProductForm({
         <button type="submit" disabled={saving || deleting} className="rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
           {saving ? "Saving…" : mode === "create" ? "Save product" : "Save changes"}
         </button>
-        <Link href="/products" className="rounded-lg border border-ink-600/20 px-5 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50">
+        <Link href={mode === "edit" && slug ? `/products#p-${slug}` : "/products"} className="rounded-lg border border-ink-600/20 px-5 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50">
           Cancel
         </Link>
         {mode === "edit" && (
