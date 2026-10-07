@@ -3311,7 +3311,7 @@ export const stats = [
   { value: "500+", label: "Devices sold" },
   { value: "120+", label: "Websites & systems delivered" },
   { value: "1,000+", label: "Learners trained" },
-  { value: "4.8/5", label: "Customer rating" },
+  { value: "25", label: "Towns we deliver to" },
 ];
 
 export const whyUs = [
