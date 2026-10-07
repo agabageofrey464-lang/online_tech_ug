@@ -21,6 +21,7 @@ from app.api.routes import (
     posts,
     products,
     referrals,
+    reviews,
     stats,
     subscriptions,
     unlock_codes,
@@ -53,4 +54,5 @@ api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"]
 api_router.include_router(academy.router, prefix="/academy", tags=["academy"])
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
 api_router.include_router(documents.router, prefix="/documents", tags=["documents"])
+api_router.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
 api_router.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])

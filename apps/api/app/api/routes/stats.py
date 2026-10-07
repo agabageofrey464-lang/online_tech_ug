@@ -45,4 +45,5 @@ def counts(db: Session = Depends(get_db)) -> dict:
         "freelancers": _count(db, models.Freelancer),
         "leads": _count(db, models.ContactMessage),
         "payments": _count(db, models.Payment, models.Payment.status == "pending"),
+        "reviews": _count(db, models.Review, models.Review.status == "pending"),
     }

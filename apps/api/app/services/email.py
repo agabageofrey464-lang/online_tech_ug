@@ -218,6 +218,24 @@ async def send_login_otp(*, to: str, name: str, code: str) -> bool:
     )
 
 
+async def send_password_reset_code(*, to: str, name: str, code: str) -> bool:
+    """Email the code that lets someone choose a new password."""
+    body = (
+        email_theme.text(f"Hi {name}, use this code to choose a new password:")
+        + email_theme.code_block(code)
+        + email_theme.text(
+            '<span style="font-size:12.5px;color:#6e6e6e">This code expires in 20 minutes and works once. '
+            "If you didn&rsquo;t ask to reset your password, ignore this email &mdash; "
+            "your password has not been changed.</span>"
+        )
+    )
+    return await send_email(
+        to=to,
+        subject="Reset your password — Online Tech Uganda",
+        html=email_theme.shell(heading="Reset your password", body_html=body, show_phones=False),
+    )
+
+
 async def send_unlock_code(
     *, to: str, name: str, course_title: str, code: str, price: int = 0
 ) -> bool:

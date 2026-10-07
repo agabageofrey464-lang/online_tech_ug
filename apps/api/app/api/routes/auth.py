@@ -10,16 +10,18 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.auth import (
     CodeIn,
+    ForgotIn,
     LoginIn,
     LoginOtpIn,
     LoginResult,
     RegisterIn,
+    ResetIn,
     ToggleIn,
     TokenOut,
     UserOut,
 )
 from app.services import auth as auth_service
-from app.services.email import send_login_otp, send_verification_code
+from app.services.email import send_login_otp, send_password_reset_code, send_verification_code
 
 router = APIRouter()
 
@@ -102,6 +104,34 @@ def login_verify(payload: LoginOtpIn, request: Request, db: Session = Depends(ge
     if not auth_service.check_twofa_code(db, user, payload.code):
         raise HTTPException(status_code=401, detail="Invalid or expired code")
     return {"access_token": create_token(user.id, user.role), "user": user}
+
+
+@router.post("/forgot")
+async def forgot_password(payload: ForgotIn, request: Request, db: Session = Depends(get_db)) -> dict:
+    """Email a reset code, if the address has an account.
+
+    The answer is the same either way. Saying "no such account" would let
+    anyone find out who shops here by trying addresses.
+    """
+    _limit(f"forgot-ip:{_client_ip(request)}", limit=6, window=3600)
+    _limit(f"forgot-acct:{payload.email.lower()}", limit=3, window=3600)
+    user = auth_service.get_by_email(db, payload.email)
+    if user and user.is_active:
+        code = auth_service.issue_reset_code(db, user)
+        await send_password_reset_code(to=user.email, name=user.name, code=code)
+    return {"ok": True}
+
+
+@router.post("/reset")
+def reset_password(payload: ResetIn, request: Request, db: Session = Depends(get_db)) -> dict:
+    """Exchange an emailed reset code for a new password."""
+    # Six digits, so guesses are capped per account as well as per address.
+    _limit(f"reset-ip:{_client_ip(request)}", limit=20, window=600)
+    _limit(f"reset-acct:{payload.email.lower()}", limit=6, window=600)
+    user = auth_service.get_by_email(db, payload.email)
+    if not user or not user.is_active or not auth_service.reset_password(db, user, payload.code, payload.password):
+        raise HTTPException(status_code=400, detail="Invalid or expired code")
+    return {"ok": True}
 
 
 @router.get("/me", response_model=UserOut)

@@ -59,3 +59,13 @@ class LoginOtpIn(BaseModel):
 
 class ToggleIn(BaseModel):
     enabled: bool
+
+
+class ForgotIn(BaseModel):
+    email: EmailStr
+
+
+class ResetIn(BaseModel):
+    email: EmailStr
+    code: str = Field(min_length=4, max_length=10)
+    password: str = Field(min_length=6, max_length=128)

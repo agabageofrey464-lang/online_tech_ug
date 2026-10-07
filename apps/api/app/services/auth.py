@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import hash_password, verify_password
+from app.models.password_reset import PasswordReset
 from app.models.user import User
 
 # How long an emailed code (verification or 2FA login OTP) stays valid.
@@ -120,3 +121,36 @@ def set_twofa(db: Session, user: User, enabled: bool) -> None:
     user.twofa_enabled = enabled
     user.twofa_code = ""
     db.commit()
+
+
+# --- Password reset (emailed code) ---------------------------------------
+
+def issue_reset_code(db: Session, user: User) -> str:
+    """Start a reset: retire any earlier codes and store a fresh one to email."""
+    for old in db.scalars(select(PasswordReset).where(PasswordReset.user_id == user.id, PasswordReset.used.is_(False))):
+        old.used = True
+    code = _new_code()
+    db.add(PasswordReset(user_id=user.id, code=code))
+    db.commit()
+    return code
+
+
+def reset_password(db: Session, user: User, code: str, new_password: str) -> bool:
+    """Set a new password if `code` is this user's live reset code. One use."""
+    row = db.scalar(
+        select(PasswordReset)
+        .where(PasswordReset.user_id == user.id, PasswordReset.used.is_(False))
+        .order_by(PasswordReset.created_at.desc())
+    )
+    if not row or datetime.utcnow() - row.created_at > CODE_TTL:
+        return False
+    if not secrets.compare_digest(row.code, code.strip()):
+        return False
+    row.used = True
+    user.password_hash = hash_password(new_password)
+    # Whoever asked for this controls the mailbox, which is what verifying an
+    # email proves; and a pending login code from before the reset is void.
+    user.email_verified = True
+    user.twofa_code = ""
+    db.commit()
+    return True

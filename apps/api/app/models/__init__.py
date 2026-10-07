@@ -23,12 +23,14 @@ from app.models.freelancer_contact import FreelancerContact
 from app.models.course import Course
 from app.models.job import Job
 from app.models.order import Order, OrderItem, PaymentTransaction
+from app.models.password_reset import PasswordReset
 from app.models.payment import Payment
 from app.models.post import Post
 from app.models.push_subscription import PushSubscription
 from app.models.subscriber import Subscriber
 from app.models.product import Product
 from app.models.referral import Referral
+from app.models.review import Review
 from app.models.unlock_code import UnlockCode
 from app.models.user import User
 from app.models.vendor_message import VendorMessage
@@ -53,6 +55,8 @@ __all__ = [
     "DiscussionPost",
     "Coupon",
     "DailyDigest",
+    "PasswordReset",
+    "Review",
     "Document",
     "Freelancer",
     "LessonStatus",
