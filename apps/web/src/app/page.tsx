@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
 import { PhoneFestivalFill } from "@/components/phone-festival-fill";
+import { EndlessProducts } from "@/components/endless-products";
+import { byCategory, CATEGORY_ORDER } from "@/lib/browse-order";
 import { BandPreview, type BandItem } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { FlashCountdown } from "@/components/flash-countdown";
@@ -153,12 +155,11 @@ export const revalidate = 600; // 10 minutes
 // shop has the room, and eight read as a thin shelf.
 const RAIL = 14;
 
-// How many products the closing grid shows. "See All" on any rail opens the
-// shop, and what is in the shop was not on this page: a visitor who never
-// clicked through saw a hundred or so of two hundred products. This puts a
-// good share of the catalogue here, newest first, without rendering all of it
-// — the whole shop on the home page is what once pushed it past a megabyte.
-const GRID = 60;
+// How many products the closing grid starts with. The rest arrive as the
+// reader scrolls (see <EndlessProducts />), so this only has to fill the first
+// few screens — sending all two hundred with the page is what once pushed it
+// past a megabyte.
+const GRID = 36;
 
 function mix(a: Product[], b: Product[], take: number): Product[] {
   const inStock = (p: Product) => p.inStock !== false;
@@ -224,7 +225,10 @@ export default function HomePage() {
 
   // Newest first: products are appended to the catalogue, so the tail is the
   // most recent stock.
-  const newest = [...inStock].reverse().slice(0, GRID);
+  // The closing section: everything in stock, category by category. The first
+  // screens of it come with the page and the rest as the reader scrolls.
+  const browse = byCategory(inStock);
+  const categoryCounts = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, byCat(c).length]));
 
   return (
     <div className="container-wide space-y-3 py-3">
@@ -514,7 +518,7 @@ export default function HomePage() {
         <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
           <div className="min-w-0">
             <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
-            <p className="text-xs font-semibold text-white/85 sm:text-sm">Newest first · {inStock.length} in stock</p>
+            <p className="text-xs font-semibold text-white/85 sm:text-sm">By category · {inStock.length} in stock · keeps loading as you scroll</p>
           </div>
           <Link
             href="/shop"
@@ -523,25 +527,10 @@ export default function HomePage() {
             See All →
           </Link>
         </div>
-        {/* A grid, not a rail: the rails above each show a slice of one
-            category, and this is where the rest of the catalogue is seen
-            without leaving the page. Cards only — the shop's filters and
-            sidebar stay in the shop, which "See All" opens. */}
-        <div className="grid-cards gap-2 bg-[#fdf3ec] p-2 sm:p-3">
-          {newest.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-        {inStock.length > newest.length && (
-          <div className="bg-[#fdf3ec] px-3 pb-4 pt-1 text-center">
-            <Link
-              href="/shop"
-              className="press inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-600"
-            >
-              See all {inStock.length} products →
-            </Link>
-          </div>
-        )}
+        {/* A grid that keeps going: the first products come with the page, and
+            the rest are added as the reader scrolls, until the whole catalogue
+            has been shown. Cards only — the shop's filters stay in the shop. */}
+        <EndlessProducts initial={browse.slice(0, GRID)} total={inStock.length} counts={categoryCounts} />
       </Reveal>
 
       {/* Your recently viewed items */}
