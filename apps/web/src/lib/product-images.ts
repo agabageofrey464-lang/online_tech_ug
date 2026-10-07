@@ -109,9 +109,7 @@ export const productImages: Record<string, string[]> = {
     "/products/kingston-flash-32gb.webp"
   ],
   "kingston-flash-64gb": [
-    "/products/kingston-flash-64gb.webp",
-    "/products/kingston-flash-64gb-2.webp",
-    "/products/kingston-flash-64gb-3.webp"
+    "/products/kingston-flash-64gb.webp"
   ],
   "kingston-nvme-500gb": [
     "/products/kingston-nvme-500gb.webp",
@@ -241,17 +239,13 @@ export const productImages: Record<string, string[]> = {
     "/products/ram-ddr4-8gb-sodimm.webp"
   ],
   "sandisk-flash-128gb": [
-    "/products/sandisk-flash-128gb.webp",
-    "/products/sandisk-flash-128gb-2.webp",
-    "/products/sandisk-flash-128gb-3.webp"
+    "/products/sandisk-flash-128gb.webp"
   ],
   "sandisk-flash-64gb": [
     "/products/sandisk-flash-64gb.webp"
   ],
   "sandisk-microsd-128gb": [
-    "/products/sandisk-microsd-128gb.webp",
-    "/products/sandisk-microsd-128gb-2.webp",
-    "/products/sandisk-microsd-128gb-3.webp"
+    "/products/sandisk-microsd-128gb.webp"
   ],
   "sandisk-ssd-1tb": [
     "/products/sandisk-ssd-1tb.webp",
