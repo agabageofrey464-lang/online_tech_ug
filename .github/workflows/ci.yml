@@ -1,0 +1,49 @@
+# Runs on every push and pull request.
+#
+# Pushing to main publishes the shop and the admin straight away, so this is
+# the only thing standing between a mistake and a customer seeing it. It does
+# not block the publish - Vercel builds on its own - but a red cross here is
+# the signal to look before more goes out on top of it.
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/api/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      # The rules that protect customer data: the order list lock, the
+      # redacted public lookup, private documents, verified reviews.
+      - run: python -m pytest -q
+
+  web:
+    name: Shop and admin type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @onlinetech/web exec tsc --noEmit
+      - run: pnpm --filter @onlinetech/admin exec tsc --noEmit

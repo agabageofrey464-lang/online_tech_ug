@@ -1,0 +1,41 @@
+# Looks at the live site every two hours and fails if something is wrong.
+# GitHub emails the repository owner when a scheduled run fails, which makes
+# this the alarm: nobody was being told if checkout stopped working at 2 a.m.
+#
+# It checks that the pages people use answer, and - just as important - that
+# the things that must stay locked are still locked.
+name: Live site watch
+
+on:
+  schedule:
+    - cron: "17 */2 * * *"
+  workflow_dispatch:
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Pages and API answer, and private data stays private
+        run: |
+          fail=0
+          expect() { # expect <status> <url> <what it means>
+            got=$(curl -s -o /dev/null -m 40 -w '%{http_code}' "$2" || echo 000)
+            if [ "$got" = "$1" ]; then echo "ok   $got  $3"; else echo "FAIL $got (wanted $1)  $3  $2"; fail=1; fi
+          }
+          W=https://www.onlinetechug.com
+          A=https://api.onlinetechug.com/api/v1
+          expect 200 "$W/"                 "home page"
+          expect 200 "$W/shop"             "shop"
+          expect 200 "$W/checkout"         "checkout"
+          expect 200 "$W/learn"            "learn academy"
+          expect 200 "$W/internship"       "internship"
+          expect 200 "$W/sitemap.xml"      "sitemap"
+          expect 200 "$W/_api/products"    "shop can reach the backend"
+          expect 200 "https://admin.onlinetechug.com/login" "admin sign-in page"
+          expect 200 "$A/health"           "backend health"
+          expect 401 "$A/orders"           "order list is locked"
+          expect 401 "$A/documents"        "issued letters are locked"
+          expect 401 "$A/contact"          "customer messages are locked"
+          expect 401 "$A/reviews/admin"    "unapproved reviews are locked"
+          exit $fail
