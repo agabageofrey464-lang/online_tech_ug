@@ -171,3 +171,35 @@ def test_forgot_does_not_reveal_who_has_an_account(client, monkeypatch):
     answer = client.post(f"{API}/auth/forgot", json={"email": "nobody@example.com"})
     assert answer.status_code == 200 and answer.json() == {"ok": True}
     assert calls == []  # nothing was sent, and the reply did not say so
+
+
+# ── notifications ─────────────────────────────────────────────────────────
+
+def test_two_notifications_a_day_at_waking_hours_in_kampala(db_factory):
+    from datetime import datetime
+
+    from app.models.campaign import Campaign
+    from app.services import campaign_auto
+
+    def utc(hour):  # 7 Oct 2026; Kampala is UTC+3
+        return datetime(2026, 10, 7, hour, 30)
+
+    with db_factory() as db:
+        for n in range(4):
+            db.add(Campaign(slug=f"c{n}", title=f"Offer {n}", placement="home", active=True))
+        db.commit()
+
+        def send(now):
+            due = campaign_auto.due_for_announcement(db, now)
+            if due:
+                due.notified_at = now
+                db.commit()
+            return bool(due)
+
+        assert not send(utc(0))   # 03:30 in Kampala — nobody is awake
+        assert not send(utc(5))   # 08:30 — still too early
+        assert send(utc(6))       # 09:30 — the morning one
+        assert not send(utc(9))   # 12:30 — one has gone, the next waits for evening
+        assert send(utc(15))      # 18:30 — the evening one
+        assert not send(utc(17))  # 20:30 — that is two; no more today
+        assert not send(utc(20))  # 23:30 Kampala, still the same Kampala day

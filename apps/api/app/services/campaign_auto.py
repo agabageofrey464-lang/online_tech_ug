@@ -19,10 +19,16 @@ from app.services import campaigns as campaign_service
 
 logger = logging.getLogger("onlinetech.campaign_auto")
 
-# Two to three notifications a day. After one goes out we pause three hours
-# before the next, so a customer is never pinged twice in quick succession.
-MAX_ANNOUNCEMENTS_PER_DAY = 3
-MIN_HOURS_BETWEEN_ANNOUNCEMENTS = 3
+# Two notifications a day, at times a person in Uganda is awake to see them:
+# one in the morning and one in the evening, Kampala time.
+#
+# This used to allow three, counted from midnight UTC with a three-hour gap —
+# which is 3am in Kampala. The first went out around 03:45, the second at
+# 06:45 and the third at 09:45, every day: two of the three while people
+# slept, and nothing at all in the afternoon or evening when they shop.
+KAMPALA = timedelta(hours=3)  # East Africa Time; no daylight saving
+ANNOUNCEMENT_HOURS = (9, 18)  # the earliest Kampala hour for each of the day's sends
+MAX_ANNOUNCEMENTS_PER_DAY = len(ANNOUNCEMENT_HOURS)
 
 # A push notification is a glance; an email sits in the inbox. Three a day is
 # fine on the phone but reads as spam by email, so email gets its own, tighter
@@ -132,7 +138,9 @@ def refresh_auto_campaigns(db: Session, now: datetime | None = None) -> dict:
 
 
 def _announced_today(db: Session, now: datetime) -> list[Campaign]:
-    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    # "Today" is the day in Kampala, not in UTC.
+    local = now + KAMPALA
+    start = local.replace(hour=0, minute=0, second=0, microsecond=0) - KAMPALA
     return [
         c
         for c in db.execute(select(Campaign).where(Campaign.notified_at.is_not(None))).scalars().all()
@@ -142,15 +150,14 @@ def _announced_today(db: Session, now: datetime) -> list[Campaign]:
 
 def due_for_announcement(db: Session, now: datetime | None = None) -> Campaign | None:
     """The campaign to announce right now, or None if we've already said enough
-    today. Caps at 3/day and pauses 3 hours after each send."""
+    today. Two a day: the first from 09:00 and the second from 18:00, Kampala
+    time. The worker looks hourly, so each goes out within the hour after."""
     now = now or datetime.utcnow()
     sent_today = _announced_today(db, now)
     if len(sent_today) >= MAX_ANNOUNCEMENTS_PER_DAY:
         return None
-    if sent_today:
-        last = max(c.notified_at for c in sent_today if c.notified_at)
-        if now - last < timedelta(hours=MIN_HOURS_BETWEEN_ANNOUNCEMENTS):
-            return None
+    if (now + KAMPALA).hour < ANNOUNCEMENT_HOURS[len(sent_today)]:
+        return None
 
     # Prefer a hand-made live campaign; otherwise the top auto one.
     live = campaign_service.live_campaigns(db, "home")
