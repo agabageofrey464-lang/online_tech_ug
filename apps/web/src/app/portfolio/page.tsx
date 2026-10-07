@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
+import Image from "next/image";
 import { PortfolioGrid } from "@/components/portfolio-grid";
+import { caseStudies } from "@/lib/portfolio";
 import { Icon } from "@/components/icon";
 import { whatsappLink } from "@/lib/site";
 
@@ -47,7 +49,7 @@ export default function PortfolioPage() {
         crumbs={[{ label: "Portfolio" }]}
         eyebrow="Software & systems"
         title="We build systems for your business"
-        subtitle="Websites, mobile apps and management systems — designed around how your business works. Explore our work below, then let's build yours."
+        subtitle="Websites, mobile apps and management systems — designed around how your business works. Start with three we built that you can open today."
       />
 
       {/* Capabilities */}
@@ -72,13 +74,78 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* Recent work */}
-      <section className="container-page pb-4">
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-extrabold text-ink-900">Recent work</h2>
-            <p className="mt-1 text-sm text-ink-700/60">A selection of projects we&apos;ve delivered. Open any project for details and screenshots.</p>
-          </div>
+      {/* Case studies — real projects, real screenshots */}
+      <section className="container-page pb-6">
+        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-brand-600">
+          <span className="h-4 w-1.5 rounded-full bg-brand-500" /> Case studies
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-black text-ink-900 sm:text-3xl">Work you can open and use</h2>
+        <p className="mt-1 max-w-2xl text-[15px] text-ink-700/70">
+          Three things we built that exist today. The pictures are of the real systems, and where one
+          is public there is a link to it.
+        </p>
+
+        <div className="mt-6 space-y-5">
+          {caseStudies().map((c, i) => (
+            <Link
+              key={c.slug}
+              href={`/portfolio/${c.slug}`}
+              className="card-lift group grid overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-ink-600/10 lg:grid-cols-2"
+            >
+              <div className={`relative aspect-[16/10] overflow-hidden bg-ink-50 ${i % 2 ? "lg:order-2" : ""}`}>
+                <Image
+                  src={c.shots[0]}
+                  alt={`${c.title} — screenshot`}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="card-zoom object-cover object-top"
+                />
+                {c.demo && (
+                  <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white" /> Live
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col p-6 sm:p-8">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-700/55">
+                  {c.category} · {c.industry}
+                </p>
+                <h3 className="mt-1.5 font-display text-2xl font-black leading-tight text-ink-900">{c.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-ink-700/80">{c.summary}</p>
+                {c.facts && (
+                  <dl className="mt-4 grid grid-cols-3 gap-3 border-y border-ink-600/10 py-3">
+                    {c.facts.map((f) => (
+                      <div key={f.label}>
+                        <dt className="font-display text-lg font-black text-brand-600">{f.value}</dt>
+                        <dd className="text-[11.5px] leading-snug text-ink-700/65">{f.label}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {(c.stack ?? []).slice(0, 5).map((t) => (
+                    <span key={t} className="rounded bg-ink-50 px-2 py-0.5 text-[11px] font-semibold text-ink-700/75">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <span className="mt-auto pt-5 text-sm font-bold text-brand-600 group-hover:underline">
+                  Read the case study →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Examples — the kinds of system we build */}
+      <section className="container-page pb-4 pt-8">
+        <div className="mb-6">
+          <h2 className="font-display text-2xl font-black text-ink-900">More we can build for you</h2>
+          <p className="mt-1 max-w-2xl text-sm text-ink-700/65">
+            Examples of systems we are asked for most. These show what each one includes; the pictures
+            are illustrative, not screenshots of a client&apos;s system.
+          </p>
         </div>
         <PortfolioGrid />
       </section>

@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { portfolio, projectCategories, type ProjectCategory } from "@/lib/portfolio";
+import { examples, projectCategories, type ProjectCategory } from "@/lib/portfolio";
 
 export function PortfolioGrid() {
   const [cat, setCat] = useState<ProjectCategory | "All">("All");
-  const items = cat === "All" ? portfolio : portfolio.filter((p) => p.category === cat);
+  const all = examples();
+  const items = cat === "All" ? all : all.filter((p) => p.category === cat);
 
   return (
     <div>
@@ -43,6 +44,9 @@ export function PortfolioGrid() {
               <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-ink-700">
                 {p.category}
               </span>
+              <span className="absolute right-3 top-3 rounded-full bg-ink-900/75 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wide text-white">
+                Example
+              </span>
             </div>
             <div className="flex flex-1 flex-col p-5">
               <h3 className="font-extrabold text-ink-700">{p.title}</h3>
@@ -54,7 +58,7 @@ export function PortfolioGrid() {
                   </span>
                 ))}
               </div>
-              <span className="mt-4 text-sm font-bold text-brand-600 group-hover:underline">View project →</span>
+              <span className="mt-4 text-sm font-bold text-brand-600 group-hover:underline">See what it includes →</span>
             </div>
           </Link>
         ))}

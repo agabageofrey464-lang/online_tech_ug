@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/page-header";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { ExploreMore } from "@/components/explore-more";
 import { ServicesGrid } from "@/components/services-grid";
-import { portfolio } from "@/lib/portfolio";
+import { caseStudies } from "@/lib/portfolio";
 import { SafeImage } from "@/components/safe-image";
 import { site, ugx, whatsappLink } from "@/lib/site";
 
@@ -235,7 +235,7 @@ export default function DevelopmentPage() {
       </section>
 
       {/* ── Recent work ── */}
-      {portfolio.length > 0 && (
+      {caseStudies().length > 0 && (
         <section className="container-page pt-10">
           <div className="flex items-end justify-between gap-2">
             <h2 className="text-lg font-extrabold text-ink-900">Work we&apos;ve delivered</h2>
@@ -244,7 +244,7 @@ export default function DevelopmentPage() {
             </Link>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {portfolio.slice(0, 6).map((p) => (
+            {caseStudies().map((p) => (
               <Link
                 key={p.slug}
                 href={`/portfolio/${p.slug}`}
