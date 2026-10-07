@@ -52,5 +52,5 @@ export const config = {
   // loaded into an <img> by the page that builds the document; behind the
   // guard that fetch came back as the login page and the brochure printed
   // with an empty frame.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.jpeg|logo-mark.png|logo-lockup.png|logo-lockup-dark.png|internship-photo.jpg|sw.js).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|icon-192.png|logo-lockup.png|logo-lockup-dark.png|internship-photo.jpg|sw.js).*)"],
 };

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./logo.jpeg" alt="Online Tech Uganda" width="120" />
+  <img src="./apps/admin/public/logo-lockup-dark.png" alt="Online Tech Uganda" width="320" />
   <h1>Online Tech Uganda Ltd</h1>
   <p><b>Online computer store · Digital agency · Software company · Online learning · IT services</b></p>
   <p>🟧 <code>#F15A29</code> &nbsp; 🟦 <code>#282363</code></p>

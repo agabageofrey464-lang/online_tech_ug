@@ -15,8 +15,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "Online Tech Uganda";
   const options = {
     body: data.body || "",
-    icon: "/logo-mark.png",
-    badge: "/logo-mark.png",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
     // A unique tag per alert, so a second order does not replace the first.
     tag: `otu-admin-${Date.now()}`,
     renotify: true,
