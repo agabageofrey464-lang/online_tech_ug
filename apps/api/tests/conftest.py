@@ -27,7 +27,7 @@ ADMIN = {"X-Admin-Key": "test-admin-key"}
 
 
 @pytest.fixture()
-def db_factory(tmp_path):
+def db_factory(tmp_path, monkeypatch):
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     Base.metadata.create_all(engine)
     factory = sessionmaker(bind=engine)
@@ -43,6 +43,19 @@ def db_factory(tmp_path):
     settings.admin_api_key = ADMIN["X-Admin-Key"]
     settings.upload_dir = str(tmp_path)
     ratelimit._hits.clear()
+
+    # Owner alerts go out by email, WhatsApp and push. Tests record them here
+    # instead of sending anything.
+    from app.services import notify
+
+    sent = []
+
+    async def record(**kw):
+        sent.append(kw)
+        return {}
+
+    monkeypatch.setattr(notify, "alert_owner", record)
+    factory.alerts = sent
     yield factory
     app.dependency_overrides.clear()
 

@@ -53,6 +53,7 @@ export type Product = {
   image?: string; // remote/web image URL; falls back to /products/<id>.webp
   specs: string[]; // short bullets for cards/grid
   details?: ProductDetails; // full specification (computers)
+  seller?: string; // set on a marketplace vendor's product shown in the shop
 };
 
 // Resolve a product's image: an explicit web URL if provided, else the local

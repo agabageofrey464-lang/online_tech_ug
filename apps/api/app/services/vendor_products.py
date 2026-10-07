@@ -43,27 +43,41 @@ def list_public(db: Session, limit: int = 60) -> list[dict]:
         .order_by(VendorProduct.created_at.desc())
         .limit(limit)
     )
-    out: list[dict] = []
-    for vp, business_name, name, verified, phone, email in db.execute(stmt).all():
-        out.append(
-            {
-                "id": vp.id,
-                "vendor_id": vp.vendor_id,
-                "name": vp.name,
-                "category": vp.category,
-                "price_ugx": vp.price_ugx,
-                "description": vp.description,
-                "image_url": vp.image_url,
-                "in_stock": vp.in_stock,
-                "approved": vp.approved,
-                "created_at": vp.created_at,
-                "vendor_name": business_name or name or "Marketplace seller",
-                "vendor_verified": bool(verified),
-                "vendor_phone": phone or "",
-                "vendor_email": email or "",
-            }
-        )
-    return out
+    return [_public(*row) for row in db.execute(stmt).all()]
+
+
+def _public(vp: VendorProduct, business_name, name, verified, phone, email) -> dict:
+    return {
+        "id": vp.id,
+        "vendor_id": vp.vendor_id,
+        "name": vp.name,
+        "category": vp.category,
+        "price_ugx": vp.price_ugx,
+        "description": vp.description,
+        "image_url": vp.image_url,
+        "in_stock": vp.in_stock,
+        "approved": vp.approved,
+        "created_at": vp.created_at,
+        "brand": vp.brand or "",
+        "condition": vp.condition or "Brand New",
+        "old_price_ugx": vp.old_price_ugx,
+        "specs": vp.specs or [],
+        "vendor_name": business_name or name or "Marketplace seller",
+        "vendor_verified": bool(verified),
+        "vendor_phone": phone or "",
+        "vendor_email": email or "",
+    }
+
+
+def get_public(db: Session, product_id: int) -> dict | None:
+    """One approved vendor product, for its own page. Out-of-stock ones are
+    still returned, so a shared link says "out of stock" rather than vanishing."""
+    row = db.execute(
+        select(VendorProduct, User.business_name, User.name, User.verified, User.phone, User.email)
+        .join(User, User.id == VendorProduct.vendor_id)
+        .where(VendorProduct.id == product_id, VendorProduct.approved.is_(True))
+    ).first()
+    return _public(*row) if row else None
 
 
 def list_all_for_admin(db: Session, pending_only: bool = False) -> list[dict]:

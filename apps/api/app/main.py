@@ -112,7 +112,11 @@ async def lifespan(app: FastAPI):
         # create_all() never alters a table that already exists, so a column
         # declared too narrow stays too narrow on every deployed database.
         try:
-            from app.db.schema_fixes import apply_widenings
+            from app.db.schema_fixes import apply_additions, apply_widenings
+
+            added = apply_additions(engine)
+            if added:
+                logger.info("Added %d column(s) to match the models.", added)
 
             widened = apply_widenings(engine)
             if widened:

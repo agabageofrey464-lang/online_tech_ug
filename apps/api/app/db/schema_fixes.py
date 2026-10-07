@@ -35,6 +35,47 @@ WIDENINGS: list[tuple[str, str, str]] = [
 ]
 
 
+# Columns added to a table after it was first created. create_all() will not
+# add them to a database that already has the table, so each is added here if
+# it is missing. Additive only, and every one has a default or allows NULL, so
+# existing rows stay valid and running it again does nothing.
+#   (table, column, column definition)
+ADDITIONS: list[tuple[str, str, str]] = [
+    ("vendor_products", "brand", "VARCHAR(80) NOT NULL DEFAULT ''"),
+    ("vendor_products", "condition", "VARCHAR(30) NOT NULL DEFAULT 'Brand New'"),
+    ("vendor_products", "old_price_ugx", "INTEGER"),
+    ("vendor_products", "specs", "JSON"),
+]
+
+
+def apply_additions(engine: Engine) -> int:
+    """Add any column in ADDITIONS that a table is still missing.
+
+    Returns how many were added. Never raises, for the same reason as the
+    widenings: a refusal here must not stop the API from starting.
+    """
+    added = 0
+    try:
+        inspector = inspect(engine)
+        tables = set(inspector.get_table_names())
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not inspect the schema (%s); skipping additions.", exc)
+        return 0
+    for table, column, definition in ADDITIONS:
+        if table not in tables:
+            continue  # create_all() will build it complete
+        try:
+            if column in {c["name"] for c in inspector.get_columns(table)}:
+                continue
+            with engine.begin() as conn:
+                conn.execute(text(f'ALTER TABLE {table} ADD COLUMN "{column}" {definition}'))
+            added += 1
+            logger.info("Added column %s.%s", table, column)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not add %s.%s (%s).", table, column, exc)
+    return added
+
+
 def apply_widenings(engine: Engine) -> int:
     """Widen any column that is still narrower than the model expects.
 

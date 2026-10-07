@@ -6,6 +6,7 @@ import { ugx } from "@/lib/site";
 import { fallbackImage } from "@/lib/image-fallback";
 import { WhatsAppOrder } from "@/components/whatsapp-order";
 import { vendorOrderMessage } from "@/lib/order-message";
+import Link from "next/link";
 
 /**
  * Browsing the vendor marketplace.
@@ -252,13 +253,15 @@ function VendorCard({ p, onVendor }: { p: MarketItem; onVendor: () => void }) {
   return (
     <article className="group card-lift flex h-full flex-col overflow-hidden rounded-lg border border-ink-600/[0.08] bg-white shadow-[var(--shadow-1)]">
       <div className="relative aspect-square bg-white">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={p.image_url || fallbackImage(p.name, p.category)}
-          alt={p.name}
-          loading="lazy"
-          className="card-zoom h-full w-full object-contain p-2"
-        />
+        <Link href={`/marketplace/${p.id}`} aria-label={p.name} className="block h-full w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={p.image_url || fallbackImage(p.name, p.category)}
+            alt={p.name}
+            loading="lazy"
+            className="card-zoom h-full w-full object-contain p-2"
+          />
+        </Link>
         <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
           Vendor
         </span>
@@ -273,7 +276,7 @@ function VendorCard({ p, onVendor }: { p: MarketItem; onVendor: () => void }) {
       </div>
       <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
         <h3 className="clamp-2 min-h-[2.25rem] text-[12.5px] leading-tight text-ink-800 transition-colors group-hover:text-brand-600">
-          {p.name}
+          <Link href={`/marketplace/${p.id}`}>{p.name}</Link>
         </h3>
         {/* Tapping the seller shows the rest of their stock — the question a
             shopper asks the moment they like one thing. */}

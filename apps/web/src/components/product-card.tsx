@@ -162,6 +162,12 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
+        {product.seller && (
+          <p className="mt-1 truncate text-[10.5px] font-semibold text-ink-700/60">
+            Sold by <span className="text-brand-600">{product.seller}</span>
+          </p>
+        )}
+
         <ProductRating slug={product.id} className="mt-1.5" />
 
         <p className="mt-1.5 text-[17px] font-extrabold leading-none tracking-tight text-ink-900">

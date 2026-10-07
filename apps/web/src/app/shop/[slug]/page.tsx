@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ExploreMore } from "@/components/explore-more";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Check, Truck, MapPin, RotateCcw, ShieldCheck, Package, Phone } from "lucide-react";
 import { products as seedProducts, productImage, type Product } from "@/lib/data";
 import { getProduct, getProducts } from "@/lib/catalog";
@@ -108,6 +108,8 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // A marketplace vendor's product, reached from a shop card.
+  if (/^vp-\d+$/.test(slug)) redirect(`/marketplace/${slug.slice(3)}`);
   const product = await getProduct(slug);
   if (!product) notFound();
 

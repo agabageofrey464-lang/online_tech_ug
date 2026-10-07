@@ -206,3 +206,93 @@ def test_notifications_every_three_hours_in_the_kampala_day(db_factory):
         assert not send(utc(16))  # 19:30 — waits for 9pm
         assert send(utc(18))      # 21:30 — the last of the day
         assert not send(utc(20))  # 23:30 — five have gone; no more today
+
+
+# ── vendors ───────────────────────────────────────────────────────────────
+
+def _vendor(client):
+    """A vendor the owner added from the dashboard, signed in."""
+    made = client.post(f"{API}/vendor/admin/create", headers=ADMIN, json={"business_name": "Phone Corner", "email": "vendor@example.com", "password": "vendor-pass"})
+    assert made.status_code == 200
+    token = client.post(f"{API}/auth/login", json={"email": "vendor@example.com", "password": "vendor-pass"}).json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+CASE = {
+    "name": "Silicone case for iPhone 15",
+    "category": "Accessories",
+    "price_ugx": 25000,
+    "old_price_ugx": 30000,
+    "brand": "Spigen",
+    "condition": "Brand New",
+    "description": "Soft-touch case with raised edges.",
+    "specs": [{"label": "Compatible with", "value": "iPhone 15"}, {"label": "Material", "value": "Silicone"}],
+}
+
+
+def test_a_vendor_lists_a_product_with_its_full_specification(client, monkeypatch):
+    from app.api.routes import vendor as vendor_routes
+
+    async def quiet(**_):
+        return None
+
+    monkeypatch.setattr(vendor_routes.notify, "alert_owner", quiet)
+    auth = _vendor(client)
+    made = client.post(f"{API}/vendor/products", headers=auth, json=CASE)
+    assert made.status_code == 201
+    pid = made.json()["id"]
+
+    public = client.get(f"{API}/vendor/marketplace/{pid}").json()
+    assert public["brand"] == "Spigen" and public["old_price_ugx"] == 30000
+    assert public["specs"] == CASE["specs"]
+    assert public["vendor_name"] == "Phone Corner"
+    assert client.get(f"{API}/vendor/marketplace").json()[0]["specs"] == CASE["specs"]
+
+    # Editing replaces the specification.
+    edited = client.put(f"{API}/vendor/products/{pid}", headers=auth, json={**CASE, "specs": [{"label": "Colour", "value": "Black"}]})
+    assert edited.status_code == 200 and edited.json()["specs"] == [{"label": "Colour", "value": "Black"}]
+
+
+def test_a_vendor_cannot_reach_the_admin_or_another_vendors_products(client, monkeypatch):
+    from app.api.routes import vendor as vendor_routes
+
+    async def quiet(**_):
+        return None
+
+    monkeypatch.setattr(vendor_routes.notify, "alert_owner", quiet)
+    auth = _vendor(client)
+    pid = client.post(f"{API}/vendor/products", headers=auth, json=CASE).json()["id"]
+
+    # A vendor's sign-in is not the admin key: every admin list refuses it.
+    for path in ("/orders", "/contact", "/documents", "/reviews/admin", "/vendor/admin/list", "/products/admin/inventory"):
+        assert client.get(f"{API}{path}", headers=auth).status_code == 401, path
+    # Nor can it change the shop's own catalogue.
+    assert client.post(f"{API}/products", headers=auth, json={"name": "x"}).status_code in (401, 422)
+
+    # A second vendor cannot edit or delete the first one's product.
+    client.post(f"{API}/vendor/admin/create", headers=ADMIN, json={"business_name": "Other Shop", "email": "other@example.com", "password": "other-pass"})
+    other = {"Authorization": "Bearer " + client.post(f"{API}/auth/login", json={"email": "other@example.com", "password": "other-pass"}).json()["access_token"]}
+    assert client.put(f"{API}/vendor/products/{pid}", headers=other, json=CASE).status_code == 404
+    assert client.delete(f"{API}/vendor/products/{pid}", headers=other).status_code == 404
+    assert client.get(f"{API}/vendor/products", headers=other).json() == []
+
+
+def test_the_owner_is_told_when_a_vendors_product_is_reviewed(client, db_factory):
+    from app.models.order import Order, OrderItem
+
+    auth = _vendor(client)
+    pid = client.post(f"{API}/vendor/products", headers=auth, json=CASE).json()["id"]
+    with db_factory() as db:
+        o = Order(reference="OTU-VEND0001", customer_name="Buyer One", phone="0700000001", subtotal=25000, delivery_fee=10000, total=35000, payment_method="pay_at_shop", payment_status="paid", status="delivered")
+        db.add(o)
+        db.flush()
+        db.add(OrderItem(order_id=o.id, product_slug=f"vp-{pid}", name=CASE["name"], unit_price=25000, quantity=1, line_total=25000))
+        db.commit()
+    db_factory.alerts.clear()
+
+    sent = client.post(f"{API}/reviews", json={"product_slug": f"vp-{pid}", "order_reference": "OTU-VEND0001", "name": "Buyer One", "rating": 2, "comment": "Fits loosely."})
+    assert sent.status_code == 201
+    assert len(db_factory.alerts) == 1
+    pairs = dict(db_factory.alerts[0]["pairs"])
+    assert pairs["Sold by"] == "Phone Corner" and pairs["Product"] == CASE["name"]
+    assert "2-star" in db_factory.alerts[0]["title"] and db_factory.alerts[0]["note"] == "Fits loosely."

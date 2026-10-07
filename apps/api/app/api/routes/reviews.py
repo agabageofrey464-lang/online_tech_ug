@@ -16,6 +16,9 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.order import Order, OrderItem
 from app.models.review import Review
+from app.models.user import User
+from app.models.vendor_product import VendorProduct
+from app.services import notify
 
 router = APIRouter()
 
@@ -47,7 +50,7 @@ def _public(r: Review) -> dict:
 
 
 @router.post("", status_code=201)
-def add_review(payload: ReviewIn, request: Request, db: Session = Depends(get_db)) -> dict:
+async def add_review(payload: ReviewIn, request: Request, db: Session = Depends(get_db)) -> dict:
     """Public: review a product from one of your orders. Held until approved."""
     # Checking a reference against a product is also a way to guess references,
     # so wrong ones are counted against the connecting address, as on tracking.
@@ -84,6 +87,29 @@ def add_review(payload: ReviewIn, request: Request, db: Session = Depends(get_db
     except IntegrityError as exc:
         db.rollback()
         raise HTTPException(status_code=409, detail="This order has already reviewed this product.") from exc
+
+    # Tell the owner: a review waits for their approval, and when it is about a
+    # vendor's product they want to know what customers are saying of it.
+    product, seller = payload.product_slug, "Online Tech Uganda (our own stock)"
+    if payload.product_slug.startswith("vp-") and payload.product_slug[3:].isdigit():
+        vp = db.get(VendorProduct, int(payload.product_slug[3:]))
+        if vp:
+            vendor = db.get(User, vp.vendor_id)
+            product = vp.name
+            seller = (vendor.business_name or vendor.name) if vendor else "a vendor"
+    try:
+        await notify.alert_owner(
+            icon="⭐",
+            title=f"New {review.rating}-star review",
+            reference=reference,
+            pairs=[("Product", product), ("Sold by", seller), ("Rating", f"{review.rating} out of 5"), ("From", review.name)],
+            note=review.comment,
+            where="Admin › Reviews — it is hidden until you approve it",
+            db=db,
+            url="/reviews",
+        )
+    except Exception:  # noqa: BLE001 — an alert that fails must not lose the review
+        pass
     return {"ok": True, "status": "pending"}
 
 

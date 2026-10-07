@@ -234,6 +234,15 @@ def marketplace(db: Session = Depends(get_db)) -> list:
     return vendor_products.list_public(db)
 
 
+@router.get("/marketplace/{product_id}", response_model=MarketplaceItem)
+def marketplace_item(product_id: int, db: Session = Depends(get_db)) -> dict:
+    """Public: one marketplace product, with its full specification."""
+    item = vendor_products.get_public(db, product_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return item
+
+
 @router.post("/{vendor_id}/message", status_code=201)
 async def message_vendor(vendor_id: int, payload: VendorMessageIn, db: Session = Depends(get_db)) -> dict:
     """A customer sends a message to a vendor. Stored + emailed to the vendor."""
@@ -267,6 +276,25 @@ async def message_vendor(vendor_id: int, payload: VendorMessageIn, db: Session =
             )
         except Exception:  # noqa: BLE001
             pass
+    # The owner hears about it too: these are their customers, and a question
+    # a vendor leaves unanswered is the shop's reputation, not the vendor's.
+    try:
+        await notify.alert_owner(
+            icon="💬",
+            title="Customer message to a vendor",
+            pairs=[
+                ("Vendor", vendor.business_name or vendor.name),
+                ("Product", payload.product.strip() or "—"),
+                ("From", payload.customer_name.strip() or "Customer"),
+                ("Phone", payload.customer_phone.strip()),
+            ],
+            note=payload.message.strip(),
+            where="Admin › Vendors",
+            db=db,
+            url="/vendors",
+        )
+    except Exception:  # noqa: BLE001
+        pass
     return {"ok": True}
 
 

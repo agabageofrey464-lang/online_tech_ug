@@ -17,6 +17,10 @@ type VProduct = {
   image_url: string;
   in_stock: boolean;
   approved: boolean;
+  brand?: string;
+  condition?: string;
+  old_price_ugx?: number | null;
+  specs?: { label: string; value: string }[] | null;
 };
 
 type Sale = {
@@ -47,7 +51,14 @@ const CATEGORIES = [
   "Fashion & Clothing", "Home & Living", "Beauty & Health", "Food & Groceries",
   "Books & Stationery", "Agriculture", "Services", "Other",
 ];
-const emptyForm = { name: "", category: "Accessories", price_ugx: "", image_url: "", description: "" };
+type SpecRow = { label: string; value: string };
+const emptyForm = {
+  name: "", category: "Accessories", price_ugx: "", image_url: "", description: "",
+  brand: "", condition: "Brand New", old_price_ugx: "", in_stock: true, specs: [] as SpecRow[],
+};
+const CONDITIONS = ["Brand New", "UK Used", "Refurbished"];
+// Offered as one-tap rows; a vendor can also type any label of their own.
+const SPEC_IDEAS = ["Compatible with", "Colour", "Material", "Capacity", "Connector", "Wattage", "Cable length", "Warranty", "In the box"];
 
 export default function VendorDashboard() {
   const { user, loading, logout } = useAuth();
@@ -177,7 +188,11 @@ export default function VendorDashboard() {
 
   function startEdit(p: VProduct) {
     setEditingId(p.id);
-    setForm({ name: p.name, category: p.category, price_ugx: String(p.price_ugx), image_url: p.image_url, description: p.description });
+    setForm({
+      name: p.name, category: p.category, price_ugx: String(p.price_ugx), image_url: p.image_url, description: p.description,
+      brand: p.brand ?? "", condition: p.condition || "Brand New",
+      old_price_ugx: p.old_price_ugx ? String(p.old_price_ugx) : "", in_stock: p.in_stock !== false, specs: p.specs ?? [],
+    });
     setErr("");
     setShowForm(true);
   }
@@ -192,6 +207,12 @@ export default function VendorDashboard() {
       price_ugx: Number(form.price_ugx) || 0,
       image_url: form.image_url,
       description: form.description,
+      brand: form.brand.trim(),
+      condition: form.condition,
+      old_price_ugx: form.old_price_ugx ? Number(form.old_price_ugx) : null,
+      in_stock: form.in_stock,
+      // Half-filled rows are dropped rather than refused.
+      specs: form.specs.map((r) => ({ label: r.label.trim(), value: r.value.trim() })).filter((r) => r.label && r.value),
     });
     try {
       const res = editingId
@@ -578,7 +599,7 @@ export default function VendorDashboard() {
       {/* Add / edit product modal */}
       {showForm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => { setShowForm(false); setEditingId(null); }}>
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-lg font-extrabold text-ink-900">{editingId ? "Edit product" : "Add a product"}</h3>
               <button onClick={() => { setShowForm(false); setEditingId(null); }} aria-label="Close" className="text-ink-600/50 hover:text-ink-900"><X size={20} /></button>
@@ -590,6 +611,15 @@ export default function VendorDashboard() {
                   {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <input required type="number" min="0" placeholder="Price (UGX)" value={form.price_ugx} onChange={(e) => setForm({ ...form, price_ugx: e.target.value })} className={input} />
+                <input placeholder="Brand (e.g. Anker, Oraimo)" maxLength={80} value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={input} />
+                <select value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} className={input} aria-label="Condition">
+                  {CONDITIONS.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <input type="number" min="0" placeholder="Old price (optional — shows a discount)" value={form.old_price_ugx} onChange={(e) => setForm({ ...form, old_price_ugx: e.target.value })} className={input} />
+                <label className="flex items-center gap-2 text-sm font-medium text-ink-800">
+                  <input type="checkbox" checked={form.in_stock} onChange={(e) => setForm({ ...form, in_stock: e.target.checked })} className="h-4 w-4" />
+                  In stock
+                </label>
               </div>
               {/* Product photo — upload or paste URL */}
               <div className="rounded-lg border border-dashed border-ink-600/25 p-3">
@@ -609,7 +639,38 @@ export default function VendorDashboard() {
                 </div>
                 <input placeholder="…or paste an image URL" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={`${input} mt-2`} />
               </div>
-              <textarea placeholder="Short description (optional)" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={input} />
+              <textarea placeholder="Description — what it is and who it is for" rows={3} maxLength={1000} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={input} />
+
+              {/* Specifications — as many rows as the product needs. A phone
+                  case and a charger share no fields, so each row is a label
+                  and a value the vendor chooses. */}
+              <div className="rounded-lg border border-ink-600/10 bg-ink-50/50 p-3">
+                <p className="text-sm font-bold text-ink-900">Specifications</p>
+                <p className="text-xs text-ink-700/60">Shown as a table on the product&apos;s page. Tap a suggestion or add your own.</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {SPEC_IDEAS.filter((l) => !form.specs.some((r) => r.label === l)).map((l) => (
+                    <button key={l} type="button" onClick={() => setForm({ ...form, specs: [...form.specs, { label: l, value: "" }] })} className="rounded-full border border-ink-600/15 bg-white px-2.5 py-1 text-[11px] font-semibold text-ink-700 hover:border-brand-400 hover:text-brand-600">
+                      + {l}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-2 space-y-2">
+                  {form.specs.map((r, i) => (
+                    <div key={i} className="grid grid-cols-[2fr_3fr_auto] gap-2">
+                      <input placeholder="Label" maxLength={60} value={r.label} onChange={(e) => setForm({ ...form, specs: form.specs.map((x, n) => (n === i ? { ...x, label: e.target.value } : x)) })} className={input} />
+                      <input placeholder="Value" maxLength={200} value={r.value} onChange={(e) => setForm({ ...form, specs: form.specs.map((x, n) => (n === i ? { ...x, value: e.target.value } : x)) })} className={input} />
+                      <button type="button" aria-label="Remove this row" onClick={() => setForm({ ...form, specs: form.specs.filter((_, n) => n !== i) })} className="shrink-0 rounded-md px-2 text-ink-600/50 hover:bg-red-50 hover:text-red-600">
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {form.specs.length < 30 && (
+                  <button type="button" onClick={() => setForm({ ...form, specs: [...form.specs, { label: "", value: "" }] })} className="mt-2 text-xs font-bold text-brand-600 hover:underline">
+                    + Add another row
+                  </button>
+                )}
+              </div>
               {err && <p className="text-xs font-semibold text-red-500">{err}</p>}
               <button type="submit" disabled={busy} className="w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
                 {busy ? "Saving…" : editingId ? "Save changes" : "Add product"}

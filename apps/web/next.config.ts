@@ -28,6 +28,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.onlinetech.ug" },
+      { protocol: "https", hostname: "**.onlinetechug.com" },
+      { protocol: "http", hostname: "localhost" },
     ],
   },
   // Same-origin proxy to the API so the browser never makes a cross-origin
