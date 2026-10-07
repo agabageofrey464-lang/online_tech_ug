@@ -88,4 +88,36 @@ for (const size of SIZES) {
   }
 }
 
-console.log(`derived images written: ${written}, already current: ${skipped}`);
+// Link previews. WhatsApp, Facebook and X draw a 1200x630 picture beside a
+// shared link, and are unreliable with WebP — so a product shared on WhatsApp
+// showed no picture, or the site logo. One JPEG per product and course: the
+// photo whole, centred on white, never cropped.
+let previews = 0;
+for (const dir of DIRS) {
+  const from = path.join(PUB, dir);
+  const to = path.join(PUB, "og", dir);
+  if (!fs.existsSync(from)) continue;
+  fs.mkdirSync(to, { recursive: true });
+  for (const file of fs.readdirSync(from)) {
+    if (!file.toLowerCase().endsWith(".webp")) continue;
+    const src = path.join(from, file);
+    const dst = path.join(to, file.replace(/\.webp$/i, ".jpg"));
+    try {
+      if (fs.statSync(dst).mtimeMs >= fs.statSync(src).mtimeMs) continue;
+    } catch {
+      /* not generated yet */
+    }
+    try {
+      await sharp(src)
+        .resize(1200, 630, { fit: "contain", background: "#ffffff" })
+        .flatten({ background: "#ffffff" })
+        .jpeg({ quality: 80, mozjpeg: true })
+        .toFile(dst);
+      previews += 1;
+    } catch (err) {
+      console.warn("could not make preview", dir + "/" + file, String(err).slice(0, 80));
+    }
+  }
+}
+
+console.log(`derived images written: ${written}, already current: ${skipped}, link previews written: ${previews}`);

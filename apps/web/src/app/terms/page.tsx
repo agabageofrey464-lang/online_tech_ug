@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/legal-page";
 import { site } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Terms & Conditions",
   description:
     "The terms for shopping, learning, selling and working with Online Tech Uganda: orders, prices, payment, delivery, courses, marketplace vendors and your account.",
   alternates: { canonical: "/terms" },
-};
+}, "/terms");
 
 const link = "font-semibold text-brand-600 hover:underline";
 

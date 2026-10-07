@@ -8,6 +8,12 @@ import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Store, Cpu } from "lucid
 // Jumia-style promotional banner slides. Solid brand-coloured panels with a
 // headline, a deal pill and a framed photo — kept in Online Tech Uganda's own
 // colours (orange / indigo) and copy.
+// A page has one main heading. Every slide used to be an <h1>, so the home
+// page had several and a search engine could not tell which named the page.
+function SlideHeading({ first, ...rest }: { first: boolean } & React.HTMLAttributes<HTMLHeadingElement>) {
+  return first ? <h1 {...rest} /> : <p {...rest} />;
+}
+
 const SLIDES = [
   {
     bg: "from-brand-500 via-brand-600 to-brand-700",
@@ -89,9 +95,9 @@ export function HeroRotator() {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20">
                 <s.icon size={13} /> {s.eyebrow}
               </span>
-              <h1 className="mt-3 text-2xl font-black leading-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-4xl">
+              <SlideHeading first={idx === 0} className="mt-3 text-2xl font-black leading-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-4xl">
                 {s.title}
-              </h1>
+              </SlideHeading>
               <p className="mt-2 max-w-sm text-sm text-white/90 sm:text-base">{s.sub}</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Link

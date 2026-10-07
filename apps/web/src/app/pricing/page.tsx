@@ -4,12 +4,13 @@ import { SERVICE_FROM } from "@/lib/service-prices";
 import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
 import { PricingSection, postingCharges, vendorPlans, freelancerPlans, advertPlans, servicePlans } from "@/components/pricing-section";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Pricing & Subscriptions",
   description:
     "Transparent pricing to build a website, sell, advertise, get hired or promote your business, school, company or institution on Online Tech Uganda.",
-};
+}, "/pricing");
 
 export default function PricingPage() {
   return (

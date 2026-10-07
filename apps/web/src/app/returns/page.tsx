@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/legal-page";
 import { site } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Returns & Refunds",
   description:
     "When you can return an item bought from Online Tech Uganda, how to arrange it, how refunds are paid, and how warranty claims work.",
   alternates: { canonical: "/returns" },
-};
+}, "/returns");
 
 const sections: LegalSection[] = [
   {

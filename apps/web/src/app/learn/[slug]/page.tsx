@@ -14,6 +14,7 @@ import { CourseAcademyPanel } from "@/components/course-academy-panel";
 import { courses, REGISTRATION_FEE, courseTotal } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
+import { share, shareImage } from "@/lib/seo";
 
 export function generateStaticParams() {
   return courses.map((c) => ({ slug: c.slug }));
@@ -27,10 +28,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const course = courses.find((c) => c.slug === slug);
   if (!course) return { title: "Course not found" };
-  return {
-    title: course.title,
-    description: `${course.title} — ${course.lessons} lessons over ${course.durationMonths ?? 1} month(s). Full programme ${ugx(courseTotal(course))} (registration ${ugx(REGISTRATION_FEE)} + training ${ugx(course.trainingFee ?? 0)}), or study lesson by lesson from ${ugx(5000)}.`,
-  };
+  return share(
+    { title: course.title, description: `${course.title} — ${course.lessons} lessons over ${course.durationMonths ?? 1} month(s). Full programme ${ugx(courseTotal(course))} (registration ${ugx(REGISTRATION_FEE)} + training ${ugx(course.trainingFee ?? 0)}), or study lesson by lesson from ${ugx(5000)}.` },
+    `/learn/${course.slug}`,
+    shareImage(course.cover ?? `/courses/${course.slug}.webp`),
+  );
 }
 
 export default async function CourseDetailPage({

@@ -4,12 +4,13 @@ import { PageHeader } from "@/components/page-header";
 import { ContactForm } from "@/components/contact-form";
 import { Icon } from "@/components/icon";
 import { site, whatsappLink, whatsappAltLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Contact Us",
   description:
     "Get in touch with Online Tech Uganda — call, WhatsApp, email or send us a message. We're in Kampala and deliver countrywide.",
-};
+}, "/contact");
 
 // Map a ?subject= hint (from Sell/Freelancer "contact us" links) to a form option.
 const SUBJECT_MAP: Record<string, string> = {

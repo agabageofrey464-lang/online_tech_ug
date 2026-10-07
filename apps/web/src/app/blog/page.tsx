@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { articles } from "@/lib/blog";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Tech Blog — Guides, Tips & Insights",
   description:
     "Buying guides, tech tips, security advice and business insights from Online Tech Uganda. (Looking for headlines? See our News page.)",
-};
+}, "/blog");
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 

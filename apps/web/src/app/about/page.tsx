@@ -10,12 +10,13 @@ import { DELIVERY_TOWNS } from "@/lib/delivery";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { INTERNSHIP_FEE, INTERNSHIP_WEEKS } from "@/components/internship-panel";
 import { NeedPicker, type Need } from "@/components/need-picker";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "About Us",
   description:
     "Online Tech Uganda Ltd is an integrated technology company — an online computer store, digital agency, software company, online learning platform and IT services provider.",
-};
+}, "/about");
 
 /**
  * Everything the site offers, with the figures taken from the same data the

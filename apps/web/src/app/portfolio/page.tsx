@@ -6,12 +6,13 @@ import { PortfolioGrid } from "@/components/portfolio-grid";
 import { caseStudies } from "@/lib/portfolio";
 import { Icon } from "@/components/icon";
 import { whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Systems & Software We Build — Portfolio",
   description:
     "We design and build websites, mobile apps and management systems for Ugandan businesses. See our work and start your own project.",
-};
+}, "/portfolio");
 
 const capabilities = [
   {

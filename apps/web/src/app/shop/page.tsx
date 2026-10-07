@@ -5,6 +5,7 @@ import { FeaturedProducts } from "@/components/featured-products";
 import { ShopHeading } from "@/components/shop-heading";
 import { UnfilteredOnly } from "@/components/unfiltered-only";
 import { getProducts } from "@/lib/catalog";
+import { share } from "@/lib/seo";
 
 // Rebuilt in the background every few minutes, so a product added or
 // repriced in the admin reaches the shop without a deploy.
@@ -16,13 +17,13 @@ export const revalidate = 300; // keep in step with CATALOG_REVALIDATE
 // anything appeared, against 0.4s for the cached home page. The filters, the
 // heading and the breadcrumb all read the query string in the browser instead,
 // which is where the grid was already doing it.
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Shop Computers & Accessories",
   description:
     "Buy laptops, desktops, accessories, networking and storage in Uganda. Quality-checked, with delivery and flexible payment options.",
   // Filtered views are variations of this page, not pages of their own.
   alternates: { canonical: "/shop" },
-};
+}, "/shop");
 
 export default async function ShopPage() {
   const products = await getProducts();

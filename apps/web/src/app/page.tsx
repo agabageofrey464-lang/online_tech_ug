@@ -23,6 +23,7 @@ import { ExploreMore } from "@/components/explore-more";
 import { Reveal } from "@/components/reveal";
 import { listedProducts as products, whyUs, productImage, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
 function byCat(cat: Product["category"]) {
   // Out-of-stock items never lead a rail — see the note in shop-grid.
@@ -134,12 +135,12 @@ function DealBand({
   );
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Computers, IT Services & Computer Courses in Uganda",
   description:
     "Buy quality laptops, desktops, SSDs and accessories in Kampala with warranty and countrywide delivery. Plus website and software development, IT support and repairs, and 22 computer courses with certificates — physical and online.",
   alternates: { canonical: "/" },
-};
+}, "/");
 
 // The storefront re-renders on a schedule (see `revalidate` below). Each slot
 // gets a different offset, so the home page leads with different products every

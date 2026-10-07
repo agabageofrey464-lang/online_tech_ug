@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
 import { SoftwareRequest } from "@/components/software-request";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Request Software",
   description:
     "Request a website, mobile app, school system, hospital system, HR system or custom software from Online Tech Uganda. Get a free proposal and quote.",
-};
+}, "/request");
 
 export default function RequestPage() {
   return (

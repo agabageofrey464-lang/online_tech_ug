@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "en_UG",
     type: "website",
-    images: [{ url: "/logo.webp", width: 1200, height: 630, alt: site.name }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: site.name }],
   },
-  twitter: { card: "summary_large_image", title: site.name, description: site.description, images: ["/logo.webp"] },
+  twitter: { card: "summary_large_image", title: site.name, description: site.description, images: ["/og.jpg"] },
   // Favicon comes from the file-based app/icon.svg (new orbit logo).
 };
 

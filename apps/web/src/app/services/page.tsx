@@ -10,12 +10,13 @@ import { services } from "@/lib/data";
 import { fallbackImage } from "@/lib/image-fallback";
 import Link from "next/link";
 import { ugx, whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Services — Web, Apps, Software, Repairs & Networking",
   description:
     "Website & mobile app development, custom software systems, computer repairs, IT support and networking services in Uganda.",
-};
+}, "/services");
 
 const process = [
   { step: "1", title: "Talk to us", text: "Share your goals on WhatsApp, phone or our contact form." },

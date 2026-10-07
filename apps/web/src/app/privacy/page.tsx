@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/legal-page";
 import { site } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Privacy Policy",
   description:
     "What personal information Online Tech Uganda collects when you shop, learn or work with us, why we need it, who we share it with, and the rights you have over it.",
   alternates: { canonical: "/privacy" },
-};
+}, "/privacy");
 
 const sections: LegalSection[] = [
   {

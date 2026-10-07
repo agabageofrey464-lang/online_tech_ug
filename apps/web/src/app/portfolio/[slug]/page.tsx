@@ -8,6 +8,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { Button } from "@/components/ui";
 import { portfolio, findProject, caseStudies } from "@/lib/portfolio";
 import { whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
 export function generateStaticParams() {
   return portfolio.map((p) => ({ slug: p.slug }));
@@ -21,11 +22,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const p = findProject(slug);
   if (!p) return { title: "Project not found" };
-  return {
-    title: `${p.title} — ${p.kind === "case-study" ? "Case study" : "Portfolio"}`,
-    description: p.summary,
-    alternates: { canonical: `/portfolio/${p.slug}` },
-  };
+  return share(
+    { title: `${p.title} — ${p.kind === "case-study" ? "Case study" : "Portfolio"}`, description: p.summary },
+    `/portfolio/${p.slug}`,
+  );
 }
 
 export default async function ProjectDetailPage({

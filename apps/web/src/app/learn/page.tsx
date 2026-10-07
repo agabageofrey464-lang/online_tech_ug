@@ -15,6 +15,7 @@ import { SafeImage } from "@/components/safe-image";
 import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleString("en-GB", {
@@ -26,12 +27,12 @@ function fmtDate(iso: string) {
   });
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Learn — Online Computer Courses in Uganda",
   description:
     "22 professional computer training courses in Uganda — Microsoft Office, graphic design, web development, networking and more. Enrol on a full programme, or study lesson by lesson from UGX 5,000. Certificate on completion.",
   alternates: { canonical: "/learn" },
-};
+}, "/learn");
 
 // Regenerate hourly so a class that has already run drops off the page by
 // itself — otherwise a static build would keep advertising it until the next

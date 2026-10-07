@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Technology News — Uganda & the World",
   description:
     "The latest technology news and trends from Uganda, Africa and around the world — gadgets, internet, business, AI and more from Online Tech Uganda.",
-};
+}, "/news");
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 

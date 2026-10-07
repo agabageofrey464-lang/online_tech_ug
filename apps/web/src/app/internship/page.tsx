@@ -28,8 +28,9 @@ import { ContactOptions } from "@/components/contact-options";
 import { JobApply } from "@/components/job-apply";
 import { SafeImage } from "@/components/safe-image";
 import { ugx } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Industrial Training & Internship in Kampala",
   description:
     `Online industrial training for university students in Uganda — ${ugx(INTERNSHIP_FEE)} for ${INTERNSHIP_WEEKS} weeks, ` +
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     "Software development, IT support, networking and design, supervised on real client work. " +
     "Acceptance and completion letters provided for Makerere, Kyambogo, MUBS, UCU, Ndejje and every other institution.",
   alternates: { canonical: "/internship" },
-};
+}, "/internship");
 
 export const revalidate = 3600;
 

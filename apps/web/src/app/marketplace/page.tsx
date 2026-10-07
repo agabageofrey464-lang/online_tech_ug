@@ -3,11 +3,12 @@ import Link from "next/link";
 import { Store, Users, ShieldCheck } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MarketplaceBrowser } from "@/components/marketplace-browser";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Marketplace — Shop from our vendors",
   description: "Browse products from verified vendors on Online Tech Uganda's marketplace.",
-};
+}, "/marketplace");
 
 export const dynamic = "force-dynamic";
 

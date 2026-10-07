@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { findArticle } from "@/lib/blog";
 import { whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
@@ -35,9 +36,9 @@ async function getApiPost(slug: string): Promise<ApiPost | null> {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getApiPost(slug);
-  if (post) return { title: post.title, description: post.excerpt };
+  if (post) return share({ title: post.title, description: post.excerpt }, `/blog/${slug}`);
   const a = findArticle(slug);
-  return a ? { title: a.title, description: a.excerpt } : { title: "Article not found" };
+  return a ? share({ title: a.title, description: a.excerpt }, `/blog/${slug}`) : { title: "Article not found" };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {

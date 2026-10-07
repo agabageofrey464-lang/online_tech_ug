@@ -17,13 +17,14 @@ import { ExploreMore } from "@/components/explore-more";
 import { JobApply } from "@/components/job-apply";
 import { jobs as seedJobs } from "@/lib/jobs";
 import { whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Internships & Jobs",
   description:
     "Industrial training and internship placements in Kampala for university students — web development, graphic design, IT support, networking and more. Acceptance and completion letters provided. Plus IT jobs at Online Tech Uganda.",
   alternates: { canonical: "/jobs" },
-};
+}, "/jobs");
 
 // Always fetch fresh so newly posted jobs appear immediately.
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request

@@ -5,12 +5,13 @@ import { PageHeader } from "@/components/page-header";
 import { OrderTracker } from "@/components/order-tracker";
 import { ProjectTracker } from "@/components/project-tracker";
 import { whatsappLink } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Track Your Project",
   description:
     "Track your website, mobile app or software project with Online Tech Uganda using your project code — or start a new project and choose the option that fits your budget.",
-};
+}, "/track");
 
 const steps = [
   { n: 1, icon: "📝", title: "Request", text: "Tell us what you need — website, app, system or IT support." },

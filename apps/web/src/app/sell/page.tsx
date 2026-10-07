@@ -6,12 +6,13 @@ import {
   Store, Wallet, TrendingUp, ShieldCheck, Package, ImageIcon, BarChart3,
   MessageCircle, Boxes, Truck, UserPlus, LogIn, Check,
 } from "lucide-react";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Sell on OnlineTechUg — Become a Vendor",
   description:
     "Sell on Online Tech Uganda. A flat vendor subscription from UGX 20,000 a week, 0% commission on every sale, and payment by Mobile Money once the customer has their order.",
-};
+}, "/sell");
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 

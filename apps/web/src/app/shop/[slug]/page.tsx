@@ -19,6 +19,7 @@ import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
 import { ProductReviews } from "@/components/product-reviews";
+import { shareImage } from "@/lib/seo";
 import { DeliveryCheck } from "@/components/delivery-check";
 import { StockAlert } from "@/components/stock-alert";
 import { StickyOrderBar } from "@/components/sticky-order-bar";
@@ -62,9 +63,10 @@ export async function generateMetadata({
       title: product.name,
       description: desc,
       url: `/shop/${product.id}`,
-      images: [productImage(product)],
+      images: [{ url: shareImage(productImage(product)), width: 1200, height: 630, alt: product.name }],
       type: "website",
     },
+    twitter: { card: "summary_large_image", title: product.name, description: desc, images: [shareImage(productImage(product))] },
   };
 }
 

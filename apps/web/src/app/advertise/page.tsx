@@ -4,12 +4,13 @@ import { Megaphone, Building2, GraduationCap, Store, Users, Check, Star } from "
 import { PageHeader } from "@/components/page-header";
 import { HomeAdverts } from "@/components/home-adverts";
 import { site, whatsappLink, ugx } from "@/lib/site";
+import { share } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = share({
   title: "Advertise & Grow With Us",
   description:
     "Advertise your business, school, institution or company on Online Tech Uganda. Banner ads, featured listings, sponsored posts — or sell with a flat monthly subscription instead of commission.",
-};
+}, "/advertise");
 
 const audience = [
   { icon: Store, label: "Businesses & Shops" },
