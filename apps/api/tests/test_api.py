@@ -175,17 +175,17 @@ def test_forgot_does_not_reveal_who_has_an_account(client, monkeypatch):
 
 # ── notifications ─────────────────────────────────────────────────────────
 
-def test_two_notifications_a_day_at_waking_hours_in_kampala(db_factory):
+def test_notifications_every_three_hours_in_the_kampala_day(db_factory):
     from datetime import datetime
 
     from app.models.campaign import Campaign
     from app.services import campaign_auto
 
-    def utc(hour):  # 7 Oct 2026; Kampala is UTC+3
-        return datetime(2026, 10, 7, hour, 30)
+    def utc(hour, minute=30):  # 7 Oct 2026; Kampala is UTC+3
+        return datetime(2026, 10, 7, hour, minute)
 
     with db_factory() as db:
-        for n in range(4):
+        for n in range(8):
             db.add(Campaign(slug=f"c{n}", title=f"Offer {n}", placement="home", active=True))
         db.commit()
 
@@ -198,8 +198,11 @@ def test_two_notifications_a_day_at_waking_hours_in_kampala(db_factory):
 
         assert not send(utc(0))   # 03:30 in Kampala — nobody is awake
         assert not send(utc(5))   # 08:30 — still too early
-        assert send(utc(6))       # 09:30 — the morning one
-        assert not send(utc(9))   # 12:30 — one has gone, the next waits for evening
-        assert send(utc(15))      # 18:30 — the evening one
-        assert not send(utc(17))  # 20:30 — that is two; no more today
-        assert not send(utc(20))  # 23:30 Kampala, still the same Kampala day
+        assert send(utc(6))       # 09:30 — the 9am one
+        assert not send(utc(7))   # 10:30 — the next is not until noon
+        assert send(utc(9))       # 12:30
+        assert send(utc(12))      # 15:30
+        assert send(utc(15))      # 18:30
+        assert not send(utc(16))  # 19:30 — waits for 9pm
+        assert send(utc(18))      # 21:30 — the last of the day
+        assert not send(utc(20))  # 23:30 — five have gone; no more today

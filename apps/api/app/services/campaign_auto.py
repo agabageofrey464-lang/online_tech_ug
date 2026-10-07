@@ -19,15 +19,15 @@ from app.services import campaigns as campaign_service
 
 logger = logging.getLogger("onlinetech.campaign_auto")
 
-# Two notifications a day, at times a person in Uganda is awake to see them:
-# one in the morning and one in the evening, Kampala time.
+# A notification every three hours through the waking day, Kampala time:
+# 9am, noon, 3pm, 6pm and 9pm. Nothing overnight.
 #
 # This used to allow three, counted from midnight UTC with a three-hour gap —
 # which is 3am in Kampala. The first went out around 03:45, the second at
 # 06:45 and the third at 09:45, every day: two of the three while people
 # slept, and nothing at all in the afternoon or evening when they shop.
 KAMPALA = timedelta(hours=3)  # East Africa Time; no daylight saving
-ANNOUNCEMENT_HOURS = (9, 18)  # the earliest Kampala hour for each of the day's sends
+ANNOUNCEMENT_HOURS = (9, 12, 15, 18, 21)  # the earliest Kampala hour for each of the day's sends
 MAX_ANNOUNCEMENTS_PER_DAY = len(ANNOUNCEMENT_HOURS)
 
 # A push notification is a glance; an email sits in the inbox. Three a day is
@@ -150,8 +150,8 @@ def _announced_today(db: Session, now: datetime) -> list[Campaign]:
 
 def due_for_announcement(db: Session, now: datetime | None = None) -> Campaign | None:
     """The campaign to announce right now, or None if we've already said enough
-    today. Two a day: the first from 09:00 and the second from 18:00, Kampala
-    time. The worker looks hourly, so each goes out within the hour after."""
+    today. One every three hours from 09:00 to 21:00, Kampala time. The worker
+    looks hourly, so each goes out within the hour after its slot opens."""
     now = now or datetime.utcnow()
     sent_today = _announced_today(db, now)
     if len(sent_today) >= MAX_ANNOUNCEMENTS_PER_DAY:
