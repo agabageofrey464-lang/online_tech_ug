@@ -321,3 +321,19 @@ def test_the_colour_a_customer_chose_is_written_on_the_order(db_factory):
             items=[{"slug": "two-tone-laptop", "quantity": 1}],
         ))
         assert plain.items[0].name == "Two Tone Laptop"
+
+
+def test_selling_the_last_one_does_not_mark_it_out_of_stock(db_factory):
+    from app.models.product import Product
+    from app.schemas.order import OrderCreate
+    from app.services.orders import create_order
+
+    with db_factory() as db:
+        db.add(Product(slug="last-one", name="Last One", category="Laptops", price_ugx=500_000, in_stock=True, stock_qty=1))
+        db.commit()
+        buyer = dict(customer_name="Test Customer", phone="0700000000", delivery_town="Kampala")
+        create_order(db, OrderCreate(**buyer, items=[{"slug": "last-one", "quantity": 1}]))
+        row = db.query(Product).filter_by(slug="last-one").one()
+        assert (row.stock_qty, row.in_stock) == (0, True)
+        # And it can be ordered again.
+        create_order(db, OrderCreate(**buyer, items=[{"slug": "last-one", "quantity": 1}]))

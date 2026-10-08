@@ -491,13 +491,17 @@ def delete_product(db: Session, slug: str) -> bool:
 
 
 def decrement_stock(db: Session, slug: str, qty: int) -> None:
-    """Reduce stock when an order is placed. No-op if the product isn't tracked in the DB."""
+    """Reduce the count when an order is placed. No-op if the product isn't tracked in the DB.
+
+    Selling the last unit does not mark the product out of stock: the owner
+    restocks to order, and wants every product to stay on sale. The count still
+    falls to zero so the dashboard shows what needs buying in. A product only
+    leaves the shop when the owner switches it off in the dashboard.
+    """
     row = db.execute(select(Product).where(Product.slug == slug)).scalar_one_or_none()
     if not row or row.stock_qty <= 0:
         return
     row.stock_qty = max(0, row.stock_qty - qty)
-    if row.stock_qty == 0:
-        row.in_stock = False
 
 
 def _to_dict(p: Product) -> dict:
