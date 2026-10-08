@@ -133,14 +133,11 @@ export function ProductCard({ product }: { product: Product }) {
           />
         </Link>
 
-        {/* Condition — a tab at the top of the photo. */}
-        {product.condition !== "Refurbished" && (
-          <span
-            className={`pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap px-3 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] @[15rem]:px-5 @[15rem]:text-[10.5px] ${
-              product.condition === "Brand New" ? "bg-ink-600 text-white" : "bg-[#dcd6cd] text-ink-900"
-            }`}
-          >
-            {product.condition === "Brand New" ? "New" : product.condition}
+        {/* A tab at the top of the photo for brand-new stock only. A used
+            machine's condition is given on its own page, in the specification. */}
+        {product.condition === "Brand New" && (
+          <span className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap bg-ink-600 px-3 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-white @[15rem]:px-5 @[15rem]:text-[10.5px]">
+            New
           </span>
         )}
 

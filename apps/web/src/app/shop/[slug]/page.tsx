@@ -194,14 +194,12 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="min-w-0 lg:sticky lg:top-44 lg:self-start">
-          <span
-            className={`inline-block px-5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] ${
-              product.condition === "Brand New" ? "bg-ink-600 text-white" : "bg-[#dcd6cd] text-ink-900"
-            }`}
-          >
-            {product.condition}
-          </span>
-          <h1 className="mt-5 text-[30px] leading-[1.15] text-ink-900 sm:text-[34px]">{product.name}</h1>
+          {product.condition === "Brand New" && (
+            <span className="inline-block bg-ink-600 px-5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white">
+              Brand New
+            </span>
+          )}
+          <h1 className="mt-4 text-[30px] leading-[1.15] text-ink-900 sm:text-[34px]">{product.name}</h1>
           <p className="mt-2 text-[13px] text-ink-700/70">
             Brand:{" "}
             <Link href={`/shop?brand=${product.brand}`} className="font-semibold text-brand-600 hover:underline">
