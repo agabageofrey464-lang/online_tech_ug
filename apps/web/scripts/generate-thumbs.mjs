@@ -38,9 +38,13 @@ const PUB = fileURLToPath(new URL("../public", import.meta.url));
 // slot was 220px.) withoutEnlargement leaves a narrower photo at its own
 // width rather than blowing it up, which would add weight and no detail. A
 // light sharpen puts back the edge a downscale softens.
+//
+// It was 760 at quality 86 for a short while, and the pages became slow: the
+// files nearly doubled, and a home page draws dozens of them. 640 at 78 is
+// within a few percent of the old weight and still sharper than 560 was.
 const SIZES = [
   { dir: "thumbs", px: 96, quality: 74 },
-  { dir: "cards", width: 760, quality: 86, sharpen: true },
+  { dir: "cards", width: 640, quality: 78, sharpen: true },
 ];
 const DIRS = ["products", "courses"];
 

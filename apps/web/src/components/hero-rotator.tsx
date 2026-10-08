@@ -73,6 +73,11 @@ export function HeroRotator() {
     return () => clearInterval(t);
   }, [n, i]);
 
+  // Only the slide on show and the one after it carry their photograph. All
+  // four used to load with the page, three of them for slides nobody had
+  // reached yet, competing with the product pictures below.
+  const near = (idx: number) => idx === i || idx === (i + 1) % n;
+
   return (
     <div className="group/hero relative min-h-[440px] overflow-hidden sm:min-h-[320px] lg:h-[400px]">
       {SLIDES.map((s, idx) => (
@@ -87,7 +92,7 @@ export function HeroRotator() {
         >
           {/* Mobile: full-bleed photo with a dark scrim (desktop uses the framed photo). */}
           <div className="absolute inset-0 sm:hidden">
-            <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />
+            {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />}
             <div className="absolute inset-0 bg-ink-900/45" />
           </div>
 
@@ -116,14 +121,16 @@ export function HeroRotator() {
 
             {/* Framed photo (desktop) */}
             <div className="relative hidden h-[86%] overflow-hidden sm:block">
-              <Image
-                src={s.img}
-                alt=""
-                fill
-                priority={idx === 0}
-                sizes="(max-width: 1024px) 45vw, 34vw"
-                className="object-cover"
-              />
+              {near(idx) && (
+                <Image
+                  src={s.img}
+                  alt=""
+                  fill
+                  priority={idx === 0}
+                  sizes="(max-width: 1024px) 45vw, 34vw"
+                  className="object-cover"
+                />
+              )}
             </div>
           </div>
         </div>
