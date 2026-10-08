@@ -10,9 +10,17 @@ import { SafeImage } from "@/components/safe-image";
  * part each time — so the grid is always full and a shopper can study the
  * detail. They are labelled as close-ups; nothing is shown that is not the
  * product's own picture.
+ *
+ * Each tile sits on a different ground — sand, white, a pale indigo, a pale
+ * orange — so the four read as four views rather than one picture repeated.
+ * Only the ground changes. The photograph itself is never recoloured: a tile
+ * that tinted a silver laptop blue would be showing a product we do not sell.
  */
 
 const TILES = 4;
+
+/** The ground behind each tile, in order. */
+const GROUNDS = ["bg-[var(--tile)]", "bg-white", "bg-ink-50", "bg-brand-50"];
 
 /** Where each close-up looks: the enlargement, and the corner it grows from. */
 const CLOSE_UPS = [
@@ -41,14 +49,14 @@ export function ProductGallery({
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3">
       {tiles.map((t, i) => (
-        <div key={`${t.src}-${i}`} className="relative aspect-[6/5] overflow-hidden bg-[var(--tile)]">
+        <div key={`${t.src}-${i}`} className={`relative aspect-[6/5] overflow-hidden ${GROUNDS[i % GROUNDS.length]}`}>
           <SafeImage
             src={t.src}
             alt={t.closeUp ? `${alt} — close-up` : i === 0 ? alt : `${alt} — view ${i + 1}`}
             fill
             sizes="(max-width: 1024px) 50vw, 29vw"
             priority={i === 0}
-            className={`object-contain mix-blend-multiply ${t.closeUp ? "p-0" : "p-4 sm:p-7"}`}
+            className={`object-contain mix-blend-multiply ${t.closeUp ? "p-0 contrast-[1.06] saturate-[1.08]" : "p-4 sm:p-7"}`}
             style={t.closeUp ? { transform: `scale(${t.closeUp.scale})`, transformOrigin: t.closeUp.origin } : undefined}
           />
           {t.closeUp && (
