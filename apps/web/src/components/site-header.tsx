@@ -104,7 +104,7 @@ export function SiteHeader() {
           and split into what we SELL (bold, up front) and the informational
           pages (muted) — fifteen identical links were impossible to scan. */}
       <div className="band-light hidden border-b border-ink-600/10 md:block">
-        <div className="container-wide flex items-center gap-x-5 py-2.5 text-[12.5px] font-medium">
+        <div className="container-wide flex items-center gap-x-5 py-2.5 text-[13.5px] font-semibold">
           <Link
             href="/sell"
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600"
@@ -141,8 +141,8 @@ export function SiteHeader() {
                 href={it.href}
                 className={`whitespace-nowrap border-b-2 pb-0.5 transition ${
                   pathname.startsWith(it.href)
-                    ? "border-brand-500 text-white"
-                    : "border-transparent text-white hover:border-brand-400"
+                    ? "!border-brand-500 !text-brand-600"
+                    : "!border-transparent !text-ink-900 hover:!border-brand-500 hover:!text-brand-600"
                 }`}
               >
                 {it.label}
@@ -150,14 +150,14 @@ export function SiteHeader() {
               ),
             )}
 
-            <span className="h-3 w-px shrink-0 bg-white/25" aria-hidden />
+            <span className="h-4 w-px shrink-0 !bg-ink-600/30" aria-hidden />
 
             {/* Everything else */}
             {SECONDARY_LINKS.map((it) => (
               <Link
                 key={it.href}
                 href={it.href}
-                className="whitespace-nowrap text-white/70 transition hover:text-white"
+                className="whitespace-nowrap border-b-2 !border-transparent pb-0.5 !text-ink-900 transition hover:!border-brand-500 hover:!text-brand-600"
               >
                 {it.label}
               </Link>
@@ -166,7 +166,7 @@ export function SiteHeader() {
 
           <a
             href={telHref(site.phoneDisplay)}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 transition hover:bg-white/20"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full !bg-ink-600 px-3.5 py-1 font-bold !text-white transition hover:!bg-ink-700"
           >
             <Phone size={11} /> {site.phoneDisplay}
           </a>
@@ -334,7 +334,7 @@ export function SiteHeader() {
                 key={c.href}
                 href={c.href}
                 className={`shrink-0 whitespace-nowrap border-b py-1 font-display text-[18px] font-medium transition ${
-                  active ? "border-brand-500 text-brand-600" : "border-transparent text-ink-900 hover:border-ink-900"
+                  active ? "!border-brand-500 text-brand-600" : "!border-transparent text-ink-900 hover:!border-ink-900"
                 }`}
               >
                 {c.label}
