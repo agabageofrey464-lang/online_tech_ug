@@ -1,8 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import { SafeImage } from "@/components/safe-image";
 
+/**
+ * A product's photographs, laid out as a grid of large tiles rather than one
+ * picture with thumbnails to click through — everything we have of the product
+ * is on the page at once. One photo fills the width; with an odd number the
+ * first leads across both columns.
+ */
 export function ProductGallery({
   images,
   alt,
@@ -10,44 +13,32 @@ export function ProductGallery({
 }: {
   images: string[];
   alt: string;
-  children?: React.ReactNode; // badges overlay
+  children?: React.ReactNode; // badges overlay, on the first tile
 }) {
-  const [active, setActive] = useState(0);
   const list = images.length > 0 ? images : ["/products/placeholder.webp"];
+  const odd = list.length % 2 === 1;
 
   return (
-    <div className="flex flex-col-reverse gap-3 sm:flex-row">
-      {/* Thumbnails */}
-      {list.length > 1 && (
-        <div className="flex gap-2 sm:flex-col">
-          {list.map((src, i) => (
-            <button
-              key={src}
-              onMouseEnter={() => setActive(i)}
-              onClick={() => setActive(i)}
-              aria-label={`View ${i + 1}`}
-              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition ${
-                i === active ? "border-brand-500" : "border-ink-600/10 hover:border-brand-300"
-              }`}
-            >
-              <SafeImage src={src} alt={`${alt} view ${i + 1}`} fill sizes="64px" className="object-contain p-1" />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Main image */}
-      <div className="relative aspect-[4/3] max-h-[300px] flex-1 overflow-hidden rounded-card bg-white shadow-sm">
-        <SafeImage
-          src={list[active]}
-          alt={alt}
-          fill
-          sizes="(max-width: 1024px) 100vw, 45vw"
-          priority
-          className="object-contain p-1"
-        />
-        {children}
-      </div>
+    <div className={`grid gap-3 ${list.length > 1 ? "grid-cols-2" : ""}`}>
+      {list.map((src, i) => {
+        const wide = odd && i === 0;
+        return (
+          <div
+            key={src}
+            className={`relative overflow-hidden bg-[var(--tile)] ${wide ? "col-span-2 aspect-[16/10]" : "aspect-[6/5]"}`}
+          >
+            <SafeImage
+              src={src}
+              alt={i === 0 ? alt : `${alt} — view ${i + 1}`}
+              fill
+              sizes={wide ? "(max-width: 1024px) 100vw, 58vw" : "(max-width: 1024px) 50vw, 29vw"}
+              priority={i === 0}
+              className="object-contain p-5 mix-blend-multiply sm:p-8"
+            />
+            {i === 0 && children}
+          </div>
+        );
+      })}
     </div>
   );
 }

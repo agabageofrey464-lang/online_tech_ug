@@ -28,7 +28,7 @@ export function ShopHeading({ stats }: { stats: string[] }) {
 
   const title = q
     ? `Search: “${q}”`
-    : brand || cat || (deals ? "Top Deals" : isNew ? "New Arrivals" : "Computers & Accessories");
+    : brand || cat || (deals ? "Reduced Prices" : isNew ? "New Arrivals" : "Computers & Accessories");
   const isFiltered = Boolean(q || brand || cat || deals || isNew);
 
   return (

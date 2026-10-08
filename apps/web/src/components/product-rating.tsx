@@ -51,7 +51,7 @@ export function ProductRating({ slug, className = "" }: { slug: string; classNam
   if (!rating || rating.count === 0) return null;
   return (
     <span className={`flex items-center gap-1 text-[12.5px] leading-none ${className}`}>
-      <span className="text-[14px] leading-none text-[#f68b1e]">★</span>
+      <span className="text-[14px] leading-none text-[#f15a29]">★</span>
       <span className="font-bold text-ink-900">{rating.average.toFixed(1)}</span>
       <span className="text-ink-700/50">({rating.count.toLocaleString()})</span>
     </span>

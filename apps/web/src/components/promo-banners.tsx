@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { isAcademyLink } from "@/lib/academy-zone";
+import { onPalette, SAND } from "@/lib/palette";
 
 // The rotating campaign offers, drawn as a tall festival strip — a picture,
 // the headline, a white offer pill and the button, in one band. Colours come
@@ -26,7 +27,7 @@ const BANNERS = [
     cta: "See the deals",
     href: "/shop?deals=1",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-4.webp",
   },
   {
@@ -41,7 +42,7 @@ const BANNERS = [
     cta: "Shop bundles",
     href: "/shop?cat=Laptops",
     bg: "bg-teal-800",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -56,7 +57,7 @@ const BANNERS = [
     cta: "Browse courses",
     href: "/learn",
     bg: "bg-teal-600",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-1.webp",
   },
   {
@@ -71,7 +72,7 @@ const BANNERS = [
     cta: "Shop flash sales",
     href: "/shop?deals=1",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-5.webp",
   },
   {
@@ -86,7 +87,7 @@ const BANNERS = [
     cta: "Get a quote",
     href: "/services",
     bg: "bg-teal-800",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -101,7 +102,7 @@ const BANNERS = [
     cta: "Ask for a valuation",
     href: "/contact",
     bg: "bg-teal-600",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-1.webp",
   },
   // ── Office skills ───────────────────────────────────────────
@@ -119,7 +120,7 @@ const BANNERS = [
     cta: "Enrol now",
     href: "/learn/microsoft-excel",
     bg: "bg-green-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/courses/microsoft-excel.webp",
   },
   {
@@ -133,8 +134,8 @@ const BANNERS = [
     small: "From UGX 530,000",
     cta: "See the programme",
     href: "/learn/microsoft-office",
-    bg: "bg-brand-600",
-    panel: "bg-[#FCDC04]",
+    bg: "bg-ink-500",
+    panel: "bg-[#f3efe9]",
     img: "/courses/microsoft-office.webp",
   },
   {
@@ -148,8 +149,8 @@ const BANNERS = [
     small: "Physical or online",
     cta: "Start learning",
     href: "/learn/microsoft-powerpoint",
-    bg: "bg-brand-700",
-    panel: "bg-[#FCDC04]",
+    bg: "bg-ink-700",
+    panel: "bg-[#f3efe9]",
     img: "/courses/microsoft-powerpoint.webp",
   },
 
@@ -168,7 +169,7 @@ const BANNERS = [
     cta: "Shop iPhone",
     href: "/shop?cat=Phones&q=iPhone",
     bg: "bg-ink-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/promos/iphone-16-series.webp",
   },
   {
@@ -182,8 +183,8 @@ const BANNERS = [
     small: "Sealed with Apple warranty",
     cta: "See the iPhone 17",
     href: "/shop/iphone-17-256gb",
-    bg: "bg-brand-600",
-    panel: "bg-[#FCDC04]",
+    bg: "bg-ink-500",
+    panel: "bg-[#f3efe9]",
     img: "/promos/iphone-17-series.webp",
   },
   {
@@ -198,7 +199,7 @@ const BANNERS = [
     cta: "Compare the 14s",
     href: "/shop?cat=Phones&q=iPhone%2014",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/promos/iphone-14-series.webp",
   },
   {
@@ -213,7 +214,7 @@ const BANNERS = [
     cta: "Shop iPhone 15",
     href: "/shop?cat=Phones&q=iPhone%2015",
     bg: "bg-ink-600",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/promos/iphone-15-series.webp",
   },
   {
@@ -228,7 +229,7 @@ const BANNERS = [
     cta: "Book a repair",
     href: "/services#repairs-support",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-6.webp",
   },
   {
@@ -243,7 +244,7 @@ const BANNERS = [
     cta: "Shop accessories",
     href: "/shop?cat=Accessories",
     bg: "bg-teal-800",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -258,7 +259,7 @@ const BANNERS = [
     cta: "Shop laptops",
     href: "/shop?cat=Laptops",
     bg: "bg-teal-600",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-1.webp",
   },
   {
@@ -273,7 +274,7 @@ const BANNERS = [
     cta: "Shop storage",
     href: "/shop?cat=Storage",
     bg: "bg-teal-700",
-    panel: "bg-[#22d3ee]",
+    panel: "bg-[#adaed9]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -288,7 +289,7 @@ const BANNERS = [
     cta: "Browse courses",
     href: "/learn",
     bg: "bg-teal-800",
-    panel: "bg-[#fb7185]",
+    panel: "bg-[#fa7547]",
     img: "/hero/hero-4.webp",
   },
   {
@@ -318,7 +319,7 @@ const BANNERS = [
     cta: "Start selling",
     href: "/sell",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-6.webp",
   },
   {
@@ -333,7 +334,7 @@ const BANNERS = [
     cta: "Shop certified",
     href: "/shop?q=uk used",
     bg: "bg-teal-800",
-    panel: "bg-[#86efac]",
+    panel: "bg-[#adaed9]",
     img: "/hero/hero-1.webp",
   },
   {
@@ -348,7 +349,7 @@ const BANNERS = [
     cta: "Get a quote",
     href: "/contact",
     bg: "bg-teal-600",
-    panel: "bg-[#93c5fd]",
+    panel: "bg-[#adaed9]",
     img: "/hero/hero-6.webp",
   },
   {
@@ -363,7 +364,7 @@ const BANNERS = [
     cta: "Shop student picks",
     href: "/shop?cat=Laptops",
     bg: "bg-teal-700",
-    panel: "bg-[#FCDC04]",
+    panel: "bg-[#f3efe9]",
     img: "/hero/hero-4.webp",
   },
   {
@@ -378,7 +379,7 @@ const BANNERS = [
     cta: "Shop upgrades",
     href: "/shop?cat=Components",
     bg: "bg-teal-800",
-    panel: "bg-[#fcd34d]",
+    panel: "bg-[#e8e1d7]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -457,8 +458,8 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
             img: c.image_url || "/hero/hero-1.webp",
             bg: "",
             panel: "",
-            bgHex: c.bg_color || "#0e7490",
-            panelHex: c.panel_color || "#FCDC04",
+            bgHex: onPalette(c.bg_color),
+            panelHex: onPalette(c.panel_color, SAND),
             slug: c.slug,
           })),
         );
@@ -525,7 +526,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
           <span className="min-w-0 truncate rounded-full bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
             {b.pill}
           </span>
-          <span className="press shrink-0 rounded-full bg-[#FCDC04] px-3.5 py-1.5 text-[11px] font-extrabold text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
+          <span className="press shrink-0 rounded-full bg-[#f3efe9] px-3.5 py-1.5 text-[11px] font-extrabold text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
             {b.cta} →
           </span>
         </span>

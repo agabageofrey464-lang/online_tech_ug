@@ -16,6 +16,8 @@ class ProductSpecs(BaseModel):
     ports: str = ""
     build: str = ""
     purpose: str = ""
+    # Colours the product comes in, separated by commas ("Silver, Space Grey").
+    colors: str = ""
 
 
 class ProductBase(BaseModel):

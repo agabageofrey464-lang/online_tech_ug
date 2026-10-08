@@ -74,6 +74,12 @@ def _generate_reference() -> str:
     return "OTU-" + secrets.token_hex(4).upper()  # e.g. OTU-9F2A1C3B
 
 
+def _with_option(name: str, option: str) -> str:
+    """The product's name with the customer's chosen colour after it."""
+    option = " ".join(option.split())
+    return f"{name} — {option}"[:200] if option else name
+
+
 def create_order(db: Session, payload: OrderCreate) -> Order:
     line_items: list[OrderItem] = []
     subtotal = 0
@@ -116,7 +122,7 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         line_items.append(
             OrderItem(
                 product_slug=product["slug"],
-                name=product["name"],
+                name=_with_option(product["name"], item.option),
                 unit_price=unit_price,
                 quantity=item.quantity,
                 line_total=line_total,

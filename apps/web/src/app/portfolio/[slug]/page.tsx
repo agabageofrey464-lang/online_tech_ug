@@ -125,7 +125,7 @@ export default async function ProjectDetailPage({
                 href={project.demo}
                 target="_blank"
                 rel="noreferrer"
-                className="press inline-flex items-center gap-2 rounded-full bg-[#FCDC04] px-5 py-2.5 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105"
+                className="press inline-flex items-center gap-2 rounded-full bg-[#f3efe9] px-5 py-2.5 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105"
               >
                 Open the live site <ArrowUpRight size={16} />
               </a>
@@ -175,7 +175,7 @@ export default async function ProjectDetailPage({
           <p className="mt-2 text-[15.5px] leading-relaxed text-ink-700/85">{project.problem}</p>
         </div>
         <div className="rounded-2xl bg-ink-700 p-6 text-white shadow-sm sm:p-7">
-          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#FCDC04]">What we did</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#f3efe9]">What we did</p>
           <p className="mt-2 text-[15.5px] leading-relaxed text-white/90">{project.solution}</p>
         </div>
       </section>
@@ -247,7 +247,7 @@ export default async function ProjectDetailPage({
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <Link href="/request" className="press inline-flex items-center justify-center rounded-full bg-[#FCDC04] px-6 py-3 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105">
+            <Link href="/request" className="press inline-flex items-center justify-center rounded-full bg-[#f3efe9] px-6 py-3 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105">
               Request a quote
             </Link>
             <a href={ask} target="_blank" rel="noreferrer" className="press inline-flex items-center justify-center rounded-full bg-white/15 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/25">

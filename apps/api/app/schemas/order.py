@@ -24,6 +24,9 @@ class PaymentMethod(str, Enum):
 class OrderItemIn(BaseModel):
     slug: str
     quantity: int = Field(default=1, ge=1, le=99)
+    # What the customer chose on the product page — a colour. Written onto the
+    # order line so whoever packs the order knows which one to send.
+    option: str = Field(default="", max_length=60)
 
 
 class OrderCreate(BaseModel):

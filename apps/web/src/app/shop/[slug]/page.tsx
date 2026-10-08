@@ -8,7 +8,7 @@ import { products as seedProducts, productImage, type Product } from "@/lib/data
 import { getProduct, getProducts } from "@/lib/catalog";
 import { ugx, whatsappLink, site } from "@/lib/site";
 import { Badge, Stars, Button } from "@/components/ui";
-import { AddToCartButton } from "@/components/add-to-cart-button";
+import { ProductBuyBox, type Choice } from "@/components/product-buy-box";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
@@ -102,6 +102,27 @@ function specRows(product: Product): [string, string][] {
   ).filter((r): r is [string, string] => Boolean(r[1]));
 }
 
+/**
+ * The model a product is a version of: its name without the bracketed part and
+ * without the capacity. "HP EliteBook 840 G8 (16GB)" and "HP EliteBook 840 G8
+ * (8GB)" are one model in two configurations.
+ */
+function modelOf(name: string): string {
+  return name
+    .replace(/\(.*?\)/g, " ")
+    .replace(/\b\d+\s?(GB|TB)\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+/** What sets one configuration apart: the bracketed part, or the capacity. */
+function choiceLabel(p: Product): string {
+  const inBrackets = p.name.match(/\((.*?)\)/)?.[1];
+  const sizes = p.name.replace(/\(.*?\)/g, " ").match(/\b\d+\s?(GB|TB)\b/gi)?.join(" / ");
+  return [sizes, inBrackets].filter(Boolean).join(" · ") || p.condition;
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -130,6 +151,16 @@ export default async function ProductDetailPage({
   const discountPct = oldPrice ? Math.max(1, Math.round((1 - product.price / oldPrice) * 100)) : 0;
   const ratings = await reviewSummary(product.id);
 
+  // Other listings of the same model, offered as choices. Each is a product of
+  // its own — its own price, stock and page.
+  const model = modelOf(product.name);
+  const choices: Choice[] = products
+    .filter((p) => p.brand === product.brand && p.category === product.category && p.inStock !== false && modelOf(p.name) === model)
+    .concat(inStock ? [] : [product])
+    .sort((a, b) => a.price - b.price)
+    .map((p) => ({ id: p.id, label: choiceLabel(p), price: p.price, current: p.id === product.id }));
+  const item = { slug: product.id, name: product.name, price: product.price, category: product.category, condition: product.condition };
+
   return (
     <div className="container-page py-10">
       <ProductStructuredData product={product} rating={ratings} />
@@ -151,92 +182,87 @@ export default async function ProductDetailPage({
         />
       </div>
 
-      {/* Amazon-style 3 zones: gallery · details · buy box */}
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)_minmax(0,3fr)]">
-        {/* Gallery */}
-        <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
-          <div className="absolute left-4 top-4 z-10 flex gap-2">
-            {product.badge && <Badge>{product.badge}</Badge>}
-          </div>
-        </ProductGallery>
+      {/* Two zones: the photographs, and beside them everything needed to
+          choose and buy. The long-form detail follows underneath. */}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <div className="min-w-0">
+          <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
+            <div className="absolute left-4 top-4 z-10 flex gap-2">
+              {product.badge && <Badge>{product.badge}</Badge>}
+            </div>
+          </ProductGallery>
+        </div>
 
-        {/* Center: details (Jumia-style) */}
-        <div className="order-3 lg:order-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded bg-ink-600 px-2 py-0.5 text-[11px] font-bold text-white">Official Store</span>
-          </div>
-          <h1 className="mt-2 text-xl font-bold text-ink-900 sm:text-2xl">{product.name}</h1>
-          <p className="mt-1 text-sm text-ink-700/70">
+        <div className="min-w-0 lg:sticky lg:top-44 lg:self-start">
+          <span
+            className={`inline-block px-5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] ${
+              product.condition === "Brand New" ? "bg-ink-600 text-white" : "bg-[#dcd6cd] text-ink-900"
+            }`}
+          >
+            {product.condition}
+          </span>
+          <h1 className="mt-5 text-[30px] leading-[1.15] text-ink-900 sm:text-[34px]">{product.name}</h1>
+          <p className="mt-2 text-[13px] text-ink-700/70">
             Brand:{" "}
             <Link href={`/shop?brand=${product.brand}`} className="font-semibold text-brand-600 hover:underline">
               {product.brand}
             </Link>
-            {" | "}
+            {" · "}
             <Link href={`/shop?brand=${product.brand}`} className="text-brand-600 hover:underline">
               Similar products from {product.brand}
             </Link>
+            {" · "}Official Store
           </p>
 
-          {/* Price box */}
-          <div className="mt-4 overflow-hidden rounded-lg border border-ink-600/10">
-            <div className="p-4">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="text-2xl font-extrabold text-ink-900">{ugx(product.price)}</span>
-                {oldPrice && (
-                  <>
-                    <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                    <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-xs font-extrabold text-white">
-                      -{discountPct}%
-                    </span>
-                  </>
-                )}
-              </div>
-              {inStock ? (
-                <p className="mt-2 text-sm font-bold text-green-700">In stock</p>
-              ) : (
-                <p className="mt-2 text-sm font-bold text-red-500">Currently unavailable</p>
-              )}
-              <p className="mt-2 text-xs text-ink-700/60">+ delivery from {ugx(10000)} in and around Kampala</p>
-              <a href="#reviews" className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:underline">
-                {ratings ? (
-                  <>
-                    <Stars rating={ratings.average} />({ratings.count} verified {ratings.count === 1 ? "review" : "reviews"})
-                  </>
-                ) : (
-                  "No reviews yet — be the first"
-                )}
-              </a>
-            </div>
-          </div>
-
-          {/* Order now — Jumia orange, full width */}
-          <div id="order-now" className="mt-3 space-y-2">
-            {inStock ? (
-              <AddToCartButton
-                className="w-full justify-center !py-3.5 !text-base"
-                label="Order now"
-                item={{
-                  slug: product.id,
-                  name: product.name,
-                  price: product.price,
-                  category: product.category,
-                  condition: product.condition,
-                }}
-              />
-            ) : (
+          <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="text-[20px] text-ink-900">{ugx(product.price)}</span>
+            {oldPrice && (
               <>
-                <button disabled className="w-full cursor-not-allowed rounded-lg bg-ink-100 py-3.5 font-bold text-ink-700/50">
+                <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+                <span className="text-sm font-bold text-brand-600">-{discountPct}%</span>
+              </>
+            )}
+          </div>
+          <p className={`mt-1.5 text-[13px] ${inStock ? "text-ink-700/70" : "font-semibold text-brand-700"}`}>
+            {inStock ? "In stock" : "Currently unavailable"} · delivery from {ugx(10000)} in and around Kampala
+          </p>
+          <a href="#reviews" className="mt-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-800 underline-offset-4 hover:underline">
+            {ratings ? (
+              <>
+                <Stars rating={ratings.average} />
+                {ratings.count} verified {ratings.count === 1 ? "review" : "reviews"}
+              </>
+            ) : (
+              "No reviews yet — be the first"
+            )}
+          </a>
+
+          {(copy?.description || product.details?.purpose) && (
+            <p className="mt-5 font-display text-[19px] leading-[1.45] text-ink-900">
+              {(copy?.description ?? product.details?.purpose ?? "").split(/(?<=\.)\s/)[0]}
+            </p>
+          )}
+
+          <div id="order-now" className="mt-6 border-t border-ink-600/15 pt-6">
+            {inStock ? (
+              <ProductBuyBox item={item} colors={product.colors ?? []} choices={choices} />
+            ) : (
+              <div className="space-y-2">
+                <button disabled className="h-14 w-full cursor-not-allowed bg-ink-100 text-[13px] font-bold uppercase tracking-[0.18em] text-ink-700/50">
                   Out of stock
                 </button>
                 <StockAlert productName={product.name} slug={product.id} />
-              </>
+              </div>
             )}
-            <div className="flex gap-2">
+            <p className="mt-4 text-center font-display text-[17px] italic text-ink-800">
+              Countrywide delivery — the fee depends on your distance
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <Button
                 href={whatsappLink(`Hi, I'm interested in the ${product.name} (${ugx(product.price)}).`)}
                 external
                 variant="outline"
-                className="flex-1 justify-center"
+                className="justify-center"
               >
                 💬 WhatsApp
               </Button>
@@ -244,43 +270,48 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Promotions — real offers only, no invented ones. */}
-            <div className="mt-5 border-t border-ink-600/10 pt-4">
-              <p className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Promotions</p>
-              <ul className="mt-2.5 space-y-2">
-                <li className="flex items-start gap-2.5 text-sm">
-                  <Truck size={17} className="mt-0.5 shrink-0 text-brand-500" />
-                  <span className="text-ink-700/85">
-                    Countrywide delivery — <b className="text-ink-900">fee based on your distance</b>
-                  </span>
-                </li>
-                <li className="flex items-start gap-2.5 text-sm">
-                  <Phone size={17} className="mt-0.5 shrink-0 text-brand-500" />
-                  <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
-                    Call {site.phoneDisplay} to order
-                  </a>
-                </li>
-                <li className="flex items-start gap-2.5 text-sm">
-                  <ShieldCheck size={17} className="mt-0.5 shrink-0 text-brand-500" />
-                  <span className="text-ink-700/85">
-                    {warrantyFor(product)} · Tested before dispatch
-                  </span>
-                </li>
-              </ul>
-            </div>
+            <ul className="mt-6 space-y-2.5 border-t border-ink-600/15 pt-5">
+              <li className="flex items-start gap-2.5 text-sm">
+                <Truck size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
+                <span className="text-ink-700/85">
+                  Countrywide delivery — <b className="text-ink-900">fee based on your distance</b>
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5 text-sm">
+                <Phone size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
+                <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
+                  Call {site.phoneDisplay} to order
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5 text-sm">
+                <ShieldCheck size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
+                <span className="text-ink-700/85">
+                  {warrantyFor(product)} · Tested before dispatch
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5 text-sm">
+                <RotateCcw size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
+                <span className="text-ink-700/85">7-day easy return on eligible items</span>
+              </li>
+            </ul>
 
-            {/* Share this product */}
             <ShareProduct
-              className="mt-5 border-t border-ink-600/10 pt-4"
+              className="mt-5 border-t border-ink-600/15 pt-4"
               title={product.name}
               path={`/shop/${product.id}`}
             />
           </div>
+        </div>
+      </div>
 
+      {/* The long-form detail, with delivery and seller beside it. */}
+      <div className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <div className="min-w-0 space-y-5">
           {/* Key features — derived from the spec table, so the two always agree. */}
           {product.details && (
-            <div className="mt-5 rounded-card bg-brand-50 p-4">
-              <p className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Key Features</p>
-              <ul className="mt-2 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+            <div className="bg-[var(--tile)] p-5 sm:p-6">
+              <h2 className="text-[22px] text-ink-900">Key Features</h2>
+              <ul className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
                 {keyFeatures(product).map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-ink-700/85">
                     <span className="mt-0.5 shrink-0 text-brand-500">✓</span>
@@ -291,30 +322,29 @@ export default async function ProductDetailPage({
             </div>
           )}
 
-          {/* Written description */}
           {copy?.description && (
-            <div className="mt-5 rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
-              <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Product Details</h2>
+            <div className="bg-white p-5 sm:p-6">
+              <h2 className="text-[22px] text-ink-900">Product Details</h2>
               <p className="mt-2 text-sm leading-relaxed text-ink-700/85">{copy.description}</p>
             </div>
           )}
 
-          <div className="mt-6 rounded-card border border-ink-600/10 bg-white p-5">
-            <h2 className="text-sm font-bold text-ink-600">Full specifications</h2>
+          <div className="bg-white p-5 sm:p-6">
+            <h2 className="text-[22px] text-ink-900">Full specifications</h2>
             {product.details ? (
-              <dl className="mt-3 divide-y divide-ink-600/5">
+              <dl className="mt-3 divide-y divide-ink-600/10">
                 {specRows(product).map(([label, value]) => (
-                  <div key={label} className="grid grid-cols-[40%_60%] gap-3 py-2 text-sm">
-                    <dt className="font-medium text-ink-700/60">{label}</dt>
-                    <dd className="text-ink-700/90">{value}</dd>
+                  <div key={label} className="grid grid-cols-[40%_60%] gap-3 py-2.5 text-sm">
+                    <dt className="text-ink-700/60">{label}</dt>
+                    <dd className="text-ink-900">{value}</dd>
                   </div>
                 ))}
               </dl>
             ) : (
               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {product.specs.map((s) => (
-                  <li key={s} className="flex items-center gap-2 text-sm text-ink-700/80">
-                    <span className="text-brand-500">✓</span> {s}
+                {product.specs.map((sp) => (
+                  <li key={sp} className="flex items-center gap-2 text-sm text-ink-700/80">
+                    <span className="text-brand-500">✓</span> {sp}
                   </li>
                 ))}
               </ul>
@@ -323,22 +353,22 @@ export default async function ProductDetailPage({
 
           {/* What's in the box + warranty — stacks on phones, side by side on tablets up. */}
           {product.details && (
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
-                <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">What&apos;s in the box</h2>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="bg-white p-5 sm:p-6">
+                <h2 className="text-[22px] text-ink-900">What&apos;s in the box</h2>
                 <ul className="mt-2 space-y-1.5">
-                  {boxContents(product).map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-sm text-ink-700/85">
-                      <Package size={15} className="mt-0.5 shrink-0 text-brand-600" />
-                      <span className="min-w-0">{b}</span>
+                  {boxContents(product).map((bx) => (
+                    <li key={bx} className="flex items-start gap-2 text-sm text-ink-700/85">
+                      <Package size={15} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
+                      <span className="min-w-0">{bx}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-card border border-ink-600/10 bg-white p-4 sm:p-5">
-                <h2 className="text-sm font-extrabold uppercase tracking-wide text-ink-900">Warranty</h2>
+              <div className="bg-white p-5 sm:p-6">
+                <h2 className="text-[22px] text-ink-900">Warranty</h2>
                 <p className="mt-2 flex items-start gap-2 text-sm text-ink-700/85">
-                  <ShieldCheck size={15} className="mt-0.5 shrink-0 text-brand-600" />
+                  <ShieldCheck size={15} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                   <span className="min-w-0">
                     {warrantyFor(product)} — covers hardware faults under normal use. Bring the machine to our
                     Kampala workshop and we will repair or replace it.
@@ -349,64 +379,51 @@ export default async function ProductDetailPage({
           )}
         </div>
 
-        {/* Right: Delivery & Returns (Jumia-style) */}
-        <aside className="order-2 h-fit overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm lg:order-3 lg:sticky lg:top-28">
-          <div className="border-b border-ink-600/10 px-4 py-2.5">
-            <p className="text-sm font-extrabold tracking-wide text-ink-900">DELIVERY &amp; RETURNS</p>
-          </div>
+        <aside className="h-fit bg-white">
+          <h2 className="border-b border-ink-600/10 px-5 py-4 text-[22px] text-ink-900">Delivery &amp; Returns</h2>
           <div className="divide-y divide-ink-600/10 text-sm">
             <DeliveryCheck />
-            <div className="flex items-start gap-2.5 p-3">
-              <RotateCcw size={20} className="mt-0.5 shrink-0 text-brand-600" />
+            <div className="flex items-start gap-2.5 p-4">
+              <RotateCcw size={20} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
               <div>
-                <p className="font-bold text-ink-900">Returns Policy</p>
+                <p className="font-semibold text-ink-900">Returns Policy</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">7-day easy return on eligible items.</p>
               </div>
             </div>
-            <div className="flex items-start gap-2.5 p-3">
-              <ShieldCheck size={20} className="mt-0.5 shrink-0 text-brand-600" />
+            <div className="flex items-start gap-2.5 p-4">
+              <ShieldCheck size={20} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
               <div>
-                <p className="font-bold text-ink-900">Genuine &amp; Warranted</p>
+                <p className="font-semibold text-ink-900">Genuine &amp; Warranted</p>
                 <p className="mt-0.5 text-xs text-ink-700/60">Quality-checked. Pay via MTN/Airtel MoMo, or at our shop.</p>
               </div>
             </div>
           </div>
 
           {/* Seller information — we are the seller on our own storefront. */}
-          <div className="border-t-4 border-ink-50">
-            <div className="border-b border-ink-600/10 px-4 py-2.5">
-              <p className="text-sm font-extrabold tracking-wide text-ink-900">SELLER INFORMATION</p>
-            </div>
-            <div className="p-4">
-              <p className="text-sm font-extrabold text-ink-900">{site.name}</p>
-              <p className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-700">
-                <Check size={11} /> Official Store
-              </p>
-              <ul className="mt-3 space-y-1.5 text-xs text-ink-700/75">
-                <li className="flex items-center gap-1.5">
-                  <MapPin size={13} className="shrink-0 text-brand-600" /> {site.address}
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Phone size={13} className="shrink-0 text-brand-600" />
-                  <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="hover:underline">
-                    {site.phoneDisplay}
-                  </a>
-                </li>
-              </ul>
-              <div className="mt-3 flex gap-2">
-                <Link
-                  href="/about"
-                  className="flex-1 rounded-md border border-ink-600/20 px-3 py-2 text-center text-xs font-bold text-ink-800 transition hover:bg-ink-50"
-                >
-                  About us
-                </Link>
-                <Link
-                  href="/contact"
-                  className="flex-1 rounded-md bg-ink-700 px-3 py-2 text-center text-xs font-bold text-white transition hover:bg-ink-800"
-                >
-                  Contact
-                </Link>
-              </div>
+          <h2 className="border-y border-ink-600/10 px-5 py-4 text-[22px] text-ink-900">Seller Information</h2>
+          <div className="p-5">
+            <p className="text-sm font-semibold text-ink-900">{site.name}</p>
+            <p className="mt-1 inline-flex items-center gap-1 bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-700">
+              <Check size={11} /> Official Store
+            </p>
+            <ul className="mt-3 space-y-1.5 text-xs text-ink-700/75">
+              <li className="flex items-center gap-1.5">
+                <MapPin size={13} className="shrink-0 text-ink-700" /> {site.address}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <Phone size={13} className="shrink-0 text-ink-700" />
+                <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="hover:underline">
+                  {site.phoneDisplay}
+                </a>
+              </li>
+            </ul>
+            <div className="mt-4 flex gap-2">
+              <Link href="/about" className="flex-1 border border-ink-700/25 px-3 py-2.5 text-center text-xs font-bold uppercase tracking-[0.1em] text-ink-900 transition hover:border-ink-900">
+                About us
+              </Link>
+              <Link href="/contact" className="flex-1 bg-ink-600 px-3 py-2.5 text-center text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-ink-700">
+                Contact
+              </Link>
             </div>
           </div>
         </aside>
@@ -417,22 +434,16 @@ export default async function ProductDetailPage({
       {inStock && (
         <StickyOrderBar
           anchorId="order-now"
-          item={{
-            slug: product.id,
-            name: product.name,
-            price: product.price,
-            category: product.category,
-            condition: product.condition,
-          }}
+          item={item}
         />
       )}
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-xl font-extrabold text-ink-600">
+          <h2 className="text-[28px] text-ink-900">
             {sameBrand.length > 0 ? `More from ${product.brand}` : "Related products"}
           </h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

@@ -456,7 +456,7 @@ function SecuritySection() {
           {user.email_verified ? (
             <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold text-green-700">✓ Verified</span>
           ) : (
-            <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-700">Unverified</span>
+            <span className="rounded-full bg-gold-100 px-2.5 py-1 text-[11px] font-bold text-gold-700">Unverified</span>
           )}
         </div>
         {!user.email_verified && (
@@ -495,7 +495,7 @@ function SecuritySection() {
           </button>
         </div>
         {!user.email_verified && (
-          <p className="mt-1 text-xs text-amber-600">Verify your email to enable two-factor.</p>
+          <p className="mt-1 text-xs text-gold-600">Verify your email to enable two-factor.</p>
         )}
       </div>
 
@@ -523,7 +523,7 @@ function StatusBadge({ status }: { status: string }) {
       : s === "cancelled" || s === "returned"
         ? "bg-red-500 text-white"
         : s === "shipped"
-          ? "bg-indigo-500 text-white"
+          ? "bg-ink-500 text-white"
           : "bg-brand-500 text-white"; // pending/confirmed/processing
   return (
     <span className={`inline-block rounded px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${tone}`}>

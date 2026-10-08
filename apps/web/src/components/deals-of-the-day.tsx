@@ -4,20 +4,24 @@ import { productImage, type Product } from "@/lib/data";
 import { ugx, site } from "@/lib/site";
 
 /**
- * "Deals of the Day" band — a full-bleed orange strip with a decorative panel
+ * "Picks of the Day" band — a full-bleed orange strip with a decorative panel
  * at each end and warm gradient product tiles between them.
  *
  * Unlike the white-card rails elsewhere on the home page, the tiles here sit on
- * colour, so the whole band reads as one promotion rather than a row of
+ * colour, so the whole band reads as one feature rather than a row of
  * separate products.
+ *
+ * It was "Deals of the Day", but most of what filled it was stock at its normal
+ * price. It is a daily selection, so that is what it is called; genuinely
+ * reduced items sit in the Price Drops band on the home page.
  */
 
-/** The stacked "Deals of the Day" artwork used as the band's bookends. */
+/** The stacked "Picks of the Day" artwork used as the band's bookends. */
 function DealsPanel() {
   return (
     <div className="relative flex w-[8.5rem] shrink-0 select-none flex-col items-center justify-center rounded-xl bg-white/15 px-3 py-6 sm:w-[11rem]">
       <span className="text-[26px] font-black uppercase leading-[0.85] tracking-tight text-white [text-shadow:0_3px_0_rgba(0,0,0,0.18)] sm:text-[34px]">
-        Deals
+        Picks
       </span>
       <span className="my-1 -rotate-3 rounded-full bg-teal-600 px-3 py-0.5 text-[13px] font-extrabold italic text-white shadow-md sm:text-[15px]">
         of the
@@ -35,20 +39,19 @@ function DealsPanel() {
 export function DealsOfTheDay({
   title,
   items,
-  href = "/shop?deals=1",
+  href = "/shop",
 }: {
-  /** Defaults to "<brand> Deals Of The Day!". */
+  /** Defaults to "<brand> Picks Of The Day". */
   title?: string;
   items: Product[];
   href?: string;
 }) {
   if (items.length === 0) return null;
 
-  // Branded like the reference band ("SWT Deals Of The Day!").
-  const heading = title ?? `${site.name} Deals Of The Day!`;
+  const heading = title ?? `${site.name} Picks Of The Day`;
 
   return (
-    <section className="overflow-hidden rounded-lg bg-[#f15a29] shadow-sm">
+    <section className="overflow-hidden rounded-lg bg-ink-500 shadow-sm">
       <div className="flex items-center justify-between gap-2 px-4 pt-4 sm:px-6">
         <h2 className="text-lg font-black tracking-tight text-white sm:text-2xl">{heading}</h2>
         <Link
@@ -71,7 +74,7 @@ export function DealsOfTheDay({
             <Link
               key={p.id}
               href={`/shop/${p.id}`}
-              className="group flex w-[10.5rem] shrink-0 snap-start flex-col rounded-xl bg-[#f7743c] p-3 shadow-sm ring-1 ring-white/20 transition hover:ring-white/50 sm:w-[13rem]"
+              className="group flex w-[10.5rem] shrink-0 snap-start flex-col rounded-xl bg-ink-400 p-3 shadow-sm ring-1 ring-white/20 transition hover:ring-white/50 sm:w-[13rem]"
             >
               <p className="line-clamp-2 min-h-[2.4em] text-[13px] font-extrabold leading-tight text-white">
                 {p.name}

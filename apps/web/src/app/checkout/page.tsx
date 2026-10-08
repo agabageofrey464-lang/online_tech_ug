@@ -92,7 +92,7 @@ export default function CheckoutPage() {
       payment_method: payment,
       coupon_code: coupon?.code ?? "",
       referral_code: (typeof window !== "undefined" && localStorage.getItem("otu_ref")) || "",
-      items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
+      items: items.map((i) => ({ slug: i.slug, quantity: i.quantity, option: i.option ?? "" })),
     };
     try {
       const order = await createOrder(payload);
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
   ] as const;
 
   return (
-    <div className="bg-[#f1f3f6]">
+    <div className="bg-[#f3efe9]">
       <div className="container-page py-8">
         <div className="mb-4">
           <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Checkout" }]} />

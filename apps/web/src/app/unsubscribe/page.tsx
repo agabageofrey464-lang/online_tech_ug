@@ -40,7 +40,7 @@ function Inner() {
         )}
         {state === "failed" && (
           <>
-            <XCircle className="mx-auto text-amber-500" size={48} />
+            <XCircle className="mx-auto text-gold-500" size={48} />
             <h1 className="mt-4 text-xl font-extrabold text-ink-900">That link didn&apos;t work</h1>
             <p className="mt-1 text-sm text-ink-700/70">
               The link may have expired. Message us on WhatsApp and we&apos;ll remove you right away.

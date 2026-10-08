@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { listedProducts as seedProducts, productCategories, type Product } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 import { SidebarExtras } from "@/components/sidebar-extras";
@@ -21,6 +22,39 @@ const PRICE_BANDS: { label: string; min: number; max: number }[] = [
   { label: "Over UGX 5,000,000", min: 5000000, max: Infinity },
 ];
 
+/** One fold-out group in the filter panel: a serif title, a chevron, a rule. */
+function Section({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border-b border-ink-600/10 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 px-5 py-5 text-left"
+      >
+        <span className="font-display text-[20px] leading-none text-ink-900">{title}</span>
+        <ChevronDown size={20} strokeWidth={1.5} className={`shrink-0 text-ink-900 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && <div className="flex flex-col gap-3.5 px-5 pb-6 text-[14px] text-ink-800">{children}</div>}
+    </div>
+  );
+}
+
+/** A round option (one of several) or a square one (any of several). */
+function Option({ checked, onChange, square = false, children }: { checked: boolean; onChange: () => void; square?: boolean; children: ReactNode }) {
+  return (
+    <label className="flex cursor-pointer items-center gap-3 hover:text-brand-600">
+      <input type={square ? "checkbox" : "radio"} checked={checked} onChange={onChange} className="peer sr-only" />
+      <span
+        className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center border border-ink-700/50 bg-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 ${square ? "rounded-[3px]" : "rounded-full"}`}
+      >
+        {checked && <span className={`h-2.5 w-2.5 bg-ink-900 ${square ? "rounded-[1px]" : "rounded-full"}`} />}
+      </span>
+      {children}
+    </label>
+  );
+}
 
 export function ShopGrid({ items }: { items?: Product[] }) {
   const products = items?.length ? items : seedProducts;
@@ -41,13 +75,19 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   const [conditions, setConditions] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("popular");
+  // The panel starts closed on a phone and open on a desktop, and one button
+  // flips whichever applies — hence two flags rather than one.
   const [showFilters, setShowFilters] = useState(false);
+  const [hideOnDesktop, setHideOnDesktop] = useState(false);
   const [priceIdx, setPriceIdx] = useState(0);
+  // ?deals=1 — only products reduced from a recorded old price. The link said
+  // "deals" for a long time while the page showed the whole catalogue.
+  const [onlyDeals, setOnlyDeals] = useState(false);
   // Render in pages — showing all ~200 products at once fires hundreds of image
   // requests and makes the page crawl on mobile data. Sixty at a time, though:
   // at thirty-six a shopper on a wide screen reached "Loading more products…"
   // after six rows and read the shop as a small one.
-  const PAGE = 60;
+  const PAGE = 24;
   const [shown, setShown] = useState(PAGE);
   // Sentinel at the end of the grid: when it scrolls into view we reveal the
   // next batch, so the catalogue just keeps going.
@@ -62,16 +102,18 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     if (cat && (productCategories as readonly string[]).includes(cat)) setCategory(cat);
     if (br) setBrands(br.split(",").filter((b) => BRANDS.includes(b)));
     if (q) setQuery(q);
+    setOnlyDeals(params.get("deals") === "1" || params.get("deals") === "true");
     if (s === "new" || s === "price-asc" || s === "price-desc" || s === "popular") setSort(s);
   }, [params]);
 
   const anyFilter =
-    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0;
+    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || onlyDeals;
   function clearAll() {
     setCategory("All");
     setBrands([]);
     setConditions([]);
     setPriceIdx(0);
+    setOnlyDeals(false);
   }
   function toggleBrand(b: string) {
     setBrands((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
@@ -82,7 +124,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
 
   useEffect(() => {
     setShown(PAGE);
-  }, [category, brands, conditions, query, sort, priceIdx]);
+  }, [category, brands, conditions, query, sort, priceIdx, onlyDeals]);
 
   // Infinite scroll — reveal the next batch as the shopper reaches the end.
   useEffect(() => {
@@ -110,6 +152,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     if (brands.length) list = list.filter((p) => brands.includes(p.brand));
     if (conditions.length) list = list.filter((p) => p.condition != null && conditions.includes(p.condition));
     list = list.filter((p) => p.price >= band.min && p.price < band.max);
+    if (onlyDeals) list = list.filter((p) => p.oldPrice != null && p.oldPrice > p.price);
     if (query.trim()) {
       const q = query.toLowerCase();
       // Match the whole product, not just its name — shoppers search for specs
@@ -144,7 +187,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
       return [...list, ...related];
     }
     return list;
-  }, [products, category, brands, conditions, query, sort, priceIdx]);
+  }, [products, category, brands, conditions, query, sort, priceIdx, onlyDeals]);
 
   const pageItems = filtered.slice(0, shown);
 
@@ -160,35 +203,50 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     ).length;
   }, [filtered, query]);
 
+  const activeCount =
+    (category !== "All" ? 1 : 0) + brands.length + conditions.length + (priceIdx !== 0 ? 1 : 0) + (onlyDeals ? 1 : 0);
+
   return (
-    <div className="grid gap-3 lg:grid-cols-[210px_1fr]">
-      {/* Mobile filter toggle */}
-      <button
-        onClick={() => setShowFilters((v) => !v)}
-        className="flex items-center justify-between rounded bg-white p-3 text-sm font-bold text-ink-700 shadow-sm lg:hidden"
-      >
-        <span className="flex items-center gap-2">
-          Filters
-          {(category !== "All" || brands.length > 0) && (
-            <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[11px] font-semibold text-brand-700">
-              {[category !== "All" ? category : null, brands.length ? `${brands.length} brand${brands.length > 1 ? "s" : ""}` : null]
-                .filter(Boolean)
-                .join(" · ")}
+    <div>
+      {/* The bar above everything: filter toggle, search, how many products. */}
+      <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2 bg-[#f0eeea] px-4 py-3 sm:px-6">
+        <button
+          type="button"
+          onClick={() => {
+            setShowFilters((v) => !v);
+            setHideOnDesktop((v) => !v);
+          }}
+          className="flex shrink-0 items-center gap-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-900 hover:text-brand-600"
+        >
+          <SlidersHorizontal size={20} strokeWidth={1.5} />
+          <span className="lg:hidden">{showFilters ? "Hide" : "Show"} filter &amp; sort</span>
+          <span className="hidden lg:inline">{hideOnDesktop ? "Show" : "Hide"} filter &amp; sort</span>
+          {activeCount > 0 && (
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-500 px-1.5 text-[11px] font-bold tracking-normal text-white">
+              {activeCount}
             </span>
           )}
+        </button>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search products…"
+          className="order-3 w-full border-0 border-b border-ink-700/30 bg-transparent px-0 py-1.5 text-sm placeholder:text-ink-700/45 focus:border-brand-500 focus:outline-none sm:order-none sm:ml-auto sm:w-64"
+        />
+        <span className="ml-auto text-[13px] text-ink-700/80 sm:ml-0">
+          {filtered.length} {filtered.length === 1 ? "Product" : "Products"}
         </span>
-        <span className="text-brand-600">{showFilters ? "Hide ▲" : "Show ▼"}</span>
-      </button>
+      </div>
 
       {/* Mobile category chips — a scrolling row that sticks to the top, so a
           long grid can be re-filtered without scrolling back up for it. */}
-      <div className="sticky top-0 z-20 -mx-1 flex gap-2 overflow-x-auto bg-[#e6e8ef]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
+      <div className="sticky top-0 z-20 -mx-1 mb-2 flex gap-2 overflow-x-auto bg-[#f6f4f1]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
         {(productCategories as readonly string[]).map((c) => (
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
-              category === c ? "bg-brand-500 text-white shadow" : "bg-white text-ink-700 shadow-sm hover:bg-brand-50"
+            className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+              category === c ? "bg-ink-600 text-white" : "bg-white text-ink-700 hover:bg-brand-50"
             }`}
           >
             {c}
@@ -199,150 +257,119 @@ export function ShopGrid({ items }: { items?: Product[] }) {
         ))}
       </div>
 
-      {/* Sidebar filters — sticky so the column isn't a big empty space */}
-      <div className={`h-fit lg:sticky lg:top-4 lg:block lg:self-start ${showFilters ? "block" : "hidden lg:block"}`}>
-      <aside className="rounded bg-white p-4 shadow-sm">
-        {/* Category — Amazon-style drill-down */}
-        <p className="text-sm font-bold text-ink-900">Category</p>
-        <div className="mt-1.5 flex flex-col text-sm">
-          {category === "All" ? (
-            productCategories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCategory(c)}
-                className="py-1 text-left text-ink-700 transition hover:text-brand-600"
-              >
-                {c}
-              </button>
-            ))
-          ) : (
-            <>
-              <button
-                onClick={() => setCategory("All")}
-                className="flex items-center gap-1 py-1 text-left text-ink-700/70 transition hover:text-brand-600"
-              >
-                <span className="text-base leading-none">‹</span> All Categories
-              </button>
-              <span className="py-1 pl-2 font-bold text-ink-900">{category}</span>
-            </>
-          )}
-        </div>
-
-        {/* Brands — checkboxes (multi-select) */}
-        <p className="mt-5 text-sm font-bold text-ink-900">Brands</p>
-        <div className="mt-1.5 flex flex-col gap-0.5 text-sm">
-          {BRANDS.map((b) => (
-            <label
-              key={b}
-              className="flex cursor-pointer items-center gap-2 py-0.5 text-ink-800 hover:text-brand-600"
-            >
-              <input
-                type="checkbox"
-                checked={brands.includes(b)}
-                onChange={() => toggleBrand(b)}
-                className="h-4 w-4 shrink-0 rounded border-ink-600/40 accent-brand-500"
-              />
-              {b}
-            </label>
-          ))}
-        </div>
-
-        {/* Condition */}
-        {CONDITIONS.length > 0 && (
-          <>
-            <p className="mt-5 text-sm font-bold text-ink-900">Condition</p>
-            <div className="mt-1.5 flex flex-col gap-0.5 text-sm">
-              {CONDITIONS.map((c) => (
-                <label key={c} className="flex cursor-pointer items-center gap-2 py-0.5 text-ink-800 hover:text-brand-600">
-                  <input
-                    type="checkbox"
-                    checked={conditions.includes(c)}
-                    onChange={() => toggleCondition(c)}
-                    className="h-4 w-4 shrink-0 rounded border-ink-600/40 accent-brand-500"
-                  />
-                  {c}
-                </label>
+      <div className={`grid gap-3 ${hideOnDesktop ? "" : "lg:grid-cols-[19rem_1fr]"}`}>
+        {/* Filter panel — sticky so the column isn't a big empty space */}
+        <div className={`h-fit lg:sticky lg:top-4 lg:self-start ${showFilters ? "block" : "hidden"} ${hideOnDesktop ? "lg:hidden" : "lg:block"}`}>
+          <aside className="bg-white">
+            <Section title="Sort By" defaultOpen>
+              {(
+                [
+                  ["popular", "Recommended"],
+                  ["price-asc", "Price: Low to High"],
+                  ["price-desc", "Price: High to Low"],
+                  ["new", "Newest"],
+                ] as [Sort, string][]
+              ).map(([value, label]) => (
+                <Option key={value} checked={sort === value} onChange={() => setSort(value)}>
+                  {label}
+                </Option>
               ))}
-            </div>
-          </>
-        )}
+            </Section>
 
-        {/* Price */}
-        <p className="mt-5 text-sm font-bold text-ink-900">
-          Price{category !== "All" ? ` ${category}` : ""}
-        </p>
-        <div className="mt-1.5 flex flex-col text-sm">
-          {PRICE_BANDS.map((b, i) => (
-            <button
-              key={b.label}
-              onClick={() => setPriceIdx(i)}
-              className={`py-1 text-left transition ${
-                priceIdx === i ? "font-bold text-ink-900" : "text-ink-700 hover:text-brand-600"
-              }`}
-            >
-              {b.label}
-            </button>
-          ))}
-        </div>
-
-
-        {anyFilter && (
-          <button onClick={clearAll} className="mt-5 text-sm font-semibold text-brand-600 hover:underline">
-            Clear all filters
-          </button>
-        )}
-      </aside>
-      <SidebarExtras />
-      </div>
-
-      {/* Results */}
-      <div>
-        <div className="mb-3 flex flex-col gap-2 rounded bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products…"
-            className="w-full rounded-md border border-ink-600/15 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none sm:w-64"
-          />
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-sm text-ink-700/60">{filtered.length} item(s)</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className="rounded-md border border-ink-600/15 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
-            >
-              <option value="popular">Most popular</option>
-              <option value="new">Newest arrivals</option>
-              <option value="price-asc">Price: low to high</option>
-              <option value="price-desc">Price: high to low</option>
-            </select>
-          </div>
-        </div>
-
-        {filtered.length > 0 ? (
-          // White cards on a warm cream panel, as on the reference grid.
-          <>
-            <div className="grid-cards gap-2 rounded-lg bg-[#fdf3ec] p-2">
-              {pageItems.map((p) => (
-                <ProductCard key={p.id} product={p} />
+            <Section title="Category" defaultOpen>
+              {(productCategories as readonly string[]).map((c) => (
+                <Option key={c} checked={category === c} onChange={() => setCategory(c)}>
+                  <span className="flex-1">{c === "All" ? "All Categories" : c}</span>
+                  <span className="text-[12px] text-ink-700/45">
+                    {c === "All" ? products.length : products.filter((p) => p.category === c).length}
+                  </span>
+                </Option>
               ))}
-            </div>
-            {shown < filtered.length && (
-              <div ref={sentinelRef} className="mt-5 flex flex-col items-center gap-2 py-4">
-                <span className="h-6 w-6 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
-                <p className="text-xs text-ink-700/50">Loading more products…</p>
+            </Section>
+
+            <Section title="Brand">
+              {BRANDS.map((b) => (
+                <Option key={b} square checked={brands.includes(b)} onChange={() => toggleBrand(b)}>
+                  {b}
+                </Option>
+              ))}
+            </Section>
+
+            {CONDITIONS.length > 0 && (
+              <Section title="Condition">
+                {CONDITIONS.map((c) => (
+                  <Option key={c} square checked={conditions.includes(c)} onChange={() => toggleCondition(c)}>
+                    {c}
+                  </Option>
+                ))}
+              </Section>
+            )}
+
+            <Section title="Price">
+              {PRICE_BANDS.map((b, i) => (
+                <Option key={b.label} checked={priceIdx === i} onChange={() => setPriceIdx(i)}>
+                  {b.label}
+                </Option>
+              ))}
+            </Section>
+
+            <Section title="Offers" defaultOpen>
+              <Option square checked={onlyDeals} onChange={() => setOnlyDeals((v) => !v)}>
+                Reduced prices only
+              </Option>
+            </Section>
+
+            {anyFilter && (
+              <div className="border-t border-ink-600/10 px-5 py-4">
+                <button onClick={clearAll} className="text-[12px] font-bold uppercase tracking-[0.1em] text-brand-600 hover:underline">
+                  Clear all filters
+                </button>
               </div>
             )}
-          </>
-        ) : (
-          <EmptyState
-            art="search"
-            title="No products match your search"
-            message="Try a different word, or clear a filter or two to see more."
-            actionLabel="Browse everything"
-            actionHref="/shop"
-          />
-        )}
+          </aside>
+          <SidebarExtras />
+        </div>
+
+        {/* Results */}
+        <div>
+          {filtered.length > 0 ? (
+            <>
+              <div
+                className={`grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 ${
+                  hideOnDesktop ? "xl:grid-cols-4 min-[1700px]:grid-cols-5" : "min-[1700px]:grid-cols-4"
+                }`}
+              >
+                {pageItems.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+              {shown < filtered.length && (
+                // A page of twenty-four, and a button for the next. The grid used
+                // to keep loading as it was scrolled, sixty at a time.
+                <div className="mt-8 flex flex-col items-center gap-3 py-4">
+                  <p className="text-[13px] text-ink-700/70">
+                    Showing {pageItems.length} of {filtered.length} products
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setShown((n) => n + PAGE)}
+                    className="border border-ink-900 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+                  >
+                    Show more
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <EmptyState
+              art="search"
+              title="No products match your search"
+              message="Try a different word, or clear a filter or two to see more."
+              actionLabel="Browse everything"
+              actionHref="/shop"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

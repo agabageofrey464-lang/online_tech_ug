@@ -143,10 +143,10 @@ export default function ClassroomPage() {
   if (error) {
     return (
       <div className="container-page py-16">
-        <div className="mx-auto max-w-md rounded-card border border-amber-200 bg-amber-50 p-7 text-center">
-          <ShieldAlert className="mx-auto text-amber-600" size={34} />
+        <div className="mx-auto max-w-md rounded-card border border-gold-200 bg-gold-50 p-7 text-center">
+          <ShieldAlert className="mx-auto text-gold-600" size={34} />
           <h1 className="mt-3 text-lg font-extrabold text-ink-900">Can&apos;t join this class</h1>
-          <p className="mt-1.5 text-sm text-amber-900">{error}</p>
+          <p className="mt-1.5 text-sm text-gold-900">{error}</p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             <Link
               href="/academy"

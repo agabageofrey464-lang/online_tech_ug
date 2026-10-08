@@ -30,6 +30,7 @@ const SPEC_FIELDS: { key: keyof typeof EMPTY_SPECS; label: string; placeholder: 
   { key: "ports", label: "Ports & connectivity", placeholder: "USB-C, HDMI, Wi-Fi 6…" },
   { key: "build", label: "Build quality", placeholder: "Aluminium chassis" },
   { key: "purpose", label: "Best for", placeholder: "Office work, students…" },
+  { key: "colors", label: "Colours available", placeholder: "Silver, Space Grey, Gold — separate with commas" },
 ];
 
 /**

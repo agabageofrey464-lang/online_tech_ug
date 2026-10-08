@@ -56,8 +56,8 @@ async function getJobs(): Promise<JobItem[]> {
 
 const typeTone: Record<string, string> = {
   "Full-time": "bg-green-100 text-green-700",
-  Internship: "bg-blue-100 text-blue-700",
-  "Part-time": "bg-yellow-100 text-yellow-700",
+  Internship: "bg-ink-100 text-ink-700",
+  "Part-time": "bg-gold-100 text-gold-700",
   Contract: "bg-teal-100 text-teal-700",
 };
 
@@ -130,7 +130,7 @@ export default async function JobsPage() {
           href="/internship"
           className="card-lift flex flex-wrap items-center gap-4 rounded-card bg-ink-700 p-5 text-white shadow-sm sm:p-6"
         >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#FCDC04] text-ink-900">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#f3efe9] text-ink-900">
             <GraduationCap size={22} />
           </span>
           <span className="min-w-0 flex-1">

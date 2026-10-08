@@ -54,6 +54,7 @@ export type Product = {
   specs: string[]; // short bullets for cards/grid
   details?: ProductDetails; // full specification (computers)
   seller?: string; // set on a marketplace vendor's product shown in the shop
+  colors?: string[]; // colours it comes in, as entered in the dashboard
 };
 
 // Resolve a product's image: an explicit web URL if provided, else the local

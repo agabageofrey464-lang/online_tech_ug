@@ -33,15 +33,14 @@ const PUB = fileURLToPath(new URL("../public", import.meta.url));
 // inside 400×400 comes out 225px wide, and a 225px file in a 207px slot on a
 // 2× screen is stretched to 414. That is why the phones looked blurred.
 //
-// 560 is what the measurements asked for: the widest slot drawn is 220px, so
-// 440 on a 2× screen, and 511 for a 170px slot on an Android phone at 3×.
-// Going further costs bytes for detail no screen can show — 640 would put
-// 3.9MB of pictures on the home page against 3.2MB here. withoutEnlargement
-// leaves a narrower photo at its own width rather than blowing it up, which
-// would add weight and no detail.
+// 760 follows the tiles the shop now draws: three across beside the filter
+// panel, about 350px wide, so 700 on a 2× screen. (It was 560 when the widest
+// slot was 220px.) withoutEnlargement leaves a narrower photo at its own
+// width rather than blowing it up, which would add weight and no detail. A
+// light sharpen puts back the edge a downscale softens.
 const SIZES = [
   { dir: "thumbs", px: 96, quality: 74 },
-  { dir: "cards", width: 560, quality: 82 },
+  { dir: "cards", width: 760, quality: 86, sharpen: true },
 ];
 const DIRS = ["products", "courses"];
 
@@ -78,6 +77,7 @@ for (const size of SIZES) {
           ? pipe.resize({ width: size.width, withoutEnlargement: true })
           : pipe.resize(size.px, size.px, { fit: "cover", position: "centre" })
         )
+          .sharpen(size.sharpen ? { sigma: 0.5 } : undefined)
           .webp({ quality: size.quality })
           .toFile(dst);
         written += 1;

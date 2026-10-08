@@ -37,11 +37,11 @@ export function IntakeAdverts() {
       <div className="flex items-end justify-between gap-3 bg-ink-700 px-4 py-4 text-white sm:px-6 sm:py-5">
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/70 sm:text-[11px]">
-            <GraduationCap size={15} className="shrink-0 text-[#FCDC04]" />
+            <GraduationCap size={15} className="shrink-0 text-[#f3efe9]" />
             Online Tech Academy
           </p>
           <h2 className="mt-1 font-display text-xl font-black leading-tight sm:text-3xl">
-            Classes starting <span className="text-[#FCDC04]">soon</span>
+            Classes starting <span className="text-[#f3efe9]">soon</span>
           </h2>
         </div>
         <a
@@ -78,7 +78,7 @@ export function IntakeAdverts() {
 
                 <div className="flex min-w-0 flex-1 flex-col p-3.5 sm:p-4">
                   {i === 0 && (
-                    <span className="mb-1.5 inline-flex w-fit items-center gap-1 rounded-full bg-[#FCDC04] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-ink-900">
+                    <span className="mb-1.5 inline-flex w-fit items-center gap-1 rounded-full bg-[#f3efe9] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-ink-900">
                       <CalendarDays size={11} /> Next intake
                     </span>
                   )}

@@ -7,7 +7,7 @@ export function FeaturedProducts() {
   const featured = [...products]
     .map((p) => ({ p, disc: p.oldPrice && p.oldPrice > p.price ? (p.oldPrice - p.price) / p.oldPrice : 0 }))
     .sort((a, b) => b.disc - a.disc || (b.p.rating ?? 0) - (a.p.rating ?? 0))
-    .slice(0, 12)
+    .slice(0, 6)
     .map((x) => x.p);
 
   if (featured.length === 0) return null;

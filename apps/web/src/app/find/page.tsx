@@ -109,8 +109,8 @@ export default function FindPage() {
 
       {/* ── Honest answer when the budget won't do the job ── */}
       {shortBudget && (
-        <div className="mt-5 flex items-start gap-3 rounded-card border border-amber-300 bg-amber-50 p-5">
-          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-amber-600" />
+        <div className="mt-5 flex items-start gap-3 rounded-card border border-gold-300 bg-gold-50 p-5">
+          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-gold-600" />
           <div>
             <p className="font-bold text-ink-900">
               Honestly, {ugx(budget)} won&apos;t do {chosen.label.toLowerCase()} well
@@ -183,7 +183,7 @@ export default function FindPage() {
                 <ProductCard product={m.product} />
                 <ul className="mt-1 space-y-0.5 px-1">
                   {m.warnings.slice(0, 2).map((w) => (
-                    <li key={w} className="flex items-start gap-1 text-[10.5px] text-amber-700">
+                    <li key={w} className="flex items-start gap-1 text-[10.5px] text-gold-700">
                       <AlertTriangle size={11} className="mt-0.5 shrink-0" />
                       {w}
                     </li>

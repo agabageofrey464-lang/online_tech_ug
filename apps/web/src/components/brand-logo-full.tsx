@@ -64,6 +64,8 @@ const SIZES: Record<
   },
 };
 
+// The logo's colours are written out here rather than taken from the site's
+// palette: the palette can change, and the logo must not change with it.
 export function BrandLogoFull({
   className = "",
   size = "md",
@@ -77,18 +79,18 @@ export function BrandLogoFull({
 }) {
   const s = SIZES[size];
 
-  const wordColor = onLight ? "text-ink-900" : "text-white";
-  const techColor = onLight ? "text-brand-600" : "text-brand-400";
-  const subColor = onLight ? "text-ink-500" : "text-white/70";
+  const wordColor = onLight ? "text-[#12102e]" : "text-white";
+  const techColor = onLight ? "text-[#d9430f]" : "text-[#fa7547]";
+  const subColor = onLight ? "text-[#3c3a87]" : "text-white/70";
 
   return (
     <span className={`inline-flex items-stretch text-left ${className}`} aria-label="Online Tech Uganda">
       {/* The monogram. Squared on the inner edge so it docks against the name. */}
       <span
-        className={`relative z-10 flex ${s.box} shrink-0 items-center justify-center rounded-l-xl rounded-r-[4px] bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-md ring-1 ring-black/5`}
+        className={`relative z-10 flex ${s.box} shrink-0 items-center justify-center rounded-l-xl rounded-r-[4px] bg-gradient-to-br from-[#fa7547] via-[#f15a29] to-[#b3340a] shadow-md ring-1 ring-black/5`}
       >
         <span
-          className={`inline-flex items-start font-display font-black leading-none tracking-[-0.04em] text-white ${s.mono}`}
+          className={`inline-flex items-start font-sans font-black leading-none tracking-[-0.04em] text-white ${s.mono}`}
         >
           OT
           <span
@@ -102,14 +104,14 @@ export function BrandLogoFull({
           edge so the rule below appears to come out of the tile. */}
       <span className={`flex flex-col justify-between ${s.gap}`}>
         <span
-          className={`font-display font-black uppercase leading-none tracking-[0.01em] ${s.name} ${wordColor}`}
+          className={`font-sans font-black uppercase leading-none tracking-[0.01em] ${s.name} ${wordColor}`}
         >
           ONLINE<span className={techColor}>&nbsp;TECH</span>
         </span>
 
         {/* The connector: runs from behind the tile to the end of the name. */}
         <span
-          className={`${s.rule} rounded-full bg-gradient-to-r from-brand-500 to-brand-400`}
+          className={`${s.rule} rounded-full bg-gradient-to-r from-[#f15a29] to-[#fa7547]`}
           aria-hidden="true"
         />
 

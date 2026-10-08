@@ -75,7 +75,7 @@ export function InternshipPanel() {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider">
                 <GraduationCap size={13} /> Industrial training
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FCDC04] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-ink-900">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3efe9] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-ink-900">
                 {INTERNSHIP_MODE} · {INTERNSHIP_WINDOW}
               </span>
             </span>
@@ -102,7 +102,7 @@ export function InternshipPanel() {
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {GUARANTEES.map((g) => (
                 <div key={g.t} className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#FCDC04] ring-1 ring-white/15">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f3efe9] ring-1 ring-white/15">
                     <g.icon size={16} />
                   </span>
                   <span className="min-w-0">

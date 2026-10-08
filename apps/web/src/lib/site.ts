@@ -68,6 +68,7 @@ export const navGroups = [
       { href: "/find", label: "Find My Laptop" },
       { href: "/internship", label: "Internships" },
   { href: "/jobs", label: "Jobs" },
+      { href: "/stores", label: "Branches" },
       { href: "/services", label: "Services" },
       { href: "/about", label: "About Us" },
       { href: "/blog", label: "Blog" },

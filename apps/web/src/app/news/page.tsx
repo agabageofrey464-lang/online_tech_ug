@@ -40,12 +40,12 @@ const fmt = (iso: string) =>
 // Category colour for the image-less fallback banner.
 const catColor = (c: string) => {
   const map: Record<string, string> = {
-    Uganda: "from-red-600 to-yellow-500",
-    Africa: "from-green-600 to-lime-500",
-    World: "from-blue-700 to-cyan-500",
-    Technology: "from-indigo-600 to-brand-500",
+    Uganda: "from-red-600 to-gold-500",
+    Africa: "from-green-600 to-ink-500",
+    World: "from-ink-700 to-ink-500",
+    Technology: "from-ink-600 to-brand-500",
     Business: "from-ink-700 to-ink-500",
-    Sports: "from-orange-600 to-amber-500",
+    Sports: "from-brand-600 to-gold-500",
   };
   return map[c] ?? "from-ink-700 to-brand-500";
 };

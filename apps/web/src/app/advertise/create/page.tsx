@@ -8,12 +8,10 @@ import { PageHeader } from "@/components/page-header";
 // Gradient themes with built-in illustration (blurred blobs + pattern), so an
 // advert looks great even without an uploaded image.
 const THEMES = [
-  { id: "indigo", label: "Indigo", from: "#2a2560", to: "#3f3a86" },
+  { id: "indigo", label: "Indigo", from: "#211d52", to: "#3c3a87" },
   { id: "sunset", label: "Sunset", from: "#e0451c", to: "#f4632e" },
-  { id: "ocean", label: "Ocean", from: "#0d9488", to: "#0891b2" },
-  { id: "lagoon", label: "Lagoon", from: "#0e7490", to: "#0c5d75" },
-  { id: "forest", label: "Forest", from: "#15803d", to: "#10b981" },
-  { id: "midnight", label: "Midnight", from: "#0f172a", to: "#334155" },
+  { id: "midnight", label: "Midnight", from: "#12102e", to: "#282363" },
+  { id: "ember", label: "Ember", from: "#b3340a", to: "#f15a29" },
 ];
 
 const empty = {

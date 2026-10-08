@@ -8,7 +8,6 @@ import { EndlessProducts } from "@/components/endless-products";
 import { byCategory, CATEGORY_ORDER } from "@/lib/browse-order";
 import { BandPreview, type BandItem } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
-import { FlashCountdown } from "@/components/flash-countdown";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
 import { CategoryMenu } from "@/components/category-menu";
@@ -20,6 +19,7 @@ import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
+import { BranchShowcase } from "@/components/branch-showcase";
 import { Reveal } from "@/components/reveal";
 import { listedProducts as products, whyUs, productImage, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -30,15 +30,10 @@ function byCat(cat: Product["category"]) {
   return products.filter((p) => p.category === cat);
 }
 
-// Jumia-style deal-band colours — cycled per band so rails look varied.
-const BAND_COLORS = [
-  "bg-brand-500",
-  "bg-teal-600", // teal
-  "bg-ink-600", // indigo
-  "bg-green-600",
-  "bg-[#c41c2e]", // red
-  "bg-teal-800", // deep teal
-];
+// Section bands are white with a dark serif heading. They were solid colour,
+// a different one per band, and a page of them left nowhere for the eye to
+// rest; colour is now kept for the bars at the top and for buttons.
+const BAND_COLORS = ["bg-white"];
 
 function Panel({
   title,
@@ -58,14 +53,14 @@ function Panel({
   const band = BAND_COLORS[seed % BAND_COLORS.length];
 
   return (
-    <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
-      <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
-        <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
+    <Reveal as="section" className={`overflow-hidden ${band}`}>
+      <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
+        <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">{title}</h2>
         {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
         {href && (
           <Link
             href={href}
-            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
           >
             See All →
           </Link>
@@ -113,18 +108,18 @@ function DealBand({
   const band = BAND_COLORS[seed % BAND_COLORS.length];
 
   return (
-    <Reveal as="section" className={`overflow-hidden rounded-lg shadow-sm ${band}`}>
-      <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+    <Reveal as="section" className={`overflow-hidden ${band}`}>
+      <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
         <div className="min-w-0">
-          <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">{title}</h2>
-          {subtitle && <p className="text-xs font-semibold text-white/85 sm:text-sm">{subtitle}</p>}
+          <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">{title}</h2>
+          {subtitle && <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-600">{subtitle}</p>}
         </div>
         {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
 
         {href && (
           <Link
             href={href}
-            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
           >
             See All →
           </Link>
@@ -154,13 +149,13 @@ export const revalidate = 600; // 10 minutes
 // How many products a rail carries. It was eight while the page also held the
 // courses, the intakes and the services; with those on their own pages the
 // shop has the room, and eight read as a thin shelf.
-const RAIL = 14;
+const RAIL = 8;
 
 // How many products the closing grid starts with. The rest arrive as the
 // reader scrolls (see <EndlessProducts />), so this only has to fill the first
 // few screens — sending all two hundred with the page is what once pushed it
 // past a megabyte.
-const GRID = 36;
+const GRID = 12;
 
 function mix(a: Product[], b: Product[], take: number): Product[] {
   const inStock = (p: Product) => p.inStock !== false;
@@ -189,24 +184,26 @@ export default function HomePage() {
 
   const inStock = products;
 
-  // Flash sales: rotate through the well-rated, photographed stock.
-  const flashPool = inStock.filter((p) => (p.rating ?? 0) >= 4.4);
-  const flash = rotate(flashPool, slot * 3).slice(0, 8);
+  // Price drops: only products with a recorded old price above today's price,
+  // biggest saving first. This band used to be "Flash Sales" with a clock
+  // counting down to midnight over ordinary stock at its ordinary price — the
+  // clock reset every night and nothing ever ended. A shopper who notices that
+  // once stops believing every other number on the page.
+  const priceDrops = products
+    .filter((p) => p.oldPrice && p.oldPrice > p.price)
+    .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!);
 
   // Trending: top-rated, rotated so a different set leads each refresh.
   const topPool = [...inStock].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 40);
   const topSelling = rotate(topPool, slot * 5).slice(0, RAIL);
 
-  // Weekend deals: genuine markdowns first, then top-rated stock so the band is
-  // always full — a rail with one lonely card looks broken.
-  const realDeals = products
-    .filter((p) => p.oldPrice && p.oldPrice > p.price)
-    .sort((a, b) => (b.oldPrice! - b.price) / b.oldPrice! - (a.oldPrice! - a.price) / a.oldPrice!);
-  const dealFillers = rotate(
-    inStock.filter((p) => !realDeals.some((d) => d.id === p.id)).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)),
-    slot * 7,
-  );
-  const deals = [...realDeals, ...dealFillers].slice(0, RAIL);
+  // Picks of the day: full-price stock, a different set each Kampala day.
+  // Reduced items have their own band above, so they are left out of this one.
+  const today = Math.floor((Date.now() + 3 * 3600_000) / 86_400_000);
+  const picks = rotate(
+    inStock.filter((p) => !priceDrops.some((d) => d.id === p.id)).sort((x, y) => (y.rating ?? 0) - (x.rating ?? 0)),
+    today * 7,
+  ).slice(0, RAIL);
 
   // Brand bands: rotate WHICH brands get a band, so the page varies by visit.
   const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
@@ -338,7 +335,7 @@ export default function HomePage() {
             make — so the section that leads the page was showing a sixth of
             what it had. Laid out like this the whole range is reached by
             scrolling down, which is what someone is already doing. */}
-        <div className="grid-cards gap-2 p-2 sm:gap-3 sm:p-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 sm:gap-3 sm:p-3">
           {byCat("Phones").map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
@@ -347,31 +344,33 @@ export default function HomePage() {
         </div>
       </Panel>
 
-      {/* Flash sales (Jumia-style) — leads the home on every device */}
-      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-        <div className="flex items-center justify-between gap-2 bg-[#c41c2e] px-3 py-3 text-white sm:px-4">
-          <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
-            <Icon name="zap" size={18} /> Flash Sales
-          </h2>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="hidden font-medium sm:inline">Time Left:</span>
-            <FlashCountdown />
+      {/* Price drops — shown only while something really is reduced */}
+      {priceDrops.length > 0 && (
+        <section className="overflow-hidden rounded-lg bg-white shadow-sm">
+          <div className="flex items-center justify-between gap-2 bg-[#282363] px-3 py-3 text-white sm:px-4">
+            <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
+              <Icon name="zap" size={18} /> Price Drops
+            </h2>
+            <p className="min-w-0 truncate text-sm font-medium text-white/90">
+              {priceDrops.length} {priceDrops.length === 1 ? "item" : "items"} reduced
+              <span className="hidden sm:inline"> — while stock lasts</span>
+            </p>
+            <Link href="/shop?deals=1" className="flex shrink-0 items-center gap-0.5 text-sm font-semibold hover:underline">
+              See All ›
+            </Link>
           </div>
-          <Link href="/shop" className="flex shrink-0 items-center gap-0.5 text-sm font-semibold hover:underline">
-            See All ›
-          </Link>
-        </div>
-        <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
-          {flash.map((p) => (
-            <div key={p.id} className="w-[47%] shrink-0 snap-start sm:w-[15rem] lg:w-[13.5rem]">
-              <FlashSaleCard product={p} />
-            </div>
-          ))}
-        </div>
-      </section>
+          <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
+            {priceDrops.map((p) => (
+              <div key={p.id} className="w-[62%] shrink-0 snap-start sm:w-[17rem] lg:w-[19rem]">
+                <FlashSaleCard product={p} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Deals of the Day — branded colour band with bookend panels */}
-      <DealsOfTheDay items={deals} />
+      {/* Picks of the Day — branded colour band with bookend panels */}
+      <DealsOfTheDay items={picks} />
 
 
 
@@ -427,19 +426,16 @@ export default function HomePage() {
         <Rail items={topSelling} />
       </DealBand>
 
-      {/* Weekend Top Deals — teal banded separator */}
-      {deals.length > 0 && (
-        <DealBand title="Explosion Weekend" subtitle="Top Deals" href="/shop?deals=1" items={deals}>
-          <Rail items={deals} />
-        </DealBand>
-      )}
+      {/* Where to find us — ahead of the brand bands, because the page below
+          this point keeps loading products and has no end to put it at. */}
+      <BranchShowcase />
 
-      {/* A teal "Brand | Top Deals" band for every brand — categorises the whole page */}
+      {/* A teal "Brand | Top Picks" band for every brand — categorises the whole page */}
       {brandSections.map((g) => (
         <DealBand
           key={g.brand}
           title={g.brand}
-          subtitle="Top Deals"
+          subtitle="Top Picks"
           href={`/shop?brand=${encodeURIComponent(g.brand)}`}
           items={g.items}
         >
@@ -515,15 +511,15 @@ export default function HomePage() {
       </Panel>
 
       {/* Browse all products — same coloured deal-band treatment as the rails */}
-      <Reveal as="section" className="overflow-hidden rounded-lg bg-teal-600 shadow-sm">
-        <div className="flex items-center justify-between gap-2 px-4 py-3.5 text-white sm:px-6">
+      <Reveal as="section" className="overflow-hidden bg-white">
+        <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
           <div className="min-w-0">
-            <h2 className="truncate text-lg font-black tracking-tight sm:text-2xl">Browse all products</h2>
-            <p className="text-xs font-semibold text-white/85 sm:text-sm">By category · {inStock.length} in stock · keeps loading as you scroll</p>
+            <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">Browse all products</h2>
+            <p className="text-[12px] text-ink-700/70">By category · {inStock.length} in stock · keeps loading as you scroll</p>
           </div>
           <Link
             href="/shop"
-            className="press inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink-900 shadow-sm transition hover:bg-white/90 sm:text-sm"
+            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
           >
             See All →
           </Link>

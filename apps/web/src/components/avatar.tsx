@@ -8,11 +8,11 @@ import { useEffect, useState } from "react";
 const COLORS = [
   "bg-brand-500",
   "bg-ink-600",
-  "bg-emerald-600",
-  "bg-blue-600",
+  "bg-ink-600",
+  "bg-ink-600",
   "bg-teal-700",
-  "bg-pink-600",
-  "bg-amber-500",
+  "bg-brand-600",
+  "bg-gold-500",
   "bg-teal-600",
 ];
 

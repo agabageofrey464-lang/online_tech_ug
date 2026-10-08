@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { FestivalStrip } from "@/components/festival-strip";
@@ -18,6 +19,11 @@ import { ReferralCapture } from "@/components/referral-capture";
 import { Analytics } from "@/components/analytics";
 import { GoogleTranslate } from "@/components/google-translate";
 import { site } from "@/lib/site";
+
+// An old-style serif for headings, names and navigation, over a quiet sans for
+// everything read at small sizes — prices, specifications, forms.
+const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif-face", display: "swap" });
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans-face", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -65,7 +71,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body className="min-h-screen antialiased">
         <SiteStructuredData />
         <Analytics />

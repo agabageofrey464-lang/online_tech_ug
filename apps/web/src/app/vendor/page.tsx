@@ -301,9 +301,9 @@ export default function VendorDashboard() {
           <p className="text-sm font-semibold text-green-800">Your store is approved and live. Add your products below.</p>
         </div>
       ) : (
-        <div className="mb-6 flex items-center gap-3 rounded-card border border-amber-200 bg-amber-50 p-4">
-          <Clock className="shrink-0 text-amber-600" />
-          <div className="text-sm text-amber-800">
+        <div className="mb-6 flex items-center gap-3 rounded-card border border-gold-200 bg-gold-50 p-4">
+          <Clock className="shrink-0 text-gold-600" />
+          <div className="text-sm text-gold-800">
             <p className="font-bold">Your vendor account is under review.</p>
             <p>We&apos;ll approve your store shortly. You can add products once approved.</p>
           </div>
@@ -318,7 +318,7 @@ export default function VendorDashboard() {
             <CheckCircle2 size={18} /> Your business is verified — a “Verified” badge shows on your products.
           </p>
         ) : verif?.status === "pending" ? (
-          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-amber-700">
+          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-gold-700">
             <Clock size={18} /> Documents submitted — under review. We&apos;ll verify you shortly.
           </p>
         ) : (
@@ -408,7 +408,7 @@ export default function VendorDashboard() {
                 <p className="text-[11px] font-semibold text-ink-700/60">Gross</p>
               </div>
               <div className="rounded-lg bg-ink-50 p-3">
-                <p className="text-sm font-extrabold text-amber-600">−{ugx(earnings.commission)}</p>
+                <p className="text-sm font-extrabold text-gold-600">−{ugx(earnings.commission)}</p>
                 <p className="text-[11px] font-semibold text-ink-700/60">Commission</p>
               </div>
               <div className="rounded-lg bg-ink-50 p-3">
@@ -530,7 +530,7 @@ export default function VendorDashboard() {
                   {p.approved ? (
                     <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">● Live</span>
                   ) : (
-                    <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">● Pending review</span>
+                    <span className="mt-1 inline-block rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">● Pending review</span>
                   )}
                 </div>
                 <div className="flex h-fit flex-col gap-1">

@@ -203,7 +203,7 @@ export default function AcademyPage() {
           key={a.id}
           className={`mt-2.5 rounded-lg border p-3.5 ${
             a.kind === "urgent"
-              ? "border-amber-200 bg-amber-50"
+              ? "border-gold-200 bg-gold-50"
               : "border-ink-600/10 bg-white shadow-sm"
           }`}
         >
@@ -235,7 +235,7 @@ export default function AcademyPage() {
       )}
 
       {/* ── Tabs ── */}
-      <div className="sticky top-0 z-20 -mx-1 mt-4 flex gap-2 overflow-x-auto bg-[#e6e8ef]/95 px-1 py-2 no-scrollbar backdrop-blur">
+      <div className="sticky top-0 z-20 -mx-1 mt-4 flex gap-2 overflow-x-auto bg-[#f6f4f1]/95 px-1 py-2 no-scrollbar backdrop-blur">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -309,7 +309,7 @@ export default function AcademyPage() {
                           ? "bg-green-100 text-green-700"
                           : c.status === "completed"
                             ? "bg-brand-50 text-brand-700"
-                            : "bg-amber-100 text-amber-700"
+                            : "bg-gold-100 text-gold-700"
                       }`}
                     >
                       {c.status}
@@ -402,7 +402,7 @@ export default function AcademyPage() {
                     ) : (
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-                          a.overdue ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
+                          a.overdue ? "bg-red-100 text-red-700" : "bg-gold-100 text-gold-700"
                         }`}
                       >
                         {a.overdue ? "Overdue" : "To do"}

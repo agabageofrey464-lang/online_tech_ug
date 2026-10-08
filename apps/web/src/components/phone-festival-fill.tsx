@@ -69,7 +69,7 @@ export function PhoneFestivalFill({ count }: { count: number }) {
       <div key={i} className="ad-fade flex w-full flex-col @lg:flex-row @lg:items-stretch">
         {/* Words */}
         <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-1.5 p-3.5 @lg:gap-2 @lg:p-6">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FCDC04] @lg:text-[11px]">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f3efe9] @lg:text-[11px]">
             Phone Festival
           </p>
           <h3 className="font-display text-lg font-black leading-tight drop-shadow-sm @lg:text-3xl">{o.series}</h3>
@@ -78,7 +78,7 @@ export function PhoneFestivalFill({ count }: { count: number }) {
             <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-tight text-ink-900 shadow-sm @lg:px-4 @lg:py-1.5 @lg:text-sm">
               From {ugx(o.from)}
             </span>
-            <span className="press rounded-full bg-[#FCDC04] px-3 py-1 text-[11px] font-extrabold text-ink-900 shadow-sm @lg:px-4 @lg:py-1.5 @lg:text-sm">
+            <span className="press rounded-full bg-[#f3efe9] px-3 py-1 text-[11px] font-extrabold text-ink-900 shadow-sm @lg:px-4 @lg:py-1.5 @lg:text-sm">
               Shop now →
             </span>
           </div>

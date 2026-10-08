@@ -88,7 +88,7 @@ function SuccessInner() {
             payStatus === "successful"
               ? "border-green-300 bg-green-50 text-green-700"
               : payStatus === "failed"
-                ? "border-amber-300 bg-amber-50 text-amber-700"
+                ? "border-gold-300 bg-gold-50 text-gold-700"
                 : "border-ink-600/15 bg-ink-50 text-ink-700"
           }`}
         >

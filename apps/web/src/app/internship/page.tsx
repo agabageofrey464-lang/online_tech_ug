@@ -204,7 +204,7 @@ export default function InternshipPage() {
       <section className="container-page pt-4">
         <div className="stripes flex flex-col gap-3 rounded-xl bg-ink-700 px-4 py-4 text-white sm:flex-row sm:items-center sm:gap-5 sm:px-6">
           <p className="flex shrink-0 items-center gap-2 font-display text-base font-black sm:text-lg">
-            <GraduationCap size={20} className="text-[#FCDC04]" />
+            <GraduationCap size={20} className="text-[#f3efe9]" />
             Students from every university
           </p>
           <ul className="flex flex-wrap gap-1.5">
@@ -213,7 +213,7 @@ export default function InternshipPage() {
                 {u}
               </li>
             ))}
-            <li className="rounded-full bg-[#FCDC04] px-2.5 py-1 text-[11.5px] font-black text-ink-900">
+            <li className="rounded-full bg-[#f3efe9] px-2.5 py-1 text-[11.5px] font-black text-ink-900">
               + every college &amp; institute
             </li>
           </ul>
@@ -320,7 +320,7 @@ export default function InternshipPage() {
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/80">{INTERNSHIP_WINDOW}</p>
             <h2 className="mt-1 font-display text-2xl font-black leading-tight sm:text-3xl">
-              Places are limited. <span className="text-[#FCDC04]">Apply this week.</span>
+              Places are limited. <span className="text-[#f3efe9]">Apply this week.</span>
             </h2>
             <p className="mt-1.5 max-w-xl text-[14px] leading-relaxed text-white/90">
               {ugx(INTERNSHIP_FEE)} for the whole {INTERNSHIP_WEEKS}-week placement. Apply early and your
@@ -331,7 +331,7 @@ export default function InternshipPage() {
             <JobApply
               jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
               label="Apply for a place"
-              className="press inline-flex items-center justify-center rounded-full bg-[#FCDC04] px-7 py-3 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105"
+              className="press inline-flex items-center justify-center rounded-full bg-[#f3efe9] px-7 py-3 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105"
             />
             <Link
               href="/jobs"

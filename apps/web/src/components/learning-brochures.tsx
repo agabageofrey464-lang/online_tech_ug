@@ -131,7 +131,7 @@ export function LearningBrochures() {
                       {t.title}
                     </h3>
                   </div>
-                  <span className="ml-auto shrink-0 rounded-full bg-[#FCDC04] px-2.5 py-1 text-[11px] font-black text-ink-900">
+                  <span className="ml-auto shrink-0 rounded-full bg-[#f3efe9] px-2.5 py-1 text-[11px] font-black text-ink-900">
                     from {ugx(from)}
                   </span>
                 </div>
@@ -191,7 +191,7 @@ export function LearningBrochures() {
       {/* ── How it runs, as a printed strip ─────────────────────── */}
       <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10">
         <div className="flex items-center gap-2 bg-ink-700 px-4 py-2.5 text-white">
-          <GraduationCap size={16} className="text-[#FCDC04]" />
+          <GraduationCap size={16} className="text-[#f3efe9]" />
           <h3 className="font-display text-sm font-black uppercase tracking-wide">
             How the training runs
           </h3>

@@ -32,7 +32,7 @@ export function CartDrawer() {
 
       {/* Panel */}
       <aside
-        className={`fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-[#f6f7f9] shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-[#f6f4f1] shadow-2xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
@@ -72,6 +72,7 @@ export function CartDrawer() {
                     <Link href={linkFor(i.slug)} onClick={close} className="clamp-2 text-sm font-semibold text-ink-800 hover:text-brand-600">
                       {i.name}
                     </Link>
+                    {i.option && <p className="mt-0.5 text-[11px] text-ink-700/70">Colour: {i.option}</p>}
                     <p className="mt-0.5 text-[11px] font-semibold text-green-700">In stock</p>
                     <p className="mt-0.5 text-base font-extrabold text-ink-900">{ugx(i.price)}</p>
 

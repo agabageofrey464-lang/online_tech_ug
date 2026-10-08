@@ -71,7 +71,9 @@ function toProduct(row: ApiProduct, seed?: Product): Product {
   const specs =
     seed?.specs?.length
       ? seed.specs
-      : Object.values(row.specs ?? {})
+      : Object.entries(row.specs ?? {})
+          .filter(([k]) => k !== "colors")
+          .map(([, v]) => v)
           .filter((v): v is string => typeof v === "string" && v.trim().length > 0)
           .map((v) => v.trim())
           .filter((v) => v.length <= BULLET_MAX)
@@ -92,6 +94,10 @@ function toProduct(row: ApiProduct, seed?: Product): Product {
     specs: specs.length ? specs : (seed?.specs ?? []),
     // Full specification tables are long-form editorial; keep the seed's.
     details: seed?.details,
+    colors: (row.specs?.colors ?? "")
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean),
   };
 }
 

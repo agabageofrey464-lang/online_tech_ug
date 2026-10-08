@@ -55,11 +55,11 @@ export function DailyUpdates() {
       <div className="grid items-center gap-3 px-3 py-3.5 sm:px-6 sm:py-4 lg:min-h-[6.5rem] lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-8">
         <div className="flex min-w-0 items-center gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 ring-2 ring-white/25 sm:h-14 sm:w-14">
-            <BellRing size={22} className="text-[#FCDC04]" />
+            <BellRing size={22} className="text-[#f3efe9]" />
           </span>
           <div className="min-w-0">
             <h2 className="font-display text-lg font-black leading-tight sm:text-2xl">
-              Know what&apos;s new, <span className="text-[#FCDC04]">the day it lands</span>
+              Know what&apos;s new, <span className="text-[#f3efe9]">the day it lands</span>
             </h2>
             <p className="mt-0.5 text-xs leading-snug text-white/80 sm:text-[13px]">
               One email with new machines and price drops — and nothing on the days there is no news.
@@ -70,7 +70,7 @@ export function DailyUpdates() {
         <div className="min-w-0">
           {state === "done" ? (
             <p className="flex items-start gap-2 rounded-lg bg-white/15 px-3 py-2.5 text-[13px] font-semibold leading-snug ring-1 ring-white/25">
-              <Check size={18} className="mt-0.5 shrink-0 text-[#FCDC04]" />
+              <Check size={18} className="mt-0.5 shrink-0 text-[#f3efe9]" />
               {msg}
             </p>
           ) : (
@@ -87,7 +87,7 @@ export function DailyUpdates() {
               <button
                 type="submit"
                 disabled={state === "sending"}
-                className="press inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#FCDC04] px-4 py-2.5 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105 disabled:opacity-60 sm:px-6"
+                className="press inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#f3efe9] px-4 py-2.5 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105 disabled:opacity-60 sm:px-6"
               >
                 {state === "sending" ? (
                   <>
@@ -102,7 +102,7 @@ export function DailyUpdates() {
               </button>
             </form>
           )}
-          {state === "error" && <p className="mt-1.5 text-xs font-semibold text-[#FCDC04]">{msg}</p>}
+          {state === "error" && <p className="mt-1.5 text-xs font-semibold text-[#f3efe9]">{msg}</p>}
           {state !== "done" && (
             <p className="mt-1.5 px-1 text-[11px] text-white/55">Unsubscribe from any email, in one click.</p>
           )}

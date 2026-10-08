@@ -4,7 +4,7 @@
 
 export const EMPTY_SPECS = {
   type: "", processor: "", generation: "", ram: "", storage: "", graphics: "",
-  display: "", os: "", battery: "", ports: "", build: "", purpose: "",
+  display: "", os: "", battery: "", ports: "", build: "", purpose: "", colors: "",
 };
 
 export type ProductFormValues = {

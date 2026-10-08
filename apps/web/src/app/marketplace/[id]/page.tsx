@@ -84,7 +84,7 @@ export default async function VendorProductPage({ params }: Params) {
               {oldPrice && (
                 <>
                   <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                  <span className="rounded bg-[#00a651] px-1.5 py-0.5 text-xs font-extrabold text-white">
+                  <span className="rounded bg-[#282363] px-1.5 py-0.5 text-xs font-extrabold text-white">
                     -{Math.max(1, Math.round((1 - item.price_ugx / oldPrice) * 100))}%
                   </span>
                 </>

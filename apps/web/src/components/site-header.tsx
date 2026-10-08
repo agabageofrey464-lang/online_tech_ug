@@ -4,29 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  BatteryCharging,
   Briefcase,
   ChevronDown,
   Code2,
-  Cpu,
   GraduationCap,
-  HardDrive,
-  Headphones,
   Heart,
   HelpCircle,
-  Laptop,
-  LayoutGrid,
   Menu,
-  Monitor,
   Package,
   Phone,
   ShoppingBag,
   ShoppingCart,
-  Smartphone,
   Star,
-  Store,
   User,
-  Wifi,
 } from "lucide-react";
 import { nav, navGroups, site, whatsappLink } from "@/lib/site";
 import { useCart } from "@/lib/cart";
@@ -39,18 +29,18 @@ import { MegaMenu } from "@/components/mega-menu";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
-// Jumia-style category strip — product-first, with a small icon per category.
+// The category strip — product-first.
 const CATEGORIES = [
-  { href: "/shop", label: "All Products", icon: LayoutGrid },
-  { href: "/shop?cat=Laptops", label: "Laptops", icon: Laptop },
-  { href: "/shop?cat=Desktops", label: "Desktops", icon: Monitor },
-  { href: "/shop?cat=Phones", label: "Phones", icon: Smartphone },
-  { href: "/shop?cat=Components", label: "Components", icon: Cpu },
-  { href: "/shop?cat=Accessories", label: "Accessories", icon: Headphones },
-  { href: "/shop?cat=Networking", label: "Networking", icon: Wifi },
-  { href: "/shop?cat=Storage", label: "Storage", icon: HardDrive },
-  { href: "/shop?cat=Power", label: "Power", icon: BatteryCharging },
-  { href: "/marketplace", label: "Marketplace", icon: Store },
+  { href: "/shop", label: "All Products" },
+  { href: "/shop?cat=Laptops", label: "Laptops" },
+  { href: "/shop?cat=Desktops", label: "Desktops" },
+  { href: "/shop?cat=Phones", label: "Phones" },
+  { href: "/shop?cat=Components", label: "Components" },
+  { href: "/shop?cat=Accessories", label: "Accessories" },
+  { href: "/shop?cat=Networking", label: "Networking" },
+  { href: "/shop?cat=Storage", label: "Storage" },
+  { href: "/shop?cat=Power", label: "Power" },
+  { href: "/marketplace", label: "Marketplace" },
 ];
 
 function HeaderCart() {
@@ -62,14 +52,14 @@ function HeaderCart() {
       className="relative flex items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600"
     >
       <span className="relative">
-        <ShoppingCart size={24} strokeWidth={1.9} />
+        <ShoppingCart size={24} strokeWidth={1.4} />
         {count > 0 && (
           <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-extrabold leading-none text-white ring-2 ring-white">
             {count}
           </span>
         )}
       </span>
-      <span className="hidden text-sm font-bold sm:inline">Cart</span>
+      <span className="hidden text-sm font-medium sm:inline">Cart</span>
     </button>
   );
 }
@@ -83,14 +73,14 @@ function HeaderWishlist() {
       className="relative hidden items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600 lg:flex"
     >
       <span className="relative">
-        <Heart size={23} strokeWidth={1.9} />
+        <Heart size={23} strokeWidth={1.4} />
         {count > 0 && (
           <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-extrabold leading-none text-white ring-2 ring-white">
             {count}
           </span>
         )}
       </span>
-      <span className="hidden text-sm font-bold lg:inline">Saved</span>
+      <span className="hidden text-sm font-medium lg:inline">Saved</span>
     </Link>
   );
 }
@@ -113,8 +103,8 @@ export function SiteHeader() {
       {/* Utility bar. Dark, so it separates cleanly from the white bar below,
           and split into what we SELL (bold, up front) and the informational
           pages (muted) — fifteen identical links were impossible to scan. */}
-      <div className="stripes hidden bg-teal-600 text-white md:block">
-        <div className="container-wide flex items-center gap-x-4 py-2 text-[11.5px] font-semibold">
+      <div className="hidden bg-ink-600 text-white md:block">
+        <div className="container-wide flex items-center gap-x-5 py-2.5 text-[12.5px] font-medium">
           <Link
             href="/sell"
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600"
@@ -134,7 +124,7 @@ export function SiteHeader() {
                   key={it.href}
                   href={it.href}
                   aria-current={pathname.startsWith(it.href) ? "page" : undefined}
-                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FCDC04] px-3 py-1 font-extrabold text-ink-900 shadow-sm transition hover:brightness-105 ${
+                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#f3efe9] px-3 py-1 font-extrabold text-ink-900 shadow-sm transition hover:brightness-105 ${
                     pathname.startsWith(it.href) ? "ring-2 ring-white" : "ring-1 ring-black/10"
                   }`}
                 >
@@ -167,7 +157,7 @@ export function SiteHeader() {
               <Link
                 key={it.href}
                 href={it.href}
-                className="whitespace-nowrap font-medium text-white/60 transition hover:text-white"
+                className="whitespace-nowrap text-white/70 transition hover:text-white"
               >
                 {it.label}
               </Link>
@@ -185,8 +175,8 @@ export function SiteHeader() {
 
       {/* Main bar — WHITE (Jumia). Mobile leads with the search bar; nav lives
           in the bottom tab bar, so the top stays clean (no boxes). */}
-      <div className="bg-white shadow-sm">
-        <div className="container-wide flex items-center gap-3 py-2.5 md:gap-5">
+      <div className="bg-white">
+        <div className="container-wide flex items-center gap-3 py-2.5 md:gap-6 md:py-3.5">
           {/* Logo — compact on mobile (left), full on desktop */}
           <Link href="/" className="flex shrink-0 items-center text-ink-900">
             <span className="md:hidden"><BrandLogoFull size="sm" onLight /></span>
@@ -195,7 +185,7 @@ export function SiteHeader() {
 
           {/* Search — sits beside the logo on mobile (narrower), capped on desktop */}
           <div className="min-w-0 flex-1 md:max-w-2xl">
-            <SearchBar className="border border-ink-600/20 shadow-sm" />
+            <SearchBar className="border border-ink-600/20" />
           </div>
 
           {/* Desktop actions */}
@@ -205,8 +195,8 @@ export function SiteHeader() {
               href="/help"
               className="flex items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600"
             >
-              <HelpCircle size={22} strokeWidth={1.9} />
-              <span className="hidden text-sm font-bold lg:inline">Help</span>
+              <HelpCircle size={22} strokeWidth={1.4} />
+              <span className="hidden text-sm font-medium lg:inline">Help</span>
               <ChevronDown size={14} className="hidden lg:inline" />
             </Link>
             <HeaderWishlist />
@@ -267,10 +257,11 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Category strip — WHITE with icons (Jumia). Desktop only; mobile shows the
-          circular category/services row on the home page instead. */}
-      <nav className="hidden border-b border-ink-600/10 bg-white shadow-sm md:block">
-        <div className="container-wide flex items-center gap-x-6 py-1.5 text-sm font-semibold">
+      {/* Category strip — white, the categories as plain serif links. Desktop
+          only; mobile shows the circular category/services row on the home
+          page instead. */}
+      <nav className="hidden border-y border-ink-600/10 bg-white md:block">
+        <div className="container-wide flex items-center gap-x-6 py-2 text-sm font-semibold">
           <MegaMenu />
 
           {/* Primary destinations — Shop and Learn lead the bar, ahead of the
@@ -335,18 +326,17 @@ export function SiteHeader() {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center gap-x-6 overflow-x-auto no-scrollbar">
+          <div className="flex flex-1 items-center gap-x-8 overflow-x-auto no-scrollbar">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;
             return (
               <Link
                 key={c.href}
                 href={c.href}
-                className={`group flex shrink-0 items-center gap-1.5 whitespace-nowrap transition ${
-                  active ? "text-brand-600" : "text-ink-800 hover:text-brand-600"
+                className={`shrink-0 whitespace-nowrap border-b py-1 font-display text-[18px] font-medium transition ${
+                  active ? "border-brand-500 text-brand-600" : "border-transparent text-ink-900 hover:border-ink-900"
                 }`}
               >
-                <c.icon size={17} strokeWidth={2} className="text-ink-700/60 transition group-hover:text-brand-500" />
                 {c.label}
               </Link>
             );
@@ -380,7 +370,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="my-1 flex items-center gap-2.5 rounded-md bg-[#FCDC04] px-3 py-3 text-base font-extrabold text-ink-900 shadow-sm"
+                  className="my-1 flex items-center gap-2.5 rounded-md bg-[#f3efe9] px-3 py-3 text-base font-extrabold text-ink-900 shadow-sm"
                 >
                   <Briefcase size={18} strokeWidth={2.4} />
                   {item.label}

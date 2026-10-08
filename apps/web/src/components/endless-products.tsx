@@ -36,7 +36,7 @@ type FeedItem = {
   specs: Product["details"] | null;
 };
 
-const BATCH = 30;
+const BATCH = 12;
 
 
 const toProduct = (p: FeedItem): Product => ({
@@ -120,7 +120,7 @@ export function EndlessProducts({
   return (
     <>
       {sections.map((sec) => (
-        <section key={sec.category} aria-label={sec.category} className="bg-[#fdf3ec]">
+        <section key={sec.category} aria-label={sec.category} className="bg-[#f3efe9]">
           <div className="flex items-center justify-between gap-2 px-3 pb-1 pt-4 sm:px-4">
             <h3 className="flex items-center gap-2 font-display text-lg font-black text-ink-900 sm:text-xl">
               <span className="h-5 w-1.5 rounded-full bg-brand-500" />
@@ -138,7 +138,7 @@ export function EndlessProducts({
               All {sec.category} →
             </Link>
           </div>
-          <div className="grid-cards gap-2 p-2 sm:p-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 sm:gap-3 sm:p-3">
             {sec.items.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -146,7 +146,7 @@ export function EndlessProducts({
         </section>
       ))}
 
-      <div ref={sentinel} className="bg-[#fdf3ec] px-3 pb-4 pt-1 text-center">
+      <div ref={sentinel} className="bg-[#f3efe9] px-3 pb-4 pt-1 text-center">
         {!done ? (
           <p className="flex items-center justify-center gap-2 py-3 text-xs font-semibold text-ink-700/60">
             <span className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />

@@ -111,7 +111,7 @@ function SuccessInner() {
 
         {phase === "underpaid" && (
           <>
-            <XCircle className="mx-auto text-amber-500" size={52} />
+            <XCircle className="mx-auto text-gold-500" size={52} />
             <h1 className="mt-4 text-2xl font-extrabold text-ink-900">Payment didn&apos;t match the fee</h1>
             <p className="mt-2 text-sm text-ink-700/70">
               We couldn&apos;t confirm the full course fee. If money left your account, contact us and we&apos;ll sort it out right away.

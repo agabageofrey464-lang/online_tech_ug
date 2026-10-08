@@ -5,11 +5,13 @@ import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ProductRating } from "@/components/product-rating";
 import { SafeImage } from "@/components/safe-image";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 /**
- * Product tile, matching the jumia.ug reference: white card, square photo,
- * two-line title, a single-star rating with the review count, then the price
- * with the struck anchor price and a green discount badge.
+ * Product tile: the photo on a soft panel with no border or shadow, the name
+ * in the serif on the left and the price on the right, one quiet line of
+ * specification beneath. The condition sits as a tab at the top of the photo
+ * and "Quick add" rises over it on hover.
  *
  * Kept deliberately spare — the full specification lives on the product page,
  * and extra lines here only slow a shopper scanning a grid.
@@ -114,74 +116,89 @@ export function ProductCard({ product }: { product: Product }) {
   const spec = specLines(product);
 
   return (
-    <article className="group card-lift relative flex h-full w-full flex-col overflow-hidden card-soft rounded-lg bg-white hover:z-10">
-      <div className="relative aspect-square overflow-hidden bg-white">
+    // A container, so the name and price sit side by side on a wide tile and
+    // stack on a narrow one — the same card is used in three-across grids and
+    // in 13rem rails.
+    <article className="group card-lift @container relative flex h-full w-full flex-col overflow-hidden bg-[var(--tile)]">
+      <div className="relative aspect-square overflow-hidden">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
+          {/* Multiply lets a photo shot on white sit on the panel instead of
+              in a white box of its own. */}
           <SafeImage
             src={card(productImage(product))}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-            className={`card-zoom object-contain p-2.5 ${inStock ? "" : "opacity-50"}`}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className={`card-zoom object-contain p-4 mix-blend-multiply @[15rem]:p-7 ${inStock ? "" : "opacity-50"}`}
           />
         </Link>
 
-        {/* Condition rides on the photo — it matters on a used machine, and it
-            costs no vertical space here. */}
+        {/* Condition — a tab at the top of the photo. */}
         {product.condition !== "Refurbished" && (
-          <span className="pointer-events-none absolute right-0 top-0 z-10 rounded-bl-md bg-brand-500 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
-            {product.condition}
+          <span
+            className={`pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap px-3 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] @[15rem]:px-5 @[15rem]:text-[10.5px] ${
+              product.condition === "Brand New" ? "bg-ink-600 text-white" : "bg-[#dcd6cd] text-ink-900"
+            }`}
+          >
+            {product.condition === "Brand New" ? "New" : product.condition}
           </span>
         )}
 
         <WishlistButton
           slug={product.id}
-          className="absolute left-1 top-1 z-20 opacity-0 transition group-hover:opacity-100"
+          className="absolute right-1.5 top-1.5 z-20 opacity-0 transition group-hover:opacity-100"
         />
 
         {!inStock && (
-          <span className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded bg-ink-900/80 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+          <span className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-ink-900/80 px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-white">
             Out of stock
           </span>
         )}
+
+        {/* Quick add — over the photo, for a pointer that can hover. A phone
+            opens the product instead. Vendors' products are ordered from
+            their own page. */}
+        {inStock && !product.seller && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 hidden justify-center opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:opacity-100 @[13rem]:flex">
+            <AddToCartButton
+              label="Quick add"
+              className="!rounded-none !bg-white !px-5 !py-2.5 !text-[11px] !font-bold uppercase !tracking-[0.16em] !text-ink-900 shadow-sm hover:!bg-ink-600 hover:!text-white"
+              item={{ slug: product.id, name: product.name, price: product.price, category: product.category, condition: product.condition }}
+            />
+          </div>
+        )}
       </div>
 
-      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pb-3 pt-2">
-        <h3 className="clamp-2 min-h-[2.6em] text-[13.5px] leading-snug text-ink-800 transition-colors duration-200 group-hover:text-brand-600">
-          {product.name}
-        </h3>
+      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-3 pb-3.5 pt-3 @[15rem]:px-4 @[15rem]:pb-4">
+        <div className="flex flex-col gap-1 @[15rem]:flex-row @[15rem]:items-start @[15rem]:justify-between @[15rem]:gap-3">
+          <h3 className="clamp-2 min-h-[2.5em] text-[16px] leading-[1.25] text-ink-900 transition-colors duration-200 group-hover:text-brand-600 @[15rem]:text-[19px]">
+            {product.name}
+          </h3>
+          <div className="shrink-0 @[15rem]:pt-1 @[15rem]:text-right">
+            <p className="whitespace-nowrap text-[13px] font-semibold text-ink-900">{ugx(product.price)}</p>
+            {oldPrice && (
+              <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap @[15rem]:justify-end">
+                <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
+                <span className="text-[11px] font-bold text-green-700">-{discountPct}%</span>
+              </p>
+            )}
+          </div>
+        </div>
 
         {/* Specs — fixed height so every card in a row still lines up, whether
             the product has a full specification or only short bullets. */}
-        <div className="mt-1 min-h-[2.1em]">
-          {spec.primary && (
-            <p className="truncate text-[11px] font-semibold text-ink-700/75">{spec.primary}</p>
-          )}
-          {spec.secondary && (
-            <p className="truncate text-[10.5px] text-ink-700/50">{spec.secondary}</p>
-          )}
+        <div className="mt-2 min-h-[2.2em]">
+          {spec.primary && <p className="truncate text-[11.5px] text-ink-700/75">{spec.primary}</p>}
+          {spec.secondary && <p className="truncate text-[11px] text-ink-700/50">{spec.secondary}</p>}
         </div>
 
         {product.seller && (
-          <p className="mt-1 truncate text-[10.5px] font-semibold text-ink-700/60">
-            Sold by <span className="text-brand-600">{product.seller}</span>
+          <p className="mt-1 truncate text-[11px] text-ink-700/60">
+            Sold by <span className="font-semibold text-brand-600">{product.seller}</span>
           </p>
         )}
 
         <ProductRating slug={product.id} className="mt-1.5" />
-
-        <p className="mt-1.5 text-[17px] font-extrabold leading-none tracking-tight text-ink-900">
-          {ugx(product.price)}
-        </p>
-
-        {oldPrice && (
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            <span className="text-[11.5px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-            <span className="rounded-sm bg-[#00a651] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
-              -{discountPct}%
-            </span>
-          </div>
-        )}
       </Link>
     </article>
   );

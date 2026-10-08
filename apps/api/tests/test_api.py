@@ -296,3 +296,28 @@ def test_the_owner_is_told_when_a_vendors_product_is_reviewed(client, db_factory
     pairs = dict(db_factory.alerts[0]["pairs"])
     assert pairs["Sold by"] == "Phone Corner" and pairs["Product"] == CASE["name"]
     assert "2-star" in db_factory.alerts[0]["title"] and db_factory.alerts[0]["note"] == "Fits loosely."
+
+
+# ── colours ───────────────────────────────────────────────────────────────
+
+def test_the_colour_a_customer_chose_is_written_on_the_order(db_factory):
+    from app.models.product import Product
+    from app.schemas.order import OrderCreate
+    from app.services.orders import create_order
+
+    with db_factory() as db:
+        db.add(Product(slug="two-tone-laptop", name="Two Tone Laptop", category="Laptops", price_ugx=900_000, in_stock=True, stock_qty=5, specs={"colors": "Silver, Space Grey"}))
+        db.commit()
+        placed = create_order(db, OrderCreate(
+            customer_name="Test Customer", phone="0700000000", delivery_town="Kampala",
+            items=[{"slug": "two-tone-laptop", "quantity": 1, "option": "  Space   Grey "}],
+        ))
+        assert [i.name for i in placed.items] == ["Two Tone Laptop — Space Grey"]
+        # Reviews and stock still find the product by its own slug.
+        assert placed.items[0].product_slug == "two-tone-laptop"
+
+        plain = create_order(db, OrderCreate(
+            customer_name="Test Customer", phone="0700000000", delivery_town="Kampala",
+            items=[{"slug": "two-tone-laptop", "quantity": 1}],
+        ))
+        assert plain.items[0].name == "Two Tone Laptop"

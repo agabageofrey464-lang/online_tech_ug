@@ -2,7 +2,8 @@
 
 /* ─── Brand design tokens (Online Tech Uganda) ─────────────────── */
 @theme {
-  /* Primary — orange */
+  /* Primary — the logo's orange. Used for buttons, links and small accents,
+     so they answer the logo; large areas are brown, taupe or sand. */
   --color-brand-50: #fff3ee;
   --color-brand-100: #ffe0d3;
   --color-brand-200: #ffbfa3;
@@ -14,19 +15,19 @@
   --color-brand-800: #8c2a0c;
   --color-brand-900: #6e240e;
 
-  /* Accent — gold/amber (kept for small accents) */
-  --color-gold-50: #fff4e6;
-  --color-gold-100: #ffe3bf;
-  --color-gold-200: #ffcd85;
-  --color-gold-300: #fdb04a;
-  --color-gold-400: #fa9a22;
-  --color-gold-500: #f7941d;
-  --color-gold-600: #e57c0c;
-  --color-gold-700: #bd640c;
-  --color-gold-800: #934f10;
-  --color-gold-900: #6e3d10;
+  /* Sand — the warm neutral. (Named `gold` for the classes that use it.) */
+  --color-gold-50: #faf8f5;
+  --color-gold-100: #f3efe9;
+  --color-gold-200: #e8e1d7;
+  --color-gold-300: #dcd3c6;
+  --color-gold-400: #c9bdab;
+  --color-gold-500: #b3a48e;
+  --color-gold-600: #94856f;
+  --color-gold-700: #766956;
+  --color-gold-800: #5a5042;
+  --color-gold-900: #423b31;
 
-  /* Secondary — indigo */
+  /* Secondary — indigo, the dark of the logo's lettering. */
   --color-ink-50: #eeeef6;
   --color-ink-100: #d6d6ec;
   --color-ink-200: #adaed9;
@@ -38,44 +39,57 @@
   --color-ink-800: #1a1740;
   --color-ink-900: #12102e;
 
-  /* Teal — the band colour used across the offer strips and utility bar.
-     Built around #0e7490, sampled from the approved strip design. */
+  /* The palette is the logo's: indigo and orange, with teal as the one cool
+     colour (the academy's) and sand as the neutral. `green` is kept as a name
+     and drawn in the teal, and `red` in the orange, so the palette is decided
+     here and nowhere else. */
   --color-teal-50: #eefafd;
   --color-teal-100: #d3f0f7;
   --color-teal-200: #a7dfee;
   --color-teal-300: #6cc6de;
   --color-teal-400: #33a5c4;
   --color-teal-500: #1587a9;
-  --color-teal-600: #0e7490; /* core */
+  --color-teal-600: #0e7490;
   --color-teal-700: #0c5d75;
   --color-teal-800: #0d4b5e;
   --color-teal-900: #0e3e4e;
 
-  /* Success — green (#00A651) */
-  --color-green-50: #e6f7ee;
-  --color-green-100: #c2ebd4;
-  --color-green-200: #8fdbb0;
-  --color-green-300: #57c98a;
-  --color-green-400: #22b56c;
-  --color-green-500: #00a651; /* core */
-  --color-green-600: #00994b;
-  --color-green-700: #00803e;
-  --color-green-800: #006633;
-  --color-green-900: #00522a;
+  --color-green-50: var(--color-teal-50);
+  --color-green-100: var(--color-teal-100);
+  --color-green-200: var(--color-teal-200);
+  --color-green-300: var(--color-teal-300);
+  --color-green-400: var(--color-teal-400);
+  --color-green-500: var(--color-teal-500);
+  --color-green-600: var(--color-teal-600);
+  --color-green-700: var(--color-teal-700);
+  --color-green-800: var(--color-teal-800);
+  --color-green-900: var(--color-teal-900);
 
-  /* Jumia-exact native font stack: no web-font download — uses the device's
-     own UI font (Segoe UI on Windows, Roboto on Android, SF on iPhone). */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  /* One consistent typeface everywhere — headings share the body font */
-  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --color-red-50: var(--color-brand-50);
+  --color-red-100: var(--color-brand-100);
+  --color-red-200: var(--color-brand-200);
+  --color-red-300: var(--color-brand-300);
+  --color-red-400: var(--color-brand-400);
+  --color-red-500: var(--color-brand-500);
+  --color-red-600: var(--color-brand-600);
+  --color-red-700: var(--color-brand-700);
+  --color-red-800: var(--color-brand-800);
+  --color-red-900: var(--color-brand-900);
 
-  --radius-card: 1rem;
+  /* Body: Inter, loaded in the root layout, with the device's own UI font
+     behind it while it arrives. */
+  --font-sans: var(--font-sans-face), system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  /* Headings, product names and navigation: EB Garamond. */
+  --font-display: var(--font-serif-face), "Garamond", "Iowan Old Style", Georgia,
+    "Times New Roman", serif;
+
+  --radius-card: 0.25rem;
 }
 
 :root {
-  --background: #e6e8ef; /* light-grey canvas (Jumia-style) so white cards clearly stand out — less overall white */
+  --background: #f6f4f1; /* warm off-white canvas */
+  --tile: #edeae5; /* the soft panel a product sits on */
   --foreground: #1f1f29;
 }
 
@@ -184,7 +198,7 @@ h1, h2, h3, p, li, dd, a {
 .notes-prose ul { margin: 0.5rem 0 0.5rem 0; padding-left: 1.25rem; list-style: disc; }
 .notes-prose li { margin: 0.3rem 0; }
 .notes-prose b { color: var(--color-ink-800); }
-.notes-prose code { background: #f1f3f6; border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.85em; color: var(--color-brand-600); }
+.notes-prose code { background: #f3efe9; border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.85em; color: var(--color-brand-600); }
 .notes-prose .note-key { margin-top: 1.25rem; border-left: 4px solid var(--color-brand-500); background: var(--color-brand-50); padding: 0.75rem 1rem; border-radius: 0 0.5rem 0.5rem 0; font-size: 0.9rem; }
 
 /* Hero image band — scrolls continuously; two copies loop at -50%. */
@@ -255,10 +269,7 @@ h1, h2, h3, p, li, dd, a {
    shadow instead, so it fades into the page rather than being outlined on it. */
 .card-soft {
   border: 0;
-  box-shadow:
-    0 0 0 1px rgba(20, 16, 46, 0.025),
-    0 1px 2px rgba(20, 16, 46, 0.03),
-    0 10px 28px -6px rgba(20, 16, 46, 0.10);
+  box-shadow: none;
 }
 
 /* A card that responds to the cursor: lifts, deepens, and warms its edge. */
@@ -270,15 +281,14 @@ h1, h2, h3, p, li, dd, a {
   will-change: transform;
 }
 .card-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-3);
-  border-color: color-mix(in srgb, var(--color-brand-500) 38%, transparent);
+  transform: none;
+  box-shadow: none;
 }
 /* The photo inside eases in rather than jumping to its zoomed state. */
 .card-lift .card-zoom {
   transition: transform var(--t-slow) var(--ease-out);
 }
-.card-lift:hover .card-zoom { transform: scale(1.06); }
+.card-lift:hover .card-zoom { transform: scale(1.04); }
 
 /* ─── Motion & micro-interactions ─────────────────────────────────── */
 
@@ -344,11 +354,16 @@ h1, h2, h3, p, li, dd, a {
   .press:hover { filter: none; }
 }
 
-/* Headings share the same humanist face (Open Sans). It reads best at near-
-   normal tracking, so we drop the tight negative letter-spacing. */
+/* Headings are set in the serif at a book weight. The rule is unlayered on
+   purpose: it has to win over the `font-bold` / `font-black` utilities the
+   headings were given when they were set in a heavy sans — a Garamond at 800
+   is a different, clumsier typeface. Its letters are also smaller on the body
+   than a sans at the same size, hence the adjustment. */
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.003em;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-size-adjust: 0.46;
 }
 
 /* Reusable layout helpers */
@@ -484,12 +499,8 @@ body {
 /* Soft diagonal stripes over a solid band — the look of our offer strips.
    The stripes are a single shade lighter than the base so they read as texture,
    not as pattern, and never fight the white text on top. */
+/* Bands are flat colour. `.stripes` used to lay a diagonal pattern over
+   them; the class is kept so the markup need not change. */
 .stripes {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(255, 255, 255, 0.055) 0px,
-    rgba(255, 255, 255, 0.055) 10px,
-    transparent 10px,
-    transparent 20px
-  );
+  background-image: none;
 }

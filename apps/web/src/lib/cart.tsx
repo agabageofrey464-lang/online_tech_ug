@@ -10,6 +10,7 @@ export type CartItem = {
   condition: string;
   quantity: number;
   image?: string; // explicit image (vendor products); house catalog resolves by slug
+  option?: string; // the colour chosen on the product page
 };
 
 type CartState = {
@@ -74,7 +75,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const found = prev.find((i) => i.slug === item.slug);
           if (found) {
             return prev.map((i) =>
-              i.slug === item.slug ? { ...i, quantity: i.quantity + qty } : i,
+              // One colour per product in the cart: adding it again in
+              // another colour changes the choice rather than splitting the line.
+              i.slug === item.slug ? { ...i, quantity: i.quantity + qty, option: item.option ?? i.option } : i,
             );
           }
           return [...prev, { ...item, quantity: qty }];

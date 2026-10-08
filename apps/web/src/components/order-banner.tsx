@@ -20,13 +20,13 @@ const POPULAR = [
  */
 export function OrderBanner() {
   return (
-    <section className="relative overflow-hidden rounded-xl bg-gradient-to-r from-ink-700 via-ink-600 to-brand-600 text-white shadow-md ring-1 ring-black/5">
+    <section className="relative overflow-hidden bg-teal-700 text-white">
       {/* Decorative drifting glows */}
-      <span className="animate-blob pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-      <span className="animate-blob-slow pointer-events-none absolute -bottom-12 left-24 h-28 w-28 rounded-full bg-brand-400/20 blur-2xl" />
+      <span className="hidden animate-blob pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+      <span className="hidden animate-blob-slow pointer-events-none absolute -bottom-12 left-24 h-28 w-28 rounded-full bg-brand-400/20 blur-2xl" />
       <span
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 16px)" }}
+        style={{ backgroundImage: "none" }}
       />
 
       {/* ── Phones: one compact row ─────────────────────────────

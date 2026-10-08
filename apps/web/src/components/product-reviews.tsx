@@ -10,7 +10,7 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
   return (
     <span className="inline-flex gap-0.5" aria-label={`${value} out of 5`}>
       {[1, 2, 3, 4, 5].map((n) => (
-        <Star key={n} size={size} className={n <= Math.round(value) ? "fill-[#f68b1e] text-[#f68b1e]" : "text-ink-600/20"} />
+        <Star key={n} size={size} className={n <= Math.round(value) ? "fill-[#f15a29] text-[#f15a29]" : "text-ink-600/20"} />
       ))}
     </span>
   );
@@ -121,7 +121,7 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
                   aria-label={`${n} star${n > 1 ? "s" : ""}`}
                   className="rounded p-1 transition hover:scale-110"
                 >
-                  <Star size={28} className={n <= form.rating ? "fill-[#f68b1e] text-[#f68b1e]" : "text-ink-600/25"} />
+                  <Star size={28} className={n <= form.rating ? "fill-[#f15a29] text-[#f15a29]" : "text-ink-600/25"} />
                 </button>
               ))}
             </div>

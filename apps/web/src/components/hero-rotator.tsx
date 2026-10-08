@@ -16,18 +16,18 @@ function SlideHeading({ first, ...rest }: { first: boolean } & React.HTMLAttribu
 
 const SLIDES = [
   {
-    bg: "from-brand-500 via-brand-600 to-brand-700",
+    bg: "from-ink-500 via-ink-600 to-ink-700",
     eyebrow: "Genuine & warranted",
     title: "Powering Uganda, One Device at a Time",
     sub: "Laptops, desktops & accessories — warranty included, countrywide delivery.",
     pill: "Easy Mobile Money",
     cta: "Shop now",
     href: "/shop",
-    img: "/hero/hero-1.webp",
+    img: "/hero/shop-floor.webp",
     icon: ShieldCheck,
   },
   {
-    bg: "from-brand-600 via-brand-700 to-ink-700",
+    bg: "from-ink-600 via-ink-700 to-ink-700",
     eyebrow: "Repairs & IT support",
     title: "Fast, Reliable Tech Support",
     sub: "Laptops, desktops & networks — onsite & remote, done right.",
@@ -38,7 +38,7 @@ const SLIDES = [
     icon: Truck,
   },
   {
-    bg: "from-ink-700 via-ink-600 to-brand-700",
+    bg: "from-ink-700 via-ink-600 to-ink-700",
     eyebrow: "Marketplace",
     title: "Buy & Sell on our Marketplace",
     sub: "Shop trusted vendors, or list your own products and reach more buyers.",
@@ -49,7 +49,7 @@ const SLIDES = [
     icon: Store,
   },
   {
-    bg: "from-brand-500 via-brand-600 to-ink-700",
+    bg: "from-ink-500 via-ink-600 to-ink-700",
     eyebrow: "Upgrades & accessories",
     title: "Boost Your PC — RAM, SSDs & More",
     sub: "Genuine memory, storage, power and accessories to speed up any machine.",
@@ -74,11 +74,13 @@ export function HeroRotator() {
   }, [n, i]);
 
   return (
-    <div className="group/hero relative min-h-[280px] overflow-hidden rounded-lg shadow-md ring-1 ring-black/5 sm:min-h-[320px] lg:h-[400px]">
+    <div className="group/hero relative min-h-[280px] overflow-hidden sm:min-h-[320px] lg:h-[400px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
-          className={`absolute inset-0 bg-gradient-to-br ${s.bg} transition-opacity duration-700 ${
+          // A light panel on a desktop — the photograph carries the colour. A phone
+          // keeps the photograph full-bleed behind white text.
+          className={`absolute inset-0 bg-ink-700 transition-opacity duration-700 sm:bg-[var(--tile)] ${
             idx === i ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
           aria-hidden={idx !== i}
@@ -91,29 +93,29 @@ export function HeroRotator() {
 
           <div className="relative z-10 grid h-full grid-cols-1 items-center gap-4 p-6 sm:grid-cols-2 sm:p-10">
             {/* Text */}
-            <div className="max-w-md text-white">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20">
+            <div className="max-w-md text-white sm:text-ink-900">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20 sm:rounded-none sm:bg-transparent sm:px-0 sm:text-brand-600 sm:ring-0">
                 <s.icon size={13} /> {s.eyebrow}
               </span>
-              <SlideHeading first={idx === 0} className="mt-3 text-2xl font-black leading-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-4xl">
+              <SlideHeading first={idx === 0} className="mt-3 font-display text-3xl leading-[1.1] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[44px] sm:[text-shadow:none]">
                 {s.title}
               </SlideHeading>
-              <p className="mt-2 max-w-sm text-sm text-white/90 sm:text-base">{s.sub}</p>
+              <p className="mt-3 max-w-sm text-sm text-white/90 sm:text-base sm:text-ink-700">{s.sub}</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Link
                   href={s.href}
-                  className="press inline-flex items-center gap-1.5 rounded-lg bg-white px-6 py-2.5 text-sm font-extrabold text-ink-900 shadow-lg transition hover:bg-white/90"
+                  className="press inline-flex items-center gap-1.5 bg-white px-7 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900 transition hover:bg-white/90 sm:bg-ink-600 sm:text-white sm:hover:bg-ink-700"
                 >
                   {s.cta} <ChevronRight size={16} />
                 </Link>
-                <span className="rounded-full bg-black/15 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/15">
+                <span className="rounded-full bg-black/15 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/15 sm:bg-white sm:text-ink-900 sm:ring-ink-600/15">
                   {s.pill}
                 </span>
               </div>
             </div>
 
             {/* Framed photo (desktop) */}
-            <div className="relative hidden h-[70%] overflow-hidden rounded-xl shadow-2xl ring-1 ring-white/25 sm:block">
+            <div className="relative hidden h-[86%] overflow-hidden sm:block">
               <Image
                 src={s.img}
                 alt=""
@@ -150,7 +152,7 @@ export function HeroRotator() {
             key={idx}
             onClick={() => setI(idx)}
             aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2 rounded-full transition-all ${idx === i ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
+            className={`h-2 rounded-full transition-all ${idx === i ? "w-5 bg-white sm:bg-ink-600" : "w-2 bg-white/50 hover:bg-white/80 sm:bg-ink-600/25 sm:hover:bg-ink-600/50"}`}
           />
         ))}
       </div>

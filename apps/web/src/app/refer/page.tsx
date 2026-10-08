@@ -142,7 +142,7 @@ export default function ReferPage() {
                     <td className="py-2 pr-3 text-right text-ink-800">{ugx(r.order_total)}</td>
                     <td className="py-2 pr-3 text-right font-bold text-green-700">{ugx(r.reward)}</td>
                     <td className="py-2">
-                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize ${r.status === "paid" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize ${r.status === "paid" ? "bg-green-100 text-green-700" : "bg-gold-100 text-gold-700"}`}>
                         {r.status}
                       </span>
                     </td>
