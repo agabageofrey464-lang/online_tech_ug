@@ -27,32 +27,32 @@
   --color-gold-800: #5a5042;
   --color-gold-900: #423b31;
 
-  /* Secondary — indigo, the dark of the logo's lettering. */
-  --color-ink-50: #eeeef6;
-  --color-ink-100: #d6d6ec;
-  --color-ink-200: #adaed9;
-  --color-ink-300: #8385c3;
-  --color-ink-400: #5a5cae;
-  --color-ink-500: #3c3a87;
-  --color-ink-600: #282363; /* core */
-  --color-ink-700: #211d52;
-  --color-ink-800: #1a1740;
-  --color-ink-900: #12102e;
+  /* Secondary — a warm brown, the site's one bold colour. (Named `ink` for
+     the classes that use it.) */
+  --color-ink-50: #f4f1ed;
+  --color-ink-100: #e8e3dd;
+  --color-ink-200: #d5cdc5;
+  --color-ink-300: #b9aea3;
+  --color-ink-400: #9a8d80;
+  --color-ink-500: #7a6d5f;
+  --color-ink-600: #5f4638; /* core */
+  --color-ink-700: #4e392e;
+  --color-ink-800: #3d2c24;
+  --color-ink-900: #2a1f1a;
 
-  /* The palette is the logo's: indigo and orange, with teal as the one cool
-     colour (the academy's) and sand as the neutral. `green` is kept as a name
-     and drawn in the teal, and `red` in the orange, so the palette is decided
-     here and nowhere else. */
-  --color-teal-50: #eefafd;
-  --color-teal-100: #d3f0f7;
-  --color-teal-200: #a7dfee;
-  --color-teal-300: #6cc6de;
-  --color-teal-400: #33a5c4;
-  --color-teal-500: #1587a9;
-  --color-teal-600: #0e7490;
-  --color-teal-700: #0c5d75;
-  --color-teal-800: #0d4b5e;
-  --color-teal-900: #0e3e4e;
+  /* Brown is the bold colour, sand the light ground, and the logo's orange
+     the accent. `teal` and `green` are kept as names and drawn in the brown,
+     and `red` in the orange, so the palette is decided here and nowhere else. */
+  --color-teal-50: var(--color-ink-50);
+  --color-teal-100: var(--color-ink-100);
+  --color-teal-200: var(--color-ink-200);
+  --color-teal-300: var(--color-ink-300);
+  --color-teal-400: var(--color-ink-400);
+  --color-teal-500: var(--color-ink-500);
+  --color-teal-600: var(--color-ink-600);
+  --color-teal-700: var(--color-ink-700);
+  --color-teal-800: var(--color-ink-800);
+  --color-teal-900: var(--color-ink-900);
 
   --color-green-50: var(--color-teal-50);
   --color-green-100: var(--color-teal-100);
@@ -90,7 +90,7 @@
 :root {
   --background: #f6f4f1; /* warm off-white canvas */
   --tile: #edeae5; /* the soft panel a product sits on */
-  --foreground: #1f1f29;
+  --foreground: #2a1f1a;
 }
 
 * {

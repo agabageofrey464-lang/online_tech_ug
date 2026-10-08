@@ -257,16 +257,18 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Category strip — white, the categories as plain serif links. Desktop
-          only; mobile shows the circular category/services row on the home
-          page instead. */}
-      <nav className="hidden border-y border-ink-600/10 bg-white md:block">
-        <div className="container-wide flex items-center gap-x-6 py-2 text-sm font-semibold">
-          <MegaMenu />
+      {/* Category strip — the categories as a row of brown chips that scrolls
+          sideways. A phone shows the chips alone; a desktop leads with the
+          menu and the three businesses. */}
+      <nav className="border-y border-ink-600/10 bg-white">
+        <div className="container-wide flex items-center gap-x-4 py-2 text-sm font-semibold md:gap-x-6">
+          <div className="hidden md:block">
+            <MegaMenu />
+          </div>
 
           {/* Primary destinations — Shop and Learn lead the bar, ahead of the
               category list, because they're where most visitors are heading. */}
-          <div className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5">
+          <div className="hidden shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5 md:flex">
             <Link
               href="/shop"
               className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
@@ -326,15 +328,15 @@ export function SiteHeader() {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center gap-x-8 overflow-x-auto no-scrollbar">
+          <div className="flex flex-1 items-center gap-x-2 overflow-x-auto no-scrollbar">
           {CATEGORIES.map((c) => {
             const active = pathname === c.href;
             return (
               <Link
                 key={c.href}
                 href={c.href}
-                className={`shrink-0 whitespace-nowrap border-b py-1 font-display text-[18px] font-medium transition ${
-                  active ? "!border-brand-500 text-brand-600" : "!border-transparent text-ink-900 hover:!border-ink-900"
+                className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
+                  active ? "bg-ink-800" : "bg-ink-600 hover:bg-ink-700"
                 }`}
               >
                 {c.label}

@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
  * empty screen still feels like part of the shop and points somewhere useful.
  */
 
-const stroke = "#282363";
+const stroke = "#5f4638";
 const accent = "#f15a29";
 const soft = "#f6f4f1";
 

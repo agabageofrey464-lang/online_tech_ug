@@ -230,6 +230,13 @@ export default function HomePage() {
 
   return (
     <div className="container-wide space-y-3 py-3">
+      {/* Phone: the hero leads the page, edge to edge — a photograph with the
+          headline and its buttons over it. A desktop shows it further down,
+          beside the category list. */}
+      <div className="-mx-[clamp(1rem,3.5vw,2.5rem)] -mt-3 md:hidden">
+        <HeroRotator />
+      </div>
+
       {/* Call / WhatsApp — first thing on the page, on every device, so nobody
           has to scroll to find how to order. */}
       <OrderBanner />
@@ -347,7 +354,7 @@ export default function HomePage() {
       {/* Price drops — shown only while something really is reduced */}
       {priceDrops.length > 0 && (
         <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-          <div className="flex items-center justify-between gap-2 bg-[#282363] px-3 py-3 text-white sm:px-4">
+          <div className="flex items-center justify-between gap-2 bg-[#5f4638] px-3 py-3 text-white sm:px-4">
             <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
               <Icon name="zap" size={18} /> Price Drops
             </h2>

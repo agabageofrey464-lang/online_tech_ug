@@ -74,7 +74,7 @@ export function HeroRotator() {
   }, [n, i]);
 
   return (
-    <div className="group/hero relative min-h-[280px] overflow-hidden sm:min-h-[320px] lg:h-[400px]">
+    <div className="group/hero relative min-h-[440px] overflow-hidden sm:min-h-[320px] lg:h-[400px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
@@ -88,27 +88,27 @@ export function HeroRotator() {
           {/* Mobile: full-bleed photo with a dark scrim (desktop uses the framed photo). */}
           <div className="absolute inset-0 sm:hidden">
             <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/40" />
+            <div className="absolute inset-0 bg-ink-900/45" />
           </div>
 
-          <div className="relative z-10 grid h-full grid-cols-1 items-center gap-4 p-6 sm:grid-cols-2 sm:p-10">
+          <div className="relative z-10 grid h-full min-h-[440px] grid-cols-1 items-center gap-4 p-6 sm:min-h-0 sm:grid-cols-2 sm:p-10">
             {/* Text */}
-            <div className="max-w-md text-white sm:text-ink-900">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20 sm:rounded-none sm:bg-transparent sm:px-0 sm:text-brand-600 sm:ring-0">
+            <div className="mx-auto max-w-md text-center text-white sm:mx-0 sm:text-left sm:text-ink-900">
+              <span className="hidden items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20 sm:inline-flex sm:rounded-none sm:bg-transparent sm:px-0 sm:text-brand-600 sm:ring-0">
                 <s.icon size={13} /> {s.eyebrow}
               </span>
-              <SlideHeading first={idx === 0} className="mt-3 font-display text-3xl leading-[1.1] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[44px] sm:[text-shadow:none]">
+              <SlideHeading first={idx === 0} className="mt-3 font-display text-[40px] leading-[1.08] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[44px] sm:[text-shadow:none]">
                 {s.title}
               </SlideHeading>
-              <p className="mt-3 max-w-sm text-sm text-white/90 sm:text-base sm:text-ink-700">{s.sub}</p>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
+              <p className="mx-auto mt-3 max-w-sm text-[17px] text-white/95 sm:mx-0 sm:text-base sm:text-ink-700">{s.sub}</p>
+              <div className="mt-6 flex flex-col items-stretch gap-3 sm:mt-4 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href={s.href}
-                  className="press inline-flex items-center gap-1.5 bg-white px-7 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900 transition hover:bg-white/90 sm:bg-ink-600 sm:text-white sm:hover:bg-ink-700"
+                  className="press inline-flex items-center justify-center gap-1.5 bg-white px-7 py-4 text-[13px] sm:py-3 sm:text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900 transition hover:bg-white/90 sm:bg-ink-600 sm:text-white sm:hover:bg-ink-700"
                 >
                   {s.cta} <ChevronRight size={16} />
                 </Link>
-                <span className="rounded-full bg-black/15 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/15 sm:bg-white sm:text-ink-900 sm:ring-ink-600/15">
+                <span className="bg-white px-3 py-4 text-center text-[13px] font-bold uppercase tracking-[0.14em] text-ink-900 sm:rounded-full sm:py-1.5 sm:text-xs sm:normal-case sm:tracking-normal sm:ring-1 sm:ring-ink-600/15">
                   {s.pill}
                 </span>
               </div>

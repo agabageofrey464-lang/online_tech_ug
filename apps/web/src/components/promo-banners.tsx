@@ -274,7 +274,7 @@ const BANNERS = [
     cta: "Shop storage",
     href: "/shop?cat=Storage",
     bg: "band-light",
-    panel: "bg-[#adaed9]",
+    panel: "bg-[#d5cdc5]",
     img: "/hero/hero-3.webp",
   },
   {
@@ -304,7 +304,7 @@ const BANNERS = [
     cta: "Book a repair",
     href: "/services#repairs-support",
     bg: "band-light",
-    panel: "bg-[#282363]",
+    panel: "bg-[#5f4638]",
     img: "/hero/hero-5.webp",
   },
   {
@@ -334,7 +334,7 @@ const BANNERS = [
     cta: "Shop certified",
     href: "/shop?q=uk used",
     bg: "band-light",
-    panel: "bg-[#adaed9]",
+    panel: "bg-[#d5cdc5]",
     img: "/hero/hero-1.webp",
   },
   {
@@ -349,7 +349,7 @@ const BANNERS = [
     cta: "Get a quote",
     href: "/contact",
     bg: "band-light",
-    panel: "bg-[#adaed9]",
+    panel: "bg-[#d5cdc5]",
     img: "/hero/hero-6.webp",
   },
   {
