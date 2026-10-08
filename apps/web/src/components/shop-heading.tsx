@@ -67,7 +67,7 @@ export function ShopHeading({ stats }: { stats: string[] }) {
         </span>
       </Link>
 
-      <section className="mb-3 overflow-hidden rounded-lg bg-gradient-to-r from-ink-700 to-ink-600 text-white shadow-sm">
+      <section className="band-light mb-3 overflow-hidden">
         <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <div>
             <h1 className="flex items-center gap-2 text-lg font-extrabold sm:text-2xl">

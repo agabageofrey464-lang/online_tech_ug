@@ -504,3 +504,37 @@ body {
 .stripes {
   background-image: none;
 }
+
+/* ─── Light bands ──────────────────────────────────────────────────
+   The bars across the site — the offer strips, the menu bar, page headers —
+   were solid indigo with white text. They are sand panels now. Their markup
+   was written for a dark ground (white text, white hairlines), so rather than
+   rewrite every class inside them, a band re-reads those few utilities here.
+   Anything sitting on a colour of its own — an orange or indigo button, the
+   WhatsApp green — keeps its white text. Unlayered, so it wins over the
+   utilities it re-reads. */
+.band-light,
+.band-sand {
+  background-color: #edeae5 !important;
+  background-image: none !important;
+  color: var(--color-ink-900);
+}
+.band-sand { background-color: #e3ddd3 !important; }
+:is(.band-light, .band-sand) :is(.text-white, [class*="text-white/"], [class*="text-brand-2"], [class*="text-brand-3"]):not(
+    [class*="bg-brand-"], [class*="bg-ink-"], [class*="bg-teal-"], [class*="bg-green-"], [class*="bg-[#25"]
+  ) {
+  color: var(--color-ink-900);
+}
+:is(.band-light, .band-sand) [class*="text-white/"]:not([class*="bg-brand-"], [class*="bg-ink-"]) {
+  color: color-mix(in srgb, var(--color-ink-900) 70%, transparent);
+}
+:is(.band-light, .band-sand) :is([class*="text-brand-2"], [class*="text-brand-3"]) {
+  color: var(--color-brand-600);
+}
+:is(.band-light, .band-sand) :is([class*="bg-white/"], [class*="bg-black/"]) {
+  background-color: color-mix(in srgb, var(--color-ink-600) 8%, transparent);
+}
+:is(.band-light, .band-sand) :is([class*="ring-white"], [class*="border-white"]) {
+  --tw-ring-color: color-mix(in srgb, var(--color-ink-600) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-ink-600) 30%, transparent);
+}

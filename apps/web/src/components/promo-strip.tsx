@@ -143,12 +143,12 @@ export function PromoStrip() {
   // The academy keeps one colour — the green of its button in the menu below —
   // and the store never borrows it, so the halves cannot land on the same
   // shade and lose the seam between them.
-  const storeBg = store.bg.startsWith("bg-green") ? "bg-teal-700" : store.bg;
-  const academyBg = "bg-green-700";
+  const storeBg = "band-light";
+  const academyBg = "band-sand";
   const turn = tick % 2 === 0 ? "store" : "academy";
 
   return (
-    <div className="relative flex overflow-hidden text-white">
+    <div className="relative flex overflow-hidden border-b border-ink-600/10 text-ink-900">
       {/* ── Store ─────────────────────────────────────────────── */}
       <div
         className={`stripes relative z-10 min-w-0 flex-1 items-center transition-colors duration-500 ${storeBg} ${
@@ -171,7 +171,7 @@ export function PromoStrip() {
             that joins the two halves. Desktop only. */}
         <span
           aria-hidden
-          className={`absolute -right-5 top-0 hidden h-full w-10 -skew-x-[18deg] shadow-[4px_0_0_0_#f3efe9] transition-colors duration-500 lg:block ${storeBg}`}
+          className={`absolute -right-5 top-0 hidden h-full w-10 -skew-x-[18deg] shadow-[4px_0_0_0_#ffffff] transition-colors duration-500 lg:block ${storeBg}`}
         />
       </div>
 

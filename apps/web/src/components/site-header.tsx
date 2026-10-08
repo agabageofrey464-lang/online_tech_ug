@@ -103,7 +103,7 @@ export function SiteHeader() {
       {/* Utility bar. Dark, so it separates cleanly from the white bar below,
           and split into what we SELL (bold, up front) and the informational
           pages (muted) — fifteen identical links were impossible to scan. */}
-      <div className="hidden bg-ink-600 text-white md:block">
+      <div className="band-light hidden border-b border-ink-600/10 md:block">
         <div className="container-wide flex items-center gap-x-5 py-2.5 text-[12.5px] font-medium">
           <Link
             href="/sell"

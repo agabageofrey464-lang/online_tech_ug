@@ -8,7 +8,6 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { isAcademyLink, offersFor } from "@/lib/academy-zone";
-import { onPalette } from "@/lib/palette";
 
 /**
  * Slim rotating offer bar, shown on every page under the header.
@@ -33,32 +32,32 @@ type Strip = {
 
 /** Used until the live campaigns load, and whenever none are running. */
 const FALLBACK: Strip[] = [
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-ink-600", img: "/products/hp-elitebook-840-g3.webp" },
-  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-teal-700", img: "/products/dell-xps-13-9310.webp" },
-  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-700", img: "/courses/microsoft-office.webp" },
-  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-ink-700", img: "/products/ram-ddr4-8gb-dimm.webp" },
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "band-light", img: "/products/hp-elitebook-840-g3.webp" },
+  { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "band-light", img: "/products/dell-xps-13-9310.webp" },
+  { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "band-light", img: "/courses/microsoft-office.webp" },
+  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "band-light", img: "/products/ram-ddr4-8gb-dimm.webp" },
   // Industrial training, aimed squarely at the universities. Software first,
   // because that is most of what an intern here actually does.
-  { text: "ONLINE industrial training — UGX 150,000, 1 Nov to 18 Dec", cta: "Apply now", href: "/internship", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
-  { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — online internships from 1 Nov", cta: "See placements", href: "/internship", bg: "bg-green-700", img: "/courses/web-development.webp" },
-  { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "bg-teal-700", img: "/courses/computer-networking.webp" },
-  { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/internship", bg: "bg-ink-700", img: "/courses/graphic-design.webp" },
+  { text: "ONLINE industrial training — UGX 150,000, 1 Nov to 18 Dec", cta: "Apply now", href: "/internship", bg: "band-light", img: "/courses/python-programming.webp" },
+  { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — online internships from 1 Nov", cta: "See placements", href: "/internship", bg: "band-light", img: "/courses/web-development.webp" },
+  { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "band-light", img: "/courses/computer-networking.webp" },
+  { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/internship", bg: "band-light", img: "/courses/graphic-design.webp" },
   // Office skills — the courses that actually fill the classroom. Each points
   // at its own cover now, so the thumbnails differ instead of repeating one
   // photograph six times.
-  { text: "Microsoft Excel in 2 months — formulas, charts and reports", cta: "Enrol now", href: "/learn/microsoft-excel", bg: "bg-green-700", img: "/courses/microsoft-excel.webp" },
-  { text: "Word, Excel, PowerPoint, Publisher & Access — one programme", cta: "See the suite", href: "/learn/microsoft-office", bg: "bg-ink-500", img: "/courses/microsoft-office.webp" },
-  { text: "Build slides that win the room — PowerPoint from scratch", cta: "Start learning", href: "/learn/microsoft-powerpoint", bg: "bg-ink-700", img: "/courses/microsoft-powerpoint.webp" },
-  { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "bg-ink-700", img: "/courses/microsoft-access.webp" },
+  { text: "Microsoft Excel in 2 months — formulas, charts and reports", cta: "Enrol now", href: "/learn/microsoft-excel", bg: "band-light", img: "/courses/microsoft-excel.webp" },
+  { text: "Word, Excel, PowerPoint, Publisher & Access — one programme", cta: "See the suite", href: "/learn/microsoft-office", bg: "band-light", img: "/courses/microsoft-office.webp" },
+  { text: "Build slides that win the room — PowerPoint from scratch", cta: "Start learning", href: "/learn/microsoft-powerpoint", bg: "band-light", img: "/courses/microsoft-powerpoint.webp" },
+  { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "band-light", img: "/courses/microsoft-access.webp" },
 
   // iPhones, now that we have photographs of them. The thumbnail is the handset
   // itself so the strip shows what is on offer, not a generic icon.
-  { text: "iPhone 16 in stock — sealed, Apple warranty, five colours", cta: "Shop iPhone", href: "/shop?cat=Phones&q=iPhone", bg: "bg-ink-700", img: "/products/iphone-16-128gb.webp" },
-  { text: "iPhone 17 256GB — the newest iPhone, UGX 6,300,000", cta: "See it", href: "/shop/iphone-17-256gb", bg: "bg-ink-500", img: "/products/iphone-17-256gb.webp" },
-  { text: "iPhone 14 from UGX 2,850,000 — 14, 14 Plus and 14 Pro Max", cta: "Compare", href: "/shop?cat=Phones&q=iPhone%2014", bg: "bg-teal-700", img: "/products/iphone-14-128gb.webp" },
-  { text: "iPhone 16 Pro Max — 6.9\" 120Hz, 5× telephoto, biggest battery", cta: "View", href: "/shop/iphone-16-pro-max-256gb", bg: "bg-ink-600", img: "/products/iphone-16-pro-max-256gb.webp" },
-  { text: "Every iPhone tested before it leaves the shop — used or sealed", cta: "Browse phones", href: "/shop?cat=Phones", bg: "bg-green-700", img: "/products/iphone-15-pro-256gb.webp" },
-  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-teal-800", img: "/products/ssd-480gb-sata.webp" },
+  { text: "iPhone 16 in stock — sealed, Apple warranty, five colours", cta: "Shop iPhone", href: "/shop?cat=Phones&q=iPhone", bg: "band-light", img: "/products/iphone-16-128gb.webp" },
+  { text: "iPhone 17 256GB — the newest iPhone, UGX 6,300,000", cta: "See it", href: "/shop/iphone-17-256gb", bg: "band-light", img: "/products/iphone-17-256gb.webp" },
+  { text: "iPhone 14 from UGX 2,850,000 — 14, 14 Plus and 14 Pro Max", cta: "Compare", href: "/shop?cat=Phones&q=iPhone%2014", bg: "band-light", img: "/products/iphone-14-128gb.webp" },
+  { text: "iPhone 16 Pro Max — 6.9\" 120Hz, 5× telephoto, biggest battery", cta: "View", href: "/shop/iphone-16-pro-max-256gb", bg: "band-light", img: "/products/iphone-16-pro-max-256gb.webp" },
+  { text: "Every iPhone tested before it leaves the shop — used or sealed", cta: "Browse phones", href: "/shop?cat=Phones", bg: "band-light", img: "/products/iphone-15-pro-256gb.webp" },
+  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "band-light", img: "/products/ssd-480gb-sata.webp" },
 ];
 
 const DISMISS_KEY = "otu_strip_closed";
@@ -113,7 +112,7 @@ export function FestivalStrip() {
           text: [c.title, c.pill].filter(Boolean).join(" — "),
           cta: c.cta_label || "See offer",
           href: c.link_url || "/shop",
-          bg: onPalette(c.bg_color),
+          bg: "band-light",
           img: c.image_url || undefined,
         }));
         // Campaigns replace the built-in shop strips. The academy keeps its
@@ -149,8 +148,7 @@ export function FestivalStrip() {
 
   return (
     <div
-      className={`stripes relative ${s.bg.startsWith("bg-") ? s.bg : ""} text-white transition-colors duration-500`}
-      style={!s.bg.startsWith("bg-") ? { backgroundColor: s.bg } : undefined}
+      className={`relative ${s.bg} border-b border-ink-600/10 transition-colors duration-500`}
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">

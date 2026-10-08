@@ -189,7 +189,7 @@ export function CategoryMenu() {
   return (
     <nav className="relative flex h-full flex-col">
       {/* Dark header (near-black, matches the site palette) */}
-      <p className="bg-[#1a1740] px-4 py-2.5 text-sm font-extrabold text-white">Shop by Category</p>
+      <p className="band-sand px-4 py-3 font-display text-[19px]">Shop by Category</p>
 
       <div className="flex-1 overflow-y-auto py-1.5">
         {shop.map((c) => (

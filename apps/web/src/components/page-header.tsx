@@ -12,7 +12,7 @@ export function PageHeader({
   crumbs?: Crumb[];
 }) {
   return (
-    <section className="border-b-4 border-brand-500 bg-ink-700 text-white">
+    <section className="band-light border-b border-ink-600/15">
       {/* Compact band — page content should start near the top, not below a
           full screen of heading. Subtitle is capped at two lines. */}
       <div className="container-page py-4 md:py-5">
