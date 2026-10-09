@@ -25,12 +25,12 @@ const founder = {
   "@id": `${site.url}/about#founder`,
   name: site.ceo.name,
   jobTitle: "Founder & CEO",
-  description: `${site.ceo.name} is the founder and owner of ${site.name} (onlinetechug.com), a technology company in Kampala, Uganda.`,
+  description: `${site.ceo.name} is the founder and owner of ${site.name} (onlinetechug.com), also known as ${site.tradingName}, a technology company at Lubowa, Entebbe Road, Uganda.`,
   image: `${site.url}${site.ceo.photo}`,
   url: `${site.url}/about#founder`,
   email: site.ceo.email,
   nationality: { "@type": "Country", name: "Uganda" },
-  address: { "@type": "PostalAddress", addressLocality: "Kampala", addressCountry: "UG" },
+  address: { "@type": "PostalAddress", addressLocality: site.locality, addressCountry: "UG" },
   worksFor: { "@id": `${site.url}/#business` },
   knowsAbout: ["Website development", "Mobile application development", "IT support", "Computer hardware", "Software development"],
 };
@@ -41,6 +41,7 @@ export function SiteStructuredData() {
     "@type": "Store",
     "@id": `${site.url}/#business`,
     name: site.name,
+    alternateName: [site.tradingName, "onlinetechug.com", "Online Tech UG"],
     legalName: site.legalName,
     url: site.url,
     logo: `${site.url}/logo.png`,
@@ -51,12 +52,13 @@ export function SiteStructuredData() {
     priceRange: "UGX",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Kampala",
+      streetAddress: site.street,
+      addressLocality: site.locality,
       addressRegion: "Central",
       addressCountry: "UG",
     },
-    // Kampala city centre — keep in sync with the pin on your Google Business Profile.
-    geo: { "@type": "GeoCoordinates", latitude: 0.3476, longitude: 32.5825 },
+    // No map coordinates: the pin belongs to the Google Business Profile, and
+    // a guessed pair here (it was Kampala city centre) contradicted it.
     founder: { "@id": `${site.url}/about#founder` },
     areaServed: { "@type": "Country", name: "Uganda" },
     currenciesAccepted: "UGX",

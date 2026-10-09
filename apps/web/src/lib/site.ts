@@ -1,6 +1,9 @@
 export const site = {
   name: "Online Tech Uganda",
   legalName: "Online Tech Uganda Ltd",
+  // The name on the Google Business Profile and the Airtel merchant account.
+  // Printed for search engines so the profile and this site are read as one.
+  tradingName: "OnlineTechUG Services",
   tagline: "Buy. Build. Learn. Repair.",
   description:
     "Your one-stop tech partner in Uganda — quality computers & accessories, website & app development, software systems, IT support & repairs, and online computer courses.",
@@ -12,7 +15,10 @@ export const site = {
   // Second line — WhatsApp only (0760 547 211).
   whatsappAlt: "256760547211",
   whatsappAltDisplay: "+256 760 547 211",
-  address: "Kampala, Uganda",
+  // As on the Google Business Profile — keep the two the same.
+  address: "Mabirizi Complex, Lubowa Real Estates, Entebbe Road, Uganda",
+  street: "Mabirizi Complex, Lubowa Real Estates, Entebbe Road",
+  locality: "Lubowa",
   ceo: {
     name: "Agaba Geofrey",
     title: "Founder & CEO · IT Specialist",

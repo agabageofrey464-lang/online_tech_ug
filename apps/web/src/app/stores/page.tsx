@@ -41,7 +41,24 @@ export default function StoresPage() {
         </p>
       </header>
 
-      <div className="mt-10 grid gap-4 md:grid-cols-3">
+      {/* The office, as it is listed on Google. */}
+      <div className="mt-10 flex flex-col items-center gap-3 bg-white px-6 py-7 text-center">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Head office</p>
+        <h2 className="text-[26px] leading-tight text-ink-900">{site.street}</h2>
+        <p className="text-[14px] text-ink-700/80">
+          Listed on Google as <b className="text-ink-900">{site.tradingName}</b>.
+        </p>
+        <a
+          href={site.socials.googleBusiness || directionsTo(`${site.tradingName} ${site.street}`)}
+          target="_blank"
+          rel="noreferrer"
+          className="bg-brand-500 px-6 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
+        >
+          Find us on Google Maps
+        </a>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-3">
         {BRANCHES.map((b) => (
           <article key={b.name} className="flex flex-col bg-[var(--tile)]">
             <div className="relative aspect-square overflow-hidden">
