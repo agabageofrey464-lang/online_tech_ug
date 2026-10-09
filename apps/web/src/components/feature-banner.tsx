@@ -38,7 +38,7 @@ export function FeatureBanner({
           {sub && <p className="mt-3 max-w-md text-[16px] text-white/95">{sub}</p>}
           <Link
             href={href}
-            className="press mt-5 bg-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90"
+            className="press mt-5 bg-brand-500 px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
           >
             {cta}
           </Link>

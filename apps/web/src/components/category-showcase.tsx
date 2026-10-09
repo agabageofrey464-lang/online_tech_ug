@@ -38,7 +38,7 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
               onClick={() => setTab(value)}
               aria-pressed={tab === value}
               className={`px-5 py-2.5 text-[14px] transition ${
-                tab === value ? "bg-ink-500 font-semibold text-white" : "border border-ink-700/25 bg-white text-ink-800 hover:border-ink-900"
+                tab === value ? "bg-brand-500 font-semibold text-white" : "border border-ink-700/25 bg-white text-ink-800 hover:border-ink-900"
               }`}
             >
               {label}

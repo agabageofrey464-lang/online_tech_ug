@@ -101,7 +101,7 @@ export function HeroRotator() {
             <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row">
               <Link
                 href={s.href}
-                className="press inline-flex items-center justify-center gap-1.5 bg-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90"
+                className="press inline-flex items-center justify-center gap-1.5 bg-brand-500 px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
               >
                 {s.cta}
               </Link>

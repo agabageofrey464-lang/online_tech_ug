@@ -187,7 +187,7 @@ export function SiteHeader() {
                 href={l.href}
                 // A laptop screen has room for five; the rest are under "More".
                 className={`${n > 4 ? "hidden xl:block" : n > 3 ? "hidden min-[1150px]:block" : ""} whitespace-nowrap border-b py-1 font-display text-[19px] transition ${
-                  isActive(l.href) ? "!border-ink-900 text-ink-900" : "!border-transparent text-ink-900 hover:!border-ink-900"
+                  isActive(l.href) ? "!border-brand-500 text-brand-600" : "!border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600"
                 }`}
               >
                 {l.label}
@@ -299,7 +299,7 @@ export function SiteHeader() {
               key={c.href}
               href={c.href}
               className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
-                pathname === c.href ? "bg-teal-800" : "bg-teal-600 hover:bg-teal-700"
+                pathname === c.href ? "bg-brand-700" : "bg-brand-500 hover:bg-brand-600"
               }`}
             >
               {c.label}

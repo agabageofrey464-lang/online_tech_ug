@@ -113,7 +113,7 @@ export default function LearnPage() {
               </span>
             </div>
             <h1 className="mt-4 text-[36px] leading-[1.1] sm:text-[54px]">
-              Learn Real Computer Skills, <em className="font-display">Lesson By Lesson</em>
+              Learn Real Computer Skills, <em className="font-display text-brand-200">Pay Per Lesson</em>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-white/95">
               From your very first click to graphic design, Excel and coding. Built for students and

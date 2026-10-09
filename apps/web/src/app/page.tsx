@@ -61,7 +61,7 @@ function Panel({
         <div className="flex justify-center pb-8 pt-5">
           <Link
             href={href}
-            className="border border-ink-900 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+            className="bg-brand-500 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
           >
             Shop all
           </Link>
@@ -102,7 +102,7 @@ function DealBand({
   return (
     <Reveal as="section" className={`overflow-hidden ${band}`}>
       <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-        {subtitle && <p className="font-display text-[17px] italic text-ink-700">{subtitle}</p>}
+        {subtitle && <p className="font-display text-[17px] italic text-brand-600">{subtitle}</p>}
         <h2 className="text-[28px] leading-tight sm:text-[34px]">{title}</h2>
       </div>
       {children}
@@ -110,7 +110,7 @@ function DealBand({
         <div className="flex justify-center pb-8 pt-5">
           <Link
             href={href}
-            className="border border-ink-900 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+            className="bg-brand-500 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
           >
             Shop all
           </Link>
@@ -367,7 +367,7 @@ export default function HomePage() {
       {priceDrops.length > 0 && (
         <section className="overflow-hidden bg-white pb-6">
           <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-            <p className="font-display text-[17px] italic text-ink-700">
+            <p className="font-display text-[17px] italic text-brand-600">
               {priceDrops.length} {priceDrops.length === 1 ? "item" : "items"} reduced, while stock lasts
             </p>
             <h2 className="text-[28px] leading-tight sm:text-[34px]">Price Drops</h2>
@@ -458,6 +458,16 @@ export default function HomePage() {
         align="left"
       />
 
+      {/* The academy's short video lessons, which are paid for one at a time. */}
+      <FeatureBanner
+        img="/courses/web-development.webp"
+        eyebrow="Online Tech Academy"
+        title="Short Video Lessons. Pay Per Lesson."
+        sub="22 courses in short lessons from UGX 5,000 each. Watch on your phone, unlock the next when you are ready, and earn a certificate."
+        cta="Watch a lesson"
+        href="/learn"
+      />
+
       {/* Where to find us — ahead of the brand bands, because the page below
           this point keeps loading products and has no end to put it at. */}
       <BranchShowcase />
@@ -545,7 +555,7 @@ export default function HomePage() {
       {/* Browse all products — same coloured deal-band treatment as the rails */}
       <Reveal as="section" className="overflow-hidden bg-white">
         <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-          <p className="font-display text-[17px] italic text-ink-700">{inStock.length} in stock — Lenovo, HP, Dell, phones and more</p>
+          <p className="font-display text-[17px] italic text-brand-600">{inStock.length} in stock — Lenovo, HP, Dell, phones and more</p>
           <h2 className="text-[28px] leading-tight sm:text-[34px]">Browse all products</h2>
         </div>
         {/* A grid that keeps going: the first products come with the page, and

@@ -36,7 +36,7 @@ export function PageHeader({
           <Breadcrumbs items={crumbs} light />
         )}
         <div className="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center py-6 text-center">
-          {eyebrow && <p className="font-display text-[18px] italic text-white/95">{eyebrow}</p>}
+          {eyebrow && <p className="font-display text-[18px] italic text-brand-200">{eyebrow}</p>}
           <h1 className="mt-1 text-[34px] leading-[1.1] text-balance-pretty sm:text-[52px]">{title}</h1>
           {subtitle && <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-white/95 sm:text-[18px]">{subtitle}</p>}
           {children && <div className="mt-5 flex flex-wrap items-center justify-center gap-3">{children}</div>}
