@@ -3,10 +3,8 @@ import { type ReactNode } from "react";
 import Link from "next/link";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
-import { PhoneFestivalFill } from "@/components/phone-festival-fill";
 import { EndlessProducts } from "@/components/endless-products";
 import { byCategory, CATEGORY_ORDER } from "@/lib/browse-order";
-import { BandPreview, type BandItem } from "@/components/band-preview";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
@@ -20,6 +18,9 @@ import { RecentlyViewed } from "@/components/recently-viewed";
 import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { BranchShowcase } from "@/components/branch-showcase";
+import { CategoryShowcase, type ShowcaseTile } from "@/components/category-showcase";
+import { FeatureBanner } from "@/components/feature-banner";
+import { card } from "@/lib/thumb";
 import { Reveal } from "@/components/reveal";
 import { listedProducts as products, whyUs, productImage, type Product } from "@/lib/data";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -54,29 +55,22 @@ function Panel({
 
   return (
     <Reveal as="section" className={`overflow-hidden ${band}`}>
-      <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
-        <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">{title}</h2>
-        {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
-        {href && (
-          <Link
-            href={href}
-            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
-          >
-            See All →
-          </Link>
-        )}
+      <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
+        <h2 className="text-[28px] leading-tight sm:text-[34px]">{title}</h2>
       </div>
       {children}
+      {href && (
+        <div className="flex justify-center pb-8 pt-5">
+          <Link
+            href={href}
+            className="border border-ink-900 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+          >
+            Shop all
+          </Link>
+        </div>
+      )}
     </Reveal>
   );
-}
-
-// A band header gets a whole category, not a rail of eight, and whatever is
-// handed to a client component is written into the page a second time for the
-// browser. Its thumbnails show a picture and a price, so that is all they are
-// sent — not the spec sheet of every product in the category.
-function bandItems(items: Product[]): BandItem[] {
-  return items.map(({ id, name, price, image }) => ({ id, name, price, image }));
 }
 
 // Jumia-style horizontal product rail — fixed-width cards, ‹ › arrows on desktop.
@@ -109,23 +103,21 @@ function DealBand({
 
   return (
     <Reveal as="section" className={`overflow-hidden ${band}`}>
-      <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
-        <div className="min-w-0">
-          <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">{title}</h2>
-          {subtitle && <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-600">{subtitle}</p>}
-        </div>
-        {items && items.length > 0 && <BandPreview items={bandItems(items)} />}
-
-        {href && (
-          <Link
-            href={href}
-            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
-          >
-            See All →
-          </Link>
-        )}
+      <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
+        {subtitle && <p className="font-display text-[17px] italic text-ink-700">{subtitle}</p>}
+        <h2 className="text-[28px] leading-tight sm:text-[34px]">{title}</h2>
       </div>
       {children}
+      {href && (
+        <div className="flex justify-center pb-8 pt-5">
+          <Link
+            href={href}
+            className="border border-ink-900 px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+          >
+            Shop all
+          </Link>
+        </div>
+      )}
     </Reveal>
   );
 }
@@ -228,6 +220,37 @@ export default function HomePage() {
   const browse = byCategory(inStock);
   const categoryCounts = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, byCat(c).length]));
 
+  // Tall tiles for the showcase under the hero: each category and each of the
+  // larger brands, pictured by one of its own products.
+  const BLURBS: Record<string, string> = {
+    Phones: "iPhone, Samsung and more — sealed or tested, with warranty.",
+    Laptops: "Business, student and gaming laptops, brand new and UK used.",
+    Desktops: "Towers and all-in-ones for the office and for home.",
+    Components: "RAM, SSDs and parts to make an old machine fast again.",
+    Accessories: "Mice, keyboards, bags and the small things you need.",
+    Networking: "Routers and switches for a connection that holds.",
+    Storage: "Portable drives and SSDs to keep your work safe.",
+    Power: "Chargers, power banks and backup for when power goes.",
+  };
+  const pictured = (items: Product[]) =>
+    items.find((p) => productImage(p).startsWith("/products/")) ?? items.find((p) => p.image) ?? items[0];
+  const categoryTiles: ShowcaseTile[] = CATEGORY_ORDER.filter((c) => byCat(c).length > 0).map((c) => ({
+    name: c,
+    href: `/shop?cat=${encodeURIComponent(c)}`,
+    img: card(productImage(pictured(byCat(c)))),
+    blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
+  }));
+  const brandTiles: ShowcaseTile[] = eligibleBrands
+    .slice()
+    .sort((a, b) => b.items.length - a.items.length)
+    .slice(0, 8)
+    .map((g) => ({
+      name: g.brand,
+      href: `/shop?brand=${encodeURIComponent(g.brand)}`,
+      img: card(productImage(pictured(g.items))),
+      blurb: `${g.items.length} ${g.brand} products in stock, each tested before it leaves the shop.`,
+    }));
+
   return (
     <div className="container-wide space-y-3 py-3">
       {/* Phone: the hero leads the page, edge to edge — a photograph with the
@@ -295,11 +318,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Categories, on a phone. The mega-menu and the sidebar that cover this
-          on a desktop are both hidden here, so browsing by category meant
-          opening the menu and going looking. */}
-      <CategoryStrip className="md:hidden" />
-
       {/* Hero row — DESKTOP only. On mobile we skip straight to the products
           (Jumia-style), so the hero, call banner and category circles are hidden. */}
       <div className="bleed-wide hidden gap-3 sm:mx-0 md:grid lg:grid-cols-[230px_1fr]">
@@ -313,6 +331,9 @@ export default function HomePage() {
         {/* Hero — animated, rotating category banner */}
         <HeroRotator />
       </div>
+
+      {/* The range, by category or by brand, straight under the hero. */}
+      <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
 
       {/* The rotating offers, as a festival strip directly under the hero —
           where an offer is seen — rather than a full campaign board halfway
@@ -337,34 +358,20 @@ export default function HomePage() {
           732px down, which is a screen and a bit of scrolling before a visitor
           learns we sell phones at all. */}
       <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
-        {/* A grid, not a rail. In a horizontal scroller a phone screen shows
-            two handsets and the rest are behind a swipe most people never
-            make — so the section that leads the page was showing a sixth of
-            what it had. Laid out like this the whole range is reached by
-            scrolling down, which is what someone is already doing. */}
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 sm:gap-3 sm:p-3">
-          {byCat("Phones").map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-          {/* Whatever the last row has left over, as a strip for the range. */}
-          <PhoneFestivalFill count={byCat("Phones").length} />
-        </div>
+        {/* Every phone we stock, in a row that slides sideways. As a grid of
+            large tiles it ran to four screens on a handset before anything
+            else on the page could be seen. */}
+        <Rail items={byCat("Phones")} />
       </Panel>
 
       {/* Price drops — shown only while something really is reduced */}
       {priceDrops.length > 0 && (
-        <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-          <div className="flex items-center justify-between gap-2 bg-[#5f4638] px-3 py-3 text-white sm:px-4">
-            <h2 className="flex shrink-0 items-center gap-2 text-base font-extrabold sm:text-lg">
-              <Icon name="zap" size={18} /> Price Drops
-            </h2>
-            <p className="min-w-0 truncate text-sm font-medium text-white/90">
-              {priceDrops.length} {priceDrops.length === 1 ? "item" : "items"} reduced
-              <span className="hidden sm:inline"> — while stock lasts</span>
+        <section className="overflow-hidden bg-white pb-6">
+          <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
+            <p className="font-display text-[17px] italic text-ink-700">
+              {priceDrops.length} {priceDrops.length === 1 ? "item" : "items"} reduced, while stock lasts
             </p>
-            <Link href="/shop?deals=1" className="flex shrink-0 items-center gap-0.5 text-sm font-semibold hover:underline">
-              See All ›
-            </Link>
+            <h2 className="text-[28px] leading-tight sm:text-[34px]">Price Drops</h2>
           </div>
           <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
             {priceDrops.map((p) => (
@@ -375,6 +382,15 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      <FeatureBanner
+        img="/hero/shop-floor.webp"
+        eyebrow="On laptops over UGX 1M"
+        title="Free Setup. Ready To Use."
+        sub="Windows, Office and antivirus installed before you leave the shop."
+        cta="Shop laptops"
+        href="/shop?cat=Laptops"
+      />
 
       {/* Picks of the Day — branded colour band with bookend panels */}
       <DealsOfTheDay items={picks} />
@@ -432,6 +448,16 @@ export default function HomePage() {
       <DealBand title={trending.title} subtitle={trending.subtitle} href="/shop?sort=popular" items={topSelling}>
         <Rail items={topSelling} />
       </DealBand>
+
+      <FeatureBanner
+        img="/hero/hero-5.webp"
+        eyebrow="Our most-requested service"
+        title="Repairs & IT Support"
+        sub="Free diagnosis. Laptop and desktop repairs from UGX 30,000."
+        cta="Book a repair"
+        href="/services#repairs-support"
+        align="left"
+      />
 
       {/* Where to find us — ahead of the brand bands, because the page below
           this point keeps loading products and has no end to put it at. */}
@@ -519,17 +545,9 @@ export default function HomePage() {
 
       {/* Browse all products — same coloured deal-band treatment as the rails */}
       <Reveal as="section" className="overflow-hidden bg-white">
-        <div className="flex items-center justify-between gap-3 border-b border-ink-600/10 px-4 py-4 text-ink-900 sm:px-6">
-          <div className="min-w-0">
-            <h2 className="truncate text-[24px] leading-tight sm:text-[30px]">Browse all products</h2>
-            <p className="text-[12px] text-ink-700/70">By category · {inStock.length} in stock · keeps loading as you scroll</p>
-          </div>
-          <Link
-            href="/shop"
-            className="shrink-0 border-b border-ink-900 pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
-          >
-            See All →
-          </Link>
+        <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
+          <p className="font-display text-[17px] italic text-ink-700">{inStock.length} in stock, by category</p>
+          <h2 className="text-[28px] leading-tight sm:text-[34px]">Browse all products</h2>
         </div>
         {/* A grid that keeps going: the first products come with the page, and
             the rest are added as the reader scrolls, until the whole catalogue

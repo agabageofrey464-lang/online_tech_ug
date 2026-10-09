@@ -101,7 +101,7 @@ export function MarketplaceBrowser({
   return (
     <section>
       {/* Search — the first thing anyone reaches for */}
-      <div className="sticky top-0 z-20 -mx-1 bg-[#f6f4f1]/95 px-1 py-2 backdrop-blur">
+      <div className="sticky top-0 z-20 -mx-1 bg-[#f9f7f2]/95 px-1 py-2 backdrop-blur">
         <div className="flex gap-2">
           <div className="relative min-w-0 flex-1">
             <Search

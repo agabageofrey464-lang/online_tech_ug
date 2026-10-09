@@ -240,7 +240,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
 
       {/* Mobile category chips — a scrolling row that sticks to the top, so a
           long grid can be re-filtered without scrolling back up for it. */}
-      <div className="sticky top-0 z-20 -mx-1 mb-2 flex gap-2 overflow-x-auto bg-[#f6f4f1]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
+      <div className="sticky top-0 z-20 -mx-1 mb-2 flex gap-2 overflow-x-auto bg-[#f9f7f2]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
         {(productCategories as readonly string[]).map((c) => (
           <button
             key={c}

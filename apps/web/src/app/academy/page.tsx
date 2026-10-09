@@ -235,7 +235,7 @@ export default function AcademyPage() {
       )}
 
       {/* ── Tabs ── */}
-      <div className="sticky top-0 z-20 -mx-1 mt-4 flex gap-2 overflow-x-auto bg-[#f6f4f1]/95 px-1 py-2 no-scrollbar backdrop-blur">
+      <div className="sticky top-0 z-20 -mx-1 mt-4 flex gap-2 overflow-x-auto bg-[#f9f7f2]/95 px-1 py-2 no-scrollbar backdrop-blur">
         {TABS.map((t) => (
           <button
             key={t.id}

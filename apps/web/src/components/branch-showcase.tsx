@@ -10,7 +10,7 @@ import { BRANCHES } from "@/lib/branches";
 export function BranchShowcase() {
   return (
     <section aria-label="Our branches">
-      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 band-sand px-5 py-6 text-center">
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 bg-ink-500 px-5 py-7 text-center text-white">
         <p className="font-display text-[22px] italic text-white/90 sm:text-[26px]">{BRANCHES.length} Locations in Kampala</p>
         <p className="font-display text-[24px] sm:text-[30px]">Discover A Branch Near You</p>
         <Link
@@ -21,10 +21,10 @@ export function BranchShowcase() {
         </Link>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-2 no-scrollbar sm:grid sm:grid-cols-3 sm:overflow-visible">
         {BRANCHES.map((b) => (
-          <Link key={b.name} href="/stores" className="group block bg-[var(--tile)]">
-            <div className="relative aspect-square overflow-hidden">
+          <Link key={b.name} href="/stores" className="group block w-[62%] shrink-0 snap-start sm:w-auto">
+            <div className="relative aspect-[4/5] overflow-hidden bg-[var(--tile)] sm:aspect-square">
               <Image
                 src={b.photo}
                 alt={`${b.label} — ${b.name}, Kampala`}
@@ -36,7 +36,11 @@ export function BranchShowcase() {
                 {b.label}
               </span>
             </div>
-            <p className="px-4 py-3.5 font-display text-[22px] text-ink-900 group-hover:text-brand-600">{b.name}</p>
+            <p className="mt-4 font-display text-[21px] leading-tight text-ink-900">{b.name}</p>
+            <p className="mt-1 text-[14px] text-ink-700/80">Kampala, Uganda</p>
+            <span className="mt-2.5 inline-block text-[14px] text-ink-800 underline underline-offset-4 group-hover:text-brand-600">
+              Visit {b.name}
+            </span>
           </Link>
         ))}
       </div>

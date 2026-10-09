@@ -63,9 +63,9 @@ export default function HelpCenterPage() {
   }, [q]);
 
   return (
-    <div className="bg-[#f6f4f1]">
+    <div className="bg-[#f9f7f2]">
       {/* Hero */}
-      <section className="bg-gradient-to-b from-brand-100 to-[#f6f4f1] py-10">
+      <section className="bg-gradient-to-b from-brand-100 to-[#f9f7f2] py-10">
         <div className="container-page">
           <p className="text-sm font-bold text-brand-700">Help Center</p>
           <h1 className="mt-1 text-2xl font-extrabold text-ink-900 sm:text-3xl">Hi, how can we help you?</h1>

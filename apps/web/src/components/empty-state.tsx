@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 
 const stroke = "#5f4638";
 const accent = "#f15a29";
-const soft = "#f6f4f1";
+const soft = "#f9f7f2";
 
 function CartArt() {
   return (

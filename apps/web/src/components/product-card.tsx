@@ -167,14 +167,14 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-3 pb-3.5 pt-3 @[15rem]:px-4 @[15rem]:pb-4">
-        <div className="flex flex-col gap-1 @[15rem]:flex-row @[15rem]:items-start @[15rem]:justify-between @[15rem]:gap-3">
+        <div className="flex flex-col gap-1 @[20rem]:flex-row @[20rem]:items-start @[20rem]:justify-between @[20rem]:gap-3">
           <h3 className="clamp-2 min-h-[2.5em] text-[16px] leading-[1.25] text-ink-900 transition-colors duration-200 group-hover:text-brand-600 @[15rem]:text-[19px]">
             {product.name}
           </h3>
-          <div className="shrink-0 @[15rem]:pt-1 @[15rem]:text-right">
+          <div className="shrink-0 @[20rem]:pt-1 @[20rem]:text-right">
             <p className="whitespace-nowrap text-[13px] font-semibold text-ink-900">{ugx(product.price)}</p>
             {oldPrice && (
-              <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap @[15rem]:justify-end">
+              <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap @[20rem]:justify-end">
                 <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
                 <span className="text-[11px] font-bold text-green-700">-{discountPct}%</span>
               </p>
