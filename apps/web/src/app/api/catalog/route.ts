@@ -1,3 +1,4 @@
+import { RETIRED } from "@/lib/retired";
 import { NextResponse } from "next/server";
 import { products, productImage } from "@/lib/data";
 
@@ -19,7 +20,8 @@ import { products, productImage } from "@/lib/data";
 export const revalidate = 300;
 
 export function GET() {
-  const items = products.map((p) => ({
+  // Retired products are left out, or the API would seed them again.
+  const items = products.filter((p) => !RETIRED.has(p.id)).map((p) => ({
     slug: p.id,
     name: p.name,
     category: p.category,

@@ -1,3 +1,4 @@
+import { RETIRED } from "@/lib/retired";
 import {
   products as seedProducts,
   listedProducts,
@@ -136,7 +137,7 @@ export async function getProducts(): Promise<Product[]> {
     // a search result still resolves.
     return all
       .map((row) => toProduct(row, seedBySlug.get(row.slug)))
-      .filter((p) => p.inStock !== false);
+      .filter((p) => p.inStock !== false && !RETIRED.has(p.id));
   } catch {
     return listedProducts;
   }
@@ -144,6 +145,7 @@ export async function getProducts(): Promise<Product[]> {
 
 /** One product by slug, or null. Falls back to the seed catalogue. */
 export async function getProduct(slug: string): Promise<Product | null> {
+  if (RETIRED.has(slug)) return null;
   try {
     const res = await fetch(`${API}/api/v1/products/${encodeURIComponent(slug)}`, {
       next: { revalidate: CATALOG_REVALIDATE },

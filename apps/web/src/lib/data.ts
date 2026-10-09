@@ -1,3 +1,4 @@
+import { RETIRED } from "@/lib/retired";
 // Catalog seed data. Slugs (id) are kept in sync with apps/api/app/services/catalog.py
 // so checkout price-validation matches. Computers span budget → high-end (UGX 550k+).
 
@@ -2314,7 +2315,7 @@ export const products: Product[] = [
  *
  * Every grid, rail and carousel should read from this.
  */
-export const listedProducts: Product[] = products.filter((p) => p.inStock !== false);
+export const listedProducts: Product[] = products.filter((p) => p.inStock !== false && !RETIRED.has(p.id));
 
 export const productCategories = [
   "All",
