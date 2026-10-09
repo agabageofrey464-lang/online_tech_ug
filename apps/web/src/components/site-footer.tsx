@@ -197,7 +197,7 @@ export function SiteFooter() {
                 {l.label}
               </Link>
             ))}
-            <a href={site.socials.googleBusiness} target="_blank" rel="noreferrer" className="py-1.5 hover:text-brand-600">
+            <a href={site.googleMaps} target="_blank" rel="noreferrer" className="py-1.5 hover:text-brand-600">
               Find us on Google
             </a>
             <a href={site.googleReview} target="_blank" rel="noreferrer" className="py-1.5 font-semibold text-brand-600 hover:underline">

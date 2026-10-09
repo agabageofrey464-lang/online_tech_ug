@@ -49,7 +49,7 @@ export default function StoresPage() {
           Listed on Google as <b className="text-ink-900">{site.tradingName}</b>.
         </p>
         <a
-          href={site.socials.googleBusiness || directionsTo(`${site.tradingName} ${site.street}`)}
+          href={site.googleMaps}
           target="_blank"
           rel="noreferrer"
           className="bg-brand-500 px-6 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"

@@ -51,6 +51,10 @@ export const site = {
   },
   // Opens the box to write a review on the Google Business Profile.
   googleReview: "https://g.page/r/Cb7EOu7hpb5MEBI/review",
+  // The profile on Google Maps, and where its pin sits. Taken from the
+  // profile itself — if the pin is moved on Google, change these to match.
+  googleMaps: "https://maps.app.goo.gl/dM9Xz9R8MPh5m3zn8",
+  geo: { latitude: 0.3153705, longitude: 32.5777552 },
 } as const;
 
 // Core top-level links shown on the desktop sub-nav (fill the bar).

@@ -57,8 +57,9 @@ export function SiteStructuredData() {
       addressRegion: "Central",
       addressCountry: "UG",
     },
-    // No map coordinates: the pin belongs to the Google Business Profile, and
-    // a guessed pair here (it was Kampala city centre) contradicted it.
+    // The pin of the Google Business Profile, so the two agree.
+    geo: { "@type": "GeoCoordinates", ...site.geo },
+    hasMap: site.googleMaps,
     founder: { "@id": `${site.url}/about#founder` },
     areaServed: { "@type": "Country", name: "Uganda" },
     currenciesAccepted: "UGX",
