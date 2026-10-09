@@ -1,5 +1,7 @@
 "use client";
 
+import { ProductCard } from "@/components/product-card";
+import { asShopProducts, type VendorItem } from "@/lib/vendor-items";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -512,37 +514,35 @@ export default function VendorDashboard() {
             </p>
           </div>
         ) : (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((p) => (
-              <div key={p.id} className="flex gap-3 rounded-lg border border-ink-600/10 p-3">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-ink-600/10 bg-ink-50">
-                  {p.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <span className="text-ink-700/30"><Package size={20} /></span>
-                  )}
+          // Each product on the card customers see in the store — photograph on
+          // a panel, name, price, the specification lines — with its status and
+          // the edit and delete buttons underneath.
+          <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+            {products.map((p) => {
+              const [card] = asShopProducts([
+                { ...(p as unknown as VendorItem), in_stock: true, vendor_name: user.business_name || user.name, description: p.description ?? "", specs: p.specs ?? null },
+              ]);
+              return (
+                <div key={p.id} className="flex flex-col">
+                  <ProductCard product={{ ...card, inStock: p.in_stock !== false }} />
+                  <div className="flex items-center justify-between gap-2 bg-[var(--tile)] px-3 pb-3">
+                    {p.approved ? (
+                      <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-green-700">● Live in the store</span>
+                    ) : (
+                      <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-gold-700">● Pending review</span>
+                    )}
+                    <span className="flex gap-1">
+                      <button onClick={() => startEdit(p)} aria-label="Edit" className="bg-white p-2 text-ink-900 hover:text-brand-600">
+                        <Pencil size={15} />
+                      </button>
+                      <button onClick={() => deleteProduct(p.id)} aria-label="Delete" className="bg-white p-2 text-brand-700 hover:bg-brand-50">
+                        <Trash2 size={15} />
+                      </button>
+                    </span>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="clamp-2 text-sm font-semibold text-ink-900">{p.name}</p>
-                  <p className="text-xs text-ink-700/50">{p.category}</p>
-                  <p className="text-sm font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
-                  {p.approved ? (
-                    <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">● Live</span>
-                  ) : (
-                    <span className="mt-1 inline-block rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">● Pending review</span>
-                  )}
-                </div>
-                <div className="flex h-fit flex-col gap-1">
-                  <button onClick={() => startEdit(p)} aria-label="Edit" className="rounded p-1 text-ink-700/70 hover:bg-ink-50 hover:text-brand-600">
-                    <Pencil size={16} />
-                  </button>
-                  <button onClick={() => deleteProduct(p.id)} aria-label="Delete" className="rounded p-1 text-red-500 hover:bg-red-50">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

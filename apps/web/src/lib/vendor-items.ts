@@ -62,6 +62,23 @@ const SHELF: Record<string, Product["category"]> = {
   Electronics: "Accessories",
 };
 
+/**
+ * The shelf a vendor's product belongs on. What the product is decides first:
+ * a phone is a phone and a laptop a laptop whatever category the vendor picked
+ * for it — "Lenovo ryzen 5" filed under Accessories is still a laptop. Only
+ * when the name does not say is the vendor's own category used.
+ */
+const PHONE = /\b(i\s?phone|galaxy|samsung\s+[sa]\d|redmi|xiaomi|tecno|infinix|itel|oppo|vivo|honor|huawei|nokia|pixel|oneplus|realme|smart\s?phone|phone|tablets?|ipad|tab\s?\d)\b/i;
+const NOT_PHONE = /\b(case|cover|charger|cable|protector|holder|stand|earphone|headphone|power\s?bank|adapter|screen\s?guard|pouch)\b/i;
+const LAPTOP = /\b(laptop|notebook|macbook|thinkpad|elitebook|probook|latitude|inspiron|ideapad|vivobook|zenbook|pavilion|x1\s?carbon|ryzen\s?\d|core\s?i\d|chromebook)\b/i;
+const NOT_LAPTOP = /\b(bag|sleeve|stand|charger|adapter|battery|keyboard|skin|cooler|ram|ssd)\b/i;
+
+export function shelfFor(v: { name: string; category: string }): Product["category"] {
+  if (PHONE.test(v.name) && !NOT_PHONE.test(v.name)) return "Phones";
+  if (LAPTOP.test(v.name) && !NOT_LAPTOP.test(v.name)) return "Laptops";
+  return SHELF[v.category] ?? "Accessories";
+}
+
 const CONDITIONS: Product["condition"][] = ["Brand New", "UK Used", "Refurbished"];
 
 /**
@@ -75,7 +92,7 @@ export function asShopProducts(items: VendorItem[]): Product[] {
     .map((v) => ({
       id: `vp-${v.id}`,
       name: v.name,
-      category: SHELF[v.category] ?? "Accessories",
+      category: shelfFor(v),
       price: v.price_ugx,
       oldPrice: v.old_price_ugx && v.old_price_ugx > v.price_ugx ? v.old_price_ugx : undefined,
       brand: v.brand || v.vendor_name,
