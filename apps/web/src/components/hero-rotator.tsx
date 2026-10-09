@@ -23,7 +23,9 @@ const SLIDES = [
     pill: "Easy Mobile Money",
     cta: "Shop now",
     href: "/shop",
-    img: "/hero/shop-floor.webp",
+    img: "/hero/shop-shelves.webp",
+    // An upright photograph in a wide slide: keep the lit shelves and the desk.
+    pos: "object-[center_58%]",
     icon: ShieldCheck,
   },
   {
@@ -89,7 +91,7 @@ export function HeroRotator() {
           aria-hidden={idx !== i}
         >
           {/* The photograph fills the slide; the words sit over it. */}
-          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />}
+          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${"pos" in s ? s.pos : ""}`} />}
           <div className="absolute inset-0 bg-ink-900/45" />
 
           <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
