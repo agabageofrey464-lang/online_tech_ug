@@ -3,6 +3,7 @@ import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { FestivalStrip } from "@/components/festival-strip";
+import { PromoStrip } from "@/components/promo-strip";
 import { SiteStructuredData } from "@/components/structured-data";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -82,6 +83,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <RecentlyViewedProvider>
                 <ReferralCapture />
                 <SiteHeader />
+                {/* Wide screens: the Store and Academy festival strip, under the header.
+                    (Phones show it above the header, from inside SiteHeader.) It is
+                    outside the sticky header, so it scrolls away with the page. */}
+                <div className="hidden lg:block">
+                  <PromoStrip />
+                </div>
                 <FestivalStrip />
                 <main className="pb-14 md:pb-0">{children}</main>
                 <SiteFooter />
