@@ -175,7 +175,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 hidden justify-center opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:opacity-100 @[13rem]:flex">
             <AddToCartButton
               label="Quick add"
-              className="!rounded-none !bg-white !px-5 !py-2.5 !text-[11px] !font-bold uppercase !tracking-[0.16em] !text-ink-900 shadow-sm hover:!bg-ink-600 hover:!text-white"
+              className="!rounded-none !bg-white !px-5 !py-2.5 !text-[11px] !font-bold uppercase !tracking-[0.16em] !text-ink-900 shadow-sm hover:!bg-brand-500 hover:!text-white"
               item={{ slug: product.id, name: product.name, price: product.price, category: product.category, condition: product.condition }}
             />
           </div>

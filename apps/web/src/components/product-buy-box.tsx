@@ -125,7 +125,7 @@ export function ProductBuyBox({
             setAdded(true);
             setTimeout(() => setAdded(false), 1400);
           }}
-          className={`press h-14 flex-1 text-[13px] font-bold uppercase tracking-[0.18em] text-white transition ${added ? "bg-brand-500" : "bg-ink-600 hover:bg-ink-700"}`}
+          className={`press h-14 flex-1 text-[13px] font-bold uppercase tracking-[0.18em] text-white transition ${added ? "bg-green-600" : "bg-brand-500 hover:bg-brand-600"}`}
         >
           {added ? "✓ Added" : "Add to cart"}
         </button>
