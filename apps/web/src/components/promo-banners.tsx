@@ -491,6 +491,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
       onTouchStart={() => setPaused(true)}
       onTouchEnd={() => setPaused(false)}
     >
+      <span aria-hidden className="strip-shine" />
       <Link
         key={i}
         href={b.href}
@@ -498,7 +499,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
       >
         {/* What is on offer, as a picture. */}
         <span
-          className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-white/40 sm:h-16 sm:w-16 ${b.panel}`}
+          className={`strip-photo relative h-12 w-12 shrink-0 overflow-hidden rounded-full sm:h-16 sm:w-16 ${b.panel}`}
           style={b.panelHex ? { backgroundColor: b.panelHex } : undefined}
         >
           <Image src={b.img} alt="" fill sizes="64px" className="object-cover" />
@@ -514,7 +515,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
               </span>
             )}
           </span>
-          <span className="mt-0.5 block truncate font-display text-lg font-black leading-tight sm:text-2xl">
+          <span className="strip-rise mt-0.5 truncate font-display text-lg font-black leading-tight sm:text-2xl">
             {b.title}
           </span>
           <span className="mt-0.5 hidden truncate text-xs text-white/85 sm:block">{b.note}</span>
@@ -523,7 +524,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
         {/* The offer and the button — a second row on a phone, the right-hand
             side of the strip on a desktop. */}
         <span className="col-span-2 flex items-center justify-between gap-2 lg:col-span-1 lg:contents">
-          <span className="min-w-0 truncate rounded-full bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
+          <span className="strip-spring min-w-0 truncate rounded-full bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">
             {b.pill}
           </span>
           <span className="press shrink-0 rounded-full bg-[#f3efe9] px-3.5 py-1.5 text-[11px] font-extrabold text-ink-900 shadow-sm sm:px-5 sm:py-2 sm:text-sm">

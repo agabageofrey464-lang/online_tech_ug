@@ -96,10 +96,10 @@ function Side({
   className?: string;
 }) {
   return (
-    <Link href={offer.href} className={`ad-fade flex min-w-0 items-center gap-2.5 sm:gap-3 ${className}`}>
+    <Link href={offer.href} className={`flex min-w-0 items-center gap-2.5 sm:gap-3 ${className}`}>
       {/* Small, round and lit from behind, so it reads as a picture on a
           banner rather than a thumbnail in a list. */}
-      <span className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 shadow-[0_0_0_3px_rgba(255,255,255,0.18)] sm:h-11 sm:w-11">
+      <span className="strip-photo relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 sm:h-11 sm:w-11">
         <Image
           src={picture(offer)}
           alt=""
@@ -109,29 +109,32 @@ function Side({
           className={offer.photo ? "h-full w-full object-cover" : "h-7 w-7 object-contain sm:h-9 sm:w-9"}
         />
       </span>
-      <span className="min-w-0">
+      <span className="strip-clip min-w-0">
         <span className="flex items-center gap-1 text-[9.5px] font-black uppercase leading-none tracking-[0.2em] text-white/70 sm:text-[10px]">
           {icon}
           {label}
         </span>
-        <span className="mt-0.5 block truncate font-display text-[15px] font-black uppercase leading-tight tracking-tight drop-shadow-sm sm:text-lg">
+        <span className="strip-rise mt-0.5 truncate font-display text-[15px] font-black uppercase leading-tight tracking-tight drop-shadow-sm sm:text-lg">
           {offer.title}
         </span>
       </span>
-      <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-extrabold text-ink-900 shadow-sm sm:px-3 sm:text-[13px]">
+      <span className="strip-spring shrink-0 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-extrabold text-ink-900 shadow-sm sm:px-3 sm:text-[13px]">
         {offer.deal}
       </span>
-      <span className="hidden truncate text-xs font-medium text-white/90 2xl:inline">{offer.note}</span>
+      <span className="strip-rise-late hidden truncate text-xs font-medium text-white/90 2xl:inline">{offer.note}</span>
     </Link>
   );
 }
+
+/** How long before one half or the other changes its offer. */
+const TURN = 3000;
 
 export function PromoStrip() {
   const [tick, setTick] = useState(0);
   const [academy] = useState(academyOffers);
 
   useEffect(() => {
-    const t = setInterval(() => setTick((v) => v + 1), 3500);
+    const t = setInterval(() => setTick((v) => v + 1), TURN);
     return () => clearInterval(t);
   }, []);
 
@@ -155,7 +158,9 @@ export function PromoStrip() {
           turn === "store" ? "flex" : "hidden"
         } lg:flex`}
       >
-        <div className="flex min-h-[46px] w-full min-w-0 items-center py-2 pl-[clamp(0.875rem,2.5vw,2rem)] pr-3 sm:min-h-[62px] lg:pr-10">
+        <div className="relative flex min-h-[46px] w-full min-w-0 items-center overflow-hidden py-2 pl-[clamp(0.875rem,2.5vw,2rem)] pr-3 sm:min-h-[62px] lg:pr-10">
+          <span aria-hidden className="strip-shine" />
+          <span aria-hidden key={`sc${store.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
           <Side key={`s${store.title}`} offer={store} label="Store" icon={<ShoppingBag size={10} />} className="flex-1" />
           {/* Call to order belongs with the shop — a tablet has room for it
               here; a desktop moves it to the far end of the banner. */}
@@ -181,7 +186,9 @@ export function PromoStrip() {
           turn === "academy" ? "flex" : "hidden"
         } lg:flex`}
       >
-        <div className="flex min-h-[46px] w-full min-w-0 items-center gap-3 py-2 pl-3 pr-[clamp(0.875rem,2.5vw,2rem)] sm:min-h-[62px] lg:pl-12">
+        <div className="relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 pl-3 pr-[clamp(0.875rem,2.5vw,2rem)] sm:min-h-[62px] lg:pl-12">
+          <span aria-hidden className="strip-shine" style={{ animationDelay: "1.7s" }} />
+          <span aria-hidden key={`ac${course.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
           <Side key={`a${course.title}`} offer={course} label="Academy" icon={<GraduationCap size={11} />} className="flex-1" />
           <a
             href={telHref(site.phoneDisplay)}

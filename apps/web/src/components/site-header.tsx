@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Briefcase,
   ChevronDown,
@@ -176,11 +176,6 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
-  const [note, setNote] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setNote((n) => (n + 1) % ANNOUNCEMENTS.length), 6000);
-    return () => clearInterval(t);
-  }, []);
 
   return (
     <header id="top" className="sticky top-0 z-50">
@@ -192,14 +187,21 @@ export function SiteHeader() {
       {/* Wide screens: one brown line — a message in the middle, three links
           at the end. */}
       <div className="hidden bg-ink-900 text-white lg:block">
-        <div className="container-wide grid grid-cols-[auto_1fr_auto] items-center gap-6 py-2.5 text-[14px] xl:grid-cols-[1fr_auto_1fr]">
-          <span />
-          <p key={note} className="ad-fade text-center">
-            {ANNOUNCEMENTS[note].text}{" "}
-            <Link href={ANNOUNCEMENTS[note].href} className="ml-2 font-semibold text-brand-300 underline underline-offset-4 hover:text-brand-200">
-              {ANNOUNCEMENTS[note].cta}
-            </Link>
-          </p>
+        <div className="container-wide grid grid-cols-[1fr_auto] items-center gap-8 py-2.5 text-[14px]">
+          {/* Every message, moving past in a line; it pauses under the pointer. */}
+          <div className="ticker-mask min-w-0">
+            <div className="ticker">
+              {[...ANNOUNCEMENTS, ...ANNOUNCEMENTS].map((a, n) => (
+                <span key={n} className="flex shrink-0 items-center whitespace-nowrap pr-14" aria-hidden={n >= ANNOUNCEMENTS.length}>
+                  <span className="mr-4 h-1.5 w-1.5 rounded-full bg-brand-400" />
+                  {a.text}
+                  <Link href={a.href} tabIndex={n >= ANNOUNCEMENTS.length ? -1 : 0} className="ml-3 font-semibold text-brand-300 underline underline-offset-4 hover:text-brand-200">
+                    {a.cta}
+                  </Link>
+                </span>
+              ))}
+            </div>
+          </div>
           <nav className="flex items-center justify-end gap-8 font-medium">
             {TOP_LINKS.map((l) => (
               <Link key={l.href} href={l.href} className="whitespace-nowrap hover:underline hover:underline-offset-4">
