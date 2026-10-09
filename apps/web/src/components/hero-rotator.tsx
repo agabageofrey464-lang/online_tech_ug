@@ -321,7 +321,7 @@ export function HeroRotator() {
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
   return (
-    <div className="group/hero relative h-[690px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
+    <div className="group/hero relative h-[590px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
@@ -358,35 +358,42 @@ export function HeroRotator() {
           {/* Only the slide on show has words and a picture: the one underneath
               keeps its photograph while the next fades in, and nothing else. */}
           <div
-            className={`container-wide relative z-10 grid h-full content-center items-center gap-6 pb-14 pt-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-10 ${
+            className={`container-wide relative z-10 grid h-full content-center items-center gap-4 pb-14 pt-5 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-10 ${
               idx === i ? "" : "invisible"
             }`}
           >
-            <div className="text-center text-white lg:text-left">
-              <p className="font-display text-[18px] italic text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
-              <SlideHeading first={idx === 0} className="mt-2 font-display text-[34px] leading-[1.08] sm:text-[50px] xl:text-[62px]">
-                {s.title}
-              </SlideHeading>
-              <p className="mx-auto mt-3 max-w-xl text-[16px] text-white/90 sm:text-[19px] lg:mx-0">{s.sub}</p>
-              <div className="mx-auto mt-5 flex max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center lg:justify-start">
-                <Link
-                  href={s.href}
-                  className="press inline-flex items-center justify-center bg-brand-500 px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
-                >
-                  {s.cta}
-                </Link>
-                <Link
-                  href={s.more.href}
-                  className="inline-flex items-center justify-center border border-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white hover:text-ink-900"
-                >
-                  {s.more.label}
-                </Link>
+            {/* On a phone the order is headline, scene, then the line and the
+                buttons, so the scene is on the first screen and not below it.
+                On a wide screen the words sit left and the scene right. */}
+            <div className="contents lg:block lg:text-left">
+              <div className="order-1 text-center text-white lg:text-left">
+                <p className="font-display text-[17px] italic text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
+                <SlideHeading first={idx === 0} className="mt-1 font-display text-[30px] leading-[1.08] sm:text-[50px] lg:mt-2 xl:text-[62px]">
+                  {s.title}
+                </SlideHeading>
+              </div>
+              <div className="order-3 text-center text-white lg:text-left">
+                <p className="mx-auto max-w-xl text-[15px] text-white/90 sm:text-[19px] lg:mx-0 lg:mt-3">{s.sub}</p>
+                <div className="mx-auto mt-4 flex max-w-sm gap-2 sm:max-w-none sm:justify-center sm:gap-3 lg:mt-5 lg:justify-start">
+                  <Link
+                    href={s.href}
+                    className="press inline-flex flex-1 items-center justify-center bg-brand-500 px-4 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-brand-600 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
+                  >
+                    {s.cta}
+                  </Link>
+                  <Link
+                    href={s.more.href}
+                    className="inline-flex flex-1 items-center justify-center border border-white px-4 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-white hover:text-ink-900 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
+                  >
+                    {s.more.label}
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* The scene. Drawn only for the slide on show, so its pieces
                 animate in each time that slide comes round. */}
-            <div className="relative mx-auto h-[230px] w-full max-w-[350px] sm:h-[270px] sm:max-w-[440px] lg:h-[400px] lg:max-w-[520px] xl:h-[440px] xl:max-w-[580px]">
+            <div className="relative order-2 mx-auto h-[215px] w-full max-w-[340px] sm:h-[270px] sm:max-w-[440px] lg:h-[400px] lg:max-w-[520px] xl:h-[440px] xl:max-w-[580px]">
               {idx === i && <s.Art />}
             </div>
           </div>

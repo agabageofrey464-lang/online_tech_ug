@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Briefcase,
   ChevronDown,
@@ -176,6 +176,9 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
+  // Known only in the browser — see the note in festival-strip.tsx.
+  const [onInnerPage, setOnInnerPage] = useState(false);
+  useEffect(() => setOnInnerPage(pathname !== "/"), [pathname]);
 
   return (
     <header id="top" className="sticky top-0 z-50">
@@ -322,7 +325,7 @@ export function SiteHeader() {
             page shows a larger pair of its own, so this stands down there. */}
         <div
           className={`container-wide gap-2 pb-2.5 lg:hidden ${
-            pathname === "/" ? "hidden" : "flex"
+            onInnerPage ? "flex" : "hidden"
           }`}
         >
           <Link

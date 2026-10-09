@@ -85,6 +85,11 @@ const intakeStrips = (): Strip[] =>
 
 export function FestivalStrip() {
   const pathname = usePathname();
+  // Where we are is only trusted once the page is running in the browser:
+  // the copy of the home page the server keeps does not always know its own
+  // address, and what it draws wrongly is not corrected afterwards.
+  const [where, setWhere] = useState({ known: false, home: false });
+  useEffect(() => setWhere({ known: true, home: pathname === "/" }), [pathname]);
   const [all, setStrips] = useState<Strip[]>(() => [...intakeStrips(), ...live(FALLBACK)]);
   // Course and intake strips inside the academy; shop strips everywhere else.
   const strips = offersFor(all, pathname, (s) => s.href);
@@ -135,7 +140,7 @@ export function FestivalStrip() {
 
   // Not on the home page: it has the festival strip above this and the offer
   // band just below, and a third bar of offers was one too many.
-  if (closed || pathname === "/") return null;
+  if (closed || !where.known || where.home) return null;
   const s = strips[i % strips.length];
   if (!s) return null;
 
