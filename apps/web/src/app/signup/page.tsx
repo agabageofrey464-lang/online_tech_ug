@@ -51,7 +51,7 @@ function SignupInner() {
   }
 
   const input =
-    "w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+    "w-full rounded-[3px] border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-4 py-12">
@@ -59,22 +59,22 @@ function SignupInner() {
         <BrandLogoFull size="sm" flag onLight />
       </Link>
 
-      <div className="w-full rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-extrabold text-ink-900">Create your account</h1>
+      <div className="w-full bg-white p-6">
+        <h1 className="text-[30px] leading-tight text-ink-900">Create Your Account</h1>
 
         {/* Role toggle */}
-        <div className="mt-4 grid grid-cols-2 gap-2 rounded-lg bg-ink-50 p-1">
+        <div className="mt-4 grid grid-cols-2 gap-2 rounded-[3px] bg-ink-50 p-1">
           <button
             type="button"
             onClick={() => setRole("customer")}
-            className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-bold transition ${role === "customer" ? "bg-white text-brand-600 shadow-sm" : "text-ink-700/60"}`}
+            className={`flex items-center justify-center gap-1.5 rounded-[3px] py-2 text-sm font-bold transition ${role === "customer" ? "bg-white text-brand-600" : "text-ink-700/60"}`}
           >
             <User size={16} /> Customer
           </button>
           <button
             type="button"
             onClick={() => setRole("vendor")}
-            className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-bold transition ${role === "vendor" ? "bg-white text-brand-600 shadow-sm" : "text-ink-700/60"}`}
+            className={`flex items-center justify-center gap-1.5 rounded-[3px] py-2 text-sm font-bold transition ${role === "vendor" ? "bg-white text-brand-600" : "text-ink-700/60"}`}
           >
             <Store size={16} /> Sell as vendor
           </button>
@@ -122,7 +122,7 @@ function SignupInner() {
           <input required type="password" placeholder="Password (min 6 characters)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={input} />
 
           {role === "vendor" && (
-            <p className="rounded-md bg-brand-50 px-3 py-2 text-[12px] text-ink-700/80">
+            <p className="rounded-[3px] bg-brand-50 px-3 py-2 text-[12px] text-ink-700/80">
               Vendor accounts are reviewed before you can list products. We&apos;ll notify you once approved.
             </p>
           )}
@@ -131,7 +131,7 @@ function SignupInner() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-60"
+            className="w-full rounded-[3px] bg-brand-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-60"
           >
             {busy ? "Creating account…" : role === "vendor" ? "Create vendor account" : "Create account"}
           </button>

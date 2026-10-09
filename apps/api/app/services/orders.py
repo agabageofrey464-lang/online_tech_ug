@@ -47,16 +47,18 @@ def commission_for(line_total: int) -> int:
     return round(line_total * commission_rate_for(line_total))
 
 
+# Transport is worked out from the road distance: a base charge that covers
+# the first ten kilometres, then a rate per kilometre after, rounded to the
+# nearest thousand shillings. The storefront shows the customer the same sum
+# (apps/web/src/lib/delivery.ts) — change the figures in both places together.
+DELIVERY_BASE = 10_000
+DELIVERY_BASE_KM = 10
+DELIVERY_PER_KM = 150
+
+
 def _fee_for_km(km: int) -> int:
-    if km <= 25:
-        return 10_000
-    if km <= 80:
-        return 20_000
-    if km <= 200:
-        return 35_000
-    if km <= 350:
-        return 55_000
-    return 75_000
+    beyond = max(0, km - DELIVERY_BASE_KM)
+    return int((DELIVERY_BASE + beyond * DELIVERY_PER_KM + 500) // 1000 * 1000)
 
 
 def compute_delivery_fee(town: str) -> int:

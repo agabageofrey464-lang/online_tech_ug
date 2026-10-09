@@ -8,7 +8,7 @@ import { BrandLogoFull } from "@/components/brand-logo-full";
 import { useAuth } from "@/lib/auth";
 
 const field =
-  "w-full rounded-lg border border-ink-600/15 bg-white py-3 pl-10 pr-3 text-sm text-ink-900 placeholder-ink-700/40 transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
+  "w-full rounded-[3px] border border-ink-600/15 bg-white py-3 pl-10 pr-3 text-sm text-ink-900 placeholder-ink-700/40 transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
 // Left brand panel — the Jumia-style coloured welcome column (desktop only).
 function BrandPanel() {
@@ -18,7 +18,7 @@ function BrandPanel() {
     { icon: GraduationCap, title: "Learn & earn", body: "Access paid courses, notes and certificates you own." },
   ];
   return (
-    <aside className="relative hidden overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-ink-700 p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
+    <aside className="relative hidden overflow-hidden bg-ink-900 bg-cover bg-center p-10 [background-image:linear-gradient(rgba(22,21,29,.74),rgba(22,21,29,.74)),url(/hero/shop-shelves.webp)] text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
       {/* soft decorative glows */}
       <span className="animate-blob pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
       <span className="animate-blob-slow pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-ink-900/25 blur-2xl" />
@@ -38,7 +38,7 @@ function BrandPanel() {
         <ul className="mt-8 space-y-4">
           {bullets.map((b) => (
             <li key={b.title} className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-white/15 ring-1 ring-white/20">
                 <b.icon size={20} />
               </span>
               <div>
@@ -115,7 +115,7 @@ function LoginInner() {
             <BrandLogoFull size="sm" flag />
           </Link>
 
-          <div className="rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm sm:p-8">
+          <div className="bg-white p-6 sm:p-8">
             {otpStep ? (
               <>
                 <button
@@ -125,7 +125,7 @@ function LoginInner() {
                 >
                   <ArrowLeft size={14} /> Back
                 </button>
-                <h1 className="text-2xl font-black text-ink-900">Enter your login code</h1>
+                <h1 className="text-[32px] leading-tight text-ink-900">Enter your login code</h1>
                 <p className="mt-1 text-sm text-ink-700/60">
                   We emailed a 6-digit code to <b className="text-ink-800">{form.email}</b>.
                 </p>
@@ -137,13 +137,13 @@ function LoginInner() {
                     placeholder="••••••"
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    className="w-full rounded-lg border border-ink-600/15 bg-white px-3 py-3 text-center text-xl font-bold tracking-[0.5em] text-ink-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                    className="w-full rounded-[3px] border border-ink-600/15 bg-white px-3 py-3 text-center text-xl font-bold tracking-[0.5em] text-ink-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   />
                   {err && <p className="text-xs font-semibold text-red-500">{err}</p>}
                   <button
                     type="submit"
                     disabled={busy}
-                    className="press w-full rounded-lg bg-brand-500 px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600 disabled:opacity-60"
+                    className="press w-full rounded-[3px] bg-brand-500 px-4 py-3 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600 disabled:opacity-60"
                   >
                     {busy ? "Verifying…" : "Verify & sign in"}
                   </button>
@@ -151,7 +151,7 @@ function LoginInner() {
               </>
             ) : (
               <>
-                <h1 className="text-2xl font-black text-ink-900">Sign in</h1>
+                <h1 className="text-[32px] leading-tight text-ink-900">Sign in</h1>
                 <p className="mt-1 text-sm text-ink-700/60">
                   Welcome back — sign in to your Online Tech Uganda account.
                 </p>
@@ -210,7 +210,7 @@ function LoginInner() {
                   <button
                     type="submit"
                     disabled={busy}
-                    className="press w-full rounded-lg bg-brand-500 px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600 disabled:opacity-60"
+                    className="press w-full rounded-[3px] bg-brand-500 px-4 py-3 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600 disabled:opacity-60"
                   >
                     {busy ? "Signing in…" : "Sign in"}
                   </button>
@@ -222,7 +222,7 @@ function LoginInner() {
 
                 <Link
                   href={`/signup?next=${encodeURIComponent(nextParam ?? "/account")}`}
-                  className="press flex w-full items-center justify-center rounded-lg border-2 border-brand-500 px-4 py-2.5 text-sm font-bold text-brand-600 transition hover:bg-brand-50"
+                  className="press flex w-full items-center justify-center rounded-[3px] border-2 border-brand-500 px-4 py-2.5 text-sm font-bold text-brand-600 transition hover:bg-brand-50"
                 >
                   Create an account
                 </Link>

@@ -73,7 +73,7 @@ function SuccessInner() {
     <div className="container-page py-16">
       <div className="mx-auto max-w-xl text-center">
         <span className="text-6xl">🎉</span>
-        <h1 className="mt-4 text-3xl font-extrabold text-ink-600">Order placed!</h1>
+        <h1 className="mt-4 text-[38px] leading-tight text-ink-900 sm:text-[46px]">Order Placed</h1>
         {ref && (
           <p className="mt-2 text-ink-700/70">
             Your order reference is <b className="text-brand-600">{ref}</b>.
@@ -84,7 +84,7 @@ function SuccessInner() {
       {/* Online payment result (when returning from Flutterwave) */}
       {payStatus && (
         <div
-          className={`mx-auto mt-5 max-w-xl rounded-card border p-4 text-center text-sm font-bold ${
+          className={`mx-auto mt-5 max-w-xl border p-4 text-center text-sm font-bold ${
             payStatus === "successful"
               ? "border-green-300 bg-green-50 text-green-700"
               : payStatus === "failed"
@@ -100,7 +100,7 @@ function SuccessInner() {
 
       {/* The order is recorded and we have been told. Nothing below is a step
           the customer must complete for us to see it. */}
-      <div className="mx-auto mt-6 max-w-xl rounded-card border border-green-200 bg-green-50 p-5 text-center">
+      <div className="mx-auto mt-6 max-w-xl border border-green-200 bg-green-50 p-5 text-center">
         <p className="text-base font-extrabold text-ink-900">✅ Your order is confirmed</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
           We&apos;ve received your order and it&apos;s being processed. We&apos;ll call you to
@@ -110,13 +110,13 @@ function SuccessInner() {
         <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
           <Link
             href={ref ? `/track?ref=${ref}` : "/track"}
-            className="press rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+            className="press rounded-[3px] bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
           >
             📦 Track your order
           </Link>
           <Link
             href="/account#orders"
-            className="press rounded-lg border border-ink-600/20 bg-white px-5 py-2.5 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
+            className="press rounded-[3px] border border-ink-600/20 bg-white px-5 py-2.5 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
           >
             View my orders
           </Link>
@@ -141,7 +141,7 @@ function SuccessInner() {
       {loading && <p className="mt-8 text-center text-ink-700/60">Loading your order…</p>}
 
       {order && (
-        <div className="mx-auto mt-8 max-w-xl rounded-card border border-ink-600/10 bg-white p-6 text-left shadow-sm">
+        <div className="mx-auto mt-8 max-w-xl bg-white p-6 text-left">
           <h2 className="text-sm font-bold text-ink-600">Order summary</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {order.items.map((i) => (
@@ -162,7 +162,7 @@ function SuccessInner() {
             </div>
           </div>
           {order.delivery_town && (
-            <p className="mt-4 flex items-center gap-1.5 rounded-lg bg-green-50 px-3 py-2 text-sm font-bold text-green-700">
+            <p className="mt-4 flex items-center gap-1.5 rounded-[3px] bg-green-50 px-3 py-2 text-sm font-bold text-green-700">
               📅 Estimated delivery to {order.delivery_town}: {formatDeliveryDate(estimatedDeliveryDate(order.delivery_town))}
             </p>
           )}
@@ -180,7 +180,7 @@ function SuccessInner() {
       )}
 
       <div className="mt-10 text-center">
-        <Link href="/shop" className="inline-flex rounded-lg bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600">
+        <Link href="/shop" className="inline-flex rounded-[3px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600">
           Continue shopping
         </Link>
       </div>

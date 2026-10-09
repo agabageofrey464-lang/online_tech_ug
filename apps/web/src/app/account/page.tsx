@@ -114,7 +114,7 @@ export default function AccountPage() {
 
   const displayName = user?.name || profile?.name || "there";
   const input =
-    "w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+    "w-full rounded-[3px] border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
 
   const menu: { key: Tab; label: string; icon: typeof User }[] = [
     { key: "overview", label: "My Account", icon: User },
@@ -133,19 +133,21 @@ export default function AccountPage() {
 
   return (
     <div className="container-page py-8">
-      <div className="mb-4">
-        <Breadcrumbs items={[{ label: "My account" }]} />
-      </div>
+      <Breadcrumbs items={[{ label: "My account" }]} />
+      <header className="mx-auto mb-8 mt-6 max-w-xl text-center">
+        <p className="font-display text-[18px] italic text-brand-600">Orders, details and saved items</p>
+        <p className="font-display text-[34px] leading-tight text-ink-900 sm:text-[44px]">My Account</p>
+      </header>
 
       {/* Sign-in banner for guests */}
       {!user && (
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 p-4">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border border-brand-200 bg-brand-50 p-4">
           <p className="text-sm text-ink-700">
             <b>You&apos;re browsing as a guest.</b> Sign in to sync your account across devices.
           </p>
           <div className="flex gap-2">
-            <Link href="/login?next=/account" className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">Sign in</Link>
-            <Link href="/signup?next=/account" className="rounded-md border border-brand-300 px-4 py-2 text-sm font-bold text-brand-700 hover:bg-brand-100">Create account</Link>
+            <Link href="/login?next=/account" className="rounded-[3px] bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">Sign in</Link>
+            <Link href="/signup?next=/account" className="rounded-[3px] border border-brand-300 px-4 py-2 text-sm font-bold text-brand-700 hover:bg-brand-100">Create account</Link>
           </div>
         </div>
       )}
@@ -154,7 +156,7 @@ export default function AccountPage() {
       {user?.role === "vendor" && (
         <Link
           href="/vendor"
-          className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-4 shadow-sm transition hover:shadow-md"
+          className="mb-5 flex flex-wrap items-center justify-between gap-3 border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-4 transition hover:"
         >
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
@@ -173,9 +175,9 @@ export default function AccountPage() {
         </Link>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[270px_1fr] lg:gap-10">
         {/* Sidebar menu (Jumia-style) */}
-        <aside className="h-fit overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
+        <aside className="h-fit overflow-hidden bg-white">
           <div className="flex items-center gap-3 border-b border-ink-600/10 bg-ink-50/60 p-4">
             <Avatar name={displayName} seed={user?.email || profile?.email} size={44} />
             <div className="min-w-0">
@@ -188,7 +190,7 @@ export default function AccountPage() {
           <div className="grid grid-cols-2 gap-2 border-b border-ink-600/10 p-3">
             <a
               href={telHref(site.phoneDisplay)}
-              className="flex items-center justify-center gap-1.5 rounded-md bg-brand-500 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-brand-600"
+              className="flex items-center justify-center gap-1.5 rounded-[3px] bg-brand-500 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-brand-600"
             >
               <Phone size={15} /> Call us
             </a>
@@ -196,7 +198,7 @@ export default function AccountPage() {
               href={whatsappLink("Hi Online Tech Uganda, I need help with my account.")}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-center gap-1.5 rounded-md bg-[#25D366] px-3 py-2.5 text-xs font-bold text-white transition hover:brightness-95"
+              className="flex items-center justify-center gap-1.5 rounded-[3px] bg-[#25D366] px-3 py-2.5 text-xs font-bold text-white transition hover:brightness-95"
             >
               <MessageCircle size={15} /> WhatsApp
             </a>
@@ -218,7 +220,7 @@ export default function AccountPage() {
               <button
                 key={m.key}
                 onClick={() => setTab(m.key)}
-                className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition ${
+                className={`flex w-full items-center gap-3 rounded-[3px] px-3 py-2.5 text-sm font-semibold transition ${
                   tab === m.key ? "bg-brand-50 text-brand-700" : "text-ink-700 hover:bg-ink-50"
                 }`}
               >
@@ -230,7 +232,7 @@ export default function AccountPage() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-ink-50"
+                className="flex items-center justify-between rounded-[3px] px-3 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-ink-50"
               >
                 <span className="flex items-center gap-3"><l.icon size={18} /> {l.label}</span>
                 <ChevronRight size={16} className="text-ink-700/40" />
@@ -241,7 +243,7 @@ export default function AccountPage() {
                 <div className="my-2 border-t border-ink-600/10" />
                 <button
                   onClick={signOut}
-                  className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                  className="flex w-full items-center gap-3 rounded-[3px] px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
                 >
                   <LogOut size={18} /> Logout
                 </button>
@@ -255,7 +257,7 @@ export default function AccountPage() {
           {tab === "overview" && (
             <div className="space-y-5">
               <div>
-                <h1 className="text-xl font-extrabold text-ink-900">Hi, {displayName.split(" ")[0]} 👋</h1>
+                <h1 className="text-[28px] leading-tight text-ink-900">Hi, {displayName.split(" ")[0]} 👋</h1>
                 <p className="text-sm text-ink-700/60">Welcome to your account dashboard.</p>
               </div>
 
@@ -263,7 +265,7 @@ export default function AccountPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Account details card */}
-                <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
+                <div className="bg-white p-5">
                   <p className="text-xs font-bold uppercase tracking-wider text-ink-700/50">Account details</p>
                   <p className="mt-2 font-bold text-ink-900">{displayName}</p>
                   <p className="text-sm text-ink-700/70">{user?.email || profile?.email || "—"}</p>
@@ -271,7 +273,7 @@ export default function AccountPage() {
                   <button onClick={() => setTab("details")} className="mt-2 text-xs font-bold text-brand-600 hover:underline">Edit →</button>
                 </div>
                 {/* Address card */}
-                <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
+                <div className="bg-white p-5">
                   <p className="text-xs font-bold uppercase tracking-wider text-ink-700/50">Default address</p>
                   {profile?.address ? (
                     <>
@@ -288,7 +290,7 @@ export default function AccountPage() {
               {/* Recent orders */}
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <h2 className="font-extrabold text-ink-900">Recent orders</h2>
+                  <h2 className="text-[22px] leading-tight text-ink-900">Recent orders</h2>
                   {orders.length > 0 && (
                     <button onClick={() => setTab("orders")} className="text-sm font-bold text-brand-600 hover:underline">See all →</button>
                   )}
@@ -300,7 +302,7 @@ export default function AccountPage() {
 
           {tab === "orders" && (
             <div>
-              <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-ink-900">
+              <h1 className="mb-4 flex items-center gap-2 text-[28px] leading-tight text-ink-900">
                 <ShoppingBag size={22} className="text-brand-500" /> Orders
               </h1>
               {/* Jumia-style tabs */}
@@ -335,10 +337,10 @@ export default function AccountPage() {
 
           {(tab === "address" || tab === "details") && (
             <div>
-              <h1 className="mb-4 text-xl font-extrabold text-ink-900">
+              <h1 className="mb-4 text-[28px] leading-tight text-ink-900">
                 {tab === "address" ? "Address Book" : "Account Details"}
               </h1>
-              <form onSubmit={save} className="grid gap-4 rounded-card border border-ink-600/10 bg-white p-6 shadow-sm">
+              <form onSubmit={save} className="grid gap-4 bg-white p-6">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="text-sm">
                     <span className="mb-1 block font-medium text-ink-700">Full name</span>
@@ -362,7 +364,7 @@ export default function AccountPage() {
                   <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={input} placeholder="Area, street, landmark" />
                 </label>
                 <div className="flex flex-wrap items-center gap-3">
-                  <button type="submit" className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
+                  <button type="submit" className="inline-flex items-center gap-2 rounded-[3px] bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600">
                     <Save size={16} /> Save changes
                   </button>
                   {saved && <span className="text-sm font-semibold text-green-600">✓ Saved</span>}
@@ -370,14 +372,14 @@ export default function AccountPage() {
               </form>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <Link href="/learn/dashboard" className="flex items-center gap-3 rounded-card border border-ink-600/10 bg-white p-5 shadow-sm transition hover:shadow-md">
+                <Link href="/learn/dashboard" className="flex items-center gap-3 bg-white p-5 transition hover:">
                   <Package className="text-brand-500" />
                   <div>
                     <p className="font-bold text-ink-800">My Learning</p>
                     <p className="text-xs text-ink-700/60">Courses, progress & certificates</p>
                   </div>
                 </Link>
-                <a href={whatsappLink("Hi, I need help with my order/account.")} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-card border border-ink-600/10 bg-white p-5 shadow-sm transition hover:shadow-md">
+                <a href={whatsappLink("Hi, I need help with my order/account.")} target="_blank" rel="noreferrer" className="flex items-center gap-3 bg-white p-5 transition hover:">
                   <ShieldCheck className="text-brand-500" />
                   <div>
                     <p className="font-bold text-ink-800">Order help & support</p>
@@ -440,10 +442,10 @@ function SecuritySection() {
   }
 
   return (
-    <div className="rounded-card border border-ink-600/10 bg-white p-5 shadow-sm">
+    <div className="bg-white p-5">
       <div className="flex items-center gap-2">
         <ShieldCheck size={18} className="text-brand-500" />
-        <h2 className="font-extrabold text-ink-900">Security</h2>
+        <h2 className="text-[22px] leading-tight text-ink-900">Security</h2>
       </div>
 
       {/* Email verification */}
@@ -466,9 +468,9 @@ function SecuritySection() {
               placeholder="6-digit code"
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              className="w-36 rounded-md border border-ink-600/15 px-3 py-2 text-sm tracking-widest focus:border-brand-500 focus:outline-none"
+              className="w-36 rounded-[3px] border border-ink-600/15 px-3 py-2 text-sm tracking-widest focus:border-brand-500 focus:outline-none"
             />
-            <button type="submit" disabled={busy || code.length < 4} className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-50">
+            <button type="submit" disabled={busy || code.length < 4} className="rounded-[3px] bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-50">
               Verify
             </button>
             <button type="button" onClick={resend} disabled={busy} className="text-xs font-semibold text-brand-600 hover:underline disabled:opacity-50">
@@ -555,7 +557,7 @@ function TrackingTimeline({ status }: { status: string }) {
   const s = status.toLowerCase();
   if (s === "cancelled" || s === "returned") {
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-bold text-red-600">
+      <div className="flex items-center gap-2 rounded-[3px] bg-red-50 px-3 py-2.5 text-sm font-bold text-red-600">
         <XCircle size={18} /> Order {s === "returned" ? "returned" : "cancelled"}
       </div>
     );
@@ -618,14 +620,14 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
         return (
           <div
             key={o.reference}
-            className="overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm transition hover:shadow-md"
+            className="overflow-hidden bg-white transition hover:"
           >
             {/* Header — click to expand order details */}
             <button
               onClick={() => setOpen(isOpen ? null : o.reference)}
               className="flex w-full items-center gap-3 p-4 text-left transition hover:bg-ink-50/50"
             >
-              <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-ink-600/10 bg-white">
+              <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[3px] bg-white">
                 <SafeImage src={imgFor(first?.product_slug, first?.name)} alt={first?.name ?? "Item"} fill sizes="80px" className="object-contain p-1" />
               </span>
               <div className="flex min-w-0 flex-1 flex-col">
@@ -654,10 +656,10 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
                 )}
 
                 {/* Items in this order */}
-                <div className="mt-4 divide-y divide-ink-600/10 rounded-lg border border-ink-600/10 bg-white">
+                <div className="mt-4 divide-y divide-ink-600/10 rounded-[3px] bg-white">
                   {o.items.map((it, i) => (
                     <div key={i} className="flex items-center gap-3 p-2.5">
-                      <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-ink-600/10 bg-white">
+                      <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-white">
                         <SafeImage src={imgFor(it.product_slug, it.name)} alt={it.name} fill sizes="48px" className="object-contain p-0.5" />
                       </span>
                       <div className="min-w-0 flex-1">
@@ -688,11 +690,11 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
                     href={whatsappLink(`Hi, I'd like an update on my order ${o.reference}.`)}
                     target="_blank"
                     rel="noreferrer"
-                    className="press inline-flex items-center gap-1.5 rounded-md bg-[#25D366] px-4 py-2 text-xs font-bold text-white hover:brightness-95"
+                    className="press inline-flex items-center gap-1.5 rounded-[3px] bg-[#25D366] px-4 py-2 text-xs font-bold text-white hover:brightness-95"
                   >
                     <MessageCircle size={14} /> Track on WhatsApp
                   </a>
-                  <Link href="/shop" className="press rounded-md border border-brand-300 bg-brand-50 px-4 py-2 text-xs font-bold text-brand-600 hover:bg-brand-100">
+                  <Link href="/shop" className="press rounded-[3px] border border-brand-300 bg-brand-50 px-4 py-2 text-xs font-bold text-brand-600 hover:bg-brand-100">
                     Buy again
                   </Link>
                 </div>

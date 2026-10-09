@@ -156,18 +156,20 @@ export default function CheckoutPage() {
   ] as const;
 
   return (
-    <div className="bg-[#f3efe9]">
+    <div>
       <div className="container-page py-8">
-        <div className="mb-4">
-          <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Checkout" }]} />
-        </div>
+        <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Checkout" }]} />
+        <header className="mx-auto mb-8 mt-6 max-w-xl text-center">
+          <p className="font-display text-[18px] italic text-brand-600">Three short steps</p>
+          <h1 className="text-center text-[34px] leading-tight text-ink-900 sm:text-[44px]">Checkout</h1>
+        </header>
 
-        <form onSubmit={onSubmit} className="grid gap-5 lg:grid-cols-[1fr_360px]">
+        <form onSubmit={onSubmit} className="grid gap-5 lg:grid-cols-[1fr_400px] lg:gap-8">
           {/* Steps */}
           <div className="space-y-4">
             {/* 1. Customer address */}
-            <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-              <StepHeader n={1} title="CUSTOMER ADDRESS" done />
+            <section className="overflow-hidden rounded-[3px] bg-white">
+              <StepHeader n={1} title="Your Details" done />
               {/* key remounts these once the signed-in account loads, so the
                   order carries the customer's REGISTERED name/phone/email. */}
               <div key={user?.email ?? "guest"} className="grid gap-4 p-5 sm:grid-cols-2">
@@ -184,27 +186,27 @@ export default function CheckoutPage() {
             </section>
 
             {/* 2. Delivery details */}
-            <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-              <StepHeader n={2} title="DELIVERY DETAILS" done />
+            <section className="overflow-hidden rounded-[3px] bg-white">
+              <StepHeader n={2} title="Delivery" done />
               <div className="p-5">
                 <label className="mb-1.5 block text-sm font-medium text-ink-700">Delivery town / district</label>
                 <select
                   value={town}
                   onChange={(e) => setTown(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                 >
                   {DELIVERY_TOWNS.map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
-                <div className="mt-3 flex items-start gap-2 rounded-lg bg-brand-50 p-3 text-sm">
+                <div className="mt-3 flex items-start gap-2 rounded-[3px] bg-brand-50 p-3 text-sm">
                   <span className="text-brand-600">🚚</span>
                   <div>
                     <p className="font-bold text-ink-900">Door Delivery</p>
                     <p className="text-xs text-ink-700/60">
                       {km !== null ? `≈ ${km} km from our shop · ` : ""}
-                      Delivery fee {deliveryFee === 0 ? "Free" : ugx(deliveryFee)}. Confirmed by our team.
+                      Delivery fee <b className="text-ink-900">{ugx(deliveryFee)}</b>, worked out from the distance.
                     </p>
                     <p className="mt-1 flex items-center gap-1 text-xs font-bold text-green-700">
                       📅 Arrives by {formatDeliveryDate(estimatedDeliveryDate(town))} · about {deliveryDays(km)} days
@@ -213,18 +215,18 @@ export default function CheckoutPage() {
                 </div>
                 <div className="mt-4">
                   <label className="mb-1.5 block text-sm font-medium text-ink-700">Order notes (optional)</label>
-                  <textarea name="notes" rows={2} className="w-full rounded-lg border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20" />
+                  <textarea name="notes" rows={2} className="w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20" />
                 </div>
               </div>
             </section>
 
             {/* 3. Payment method */}
-            <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-              <StepHeader n={3} title="PAYMENT METHOD" />
+            <section className="overflow-hidden rounded-[3px] bg-white">
+              <StepHeader n={3} title="Payment" />
               <div className="p-5">
                 {pesapalReady ? (
                   /* Pesapal live — secure online payment only (pay before processing) */
-                  <div className="rounded-lg border-2 border-brand-500 bg-brand-50 p-4">
+                  <div className="rounded-[3px] border-2 border-brand-500 bg-brand-50 p-4">
                     <div className="flex items-center gap-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
                         <ShieldCheck size={20} />
@@ -258,7 +260,7 @@ export default function CheckoutPage() {
                       setPayment={setPayment}
                     />
 
-                    <p className="mt-4 rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
+                    <p className="mt-4 rounded-[3px] border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
                       We deliver orders that have been paid for. There is no cash on
                       delivery — pay by Mobile Money and we&apos;ll bring it to you, or
                       collect it from the shop and pay when you see it.
@@ -268,7 +270,7 @@ export default function CheckoutPage() {
 
                 {/* How-to-pay steps for the chosen mobile-money method */}
                 {!pesapalReady && (payment === "airtel_money" || payment === "mtn_momo") && (
-                  <div className="mt-4 rounded-lg border border-brand-200 bg-brand-50 p-4 text-sm">
+                  <div className="mt-4 rounded-[3px] border border-brand-200 bg-brand-50 p-4 text-sm">
                     <p className="font-extrabold text-ink-900">
                       How to pay — {payment === "airtel_money" ? "Airtel Money" : "MTN Mobile Money"}
                     </p>
@@ -286,14 +288,14 @@ export default function CheckoutPage() {
                         <li>Enter amount <b>{ugx(total)}</b> and approve with your PIN.</li>
                       </ol>
                     )}
-                    <p className="mt-2 rounded-md bg-white/70 px-2.5 py-1.5 text-xs text-ink-700/75">
+                    <p className="mt-2 rounded-[3px] bg-white/70 px-2.5 py-1.5 text-xs text-ink-700/75">
                       After paying, tap <b>Confirm order</b> below. We verify your payment and then dispatch — we deliver orders that are already paid for.
                     </p>
                   </div>
                 )}
 
                 {/* Institutions can't pay off a web page — they need paperwork first. */}
-                <p className="mt-4 rounded-lg border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
+                <p className="mt-4 rounded-[3px] border border-ink-600/10 bg-ink-50 px-3.5 py-2.5 text-xs text-ink-700/75">
                   Buying for a company, school or NGO?{" "}
                   <Link href="/invoice" className="font-bold text-brand-600 hover:underline">
                     Request a proforma invoice
@@ -305,8 +307,8 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order summary */}
-          <aside className="h-fit rounded-lg bg-white p-5 shadow-sm lg:sticky lg:top-20">
-            <h2 className="border-b border-ink-600/10 pb-3 text-base font-extrabold text-ink-900">Order summary</h2>
+          <aside className="h-fit rounded-[3px] bg-white p-5 lg:sticky lg:top-20">
+            <h2 className="border-b border-ink-600/10 pb-3 text-[24px] leading-none text-ink-900">Order Summary</h2>
             <div className="space-y-2 py-3 text-sm">
               <div className="flex justify-between text-ink-700/80">
                 <span>Item&apos;s total ({items.reduce((s, i) => s + i.quantity, 0)})</span>
@@ -336,14 +338,14 @@ export default function CheckoutPage() {
                   value={promo}
                   onChange={(e) => setPromo(e.target.value.toUpperCase())}
                   placeholder="Enter code here"
-                  className="w-full rounded-md border border-ink-600/20 py-2 pl-9 pr-3 text-sm uppercase focus:border-brand-500 focus:outline-none"
+                  className="w-full rounded-[3px] border border-ink-600/20 py-2 pl-9 pr-3 text-sm uppercase focus:border-brand-500 focus:outline-none"
                 />
               </div>
               <button
                 type="button"
                 onClick={applyPromo}
                 disabled={applying || !promo.trim()}
-                className="shrink-0 rounded-md px-3 py-2 text-sm font-bold text-brand-600 hover:bg-brand-50 disabled:opacity-50"
+                className="shrink-0 rounded-[3px] px-3 py-2 text-sm font-bold text-brand-600 hover:bg-brand-50 disabled:opacity-50"
               >
                 {applying ? "…" : "APPLY"}
               </button>
@@ -353,7 +355,7 @@ export default function CheckoutPage() {
             )}
 
             {error && (
-              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
+              <div className="mt-4 rounded-[3px] border border-red-200 bg-red-50 p-3">
                 <p className="text-sm font-medium text-red-700">{error}</p>
                 <p className="mt-1 text-xs text-ink-700/70">Please check your details and tap “Confirm order” to try again.</p>
               </div>
@@ -362,7 +364,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-4 w-full rounded-md bg-brand-500 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-600 disabled:opacity-60"
+              className="mt-4 h-14 w-full bg-brand-500 px-5 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600 disabled:opacity-60"
             >
               {submitting
                 ? (pesapalReady ? "Opening secure payment…" : "Placing order…")
@@ -383,11 +385,11 @@ export default function CheckoutPage() {
 
 function StepHeader({ n, title, done }: { n: number; title: string; done?: boolean }) {
   return (
-    <div className="flex items-center gap-3 border-b border-ink-600/10 px-5 py-3">
-      <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${done ? "bg-green-600 text-white" : "border-2 border-ink-600/30 text-ink-600/50"}`}>
+    <div className="flex items-center gap-3 border-b border-ink-600/10 px-5 py-4">
+      <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${done ? "bg-brand-500 text-white" : "border border-ink-900 text-ink-900"}`}>
         {done ? "✓" : n}
       </span>
-      <h2 className="text-sm font-extrabold tracking-wide text-ink-900">{n}. {title}</h2>
+      <h2 className="text-[22px] leading-none text-ink-900">{title}</h2>
     </div>
   );
 }
@@ -404,7 +406,7 @@ function PayOption({
 }) {
   const active = payment === opt.v;
   return (
-    <label className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${active ? "border-brand-500 bg-brand-50" : "border-ink-600/15 hover:border-ink-600/30"}`}>
+    <label className={`flex cursor-pointer items-center gap-3 rounded-[3px] border p-3 transition ${active ? "border-brand-500 bg-brand-50" : "border-ink-600/15 hover:border-ink-600/30"}`}>
       <input
         type="radio"
         name="payment_method"
@@ -461,7 +463,7 @@ function Input({
         type={type}
         required={required}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+        className="w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
       />
     </div>
   );

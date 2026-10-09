@@ -18,8 +18,8 @@ export default function WishlistPage() {
         <Breadcrumbs items={[{ label: "Your List" }]} />
       </div>
 
-      <div className="mb-3 flex items-center justify-between rounded bg-white px-4 py-3 shadow-sm">
-        <h1 className="flex items-center gap-2 text-lg font-extrabold text-ink-900">
+      <div className="mb-3 flex items-center justify-between rounded bg-white px-4 py-3">
+        <h1 className="flex items-center gap-2 text-[30px] leading-tight text-ink-900">
           <Heart size={22} className="fill-brand-500 text-brand-500" /> Your List
           <span className="text-sm font-semibold text-ink-700/50">({count})</span>
         </h1>

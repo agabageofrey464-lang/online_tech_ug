@@ -34,13 +34,20 @@ export const TOWN_DISTANCE_KM: Record<string, number> = {
 
 export const DELIVERY_TOWNS = Object.keys(TOWN_DISTANCE_KM);
 
-// Tiered transport cost by road distance.
+// Transport cost, worked out from the road distance: a base charge that
+// covers the first ten kilometres, then a rate for each kilometre after,
+// rounded to the nearest thousand shillings. It was five fixed bands, so
+// Jinja (80 km) and a town 26 km away were charged the same.
+//
+// The same three figures are in the API (services/orders.py), which is what
+// the customer is actually charged — change them together.
+export const DELIVERY_BASE = 10_000;
+export const DELIVERY_BASE_KM = 10;
+export const DELIVERY_PER_KM = 150;
+
 export function feeForKm(km: number): number {
-  if (km <= 25) return 10_000; // Kampala metro
-  if (km <= 80) return 20_000; // near towns
-  if (km <= 200) return 35_000; // mid distance
-  if (km <= 350) return 55_000; // far
-  return 75_000; // very far
+  const beyond = Math.max(0, km - DELIVERY_BASE_KM);
+  return Math.round((DELIVERY_BASE + beyond * DELIVERY_PER_KM) / 1000) * 1000;
 }
 
 export function estimateDelivery(town: string): { fee: number; km: number | null } {

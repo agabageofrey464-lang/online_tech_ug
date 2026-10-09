@@ -51,10 +51,13 @@ def test_order_references_are_long():
 
 
 def test_delivery_is_charged_by_distance_and_never_free():
+    # A base charge, then a rate per kilometre: nearer is cheaper, farther
+    # costs more, and nowhere is free.
     assert compute_delivery_fee("Kampala") == 10_000
-    assert compute_delivery_fee("Jinja") == 20_000
-    assert compute_delivery_fee("Arua") == 75_000
-    assert compute_delivery_fee("Somewhere unknown") == 35_000
+    assert compute_delivery_fee("Jinja") == 21_000  # 80 km
+    assert compute_delivery_fee("Arua") == 81_000  # 480 km
+    assert compute_delivery_fee("Somewhere unknown") == 31_000  # taken as 150 km
+    assert compute_delivery_fee("Kampala") < compute_delivery_fee("Jinja") < compute_delivery_fee("Arua")
 
 
 def test_security_headers_are_sent(client):
