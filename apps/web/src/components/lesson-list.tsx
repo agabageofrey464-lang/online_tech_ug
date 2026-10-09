@@ -243,6 +243,15 @@ export function LessonList({ course }: { course: Course }) {
               <p className="mt-0.5 text-sm text-ink-700/70">Price: <b className="text-brand-600">{ugx(targetPrice)}</b> · or unlock the <b>whole course</b> for {ugx(course.price)}.</p>
             </div>
 
+            {/* Said before anyone pays: most lessons have notes but no
+                recording yet, and a learner should know which they are buying. */}
+            {!targetLesson.preview && !targetLesson.youtube && (
+              <p className="mt-3 rounded-lg border border-gold-300 bg-gold-50 p-3 text-[13px] leading-relaxed text-ink-800">
+                <b>The video for this lesson is not recorded yet.</b> Unlocking it gives you the full written notes for
+                the lesson now, and the video as soon as it is added, at no extra cost.
+              </p>
+            )}
+
             <ol className="mt-3 space-y-2 text-sm text-ink-700/80">
               <li><b>1.</b> Pay via Mobile Money to <b className="text-ink-800">{site.phoneDisplay}</b> (Airtel) or {site.phoneAlt}.</li>
               <li><b>2.</b> Send the confirmation on WhatsApp — we&apos;ll reply with your <b>unlock code</b>.</li>
