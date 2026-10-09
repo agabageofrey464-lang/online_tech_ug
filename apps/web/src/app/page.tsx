@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
 import { EndlessProducts } from "@/components/endless-products";
-import { byCategory, CATEGORY_ORDER } from "@/lib/browse-order";
+import { byGroup, CATEGORY_ORDER, GROUP_ORDER, groupOf, LEAD_BRANDS } from "@/lib/browse-order";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
@@ -200,7 +200,7 @@ export default function HomePage() {
     .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
     .filter((g) => g.items.length >= 4 && g.brand !== "Generic")
     .sort((a, b) => b.items.length - a.items.length);
-  const brandSections = rotate(eligibleBrands, slot).slice(0, 4);
+  const brandSections = rotate(eligibleBrands.filter((g) => !LEAD_BRANDS.includes(g.brand)), slot).slice(0, 3);
 
   // Rotating headline so the same rail doesn't always read the same.
   const TRENDING_TITLES = [
@@ -215,8 +215,11 @@ export default function HomePage() {
   // most recent stock.
   // The closing section: everything in stock, category by category. The first
   // screens of it come with the page and the rest as the reader scrolls.
-  const browse = byCategory(inStock);
-  const categoryCounts = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, byCat(c).length]));
+  // The closing grid, and the rows above it, run in one order: Lenovo, HP,
+  // Dell, then phones, then the rest by what it is.
+  const browse = byGroup(inStock);
+  const categoryCounts = Object.fromEntries(GROUP_ORDER.map((g) => [g, inStock.filter((p) => groupOf(p) === g).length]));
+  const leadRows = LEAD_BRANDS.map((brand) => ({ brand, items: inStock.filter((p) => groupOf(p) === brand) })).filter((g) => g.items.length > 0);
 
   // Tall tiles for the showcase under the hero: each category and each of the
   // larger brands, pictured by one of its own products.
@@ -340,18 +343,19 @@ export default function HomePage() {
           and "Explore our top categories" covers browsing for everyone. */}
 
 
-      {/* Phones, first — every one we stock, not a trimmed rail.
+      {/* Lenovo, HP and Dell, in that order, then the phones. */}
+      {leadRows.map((g) => (
+        <DealBand
+          key={g.brand}
+          title={`${g.brand} Computers`}
+          subtitle={`${g.items.length} in stock`}
+          href={`/shop?brand=${encodeURIComponent(g.brand)}`}
+          items={g.items}
+        >
+          <Rail items={g.items.slice(0, RAIL)} />
+        </DealBand>
+      ))}
 
-          They used to sit two thirds of the way down, below the flash sales,
-          the deals band, the trust strip, the trending rail and a band for
-          every brand. Nobody scrolls that far to discover a shop sells
-          phones. A phone is the cheapest and most frequent thing we sell, so
-          it is what belongs in front of a visitor who has not yet decided
-          what they came for.
-
-          Above the campaign banners, not below them: on a phone it was landing
-          732px down, which is a screen and a bit of scrolling before a visitor
-          learns we sell phones at all. */}
       <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
         {/* Every phone we stock, in a row that slides sideways. As a grid of
             large tiles it ran to four screens on a handset before anything
@@ -541,7 +545,7 @@ export default function HomePage() {
       {/* Browse all products — same coloured deal-band treatment as the rails */}
       <Reveal as="section" className="overflow-hidden bg-white">
         <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-          <p className="font-display text-[17px] italic text-ink-700">{inStock.length} in stock, by category</p>
+          <p className="font-display text-[17px] italic text-ink-700">{inStock.length} in stock — Lenovo, HP, Dell, phones and more</p>
           <h2 className="text-[28px] leading-tight sm:text-[34px]">Browse all products</h2>
         </div>
         {/* A grid that keeps going: the first products come with the page, and

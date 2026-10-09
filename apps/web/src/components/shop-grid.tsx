@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { listedProducts as seedProducts, productCategories, type Product } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
+import { GROUP_ORDER, groupOf } from "@/lib/browse-order";
 import { SidebarExtras } from "@/components/sidebar-extras";
 import { EmptyState } from "@/components/empty-state";
 
@@ -166,7 +167,15 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     }
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
-    if (sort === "popular") list = [...list].sort((a, b) => b.rating - a.rating);
+    // Recommended: Lenovo, HP, Dell, then phones, then the rest — best rated
+    // first within each.
+    if (sort === "popular") {
+      const rank = (p: Product) => {
+        const i = GROUP_ORDER.indexOf(groupOf(p));
+        return i === -1 ? GROUP_ORDER.length : i;
+      };
+      list = [...list].sort((a, b) => rank(a) - rank(b) || b.rating - a.rating);
+    }
     if (sort === "new") list = [...list].reverse(); // newest products are appended last
 
     // When someone searches, follow the direct hits with MORE from the same

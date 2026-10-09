@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@/lib/data";
-import { byCategory } from "@/lib/browse-order";
+import { byGroup, groupHref, groupOf, groupTitle } from "@/lib/browse-order";
 
 /**
  * The whole catalogue, category by category, arriving as you scroll.
@@ -37,6 +37,7 @@ type FeedItem = {
 };
 
 const BATCH = 12;
+const LEADS = ["Lenovo", "HP", "Dell"];
 
 
 const toProduct = (p: FeedItem): Product => ({
@@ -87,7 +88,7 @@ export function EndlessProducts({
           // In stock only, in the same category order the page began in, less
           // what is already on screen.
           const shown = new Set(initial.map((p) => p.id));
-          rest.current = byCategory(feed.filter((p) => p.in_stock)).filter((p) => !shown.has(p.slug)).map(toProduct);
+          rest.current = byGroup(feed.filter((p) => p.in_stock)).filter((p) => !shown.has(p.slug)).map(toProduct);
         }
         const next = rest.current.splice(0, BATCH);
         if (next.length) setItems((list) => [...list, ...next]);
@@ -109,12 +110,14 @@ export function EndlessProducts({
     // sentinel is still within reach once the new cards are in.
   }, [done, initial, items.length]);
 
-  // Consecutive products of one category become one section.
+  // Consecutive products of one group — a lead brand, or a category — become
+  // one section.
   const sections: { category: string; items: Product[] }[] = [];
   for (const p of items) {
+    const group = groupOf(p);
     const last = sections[sections.length - 1];
-    if (last && last.category === p.category) last.items.push(p);
-    else sections.push({ category: p.category, items: [p] });
+    if (last && last.category === group) last.items.push(p);
+    else sections.push({ category: group, items: [p] });
   }
 
   return (
@@ -124,7 +127,7 @@ export function EndlessProducts({
           <div className="flex items-center justify-between gap-2 px-3 pb-1 pt-4 sm:px-4">
             <h3 className="flex items-center gap-2 font-display text-lg font-black text-ink-900 sm:text-xl">
               <span className="h-5 w-1.5 rounded-full bg-brand-500" />
-              {sec.category}
+              {groupTitle(sec.category)}
               {counts[sec.category] ? (
                 <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-ink-700/70 ring-1 ring-ink-600/10">
                   {counts[sec.category]}
@@ -132,10 +135,10 @@ export function EndlessProducts({
               ) : null}
             </h3>
             <Link
-              href={`/shop?cat=${encodeURIComponent(sec.category)}`}
+              href={groupHref(sec.category)}
               className="shrink-0 text-xs font-bold text-brand-600 hover:underline sm:text-sm"
             >
-              All {sec.category} →
+              All {LEADS.includes(sec.category) ? sec.category : sec.category.toLowerCase()} →
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 sm:gap-3 sm:p-3">
