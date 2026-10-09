@@ -4,8 +4,7 @@ import { ShopGrid } from "@/components/shop-grid";
 import { FeaturedProducts } from "@/components/featured-products";
 import { ShopHeading } from "@/components/shop-heading";
 import { UnfilteredOnly } from "@/components/unfiltered-only";
-import { getProducts } from "@/lib/catalog";
-import { asShopProducts, getVendorItems } from "@/lib/vendor-items";
+import { getStoreProducts } from "@/lib/catalog";
 import { share } from "@/lib/seo";
 
 // Rebuilt in the background every few minutes, so a product added or
@@ -30,8 +29,7 @@ export default async function ShopPage() {
   // Our own catalogue, then what approved vendors have listed in the shop's
   // categories. A vendor's product carries its seller's name on the card and
   // opens its own page in the marketplace.
-  const [own, vendorItems] = await Promise.all([getProducts(), getVendorItems()]);
-  const products = [...own, ...asShopProducts(vendorItems)];
+  const products = await getStoreProducts();
 
   const brandCount = new Set(products.map((p) => p.brand)).size;
   const stats = [

@@ -20,14 +20,10 @@ import { CategoryShowcase, type ShowcaseTile } from "@/components/category-showc
 import { FeatureBanner } from "@/components/feature-banner";
 import { card } from "@/lib/thumb";
 import { Reveal } from "@/components/reveal";
-import { listedProducts as products, whyUs, productImage, type Product } from "@/lib/data";
+import { whyUs, productImage, type Product } from "@/lib/data";
+import { getStoreProducts } from "@/lib/catalog";
 import { ugx, whatsappLink } from "@/lib/site";
 import { share } from "@/lib/seo";
-
-function byCat(cat: Product["category"]) {
-  // Out-of-stock items never lead a rail — see the note in shop-grid.
-  return products.filter((p) => p.category === cat);
-}
 
 // Section bands are white with a dark serif heading. They were solid colour,
 // a different one per band, and a page of them left nowhere for the eye to
@@ -168,7 +164,14 @@ function rotate<T>(arr: T[], by: number): T[] {
 
 // "Sold" bar figures — stable per product so the bar doesn't jump around.
 
-export default function HomePage() {
+export default async function HomePage() {
+  // The live catalogue and vendors' products. This page used to read the
+  // catalogue file it was built with, so a price changed in the dashboard, or
+  // a product added there, showed in the shop but not here.
+  const products = await getStoreProducts();
+  const byCat = (cat: Product["category"]) => products.filter((p) => p.category === cat);
+  const fromVendors = products.filter((p) => p.seller);
+
   // Which slot of the day we're in — advances every 10 minutes.
   const slot = Math.floor(Date.now() / (revalidate * 1000));
 
@@ -362,6 +365,13 @@ export default function HomePage() {
             else on the page could be seen. */}
         <Rail items={byCat("Phones")} />
       </Panel>
+
+      {/* What approved vendors have listed, beside our own stock. */}
+      {fromVendors.length > 0 && (
+        <DealBand title="From Our Vendors" subtitle="Sold through Online Tech Uganda" href="/marketplace" items={fromVendors}>
+          <Rail items={fromVendors.slice(0, RAIL)} />
+        </DealBand>
+      )}
 
       {/* Price drops — shown only while something really is reduced */}
       {priceDrops.length > 0 && (

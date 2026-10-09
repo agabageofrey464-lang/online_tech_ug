@@ -34,6 +34,7 @@ type FeedItem = {
   image_url: string;
   description: string;
   specs: Product["details"] | null;
+  seller?: string | null;
 };
 
 const BATCH = 12;
@@ -53,6 +54,7 @@ const toProduct = (p: FeedItem): Product => ({
   image: p.image_url,
   specs: p.description ? p.description.split(", ") : [],
   details: p.specs ?? undefined,
+  seller: p.seller ?? undefined,
 });
 
 export function EndlessProducts({
@@ -81,7 +83,7 @@ export function EndlessProducts({
       loading.current = true;
       try {
         if (rest.current === null) {
-          const res = await fetch("/api/catalog");
+          const res = await fetch("/api/browse");
           if (!res.ok) throw new Error(String(res.status));
           const data = await res.json();
           const feed: FeedItem[] = Array.isArray(data) ? data : (data.items ?? []);

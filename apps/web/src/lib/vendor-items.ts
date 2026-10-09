@@ -44,9 +44,9 @@ export async function getVendorItem(id: number): Promise<VendorItem | null> {
 
 /**
  * Where a vendor's category sits in the shop. Vendors choose from a longer
- * list than the shop has shelves for — the marketplace takes clothing and
- * groceries too — so only the ones that are computer-shop goods are given a
- * place here. Anything else stays in the marketplace, where it belongs.
+ * list than the shop has shelves for; a category with no shelf of its own
+ * goes with the accessories, so everything a vendor lists reaches the shop
+ * as well as the marketplace.
  */
 const SHELF: Record<string, Product["category"]> = {
   Laptops: "Laptops",
@@ -71,16 +71,17 @@ const CONDITIONS: Product["condition"][] = ["Brand New", "UK Used", "Refurbished
  */
 export function asShopProducts(items: VendorItem[]): Product[] {
   return items
-    .filter((v) => v.in_stock && SHELF[v.category])
+    .filter((v) => v.in_stock)
     .map((v) => ({
       id: `vp-${v.id}`,
       name: v.name,
-      category: SHELF[v.category],
+      category: SHELF[v.category] ?? "Accessories",
       price: v.price_ugx,
       oldPrice: v.old_price_ugx && v.old_price_ugx > v.price_ugx ? v.old_price_ugx : undefined,
       brand: v.brand || v.vendor_name,
       condition: CONDITIONS.includes(v.condition as Product["condition"]) ? (v.condition as Product["condition"]) : "Brand New",
-      rating: 0,
+      // Unrated, but not last: a vendor's product stands among ours.
+      rating: 4.5,
       inStock: true,
       image: v.image_url || "/placeholder.svg",
       specs: (v.specs ?? []).slice(0, 4).map((s) => s.value),

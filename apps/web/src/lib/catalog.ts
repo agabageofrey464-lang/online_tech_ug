@@ -156,3 +156,15 @@ export async function getProduct(slug: string): Promise<Product | null> {
     return seedBySlug.get(slug) ?? null;
   }
 }
+
+/**
+ * Everything on sale: our own catalogue as the database has it now — prices,
+ * photographs and products changed in the dashboard included — followed by
+ * what approved vendors have listed. The home page, the shop and the browse
+ * feed all read this, so they cannot disagree about a price.
+ */
+export async function getStoreProducts(): Promise<Product[]> {
+  const { asShopProducts, getVendorItems } = await import("@/lib/vendor-items");
+  const [own, vendors] = await Promise.all([getProducts(), getVendorItems()]);
+  return [...own, ...asShopProducts(vendors)];
+}

@@ -24,7 +24,7 @@ type Item = { slug: string; name: string; category: string; brand: string; price
 
 let catalogue: Promise<Item[]> | null = null;
 const loadCatalogue = () =>
-  (catalogue ??= fetch("/api/catalog")
+  (catalogue ??= fetch("/api/browse")
     .then((r) => (r.ok ? r.json() : { items: [] }))
     .then((d) => (Array.isArray(d) ? d : (d.items ?? [])) as Item[])
     .catch(() => []));
