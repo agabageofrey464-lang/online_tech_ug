@@ -146,12 +146,12 @@ export function SiteHeader() {
 
       {/* Wide screens: one brown line — a message in the middle, three links
           at the end. */}
-      <div className="hidden bg-teal-600 text-white lg:block">
+      <div className="hidden bg-ink-900 text-white lg:block">
         <div className="container-wide grid grid-cols-[auto_1fr_auto] items-center gap-6 py-2.5 text-[14px] xl:grid-cols-[1fr_auto_1fr]">
           <span />
           <p key={note} className="ad-fade text-center">
             {ANNOUNCEMENTS[note].text}{" "}
-            <Link href={ANNOUNCEMENTS[note].href} className="ml-2 font-semibold underline underline-offset-4 hover:text-brand-200">
+            <Link href={ANNOUNCEMENTS[note].href} className="ml-2 font-semibold text-brand-300 underline underline-offset-4 hover:text-brand-200">
               {ANNOUNCEMENTS[note].cta}
             </Link>
           </p>

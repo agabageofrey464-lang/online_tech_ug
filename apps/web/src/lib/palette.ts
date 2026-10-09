@@ -6,7 +6,7 @@
  * stored colour is drawn as the nearest of ours: warm colours become orange,
  * pale ones sand, everything else the deep teal.
  */
-export const DARK = "#0c5d75";
+export const DARK = "#3a3945";
 export const ORANGE = "#f15a29";
 export const SAND = "#f3efe9";
 

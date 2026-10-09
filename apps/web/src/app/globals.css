@@ -27,29 +27,31 @@
   --color-gold-800: #934f10;
   --color-gold-900: #6e3d10;
 
-  /* The dark of the palette — a deep teal, for text and dark surfaces. */
-  --color-ink-50: #eef6f8;
-  --color-ink-100: #d9eaef;
-  --color-ink-200: #b3d3dc;
-  --color-ink-300: #82b4c2;
-  --color-ink-400: #4f8fa1;
-  --color-ink-500: #1f6f86;
-  --color-ink-600: #0c5d75; /* core */
-  --color-ink-700: #0d4b5e;
-  --color-ink-800: #0e3e4e;
-  --color-ink-900: #0b2a35;
+  /* The dark of the palette — the charcoal of the logo's lettering. `teal` is
+     kept as a name and drawn in it: the site's colours are the logo's, orange
+     and charcoal, with green for the academy and gold for small accents. */
+  --color-ink-50: #f3f3f5;
+  --color-ink-100: #e6e6ea;
+  --color-ink-200: #d0cfd5;
+  --color-ink-300: #adacb4;
+  --color-ink-400: #84838d;
+  --color-ink-500: #5b5a66;
+  --color-ink-600: #3a3945; /* core */
+  --color-ink-700: #2e2d38;
+  --color-ink-800: #22212b;
+  --color-ink-900: #16151d;
 
   /* The site's own colours: orange, teal, green and gold. */
-  --color-teal-50: #eefafd;
-  --color-teal-100: #d3f0f7;
-  --color-teal-200: #a7dfee;
-  --color-teal-300: #6cc6de;
-  --color-teal-400: #33a5c4;
-  --color-teal-500: #1587a9;
-  --color-teal-600: #0e7490;
-  --color-teal-700: #0c5d75;
-  --color-teal-800: #0d4b5e;
-  --color-teal-900: #0e3e4e;
+  --color-teal-50: var(--color-ink-50);
+  --color-teal-100: var(--color-ink-100);
+  --color-teal-200: var(--color-ink-200);
+  --color-teal-300: var(--color-ink-300);
+  --color-teal-400: var(--color-ink-400);
+  --color-teal-500: var(--color-ink-500);
+  --color-teal-600: var(--color-ink-600);
+  --color-teal-700: var(--color-ink-700);
+  --color-teal-800: var(--color-ink-800);
+  --color-teal-900: var(--color-ink-900);
 
   --color-green-50: #e6f7ee;
   --color-green-100: #c2ebd4;
