@@ -191,6 +191,7 @@ export function SiteFooter() {
               { label: "Privacy Policy", href: "/privacy" },
               { label: "Terms & Conditions", href: "/terms" },
               { label: "Returns & Refunds", href: "/returns" },
+              { label: "Photo credits", href: "/credits" },
             ].map((l) => (
               <Link key={l.href} href={l.href} className="py-1.5 hover:text-brand-600">
                 {l.label}
