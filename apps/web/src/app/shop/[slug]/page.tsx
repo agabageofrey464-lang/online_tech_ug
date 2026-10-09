@@ -1,3 +1,4 @@
+import { productEnquiryMessage } from "@/lib/order-message";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -257,7 +258,7 @@ export default async function ProductDetailPage({
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button
-                href={whatsappLink(`Hi, I'm interested in the ${product.name} (${ugx(product.price)}).`)}
+                href={whatsappLink(productEnquiryMessage({ name: product.name, priceLabel: ugx(product.price), condition: product.condition, url: `${site.url}/shop/${product.id}` }))}
                 external
                 variant="outline"
                 className="justify-center"

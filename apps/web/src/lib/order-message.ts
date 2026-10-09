@@ -30,3 +30,26 @@ export function vendorOrderMessage(p: {
     (p.url ? `\n🔗 ${p.url}` : "")
   );
 }
+
+/**
+ * A question about a product, from the WhatsApp button on its page. It says
+ * who it is for, which product, the price and the link, so the message can be
+ * answered without asking "which one?" first.
+ */
+export function productEnquiryMessage(p: { name: string; priceLabel: string; condition: string; url: string }): string {
+  return (
+    `Hello Online Tech Uganda 👋
+
+` +
+    `I found this item on your website and I am interested in it:
+
+` +
+    `🛒 ${p.name}
+💰 ${p.priceLabel}
+📦 ${p.condition}
+🔗 ${p.url}
+
+` +
+    `Is it available? Please share more details and how I can get it. Thank you.`
+  );
+}
