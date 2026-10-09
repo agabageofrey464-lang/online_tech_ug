@@ -41,12 +41,13 @@ export default function StoresPage() {
         </p>
       </header>
 
-      {/* The office, as it is listed on Google. */}
+      {/* The shop, as it is listed on Google, and the office. */}
       <div className="mt-10 flex flex-col items-center gap-3 bg-white px-6 py-7 text-center">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Head office</p>
-        <h2 className="text-[26px] leading-tight text-ink-900">{site.street}</h2>
-        <p className="text-[14px] text-ink-700/80">
-          Listed on Google as <b className="text-ink-900">{site.tradingName}</b>.
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Computer shop</p>
+        <h2 className="text-[26px] leading-tight text-ink-900">{site.street}, {site.locality}</h2>
+        <p className="max-w-xl text-[14px] text-ink-700/80">
+          Where to see and buy computers, phones and accessories. Listed on Google as{" "}
+          <b className="text-ink-900">{site.tradingName}</b>. Our office is at <b className="text-ink-900">{site.office}</b>.
         </p>
         <a
           href={site.googleMaps}

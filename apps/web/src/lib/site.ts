@@ -15,10 +15,13 @@ export const site = {
   // Second line — WhatsApp only (0760 547 211).
   whatsappAlt: "256760547211",
   whatsappAltDisplay: "+256 760 547 211",
-  // As on the Google Business Profile — keep the two the same.
-  address: "Mabirizi Complex, Lubowa Real Estates, Entebbe Road, Uganda",
-  street: "Mabirizi Complex, Lubowa Real Estates, Entebbe Road",
-  locality: "Lubowa",
+  // Two places. The computer shop is at Mabirizi Complex in Kampala, which is
+  // where the Google Business Profile's pin is and where customers come. The
+  // office is at Lubowa, on Entebbe Road.
+  address: "Mabirizi Complex, Kampala, Uganda",
+  street: "Mabirizi Complex",
+  locality: "Kampala",
+  office: "Lubowa Real Estates, Entebbe Road",
   ceo: {
     name: "Agaba Geofrey",
     title: "Founder & CEO · IT Specialist",

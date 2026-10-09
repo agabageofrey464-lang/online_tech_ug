@@ -254,7 +254,7 @@ export default function CheckoutPage() {
                       opt={{
                         v: "pay_at_shop",
                         label: "Collect & pay at our shop",
-                        hint: "Come to our shop in Kampala, check the item, and pay there.",
+                        hint: "Come to our shop at Mabirizi Complex, Kampala, check the item, and pay there.",
                       }}
                       payment={payment}
                       setPayment={setPayment}

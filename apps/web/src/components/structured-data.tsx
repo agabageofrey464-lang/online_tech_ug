@@ -25,7 +25,7 @@ const founder = {
   "@id": `${site.url}/about#founder`,
   name: site.ceo.name,
   jobTitle: "Founder & CEO",
-  description: `${site.ceo.name} is the founder and owner of ${site.name} (onlinetechug.com), also known as ${site.tradingName}, a technology company at Lubowa, Entebbe Road, Uganda.`,
+  description: `${site.ceo.name} is the founder and owner of ${site.name} (onlinetechug.com), also known as ${site.tradingName}, a technology company with its computer shop at Mabirizi Complex, Kampala, and its office at Lubowa, Uganda.`,
   image: `${site.url}${site.ceo.photo}`,
   url: `${site.url}/about#founder`,
   email: site.ceo.email,

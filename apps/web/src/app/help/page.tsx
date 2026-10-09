@@ -31,7 +31,7 @@ const PAY_METHODS = [
   { name: "MTN MoMo", tag: "Fast & secure", icon: "/Icons/mtn.svg", note: "Pay with your MTN Mobile Money — quick and safe, at no extra cost." },
   { name: "Airtel Money", tag: "Airtel Money", icon: "/Icons/airtel.svg", note: "Pay with your Airtel Money account — simple and secure, no extra charge." },
   { name: "Bank Transfer", tag: "Bank / Cards", icon: "/Icons/bank.svg", note: "Pay safely by bank transfer or card. Contact us for account details." },
-  { name: "Pay at our shop", tag: "Collect in person", icon: null, note: "Come to our shop in Kampala, check the item, and pay there." },
+  { name: "Pay at our shop", tag: "Collect in person", icon: null, note: "Come to our shop at Mabirizi Complex, Kampala, check the item, and pay there." },
 ];
 
 type Faq = { cat: string; q: string; a: string };

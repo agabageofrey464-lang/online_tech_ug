@@ -204,7 +204,7 @@ export function SiteFooter() {
               Review us on Google
             </a>
           </nav>
-          <p>Lubowa, Entebbe Road, Uganda 🇺🇬</p>
+          <p>Shop: Mabirizi Complex, Kampala · Office: Lubowa 🇺🇬</p>
         </div>
       </div>
     </footer>

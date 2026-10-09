@@ -105,7 +105,7 @@ function SuccessInner() {
         <p className="mx-auto mt-1 max-w-md text-sm text-ink-700/75">
           We&apos;ve received your order and it&apos;s being processed. We&apos;ll call you to
           confirm. We deliver orders that have been <b>paid for</b> — pay by Mobile Money
-          and we&apos;ll bring it to you, or collect it from our shop in Kampala.
+          and we&apos;ll bring it to you, or collect it from our shop at Mabirizi Complex, Kampala.
         </p>
         <div className="mt-4 flex flex-col justify-center gap-2 sm:flex-row">
           <Link
