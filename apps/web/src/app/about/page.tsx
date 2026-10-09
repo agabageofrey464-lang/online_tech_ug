@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { Mail, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { stats, whyUs, listedProducts, courses, REGISTRATION_FEE } from "@/lib/data";
 import { site, ugx } from "@/lib/site";
@@ -324,6 +325,14 @@ export default function AboutPage() {
                 <span className="inline-block rounded-full bg-brand-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
                   Founder &amp; CEO
                 </span>
+                <div className="mt-4 flex items-center gap-4">
+                  <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-white/40">
+                    <Image src="/people/agaba-geofrey-ceo-portrait.jpg" alt="Agaba Geofrey, founder and CEO of Online Tech Uganda" fill sizes="80px" className="object-cover" />
+                  </span>
+                  <Link href="/about/agaba-geofrey" className="text-[13px] font-semibold text-brand-200 underline underline-offset-4 hover:text-white">
+                    Read his full profile
+                  </Link>
+                </div>
                 <h3 className="mt-3 text-2xl font-black sm:text-3xl">{site.ceo.name}</h3>
                 <p className="text-sm font-semibold text-brand-200">{site.ceo.title}</p>
 
