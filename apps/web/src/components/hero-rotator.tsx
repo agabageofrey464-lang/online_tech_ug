@@ -64,7 +64,7 @@ function ShopArt() {
 function LearnArt() {
   return (
     <>
-      <div className={`${card} hero-float left-[6%] top-4 w-[78%] p-2.5`}>
+      <div className={`${card} hero-float left-[12%] top-0 w-[66%] p-2 lg:left-[6%] lg:top-4 lg:w-[78%] lg:p-2.5`}>
         <div className="relative aspect-video overflow-hidden bg-ink-900">
           <Image src="/courses/web-development.webp" alt="" fill sizes="360px" className="object-cover opacity-80" />
           <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white shadow-lg">
@@ -80,13 +80,13 @@ function LearnArt() {
       <span className={`${chip} hero-float right-0 top-[8%]`} style={{ animationDelay: "0.6s" }}>
         <GraduationCap size={14} className="text-brand-500" /> 22 courses
       </span>
-      <div className={`${card} hero-float bottom-0 left-0 hidden w-[36%] p-1.5 lg:block`} style={{ animationDelay: "0.8s" }}>
+      <div className={`${card} hero-float bottom-0 left-0 w-[40%] p-1.5 lg:w-[36%]`} style={{ animationDelay: "0.8s" }}>
         <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
-          <Image src="/web/photo-1509062522246-3755977927d7.webp" alt="" fill sizes="200px" className="object-cover" />
+          <Image src="/web/photo-1516321318423-f06f85e504b3.webp" alt="" fill sizes="200px" className="object-cover" />
         </div>
-        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">In class</p>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Hands-on practicals</p>
       </div>
-      <div className={`${card} hero-float bottom-2 right-[2%] flex w-[52%] items-center gap-2.5 p-3`} style={{ animationDelay: "1.1s" }}>
+      <div className={`${card} hero-float bottom-2 right-0 flex w-[50%] items-center gap-2.5 p-2.5 lg:p-3`} style={{ animationDelay: "1.1s" }}>
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
           <Award size={22} />
         </span>
@@ -203,7 +203,7 @@ function InternArt() {
         <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
           <Image src="/web/photo-1523240795612-9a054b0db644.webp" alt="" fill sizes="240px" className="object-cover" />
         </div>
-        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Real client work</p>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Practical work, in teams</p>
       </div>
       <span className={`${chip} hero-float right-0 top-[40%]`} style={{ animationDelay: "1.2s" }}>
         <GraduationCap size={14} className="text-brand-500" /> Every university welcome
