@@ -169,14 +169,20 @@ export function ProductCard({ product }: { product: Product }) {
         )}
 
         {/* Quick add — over the photo, for a pointer that can hover. A phone
-            opens the product instead. Vendors' products are ordered from
-            their own page. */}
-        {inStock && !product.seller && (
+            opens the product instead. */}
+        {inStock && (
           <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 hidden justify-center opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:opacity-100 @[13rem]:flex">
             <AddToCartButton
               label="Quick add"
               className="!rounded-none !bg-white !px-5 !py-2.5 !text-[11px] !font-bold uppercase !tracking-[0.16em] !text-ink-900 shadow-sm hover:!bg-brand-500 hover:!text-white"
-              item={{ slug: product.id, name: product.name, price: product.price, category: product.category, condition: product.condition }}
+              item={{
+                slug: product.id,
+                name: product.name,
+                price: product.price,
+                category: product.category,
+                condition: product.seller ? `Sold by ${product.seller}` : product.condition,
+                image: product.seller ? product.image : undefined,
+              }}
             />
           </div>
         )}

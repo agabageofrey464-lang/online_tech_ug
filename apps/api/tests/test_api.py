@@ -340,3 +340,13 @@ def test_selling_the_last_one_does_not_mark_it_out_of_stock(db_factory):
         assert (row.stock_qty, row.in_stock) == (0, True)
         # And it can be ordered again.
         create_order(db, OrderCreate(**buyer, items=[{"slug": "last-one", "quantity": 1}]))
+
+
+def test_a_review_can_be_proved_with_the_phone_number_ordered_with(client, order):
+    review = {"product_slug": "test-laptop", "name": "Test Customer", "rating": 5, "comment": "very good"}
+    # Somebody else's number proves nothing.
+    assert client.post(f"{API}/reviews", json={**review, "order_reference": "0711111111"}).status_code == 400
+    # The number on the order does, however it is written.
+    assert client.post(f"{API}/reviews", json={**review, "order_reference": "+256 700 000 000"}).status_code == 201
+    # And it is still one review per order.
+    assert client.post(f"{API}/reviews", json={**review, "order_reference": "0700000000"}).status_code == 409

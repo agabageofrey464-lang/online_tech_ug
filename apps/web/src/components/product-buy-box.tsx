@@ -47,7 +47,7 @@ export function ProductBuyBox({
   colors,
   choices,
 }: {
-  item: { slug: string; name: string; price: number; category: string; condition: string };
+  item: { slug: string; name: string; price: number; category: string; condition: string; image?: string };
   colors: string[];
   choices: Choice[];
 }) {

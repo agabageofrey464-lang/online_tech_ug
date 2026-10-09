@@ -68,10 +68,28 @@ async def add_review(payload: ReviewIn, request: Request, db: Session = Depends(
         .where(Order.status != "cancelled")
     )
     if not bought:
+        # Few customers keep the order number, but they know the phone number
+        # they ordered with. If what was typed is a phone number, look for an
+        # order of this product placed with it, newest first. The last nine
+        # digits are compared, so 0760…, 760… and +256760… are one number.
+        digits = "".join(ch for ch in payload.order_reference if ch.isdigit())
+        if len(digits) >= 9:
+            rows = db.execute(
+                select(Order.reference, Order.phone)
+                .join(OrderItem, Order.id == OrderItem.order_id)
+                .where(OrderItem.product_slug == payload.product_slug, Order.status != "cancelled")
+                .order_by(Order.id.desc())
+                .limit(500)
+            ).all()
+            for ref, phone in rows:
+                if "".join(ch for ch in (phone or "") if ch.isdigit()).endswith(digits[-9:]):
+                    reference, bought = ref, True
+                    break
+    if not bought:
         ratelimit.allow(misses, limit=15, window_seconds=600)
         raise HTTPException(
             status_code=400,
-            detail="We couldn't find this product on that order. Check the order number on your confirmation.",
+            detail="We couldn't find an order of this product with that order number or phone number. Reviews are for customers who bought it — use the phone number you ordered with.",
         )
 
     review = Review(

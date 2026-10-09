@@ -131,7 +131,7 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
             <input required maxLength={80} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} placeholder="Shown as your first name only" />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-medium text-ink-800">Order number</span>
+            <span className="mb-1 block font-medium text-ink-800">Phone number you ordered with, or order number</span>
             <input required maxLength={20} value={form.order_reference} onChange={(e) => setForm({ ...form, order_reference: e.target.value })} className={`${input} font-mono uppercase`} placeholder="e.g. OTU-AC4C98E1" />
           </label>
           <label className="text-sm sm:col-span-2">
@@ -144,7 +144,7 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
               {state === "sending" ? "Sending…" : "Submit review"}
             </button>
             <p className="text-xs text-ink-700/60">
-              The order number is on your confirmation. It proves the purchase and is never shown.
+              Use the phone number you gave when ordering, or the order number on your confirmation. It proves the purchase and is never shown.
             </p>
           </div>
         </form>

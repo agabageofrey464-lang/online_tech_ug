@@ -1,11 +1,9 @@
 "use client";
 
+import { ProductCard } from "@/components/product-card";
+import { asShopProducts, type VendorItem } from "@/lib/vendor-items";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { ugx } from "@/lib/site";
-import { fallbackImage } from "@/lib/image-fallback";
-import { WhatsAppOrder } from "@/components/whatsapp-order";
-import { vendorOrderMessage } from "@/lib/order-message";
 import Link from "next/link";
 
 /**
@@ -249,58 +247,23 @@ function Chip({
   );
 }
 
+/**
+ * A vendor's product, on the same card the shop uses — photograph on a panel,
+ * name, price, two lines of specification, the seller — so a product looks the
+ * same wherever it is met. The line beneath shows the rest of that seller's
+ * stock, which is what a shopper asks for the moment they like one thing.
+ */
 function VendorCard({ p, onVendor }: { p: MarketItem; onVendor: () => void }) {
+  const [product] = asShopProducts([{ ...(p as unknown as VendorItem), in_stock: true }]);
   return (
-    <article className="group card-lift flex h-full flex-col overflow-hidden rounded-lg border border-ink-600/[0.08] bg-white shadow-[var(--shadow-1)]">
-      <div className="relative aspect-square bg-white">
-        <Link href={`/marketplace/${p.id}`} aria-label={p.name} className="block h-full w-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={p.image_url || fallbackImage(p.name, p.category)}
-            alt={p.name}
-            loading="lazy"
-            className="card-zoom h-full w-full object-contain p-2"
-          />
-        </Link>
-        <span className="absolute left-2 top-2 rounded bg-ink-600/85 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-          Vendor
-        </span>
-        {p.vendor_verified && (
-          <span
-            title="Verified seller"
-            className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-brand-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm"
-          >
-            ✓ Verified
-          </span>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
-        <h3 className="clamp-2 min-h-[2.25rem] text-[12.5px] leading-tight text-ink-800 transition-colors group-hover:text-brand-600">
-          <Link href={`/marketplace/${p.id}`}>{p.name}</Link>
-        </h3>
-        {/* Tapping the seller shows the rest of their stock — the question a
-            shopper asks the moment they like one thing. */}
-        <button
-          onClick={onVendor}
-          className="mt-0.5 truncate text-left text-[10.5px] text-ink-700/55 hover:text-brand-600 hover:underline"
-        >
-          by {p.vendor_name} · {p.category}
-        </button>
-        <p className="mt-1 text-[15px] font-extrabold text-ink-900">{ugx(p.price_ugx)}</p>
-        <WhatsAppOrder
-          className="mt-2"
-          label="Order now"
-          brand
-          phone={p.vendor_verified && p.vendor_phone ? p.vendor_phone : undefined}
-          message={vendorOrderMessage({
-            name: p.name,
-            priceLabel: ugx(p.price_ugx),
-            vendor: p.vendor_name,
-            category: p.category,
-            url: p.image_url || undefined,
-          })}
-        />
-      </div>
-    </article>
+    <div className="flex h-full flex-col">
+      <ProductCard product={product} />
+      <button
+        onClick={onVendor}
+        className="truncate bg-[var(--tile)] px-3 pb-3 text-left text-[11px] text-ink-700/65 hover:text-brand-600 hover:underline"
+      >
+        {p.vendor_verified ? "✓ Verified · " : ""}More from {p.vendor_name}
+      </button>
+    </div>
   );
 }

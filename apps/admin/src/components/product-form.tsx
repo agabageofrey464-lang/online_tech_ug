@@ -13,9 +13,9 @@ import { EMPTY_SPECS, emptyValues, type ProductFormValues } from "@/lib/product-
 export { EMPTY_SPECS, emptyValues };
 export type { ProductFormValues };
 
-const CATEGORIES = ["Laptops", "Desktops", "Components", "Power", "Accessories", "Networking", "Storage"];
+const CATEGORIES = ["Laptops", "Desktops", "Phones", "Components", "Power", "Accessories", "Networking", "Storage"];
 const CONDITIONS = ["Brand New", "UK Used", "Refurbished"];
-const COMPUTER_CATS = ["Laptops", "Desktops"];
+const COMPUTER_CATS = ["Laptops", "Desktops", "Phones"];
 
 const SPEC_FIELDS: { key: keyof typeof EMPTY_SPECS; label: string; placeholder: string }[] = [
   { key: "type", label: "Type", placeholder: "Business Ultrabook, Gaming Laptop…" },

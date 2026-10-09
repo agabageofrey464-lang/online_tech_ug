@@ -84,7 +84,11 @@ export function asShopProducts(items: VendorItem[]): Product[] {
       rating: 4.5,
       inStock: true,
       image: v.image_url || "/placeholder.svg",
-      specs: (v.specs ?? []).slice(0, 4).map((s) => s.value),
+      // The card's two specification lines: the vendor's own rows, or, where
+      // none were given, the brand, the kind of thing and its description.
+      specs: (v.specs ?? []).length
+        ? (v.specs ?? []).slice(0, 4).map((s) => s.value)
+        : [v.brand, v.category, ...(v.description || "").split(/[,.;\n]/)].map((x) => (x || "").trim()).filter(Boolean).slice(0, 4),
       seller: v.vendor_name,
     }));
 }
