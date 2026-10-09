@@ -80,6 +80,12 @@ function LearnArt() {
       <span className={`${chip} hero-float right-0 top-[8%]`} style={{ animationDelay: "0.6s" }}>
         <GraduationCap size={14} className="text-brand-500" /> 22 courses
       </span>
+      <div className={`${card} hero-float bottom-0 left-0 hidden w-[36%] p-1.5 lg:block`} style={{ animationDelay: "0.8s" }}>
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
+          <Image src="/web/photo-1509062522246-3755977927d7.webp" alt="" fill sizes="200px" className="object-cover" />
+        </div>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">In class</p>
+      </div>
       <div className={`${card} hero-float bottom-2 right-[2%] flex w-[52%] items-center gap-2.5 p-3`} style={{ animationDelay: "1.1s" }}>
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
           <Award size={22} />
@@ -112,18 +118,16 @@ function SoftwareArt() {
           ))}
         </div>
       </div>
-      <div className={`${card} hero-float bottom-0 right-[4%] w-[30%] rounded-[18px] p-2`} style={{ animationDelay: "0.9s" }}>
-        <div className="space-y-1.5 rounded-[12px] bg-[#f0ede6] p-2.5">
-          <span className="block h-10 rounded bg-brand-500" />
-          <span className="block h-2 w-4/5 rounded-full bg-ink-900/25" />
-          <span className="block h-2 w-3/5 rounded-full bg-ink-900/15" />
-          <span className="block h-7 rounded bg-ink-900" />
+      <div className={`${card} hero-float bottom-0 right-0 w-[52%] p-1.5`} style={{ animationDelay: "0.9s" }}>
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#f0ede6]">
+          <Image src="/portfolio/beds-beddings-1.webp" alt="" fill sizes="280px" className="object-cover object-top" />
         </div>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">A store we built · live</p>
       </div>
       <span className={`${chip} hero-float right-0 top-[4%]`} style={{ animationDelay: "0.5s" }}>
         <Code2 size={14} className="text-brand-500" /> Websites
       </span>
-      <span className={`${chip} hero-float left-[4%] bottom-[6%]`} style={{ animationDelay: "1.4s" }}>
+      <span className={`${chip} hero-float left-0 bottom-[30%]`} style={{ animationDelay: "1.4s" }}>
         <Smartphone size={14} className="text-brand-500" /> Mobile apps &amp; systems
       </span>
     </>
@@ -134,7 +138,7 @@ function RepairArt() {
   const steps = ["Free diagnosis", "Parts fitted", "Tested before you collect"];
   return (
     <>
-      <div className={`${card} hero-float left-[8%] top-6 w-[72%] p-5`}>
+      <div className={`${card} hero-float left-0 top-4 w-[66%] p-4 lg:p-5`}>
         <div className="flex items-center gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
             <Wrench size={22} />
@@ -158,7 +162,13 @@ function RepairArt() {
       <span className={`${chip} hero-float right-0 top-[10%]`} style={{ animationDelay: "0.7s" }}>
         From UGX 30,000
       </span>
-      <span className={`${chip} hero-float bottom-[8%] right-[6%]`} style={{ animationDelay: "1.3s" }}>
+      <div className={`${card} hero-float bottom-0 right-0 w-[44%] p-1.5`} style={{ animationDelay: "1s" }}>
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
+          <Image src="/products/hp-elitebook-x360-1030-0af99d-p62.webp" alt="" fill sizes="240px" className="object-cover" />
+        </div>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">On our bench</p>
+      </div>
+      <span className={`${chip} hero-float bottom-[4%] left-[2%]`} style={{ animationDelay: "1.3s" }}>
         <ShieldCheck size={14} className="text-brand-500" /> Onsite &amp; remote
       </span>
     </>
@@ -168,7 +178,7 @@ function RepairArt() {
 function InternArt() {
   return (
     <>
-      <div className={`${card} hero-float left-[10%] top-4 w-[62%] p-5`}>
+      <div className={`${card} hero-float left-0 top-2 w-[58%] p-4 lg:p-5`}>
         <div className="flex items-center justify-between">
           <FileText size={22} className="text-brand-500" />
           <span className="text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-700/55">Online Tech Uganda</span>
@@ -189,7 +199,13 @@ function InternArt() {
       <span className={`${chip} hero-float right-0 top-[12%]`} style={{ animationDelay: "0.5s" }}>
         <CalendarDays size={14} className="text-brand-500" /> 1 Nov – 18 Dec
       </span>
-      <span className={`${chip} hero-float bottom-[10%] right-[4%]`} style={{ animationDelay: "1.2s" }}>
+      <div className={`${card} hero-float bottom-0 right-0 w-[46%] p-1.5`} style={{ animationDelay: "1s" }}>
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
+          <Image src="/web/photo-1523240795612-9a054b0db644.webp" alt="" fill sizes="240px" className="object-cover" />
+        </div>
+        <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Real client work</p>
+      </div>
+      <span className={`${chip} hero-float right-0 top-[40%]`} style={{ animationDelay: "1.2s" }}>
         <GraduationCap size={14} className="text-brand-500" /> Every university welcome
       </span>
       <span className={`${chip} hero-float bottom-[2%] left-[2%]`} style={{ animationDelay: "0.9s" }}>
@@ -305,7 +321,7 @@ export function HeroRotator() {
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
   return (
-    <div className="group/hero relative h-[660px] overflow-hidden sm:h-[600px] lg:h-[560px] xl:h-[620px]">
+    <div className="group/hero relative h-[690px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
@@ -370,7 +386,7 @@ export function HeroRotator() {
 
             {/* The scene. Drawn only for the slide on show, so its pieces
                 animate in each time that slide comes round. */}
-            <div className="relative mx-auto h-[210px] w-full max-w-[340px] sm:h-[240px] lg:h-[400px] lg:max-w-[520px]">
+            <div className="relative mx-auto h-[230px] w-full max-w-[350px] sm:h-[270px] sm:max-w-[440px] lg:h-[400px] lg:max-w-[520px] xl:h-[440px] xl:max-w-[580px]">
               {idx === i && <s.Art />}
             </div>
           </div>
