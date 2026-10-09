@@ -5,11 +5,6 @@ export const productImages: Record<string, string[]> = {
     "/products/asus-rog-strix-g15-2.webp",
     "/products/asus-rog-strix-g15-3.webp"
   ],
-  "asus-tuf-gaming-f15": [
-    "/products/asus-tuf-gaming-f15.webp",
-    "/products/asus-tuf-gaming-f15-2.webp",
-    "/products/asus-tuf-gaming-f15-3.webp"
-  ],
   "asus-vivobook-15": [
     "/products/asus-vivobook-15.webp",
     "/products/asus-vivobook-15-2.webp",
@@ -54,11 +49,6 @@ export const productImages: Record<string, string[]> = {
     "/products/dell-xps-13-9310.webp",
     "/products/dell-xps-13-9310-2.webp",
     "/products/dell-xps-13-9310-3.webp"
-  ],
-  "dell-xps-15-9520": [
-    "/products/dell-xps-15-9520.webp",
-    "/products/dell-xps-15-9520-2.webp",
-    "/products/dell-xps-15-9520-3.webp"
   ],
   "hp-280-g6-desktop": [
     "/products/hp-280-g6-desktop.webp",
@@ -359,13 +349,76 @@ export const productImages: Record<string, string[]> = {
     "/products/897de4ee6650067a6c27017b4b0dfc9d_1.webp",
     "/products/c7abcf558a9e702ade8a2671e84b0b10_0.webp"
   ],
-  "thinkpad-x1-yoga-1f763c": [
-    "/products/1f763c58d06340ca87f571702cc7d669.webp",
-    "/products/87b16d6e6b684ada8352eb20499bd074.webp",
-    "/products/cfa5d3a000b6411c8553e2f5cbf29bfe.webp"
-  ],
   "dell-latitude-2in1-vpro-1b6ccc": [
     "/products/1b6ccc1017bf4ba7b063c00a976366f4.webp",
     "/products/cc2c82bcb9854b5ea368335521757b1b.webp"
-  ]
+  ],
+  "macbook-air-15-midnight": [
+    "/products/macbook-air-15-midnight-p66.webp",
+    "/products/macbook-air-15-midnight-p53.webp",
+    "/products/macbook-air-15-midnight-p47.webp",
+    "/products/macbook-air-15-midnight-p38.webp",
+    "/products/macbook-air-15-midnight.webp"
+  ],
+  "hp-omnibook-x-flip-14-wa0014": [
+    "/products/hp-omnibook-x-flip-14-wa0014-p35.webp",
+    "/products/hp-omnibook-x-flip-14-wa0014-p44.webp",
+    "/products/IMG-20260916-WA0014.webp"
+  ],
+  "hp-omnibook-5-flip-14-wa0012": [
+    "/products/hp-omnibook-5-flip-14-wa0012-p60.webp",
+    "/products/IMG-20260916-WA0012.webp"
+  ],
+  "asus-tuf-gaming-f15": [
+    "/products/asus-tuf-gaming-f15-p40.webp",
+    "/products/asus-tuf-gaming-f15-p45.webp",
+    "/products/asus-tuf-gaming-f15-p54.webp",
+    "/products/asus-tuf-gaming-f15.webp",
+    "/products/asus-tuf-gaming-f15-2.webp",
+    "/products/asus-tuf-gaming-f15-3.webp"
+  ],
+  "hp-elitebook-840-g6-wa0017": [
+    "/products/hp-elitebook-840-g6-wa0017-p41.webp",
+    "/products/hp-elitebook-840-g6-wa0017-p72.webp",
+    "/products/IMG-20260831-WA0017.webp"
+  ],
+  "dell-xps-15-9520": [
+    "/products/dell-xps-15-9520-p42.webp",
+    "/products/dell-xps-15-9520.webp",
+    "/products/dell-xps-15-9520-2.webp",
+    "/products/dell-xps-15-9520-3.webp"
+  ],
+  "dell-xps-13-evo-1aeca2": [
+    "/products/1aeca2cfe75441da95dce51f6fa7aeb8.webp",
+    "/products/dell-xps-13-evo-1aeca2-p43.webp"
+  ],
+  "hp-victus-15-gaming-4990b4": [
+    "/products/4990b4f6f1a76a542dbbabd43866d50b_1.webp",
+    "/products/hp-victus-15-gaming-4990b4-p68.webp",
+    "/products/hp-victus-15-gaming-4990b4-p56.webp"
+  ],
+  "hp-victus-16-gaming-6e86fa": [
+    "/products/6e86fae301454815bb620c9abacb6764_0.webp",
+    "/products/hp-victus-16-gaming-6e86fa-p58.webp",
+    "/products/hp-victus-16-gaming-6e86fa-p50.webp"
+  ],
+  "hp-elitebook-x360-1030-0af99d": [
+    "/products/hp-elitebook-x360-1030-0af99d-p64.webp",
+    "/products/hp-elitebook-x360-1030-0af99d-p62.webp",
+    "/products/hp-elitebook-x360-1030-0af99d-p51.webp",
+    "/products/0af99d6e8d3a4c92b073850930d224ce.webp"
+  ],
+  "hp-elitebook-840-g11-cc6c4c": [
+    "/products/hp-elitebook-840-g11-cc6c4c-p70.webp",
+    "/products/cc6c4cf2eee0434ea94d4b63059f3b77.webp"
+  ],
+  "thinkpad-x1-yoga-1f763c": [
+    "/products/1f763c58d06340ca87f571702cc7d669.webp",
+    "/products/87b16d6e6b684ada8352eb20499bd074.webp",
+    "/products/cfa5d3a000b6411c8553e2f5cbf29bfe.webp",
+    "/products/thinkpad-x1-yoga-1f763c-p57.webp"
+  ],
+  "samsung-galaxy-a06": [
+    "/products/samsung-galaxy-a06-p75.webp"
+  ],
 };

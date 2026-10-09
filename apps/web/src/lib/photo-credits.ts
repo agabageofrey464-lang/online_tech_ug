@@ -22,14 +22,6 @@ export const photoCredits = [
     "source": "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_A25_5G_2024_(cropped).jpg"
   },
   {
-    "product": "Samsung Galaxy A06",
-    "slug": "samsung-galaxy-a06",
-    "title": "Samsung Galaxy A06 5G 2025 (1) (cropped).jpg",
-    "author": "Captainmorlypogi1959",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_A06_5G_2025_(1)_(cropped).jpg"
-  },
-  {
     "product": "Samsung Galaxy A35 5G",
     "slug": "samsung-galaxy-a35-5g",
     "title": "Samsung Galaxy A35 5G 2024 (1).jpg",
