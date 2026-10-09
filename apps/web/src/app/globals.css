@@ -607,3 +607,47 @@ article.card-lift,
 .ticker { display: flex; width: max-content; animation: tickerMove 34s linear infinite; }
 .ticker:hover { animation-play-state: paused; }
 .ticker-mask { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+
+/* ─── The hero's scenes ────────────────────────────────────────────
+   The cards in a scene drift gently, bars draw themselves, ticks pop in, and
+   the grid behind slides slowly — enough to feel alive, not enough to chase. */
+@keyframes heroFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+@keyframes heroIn { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
+@keyframes heroGrow { from { width: 0; } to { width: var(--to, 100%); } }
+@keyframes heroTick { 0% { scale: 0; } 70% { scale: 1.25; } 100% { scale: 1; } }
+@keyframes heroGridMove { from { background-position: 0 0; } to { background-position: 56px 56px; } }
+@keyframes heroGlow { 0%, 100% { opacity: 0.55; scale: 1; } 50% { opacity: 1; scale: 1.12; } }
+.hero-float { animation: heroIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both, heroFloat 5s ease-in-out infinite; }
+.hero-grow { width: var(--to, 100%); animation: heroGrow 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s both; }
+.hero-tick { animation: heroTick 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+.hero-glow { animation: heroGlow 7s ease-in-out infinite; }
+.hero-grid {
+  background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: heroGridMove 9s linear infinite;
+}
+
+/* Mist behind the hero: soft lights that drift and swell like vapour, and a
+   scatter of droplets rising through it. It sits behind the words and the
+   scene, so it gives depth without competing with either. */
+@keyframes mistDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(9%, -12%, 0) scale(1.18); }
+  66% { transform: translate3d(-7%, 8%, 0) scale(0.9); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes dropRise {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  12% { opacity: 0.9; }
+  100% { transform: translate3d(var(--sway, 30px), -620px, 0) scale(1.15); opacity: 0; }
+}
+.hero-mist { position: absolute; border-radius: 9999px; filter: blur(64px); mix-blend-mode: screen; animation: mistDrift 16s ease-in-out infinite; will-change: transform; }
+.hero-drop {
+  position: absolute;
+  bottom: -14px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.15) 60%, transparent 72%);
+  box-shadow: 0 0 14px rgba(255, 170, 120, 0.55);
+  animation: dropRise linear infinite;
+  will-change: transform, opacity;
+}

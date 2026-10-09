@@ -2,66 +2,285 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Store, Cpu } from "lucide-react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import {
+  Award,
+  CalendarDays,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Code2,
+  FileText,
+  GraduationCap,
+  Play,
+  ShieldCheck,
+  Smartphone,
+  Truck,
+  Wrench,
+} from "lucide-react";
 
-// Jumia-style promotional banner slides. Solid brand-coloured panels with a
-// headline, a deal pill and a framed photo — kept in Online Tech Uganda's own
-// colours (orange / indigo) and copy.
 // A page has one main heading. Every slide used to be an <h1>, so the home
-// page had several and a search engine could not tell which named the page.
-function SlideHeading({ first, ...rest }: { first: boolean } & React.HTMLAttributes<HTMLHeadingElement>) {
+// page had several; only the first slide is one now.
+function SlideHeading({ first, ...rest }: { first: boolean; className?: string; children: ReactNode }) {
   return first ? <h1 {...rest} /> : <p {...rest} />;
+}
+
+/* ─── The pictures ────────────────────────────────────────────────
+   Each slide has a small scene built from the thing it is about: products on
+   tiles, a lesson playing, code being written, a repair being ticked off, an
+   acceptance letter. They are drawn in the page, not photographs, so they
+   stay sharp at any size and can move. */
+
+const card = "absolute bg-white text-ink-900 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.55)]";
+const chip = "absolute flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-ink-900 shadow-lg";
+
+function ShopArt() {
+  const tiles = [
+    { src: "/products/macbook-air-15-midnight-p66.webp", name: "MacBook Air 15", cls: "left-0 top-10 w-[46%] -rotate-6", d: "0s" },
+    { src: "/products/hp-omnibook-x-flip-14-wa0014-p35.webp", name: "HP OmniBook X Flip", cls: "right-0 top-0 w-[46%] rotate-3", d: "0.8s" },
+    { src: "/products/samsung-galaxy-a06-p75.webp", name: "Galaxy A06", cls: "left-[27%] bottom-0 w-[42%] rotate-1", d: "1.6s" },
+  ];
+  return (
+    <>
+      {tiles.map((t) => (
+        <div key={t.src} className={`${card} hero-float p-2 ${t.cls}`} style={{ animationDelay: t.d }}>
+          <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
+            <Image src={t.src} alt="" fill sizes="220px" className="object-cover" />
+          </div>
+          <p className="mt-1.5 truncate px-1 font-display text-[15px]">{t.name}</p>
+          <p className="px-1 pb-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-600">In stock · tested</p>
+        </div>
+      ))}
+      <span className={`${chip} hero-float left-[2%] bottom-[14%]`} style={{ animationDelay: "0.4s" }}>
+        <ShieldCheck size={14} className="text-brand-500" /> Warranty included
+      </span>
+      <span className={`${chip} hero-float right-[1%] bottom-[30%]`} style={{ animationDelay: "1.2s" }}>
+        <Truck size={14} className="text-brand-500" /> Countrywide delivery
+      </span>
+    </>
+  );
+}
+
+function LearnArt() {
+  return (
+    <>
+      <div className={`${card} hero-float left-[6%] top-4 w-[78%] p-2.5`}>
+        <div className="relative aspect-video overflow-hidden bg-ink-900">
+          <Image src="/courses/web-development.webp" alt="" fill sizes="360px" className="object-cover opacity-80" />
+          <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white shadow-lg">
+            <Play size={20} className="ml-0.5 fill-white" />
+          </span>
+          <span className="absolute inset-x-0 bottom-0 h-1 bg-white/25">
+            <span className="hero-grow block h-full bg-brand-500" style={{ ["--to" as string]: "68%" }} />
+          </span>
+        </div>
+        <p className="mt-2 font-display text-[17px] leading-tight">Web Development</p>
+        <p className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-ink-700/60">Lesson 3 of 12 · pay per lesson</p>
+      </div>
+      <span className={`${chip} hero-float right-0 top-[8%]`} style={{ animationDelay: "0.6s" }}>
+        <GraduationCap size={14} className="text-brand-500" /> 22 courses
+      </span>
+      <div className={`${card} hero-float bottom-2 right-[2%] flex w-[52%] items-center gap-2.5 p-3`} style={{ animationDelay: "1.1s" }}>
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+          <Award size={22} />
+        </span>
+        <span>
+          <span className="block font-display text-[16px] leading-tight">Certificate</span>
+          <span className="block text-[10.5px] text-ink-700/70">In class or online</span>
+        </span>
+      </div>
+    </>
+  );
+}
+
+function SoftwareArt() {
+  const lines = [
+    ["62%", "bg-brand-400"], ["84%", "bg-white/70"], ["48%", "bg-green-400"], ["72%", "bg-white/70"], ["36%", "bg-brand-300"], ["58%", "bg-white/50"],
+  ];
+  return (
+    <>
+      <div className="hero-float absolute left-0 top-6 w-[76%] overflow-hidden bg-[#16151d] shadow-[0_18px_50px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/15">
+        <div className="flex items-center gap-1.5 bg-white/10 px-3 py-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-brand-500" />
+          <span className="h-2.5 w-2.5 rounded-full bg-gold-400" />
+          <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+          <span className="ml-2 text-[10px] font-semibold text-white/60">your-business.com</span>
+        </div>
+        <div className="space-y-2.5 p-4">
+          {lines.map(([w, c], n) => (
+            <span key={n} className={`hero-grow block h-2 rounded-full ${c}`} style={{ ["--to" as string]: w, animationDelay: `${n * 0.22}s`, marginLeft: n % 3 === 1 ? "8%" : n % 3 === 2 ? "16%" : 0 }} />
+          ))}
+        </div>
+      </div>
+      <div className={`${card} hero-float bottom-0 right-[4%] w-[30%] rounded-[18px] p-2`} style={{ animationDelay: "0.9s" }}>
+        <div className="space-y-1.5 rounded-[12px] bg-[#f0ede6] p-2.5">
+          <span className="block h-10 rounded bg-brand-500" />
+          <span className="block h-2 w-4/5 rounded-full bg-ink-900/25" />
+          <span className="block h-2 w-3/5 rounded-full bg-ink-900/15" />
+          <span className="block h-7 rounded bg-ink-900" />
+        </div>
+      </div>
+      <span className={`${chip} hero-float right-0 top-[4%]`} style={{ animationDelay: "0.5s" }}>
+        <Code2 size={14} className="text-brand-500" /> Websites
+      </span>
+      <span className={`${chip} hero-float left-[4%] bottom-[6%]`} style={{ animationDelay: "1.4s" }}>
+        <Smartphone size={14} className="text-brand-500" /> Mobile apps &amp; systems
+      </span>
+    </>
+  );
+}
+
+function RepairArt() {
+  const steps = ["Free diagnosis", "Parts fitted", "Tested before you collect"];
+  return (
+    <>
+      <div className={`${card} hero-float left-[8%] top-6 w-[72%] p-5`}>
+        <div className="flex items-center gap-3">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
+            <Wrench size={22} />
+          </span>
+          <span>
+            <span className="block font-display text-[19px] leading-tight">Laptop repair</span>
+            <span className="block text-[10.5px] font-bold uppercase tracking-[0.12em] text-ink-700/60">Job card</span>
+          </span>
+        </div>
+        <ul className="mt-4 space-y-2.5">
+          {steps.map((s, n) => (
+            <li key={s} className="flex items-center gap-2.5 text-[13.5px]">
+              <span className="hero-tick flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-600 text-white" style={{ animationDelay: `${0.5 + n * 0.5}s` }}>
+                <Check size={13} strokeWidth={3} />
+              </span>
+              {s}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <span className={`${chip} hero-float right-0 top-[10%]`} style={{ animationDelay: "0.7s" }}>
+        From UGX 30,000
+      </span>
+      <span className={`${chip} hero-float bottom-[8%] right-[6%]`} style={{ animationDelay: "1.3s" }}>
+        <ShieldCheck size={14} className="text-brand-500" /> Onsite &amp; remote
+      </span>
+    </>
+  );
+}
+
+function InternArt() {
+  return (
+    <>
+      <div className={`${card} hero-float left-[10%] top-4 w-[62%] p-5`}>
+        <div className="flex items-center justify-between">
+          <FileText size={22} className="text-brand-500" />
+          <span className="text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-700/55">Online Tech Uganda</span>
+        </div>
+        <p className="mt-3 font-display text-[20px] leading-tight">Acceptance Letter</p>
+        <div className="mt-3 space-y-2">
+          {["92%", "100%", "78%", "86%"].map((w, n) => (
+            <span key={n} className="hero-grow block h-1.5 rounded-full bg-ink-900/15" style={{ ["--to" as string]: w, animationDelay: `${n * 0.2}s` }} />
+          ))}
+        </div>
+        <div className="mt-4 flex items-center justify-between">
+          <span className="font-display text-[15px] italic text-ink-700">Signed</span>
+          <span className="hero-tick flex h-10 w-10 items-center justify-center rounded-full border-2 border-brand-500 text-brand-600" style={{ animationDelay: "1.1s" }}>
+            <Award size={18} />
+          </span>
+        </div>
+      </div>
+      <span className={`${chip} hero-float right-0 top-[12%]`} style={{ animationDelay: "0.5s" }}>
+        <CalendarDays size={14} className="text-brand-500" /> 1 Nov – 18 Dec
+      </span>
+      <span className={`${chip} hero-float bottom-[10%] right-[4%]`} style={{ animationDelay: "1.2s" }}>
+        <GraduationCap size={14} className="text-brand-500" /> Every university welcome
+      </span>
+      <span className={`${chip} hero-float bottom-[2%] left-[2%]`} style={{ animationDelay: "0.9s" }}>
+        100% online
+      </span>
+    </>
+  );
 }
 
 const SLIDES = [
   {
-    bg: "from-ink-500 via-ink-600 to-ink-700",
-    eyebrow: "Genuine & warranted",
+    tab: "Shop",
+    eyebrow: "Shop · genuine & warranted",
     title: "Powering Uganda, One Device at a Time",
-    sub: "Laptops, desktops & accessories — warranty included, countrywide delivery.",
-    pill: "Easy Mobile Money",
+    sub: "Laptops, phones & accessories — tested, with warranty and countrywide delivery.",
     cta: "Shop now",
     href: "/shop",
+    more: { label: "Find my laptop", href: "/find" },
     img: "/hero/shop-shelves.webp",
-    // An upright photograph in a wide slide: keep the lit shelves and the desk.
     pos: "object-[center_58%]",
-    icon: ShieldCheck,
+    Art: ShopArt,
   },
   {
-    bg: "from-ink-600 via-ink-700 to-ink-700",
+    tab: "Learn Academy",
+    eyebrow: "Learn Academy",
+    title: "Real Computer Skills, Lesson By Lesson",
+    sub: "22 courses in short video lessons. Pay per lesson, in class or online, and earn a certificate.",
+    cta: "Browse courses",
+    href: "/learn",
+    more: { label: "My academy", href: "/academy" },
+    img: "/web/photo-1509062522246-3755977927d7.webp",
+    pos: "",
+    Art: LearnArt,
+  },
+  {
+    tab: "Software",
+    eyebrow: "Software development",
+    title: "Websites, Apps & Systems Built For You",
+    sub: "From a first website to a full business system — designed, built, hosted and looked after.",
+    cta: "Start a project",
+    href: "/development",
+    more: { label: "See our work", href: "/portfolio" },
+    img: "/hero/hero-6.webp",
+    pos: "",
+    Art: SoftwareArt,
+  },
+  {
+    tab: "Repairs",
     eyebrow: "Repairs & IT support",
     title: "Fast, Reliable Tech Support",
-    sub: "Laptops, desktops & networks — onsite & remote, done right.",
-    pill: "From UGX 30,000",
+    sub: "Laptops, desktops & networks — free diagnosis, onsite or remote, done right.",
     cta: "Book a repair",
-    href: "/services",
+    href: "/services#repairs-support",
+    more: { label: "All services", href: "/services" },
     img: "/hero/hero-5.webp",
-    icon: Truck,
+    pos: "",
+    Art: RepairArt,
   },
   {
-    bg: "from-ink-700 via-ink-600 to-ink-700",
-    eyebrow: "Marketplace",
-    title: "Buy & Sell on our Marketplace",
-    sub: "Shop trusted vendors, or list your own products and reach more buyers.",
-    pill: "Verified vendors",
-    cta: "Explore marketplace",
-    href: "/marketplace",
-    img: "/hero/hero-6.webp",
-    icon: Store,
-  },
-  {
-    bg: "from-ink-500 via-ink-600 to-ink-700",
-    eyebrow: "Upgrades & accessories",
-    title: "Boost Your PC — RAM, SSDs & More",
-    sub: "Genuine memory, storage, power and accessories to speed up any machine.",
-    pill: "Brand new stock",
-    cta: "Shop upgrades",
-    href: "/shop?cat=Components",
-    img: "/hero/hero-3.webp",
-    icon: Cpu,
+    tab: "Internships",
+    eyebrow: "Internships",
+    title: "Industrial Training, On Real Client Work",
+    sub: "Online placements for university and college students, with signed letters.",
+    cta: "Apply for a place",
+    href: "/internship",
+    more: { label: "How it works", href: "/internship" },
+    img: "/web/photo-1523240795612-9a054b0db644.webp",
+    pos: "",
+    Art: InternArt,
   },
 ];
+
+// The droplets: where each starts, how big it is, how fast it rises and how
+// far it drifts sideways. Fixed, so the server and the browser draw the same.
+const DROPS = [
+  { left: "6%", size: 7, time: "11s", delay: "-2s", sway: "40px" },
+  { left: "14%", size: 4, time: "14s", delay: "-7s", sway: "-25px" },
+  { left: "23%", size: 9, time: "12s", delay: "-4s", sway: "30px" },
+  { left: "33%", size: 5, time: "16s", delay: "-11s", sway: "-35px" },
+  { left: "44%", size: 6, time: "13s", delay: "-1s", sway: "20px" },
+  { left: "52%", size: 10, time: "15s", delay: "-9s", sway: "-30px" },
+  { left: "61%", size: 4, time: "10s", delay: "-5s", sway: "45px" },
+  { left: "69%", size: 8, time: "14s", delay: "-12s", sway: "-20px" },
+  { left: "77%", size: 5, time: "12s", delay: "-3s", sway: "35px" },
+  { left: "85%", size: 9, time: "17s", delay: "-8s", sway: "-40px" },
+  { left: "92%", size: 6, time: "11s", delay: "-6s", sway: "25px" },
+  { left: "97%", size: 4, time: "15s", delay: "-10s", sway: "-15px" },
+];
+
+/** How long a slide stays. */
+const STAY = 6500;
 
 export function HeroRotator() {
   const [i, setI] = useState(0);
@@ -76,24 +295,21 @@ export function HeroRotator() {
     return () => clearTimeout(t);
   }, [i]);
 
-  // Auto-advance; pauses is handled by resetting the timer on manual change.
+  // Auto-advance; resetting the timer on a manual change gives that slide its full time.
   useEffect(() => {
-    // Snappier — a hero that lingers gets scrolled past unseen.
-    const t = setInterval(() => setI((v) => (v + 1) % n), 6000);
+    const t = setInterval(() => setI((v) => (v + 1) % n), STAY);
     return () => clearInterval(t);
   }, [n, i]);
 
-  // Only the slide on show and the one after it carry their photograph. All
-  // four used to load with the page, three of them for slides nobody had
-  // reached yet, competing with the product pictures below.
+  // Only the slide on show, the one it replaced and the one after carry a photograph.
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
   return (
-    <div className="group/hero relative h-[460px] overflow-hidden sm:h-[520px] xl:h-[600px]">
+    <div className="group/hero relative h-[660px] overflow-hidden sm:h-[600px] lg:h-[560px] xl:h-[620px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
-          className={`absolute inset-0 bg-ink-800 ${
+          className={`absolute inset-0 bg-ink-900 ${
             idx === i
               ? "z-[2] opacity-100 transition-opacity duration-700"
               : idx === prev
@@ -102,28 +318,60 @@ export function HeroRotator() {
           }`}
           aria-hidden={idx !== i}
         >
-          {/* The photograph fills the slide; the words sit over it. */}
-          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${"pos" in s ? s.pos : ""}`} />}
-          <div className="absolute inset-0 bg-ink-900/45" />
+          {/* The photograph, dimmed; a glow in the logo's orange; a fine grid. */}
+          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink-900/95 via-ink-900/80 to-ink-900/55" />
+          <div className="hero-grid absolute inset-0 opacity-[0.07]" />
+          {/* Mist and rising droplets, behind everything that is read. */}
+          {idx === i && (
+            <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+              <span className="hero-mist right-[4%] top-[8%] h-[26rem] w-[26rem] bg-brand-500/45" />
+              <span className="hero-mist bottom-[-10%] right-[28%] h-[22rem] w-[22rem] bg-gold-400/30" style={{ animationDelay: "-5s", animationDuration: "19s" }} />
+              <span className="hero-mist left-[30%] top-[-12%] h-[20rem] w-[20rem] bg-white/15" style={{ animationDelay: "-9s", animationDuration: "23s" }} />
+              <span className="hero-mist bottom-[4%] left-[-6%] h-[18rem] w-[18rem] bg-brand-400/25" style={{ animationDelay: "-3s", animationDuration: "21s" }} />
+              {DROPS.map((d, k) => (
+                <span
+                  key={k}
+                  className="hero-drop"
+                  style={{ left: d.left, width: d.size, height: d.size, animationDuration: d.time, animationDelay: d.delay, ["--sway" as string]: d.sway }}
+                />
+              ))}
+            </div>
+          )}
 
-          {/* Only the slide on show has words: the one underneath keeps its
-              photograph while the next fades in, but not its headline. */}
-          <div className={`relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white ${idx === i ? "" : "invisible"}`}>
-            <p className="font-display text-[18px] italic text-white/95 sm:text-[21px]">{s.eyebrow}</p>
-            <SlideHeading first={idx === 0} className="mt-2 max-w-4xl font-display text-[40px] leading-[1.08] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[58px] xl:text-[68px]">
-              {s.title}
-            </SlideHeading>
-            <p className="mt-3 max-w-xl text-[17px] text-white/95 sm:text-[20px]">{s.sub}</p>
-            <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row">
-              <Link
-                href={s.href}
-                className="press inline-flex items-center justify-center gap-1.5 bg-brand-500 px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
-              >
-                {s.cta}
-              </Link>
-              <span className="inline-flex items-center justify-center border border-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white">
-                {s.pill}
-              </span>
+          {/* Only the slide on show has words and a picture: the one underneath
+              keeps its photograph while the next fades in, and nothing else. */}
+          <div
+            className={`container-wide relative z-10 grid h-full content-center items-center gap-6 pb-14 pt-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-10 ${
+              idx === i ? "" : "invisible"
+            }`}
+          >
+            <div className="text-center text-white lg:text-left">
+              <p className="font-display text-[18px] italic text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
+              <SlideHeading first={idx === 0} className="mt-2 font-display text-[34px] leading-[1.08] sm:text-[50px] xl:text-[62px]">
+                {s.title}
+              </SlideHeading>
+              <p className="mx-auto mt-3 max-w-xl text-[16px] text-white/90 sm:text-[19px] lg:mx-0">{s.sub}</p>
+              <div className="mx-auto mt-5 flex max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center lg:justify-start">
+                <Link
+                  href={s.href}
+                  className="press inline-flex items-center justify-center bg-brand-500 px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
+                >
+                  {s.cta}
+                </Link>
+                <Link
+                  href={s.more.href}
+                  className="inline-flex items-center justify-center border border-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white hover:text-ink-900"
+                >
+                  {s.more.label}
+                </Link>
+              </div>
+            </div>
+
+            {/* The scene. Drawn only for the slide on show, so its pieces
+                animate in each time that slide comes round. */}
+            <div className="relative mx-auto h-[210px] w-full max-w-[340px] sm:h-[240px] lg:h-[400px] lg:max-w-[520px]">
+              {idx === i && <s.Art />}
             </div>
           </div>
         </div>
@@ -133,27 +381,33 @@ export function HeroRotator() {
       <button
         onClick={() => go(-1)}
         aria-label="Previous slide"
-        className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
+        className="absolute left-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100 sm:flex"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={() => go(1)}
         aria-label="Next slide"
-        className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
+        className="absolute right-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100 sm:flex"
       >
         <ChevronRight size={20} />
       </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5">
-        {SLIDES.map((_, idx) => (
+      {/* One tab per service: what the hero is showing, and a way to jump. */}
+      <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto bg-ink-900/60 px-2 py-2 backdrop-blur-sm no-scrollbar sm:justify-center">
+        {SLIDES.map((s, idx) => (
           <button
-            key={idx}
+            key={s.tab}
             onClick={() => setI(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2 rounded-full transition-all ${idx === i ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
-          />
+            aria-label={`Show ${s.tab}`}
+            aria-current={idx === i}
+            className={`relative shrink-0 overflow-hidden whitespace-nowrap px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] transition ${
+              idx === i ? "bg-white text-ink-900" : "text-white/75 hover:text-white"
+            }`}
+          >
+            {s.tab}
+            {idx === i && <span key={`c${i}`} className="strip-count !bg-brand-500" style={{ animationDuration: `${STAY}ms` }} />}
+          </button>
         ))}
       </div>
     </div>
