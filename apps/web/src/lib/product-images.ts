@@ -421,4 +421,27 @@ export const productImages: Record<string, string[]> = {
   "samsung-galaxy-a06": [
     "/products/samsung-galaxy-a06-p75.webp"
   ],
+  "macbook-pro-16-space-black": [
+    "/products/macbook-pro-16-space-black.webp"
+  ],
+  "iphone-13-pro-128gb": [
+    "/products/iphone-13-pro-128gb.webp"
+  ],
+  "samsung-galaxy-s24-ultra-256gb": [
+    "/products/samsung-galaxy-s24-ultra-256gb.webp"
+  ],
+  "lenovo-thinkpad-t14s-i5": [
+    "/products/lenovo-thinkpad-t14s-i5.webp",
+    "/products/lenovo-thinkpad-t14s-i5-2.webp"
+  ],
+  "hp-pavilion-aero-13-ryzen": [
+    "/products/hp-pavilion-aero-13-ryzen.webp"
+  ],
+  "hp-x360-14-white": [
+    "/products/hp-x360-14-white.webp"
+  ],
+  "thinkpad-x1-carbon-66dfc4": [
+    "/products/66dfc45c63cf453f9f43a0db89cce71a.webp",
+    "/products/thinkpad-x1-carbon-66dfc4-p74.webp"
+  ],
 };
