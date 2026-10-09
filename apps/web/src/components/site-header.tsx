@@ -88,33 +88,82 @@ function HeaderWishlist() {
 // A wide screen has two slim rows, as a quiet shop does: a brown line with one
 // message and three links, then the logo, a handful of serif links and the
 // icons. Everything else is one hover away, under "More".
-const MAIN_LINKS = [
-  // In order of who is looking: the first four stay on a small laptop screen.
-  { href: "/shop?cat=Laptops", label: "Laptops" },
-  { href: "/shop?cat=Phones", label: "Phones" },
-  { href: "/learn", label: "Learn" },
-  { href: "/internship", label: "Internships" },
-  { href: "/shop?cat=Desktops", label: "Desktops" },
-  { href: "/shop?cat=Accessories", label: "Accessories" },
-  { href: "/development", label: "Software" },
-  { href: "/services", label: "Services" },
+// The four things we do, each with a menu of its own. Hovering (or tabbing to)
+// one opens its pages; the name itself goes to the front page of that business.
+type Menu = { label: string; href: string; match: string[]; blurb: string; links: { href: string; label: string }[] };
+const MENUS: Menu[] = [
+  {
+    label: "Shop",
+    href: "/shop",
+    match: ["/shop", "/marketplace", "/find", "/cart", "/checkout", "/wishlist"],
+    blurb: "Computers, phones and accessories — tested, warranted, delivered countrywide.",
+    links: [
+      { href: "/shop", label: "All Products" },
+      { href: "/shop?cat=Laptops", label: "Laptops" },
+      { href: "/shop?cat=Phones", label: "Phones" },
+      { href: "/shop?cat=Desktops", label: "Desktops" },
+      { href: "/shop?cat=Components", label: "Components" },
+      { href: "/shop?cat=Accessories", label: "Accessories" },
+      { href: "/shop?cat=Storage", label: "Storage" },
+      { href: "/shop?cat=Networking", label: "Networking" },
+      { href: "/shop?cat=Power", label: "Power" },
+      { href: "/shop?deals=1", label: "Price Drops" },
+      { href: "/find", label: "Find My Laptop" },
+      { href: "/marketplace", label: "Marketplace" },
+    ],
+  },
+  {
+    label: "Learn Academy",
+    href: "/learn",
+    match: ["/learn", "/academy"],
+    blurb: "22 computer courses in short lessons, in class or online, with a certificate.",
+    links: [
+      { href: "/learn", label: "All Courses" },
+      { href: "/academy", label: "My Academy" },
+      { href: "/learn/computer-basics", label: "Computer Basics" },
+      { href: "/learn/microsoft-office", label: "Microsoft Office" },
+      { href: "/learn/microsoft-excel", label: "Microsoft Excel" },
+      { href: "/learn/graphic-design", label: "Graphic Design" },
+      { href: "/learn/web-development", label: "Web Development" },
+      { href: "/learn/python-programming", label: "Python Programming" },
+    ],
+  },
+  {
+    label: "Software",
+    href: "/development",
+    match: ["/development", "/request", "/portfolio", "/pricing", "/services", "/freelancers"],
+    blurb: "Websites, mobile apps and business systems, built and looked after for you.",
+    links: [
+      { href: "/development", label: "Software Development" },
+      { href: "/request", label: "Request Software" },
+      { href: "/services", label: "All Services" },
+      { href: "/portfolio", label: "Our Work" },
+      { href: "/pricing", label: "Pricing & Plans" },
+      { href: "/track", label: "Track Your Project" },
+      { href: "/freelancers", label: "Freelancers" },
+    ],
+  },
+  {
+    label: "Internships",
+    href: "/internship",
+    match: ["/internship", "/jobs"],
+    blurb: "Online industrial training for university and college students, on real client work.",
+    links: [
+      { href: "/internship", label: "Industrial Training" },
+      { href: "/internship#apply", label: "Apply For A Place" },
+      { href: "/jobs", label: "Jobs" },
+    ],
+  },
 ];
 const TOP_LINKS = [
   { href: "/track", label: "Track Order" },
   { href: "/about", label: "About Us" },
   { href: "/stores", label: "Branches" },
 ];
+const IN_MENUS = new Set([...MENUS.flatMap((m) => m.links.map((l) => l.href)), ...TOP_LINKS.map((l) => l.href)]);
 const MORE_LINKS = [
-  { href: "/shop", label: "All Products" },
-  { href: "/shop?cat=Desktops", label: "Desktops" },
-  { href: "/shop?cat=Accessories", label: "Accessories" },
-  { href: "/shop?cat=Components", label: "Components" },
-  { href: "/shop?cat=Storage", label: "Storage" },
-  { href: "/shop?cat=Networking", label: "Networking" },
-  { href: "/shop?cat=Power", label: "Power" },
-  { href: "/marketplace", label: "Marketplace" },
   { href: "/sell", label: "Sell With Us" },
-  ...navGroups.flatMap((g) => g.items).filter((it) => !TOP_LINKS.some((t) => t.href === it.href)),
+  ...navGroups.flatMap((g) => g.items).filter((it) => !IN_MENUS.has(it.href)),
 ];
 const ANNOUNCEMENTS = [
   { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M.", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
@@ -132,10 +181,6 @@ export function SiteHeader() {
     const t = setInterval(() => setNote((n) => (n + 1) % ANNOUNCEMENTS.length), 6000);
     return () => clearInterval(t);
   }, []);
-  const isActive = (href: string) => {
-    const [path, query] = href.split("?");
-    return query ? false : pathname.startsWith(path);
-  };
 
   return (
     <header id="top" className="sticky top-0 z-50">
@@ -179,25 +224,48 @@ export function SiteHeader() {
             <SearchBar className="border border-ink-600/20" />
           </div>
 
-          {/* Wide screens: the serif links */}
-          <nav className="hidden min-w-0 flex-1 items-center gap-x-7 lg:flex xl:gap-x-9">
-            {MAIN_LINKS.map((l, n) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                // A laptop screen has room for five; the rest are under "More".
-                className={`${n > 4 ? "hidden xl:block" : n > 3 ? "hidden min-[1150px]:block" : ""} whitespace-nowrap border-b py-1 font-display text-[19px] transition ${
-                  isActive(l.href) ? "!border-brand-500 text-brand-600" : "!border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600"
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
-            <div className="group/more relative">
-              <button type="button" className="flex items-center gap-1 whitespace-nowrap py-1 font-display text-[19px] text-ink-900">
+          {/* Wide screens: the four businesses, each with its own menu */}
+          <nav className="relative hidden min-w-0 flex-1 items-center gap-x-8 lg:flex xl:gap-x-11">
+            {MENUS.map((m) => {
+              const on = m.match.some((x) => pathname.startsWith(x));
+              return (
+                <div key={m.href} className="group/menu">
+                  <Link
+                    href={m.href}
+                    className={`flex items-center gap-1 whitespace-nowrap border-b-2 py-1 font-display text-[20px] transition ${
+                      on
+                        ? "!border-brand-500 text-brand-600"
+                        : "!border-transparent text-ink-900 group-hover/menu:!border-brand-500 group-hover/menu:text-brand-600"
+                    }`}
+                  >
+                    {m.label} <ChevronDown size={15} strokeWidth={1.5} />
+                  </Link>
+                  <div className="invisible absolute left-0 top-full z-50 w-[34rem] pt-3 opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
+                    <div className="grid grid-cols-[13rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
+                      <div className="bg-brand-500 p-6 text-white">
+                        <p className="font-display text-[26px] leading-tight">{m.label}</p>
+                        <p className="mt-2 text-[13.5px] leading-relaxed text-white/90">{m.blurb}</p>
+                        <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
+                          Go to {m.label}
+                        </Link>
+                      </div>
+                      <div className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
+                        {m.links.map((l) => (
+                          <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
+                            {l.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="group/more">
+              <button type="button" className="flex items-center gap-1 whitespace-nowrap py-1 font-display text-[20px] text-ink-900">
                 More <ChevronDown size={15} strokeWidth={1.5} />
               </button>
-              <div className="invisible absolute right-0 top-full z-50 w-[30rem] pt-3 opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
+              <div className="invisible absolute left-0 top-full z-50 w-[26rem] pt-3 opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-1 bg-white p-6 shadow-2xl ring-1 ring-ink-600/10">
                   {MORE_LINKS.map((l) => (
                     <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
