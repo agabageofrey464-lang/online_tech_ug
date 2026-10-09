@@ -125,7 +125,7 @@ export function LessonList({ course }: { course: Course }) {
 
   return (
     <>
-      <ul className="mt-3 divide-y divide-ink-600/5 overflow-hidden rounded-card border border-ink-600/10 bg-white">
+      <ul className="mt-3 divide-y divide-ink-600/5 overflow-hidden bg-white">
         {syllabus.map((lesson: Lesson, i) => {
           const price = lessonPrice(lesson.minutes);
           const watchable = canWatch(i);
@@ -164,7 +164,7 @@ export function LessonList({ course }: { course: Course }) {
                     setPlaying({ title: lesson.title, video: lesson.preview, youtube: lesson.youtube });
                     mark(i, true);
                   }}
-                  className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
+                  className="flex shrink-0 items-center gap-1.5 self-center rounded-[3px] bg-green-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-green-700"
                 >
                   <Play size={13} /> Watch
                 </button>
@@ -175,12 +175,12 @@ export function LessonList({ course }: { course: Course }) {
                     setErr("");
                     setOkMsg("");
                   }}
-                  className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-brand-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
+                  className="flex shrink-0 items-center gap-1.5 self-center rounded-[3px] bg-brand-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
                 >
                   <Lock size={13} /> {ugx(price)}
                 </button>
               ) : (
-                <span className="flex shrink-0 items-center gap-1.5 self-center rounded-md bg-ink-50 px-3 py-2 text-xs font-bold text-ink-700/55">
+                <span className="flex shrink-0 items-center gap-1.5 self-center rounded-[3px] bg-ink-50 px-3 py-2 text-xs font-bold text-ink-700/55">
                   Coming soon
                 </span>
               )}
@@ -197,7 +197,7 @@ export function LessonList({ course }: { course: Course }) {
           </button>
           <div className="w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
             {playing.youtube ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+              <div className="relative aspect-video w-full overflow-hidden rounded-[3px] bg-black">
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${playing.youtube}?autoplay=1&rel=0`}
                   title={playing.title}
@@ -207,16 +207,16 @@ export function LessonList({ course }: { course: Course }) {
                 />
               </div>
             ) : playing.video ? (
-              <video src={playing.video} controls autoPlay playsInline className="w-full rounded-lg bg-black" />
+              <video src={playing.video} controls autoPlay playsInline className="w-full rounded-[3px] bg-black" />
             ) : (
-              <div className="rounded-lg bg-ink-800 p-8 text-center text-white">
+              <div className="rounded-[3px] bg-ink-800 p-8 text-center text-white">
                 <p className="text-base font-bold">Video for this lesson is coming soon</p>
                 <p className="mx-auto mt-2 max-w-md text-sm text-white/70">
                   The written notes for this course are ready now — they cover this lesson in full.
                 </p>
                 <a
                   href={`/learn/${slug}/notes`}
-                  className="mt-4 inline-block rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+                  className="mt-4 inline-block rounded-[3px] bg-brand-500 px-6 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-white hover:bg-brand-600"
                 >
                   Read the course notes
                 </a>
@@ -230,7 +230,7 @@ export function LessonList({ course }: { course: Course }) {
       {/* Unlock modal — pay per lesson (or the whole course), then enter the code */}
       {target !== null && targetLesson && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setTarget(null)}>
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-sm bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-start justify-between">
               <h3 className="text-lg font-extrabold text-ink-600">Unlock this lesson</h3>
               <button onClick={() => setTarget(null)} aria-label="Close" className="text-ink-600/50 hover:text-ink-600">
@@ -238,7 +238,7 @@ export function LessonList({ course }: { course: Course }) {
               </button>
             </div>
 
-            <div className="rounded-lg bg-brand-50 p-3">
+            <div className="rounded-[3px] bg-brand-50 p-3">
               <p className="text-sm font-bold text-ink-900">Lesson {target + 1}: {targetLesson.title}</p>
               <p className="mt-0.5 text-sm text-ink-700/70">Price: <b className="text-brand-600">{ugx(targetPrice)}</b> · or unlock the <b>whole course</b> for {ugx(course.price)}.</p>
             </div>
@@ -248,13 +248,13 @@ export function LessonList({ course }: { course: Course }) {
             {/* Our own short teaching videos: say how long they are, since the
                 time beside a lesson is its study time, not the video's. */}
             {targetLesson.preview?.startsWith("/lessons/") && (
-              <p className="mt-3 rounded-lg border border-ink-600/15 bg-ink-50 p-3 text-[13px] leading-relaxed text-ink-800">
+              <p className="mt-3 rounded-[3px] border border-ink-600/15 bg-ink-50 p-3 text-[13px] leading-relaxed text-ink-800">
                 <b>What you get:</b> a short teaching video for this lesson (about 2 to 3 minutes) made by Online Tech
                 Uganda, plus the written notes and the exercise.
               </p>
             )}
             {!targetLesson.preview && !targetLesson.youtube && (
-              <p className="mt-3 rounded-lg border border-gold-300 bg-gold-50 p-3 text-[13px] leading-relaxed text-ink-800">
+              <p className="mt-3 rounded-[3px] border border-gold-300 bg-gold-50 p-3 text-[13px] leading-relaxed text-ink-800">
                 <b>The video for this lesson is not recorded yet.</b> Unlocking it gives you the full written notes for
                 the lesson now, and the video as soon as it is added, at no extra cost.
               </p>
@@ -269,7 +269,7 @@ export function LessonList({ course }: { course: Course }) {
               href={whatsappLink(`Hi, I'd like to pay for "${courseTitle}" — Lesson ${target + 1}: ${targetLesson.title} (${ugx(targetPrice)}). Please send my unlock code.`)}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 block rounded-md bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-green-700"
+              className="mt-3 block rounded-[3px] bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-green-700"
             >
               Pay &amp; get code on WhatsApp
             </a>
@@ -278,11 +278,11 @@ export function LessonList({ course }: { course: Course }) {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Enter unlock code"
-                className="w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm uppercase focus:border-brand-500 focus:outline-none"
+                className="w-full rounded-[3px] border border-ink-600/15 px-3 py-2.5 text-sm uppercase focus:border-brand-500 focus:outline-none"
               />
               {err && <p className="mt-1 text-xs text-red-500">{err}</p>}
               {okMsg && <p className="mt-1 text-xs font-semibold text-green-600">✓ {okMsg}</p>}
-              <button type="submit" disabled={checking} className="mt-2 w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
+              <button type="submit" disabled={checking} className="mt-2 w-full rounded-[3px] bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
                 {checking ? "Checking…" : "Unlock"}
               </button>
             </form>

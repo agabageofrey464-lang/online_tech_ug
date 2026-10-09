@@ -83,7 +83,7 @@ export function LearningBrochures() {
     <section className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="font-display text-lg font-black text-ink-900 sm:text-xl">
+          <h2 className="text-[26px] leading-tight text-ink-900 sm:text-xl">
             What you can study with us
           </h2>
           <p className="text-[13px] text-ink-700/65">
@@ -108,7 +108,7 @@ export function LearningBrochures() {
           return (
             <article
               key={t.key}
-              className="card-lift overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10"
+              className="card-lift overflow-hidden bg-white ring-1 ring-ink-600/10"
             >
               {/* The panel head, printed in the house colours */}
               <div className={`relative bg-gradient-to-br ${t.bg} p-4 text-white sm:p-5`}>
@@ -120,7 +120,7 @@ export function LearningBrochures() {
                   }}
                 />
                 <div className="relative flex items-start gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/25">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px] bg-white/15 ring-1 ring-white/25">
                     <t.icon size={21} />
                   </span>
                   <div className="min-w-0">
@@ -153,7 +153,7 @@ export function LearningBrochures() {
                           smudges and several are dark stock shots of a keyboard,
                           so four rows looked like four of the same thing. */}
                       <span
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${t.chip} transition group-hover:scale-105`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] ${t.chip} transition group-hover:scale-105`}
                       >
                         <Icon name={c.emoji} size={19} />
                       </span>
@@ -189,7 +189,7 @@ export function LearningBrochures() {
       </div>
 
       {/* ── How it runs, as a printed strip ─────────────────────── */}
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10">
+      <div className="overflow-hidden bg-white ring-1 ring-ink-600/10">
         <div className="flex items-center gap-2 bg-ink-700 px-4 py-2.5 text-white">
           <GraduationCap size={16} className="text-[#f3efe9]" />
           <h3 className="font-display text-sm font-black uppercase tracking-wide">

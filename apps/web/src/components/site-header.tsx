@@ -282,16 +282,26 @@ export function SiteHeader() {
             </div>
           </nav>
 
+          {/* Wide screens: the search box, open and ready to type in. It was a
+              bare magnifying glass that had to be clicked first, and people
+              did not find it. A laptop has no room for it beside the menus, so
+              there the glass is a labelled button that drops the box open. */}
+          <div className="hidden w-[300px] shrink-0 min-[1480px]:block min-[1700px]:w-[400px]">
+            <SearchBar className="border border-ink-600/25" />
+          </div>
+
           {/* Wide screens: the icons */}
-          <div className="ml-auto hidden items-center gap-1 lg:flex">
+          <div className="ml-auto hidden items-center gap-1 lg:flex min-[1480px]:ml-0">
             <button
               type="button"
               aria-label="Search"
               aria-expanded={searching}
               onClick={() => setSearching((v) => !v)}
-              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600"
+              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600 min-[1480px]:hidden"
             >
-              <Search size={24} strokeWidth={1.4} />
+              <span className="flex items-center gap-2 rounded-full border border-ink-600/25 py-2 pl-3 pr-4 text-[13px] text-ink-700/70">
+                <Search size={18} strokeWidth={1.6} /> Search
+              </span>
             </button>
             <HeaderAccount onLight />
             <HeaderWishlist />
@@ -311,7 +321,7 @@ export function SiteHeader() {
 
         {/* Wide screens: the search box drops open under the bar. */}
         {searching && (
-          <div className="hidden border-t border-ink-600/10 lg:block">
+          <div className="hidden border-t border-ink-600/10 lg:block min-[1480px]:hidden">
             <div className="container-wide py-3">
               <div className="mx-auto max-w-2xl">
                 <SearchBar className="border border-ink-600/20" />

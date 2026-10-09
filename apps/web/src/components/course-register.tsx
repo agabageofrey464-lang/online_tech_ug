@@ -106,13 +106,13 @@ export function CourseRegister({
   }
 
   const input =
-    "w-full rounded-md border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+    "w-full rounded-[3px] border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
 
   return (
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
+        className="inline-flex items-center gap-2 rounded-[3px] bg-brand-500 px-6 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-brand-600"
       >
         <GraduationCap size={16} /> {label}
       </button>
@@ -122,7 +122,7 @@ export function CourseRegister({
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4"
           onClick={() => setOpen(false)}
         >
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-sm bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-start justify-between">
             <div>
               <h3 className="text-lg font-extrabold text-ink-600">Course registration</h3>
@@ -162,7 +162,7 @@ export function CourseRegister({
                     type="button"
                     onClick={payOnline}
                     disabled={payingOnline || busy}
-                    className="flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-2 rounded-[3px] bg-green-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-60"
                   >
                     <CreditCard size={16} />
                     {payingOnline ? "Opening secure checkout…" : `Pay online · ${ugx(price)}`}
@@ -180,7 +180,7 @@ export function CourseRegister({
               <button
                 type="submit"
                 disabled={busy || payingOnline}
-                className={`w-full rounded-md px-4 py-2.5 text-sm font-bold disabled:opacity-60 ${
+                className={`w-full rounded-[3px] px-4 py-2.5 text-sm font-bold disabled:opacity-60 ${
                   onlineOn && price > 0
                     ? "border border-ink-600/20 bg-white text-ink-700 hover:bg-ink-50"
                     : "bg-brand-500 text-white hover:bg-brand-600"

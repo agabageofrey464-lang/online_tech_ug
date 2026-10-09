@@ -8,7 +8,7 @@ export function JobApply({
   jobId,
   jobTitle,
   label = "Apply online",
-  className = "press rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600",
+  className = "press rounded-[3px] bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600",
 }: {
   jobId?: number;
   jobTitle: string;
@@ -40,7 +40,7 @@ export function JobApply({
     }
   }
 
-  const input = "w-full rounded-md border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+  const input = "w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
 
   return (
     <>
@@ -53,7 +53,7 @@ export function JobApply({
 
       {open && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setOpen(false)}>
-          <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[92vh] w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-2 flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-extrabold text-ink-900">Apply for this role</h3>
@@ -67,7 +67,7 @@ export function JobApply({
                 <CheckCircle2 className="mx-auto text-green-600" size={44} />
                 <p className="mt-3 font-bold text-ink-900">Application submitted!</p>
                 <p className="mt-1 text-sm text-ink-700/60">Thank you. We&apos;ll review your application and get back to you.</p>
-                <button onClick={() => setOpen(false)} className="mt-4 rounded-md bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600">Done</button>
+                <button onClick={() => setOpen(false)} className="mt-4 rounded-[3px] bg-brand-500 px-5 py-2 text-sm font-bold text-white hover:bg-brand-600">Done</button>
               </div>
             ) : (
               <form onSubmit={submit} className="space-y-3">
@@ -77,13 +77,13 @@ export function JobApply({
                   <input name="email" type="email" placeholder="Email" className={input} />
                 </div>
                 <textarea name="message" rows={3} placeholder="Why are you a good fit? (optional)" className={input} />
-                <label className="flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-ink-600/30 px-3 py-3 text-sm text-ink-700/70 hover:border-brand-400">
+                <label className="flex cursor-pointer items-center gap-3 rounded-[3px] border border-dashed border-ink-600/30 px-3 py-3 text-sm text-ink-700/70 hover:border-brand-400">
                   <Upload size={18} className="text-brand-500" />
                   <span className="truncate">{fileName || "Attach your CV (PDF, DOC, DOCX — max 5MB)"}</span>
                   <input type="file" name="cv" accept=".pdf,.doc,.docx" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")} />
                 </label>
                 {err && <p className="text-xs font-semibold text-red-500">{err}</p>}
-                <button type="submit" disabled={busy} className="w-full rounded-md bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
+                <button type="submit" disabled={busy} className="w-full rounded-[3px] bg-brand-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-600 disabled:opacity-60">
                   {busy ? "Submitting…" : "Submit application"}
                 </button>
               </form>

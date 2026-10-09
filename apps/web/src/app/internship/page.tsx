@@ -160,7 +160,7 @@ function Heading({ eyebrow, title, children }: { eyebrow: string; title: string;
         <span className="h-4 w-1.5 rounded-full bg-brand-500" />
         {eyebrow}
       </p>
-      <h2 className="mt-1.5 font-display text-2xl font-black leading-tight text-ink-900 sm:text-3xl">{title}</h2>
+      <h2 className="mt-1.5 text-[26px] leading-tight leading-tight text-ink-900 sm:text-[32px]">{title}</h2>
       {children && <p className="mt-2 text-[14.5px] leading-relaxed text-ink-700/75">{children}</p>}
     </div>
   );
@@ -192,7 +192,7 @@ export default function InternshipPage() {
       <section className="container-page pt-4">
         <ul className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
           {FACTS.map((f) => (
-            <li key={f.value} className="flex items-center gap-3 rounded-xl bg-white p-3.5 shadow-sm ring-1 ring-ink-600/10 sm:p-4">
+            <li key={f.value} className="flex items-center gap-3 bg-white p-3.5 ring-1 ring-ink-600/10 sm:p-4">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 sm:h-12 sm:w-12">
                 <f.icon size={20} />
               </span>
@@ -207,7 +207,7 @@ export default function InternshipPage() {
 
       {/* ── Every university ───────────────────────────────────── */}
       <section className="container-page pt-4">
-        <div className="stripes flex flex-col gap-3 rounded-xl bg-ink-700 px-4 py-4 text-white sm:flex-row sm:items-center sm:gap-5 sm:px-6">
+        <div className="stripes flex flex-col gap-3 bg-ink-700 px-4 py-4 text-white sm:flex-row sm:items-center sm:gap-5 sm:px-6">
           <p className="flex shrink-0 items-center gap-2 font-display text-base font-black sm:text-lg">
             <GraduationCap size={20} className="text-[#f3efe9]" />
             Students from every university
@@ -239,7 +239,7 @@ export default function InternshipPage() {
           {AREAS.map((a) => (
             <article
               key={a.title}
-              className="card-lift group flex overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10 sm:flex-col"
+              className="card-lift group flex overflow-hidden bg-white ring-1 ring-ink-600/10 sm:flex-col"
             >
               <div className="relative w-28 shrink-0 overflow-hidden sm:h-36 sm:w-full">
                 <SafeImage
@@ -250,15 +250,15 @@ export default function InternshipPage() {
                   className="card-zoom object-cover"
                 />
                 <span className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink-900/55 to-transparent sm:block" />
-                <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wide text-white shadow-sm sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10.5px] ${a.tone}`}>
+                <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wide text-white sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10.5px] ${a.tone}`}>
                   {a.tag}
                 </span>
-                <span className="absolute bottom-3 left-3 hidden h-10 w-10 items-center justify-center rounded-full bg-white text-brand-600 shadow-md sm:flex">
+                <span className="absolute bottom-3 left-3 hidden h-10 w-10 items-center justify-center rounded-full bg-white text-brand-600 sm:flex">
                   <a.icon size={19} />
                 </span>
               </div>
               <div className="min-w-0 flex-1 p-3.5 sm:p-4">
-                <h3 className="font-display text-[16px] font-black leading-snug text-ink-900 sm:text-lg">{a.title}</h3>
+                <h3 className="text-[20px] leading-snug text-ink-900 sm:text-[22px]">{a.title}</h3>
                 <p className="mt-1 text-[13px] leading-relaxed text-ink-700/75 sm:text-[13.5px]">{a.body}</p>
               </div>
             </article>
@@ -271,7 +271,7 @@ export default function InternshipPage() {
         <Heading eyebrow="Four steps" title="How it works" />
         <ol className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {STEPS.map((s, i) => (
-            <li key={s.title} className="flex overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10">
+            <li key={s.title} className="flex overflow-hidden bg-white ring-1 ring-ink-600/10">
               {/* The step number, as a tile — the same device the intake
                   cards use for a date. */}
               <div className={`flex w-16 shrink-0 flex-col items-center justify-center gap-1 text-white ${STEP_TONES[i % STEP_TONES.length]}`}>
@@ -280,7 +280,7 @@ export default function InternshipPage() {
               </div>
               <div className="min-w-0 flex-1 p-3.5 sm:p-4">
                 <s.icon size={18} className="text-brand-600" />
-                <h3 className="mt-1.5 font-display text-[16px] font-black leading-snug text-ink-900">{s.title}</h3>
+                <h3 className="mt-1.5 text-[20px] leading-snug text-ink-900">{s.title}</h3>
                 <p className="mt-1 text-[13px] leading-relaxed text-ink-700/75">{s.body}</p>
               </div>
             </li>
@@ -299,7 +299,7 @@ export default function InternshipPage() {
               <details
                 key={f.q}
                 open={i === 0}
-                className="group rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10 open:ring-brand-300"
+                className="group bg-white ring-1 ring-ink-600/10 open:ring-brand-300"
               >
                 <summary className="cursor-pointer list-none p-4 text-[15px] font-bold text-ink-900 marker:hidden sm:text-base">
                   <span className="flex items-center justify-between gap-3">
@@ -321,10 +321,10 @@ export default function InternshipPage() {
           placements, the steps and the answers has decided, and should not
           have to scroll back up to act on it. */}
       <section className="container-page pt-12 sm:pt-14">
-        <div className="stripes flex flex-col gap-4 rounded-xl bg-brand-600 px-5 py-6 text-white shadow-sm sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="stripes flex flex-col gap-4 bg-brand-600 px-5 py-6 text-white sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/80">{INTERNSHIP_WINDOW}</p>
-            <h2 className="mt-1 font-display text-2xl font-black leading-tight sm:text-3xl">
+            <h2 className="mt-1 text-[26px] leading-tight leading-tight sm:text-[32px]">
               Places are limited. <span className="text-[#f3efe9]">Apply this week.</span>
             </h2>
             <p className="mt-1.5 max-w-xl text-[14px] leading-relaxed text-white/90">
@@ -336,11 +336,11 @@ export default function InternshipPage() {
             <JobApply
               jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
               label="Apply for a place"
-              className="press inline-flex items-center justify-center rounded-full bg-[#f3efe9] px-7 py-3 text-sm font-black text-ink-900 shadow-sm transition hover:brightness-105"
+              className="press inline-flex items-center justify-center rounded-full bg-[#f3efe9] px-7 py-3 text-sm font-black text-ink-900 transition hover:brightness-105"
             />
             <Link
               href="/jobs"
-              className="press inline-flex items-center justify-center rounded-full bg-white/15 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/25"
+              className="press inline-flex items-center justify-center rounded-full bg-white/15 px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white ring-1 ring-white/30 transition hover:bg-white/25"
             >
               Finished studying? View jobs →
             </Link>

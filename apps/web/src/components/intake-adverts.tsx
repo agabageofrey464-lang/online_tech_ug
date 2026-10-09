@@ -32,7 +32,7 @@ export function IntakeAdverts() {
   if (list.length === 0) return null;
 
   return (
-    <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10">
+    <section className="overflow-hidden bg-white ring-1 ring-ink-600/10">
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-end justify-between gap-3 bg-ink-700 px-4 py-4 text-white sm:px-6 sm:py-5">
         <div className="min-w-0">
@@ -40,7 +40,7 @@ export function IntakeAdverts() {
             <GraduationCap size={15} className="shrink-0 text-[#f3efe9]" />
             Online Tech Academy
           </p>
-          <h2 className="mt-1 font-display text-xl font-black leading-tight sm:text-3xl">
+          <h2 className="mt-1 text-[26px] leading-tight leading-tight sm:text-[32px]">
             Classes starting <span className="text-[#f3efe9]">soon</span>
           </h2>
         </div>
@@ -65,7 +65,7 @@ export function IntakeAdverts() {
                 href={whatsappLink(`Hi, I'd like to register for the classes starting ${intake.label}.`)}
                 target="_blank"
                 rel="noreferrer"
-                className="card-lift group flex h-full overflow-hidden rounded-lg bg-white ring-1 ring-ink-600/10 transition hover:ring-brand-300"
+                className="card-lift group flex h-full overflow-hidden rounded-[3px] bg-white ring-1 ring-ink-600/10 transition hover:ring-brand-300"
               >
                 {/* The date, as a calendar tile. */}
                 <div

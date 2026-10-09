@@ -95,7 +95,7 @@ export function CourseBrowser({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search courses — e.g. Excel, design, Python…"
-            className="w-full rounded-lg border border-ink-600/15 bg-white py-3 pl-10 pr-9 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"
+            className="w-full rounded-[3px] border border-ink-600/15 bg-white py-3 pl-10 pr-9 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"
           />
           {q && (
             <button
@@ -110,7 +110,7 @@ export function CourseBrowser({
         <select
           value={level}
           onChange={(e) => setLevel(e.target.value as (typeof LEVELS)[number])}
-          className="rounded-lg border border-ink-600/15 bg-white px-3 py-3 text-sm font-semibold text-ink-700 shadow-sm focus:border-brand-500 focus:outline-none"
+          className="rounded-[3px] border border-ink-600/15 bg-white px-3 py-3 text-sm font-semibold text-ink-700 focus:border-brand-500 focus:outline-none"
         >
           {LEVELS.map((l) => (
             <option key={l}>{l}</option>
@@ -126,7 +126,7 @@ export function CourseBrowser({
             onClick={() => setCat(c.key)}
             className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition ${
               cat === c.key
-                ? "bg-brand-500 text-white shadow-sm"
+                ? "bg-brand-500 text-white"
                 : "border border-ink-600/15 bg-white text-ink-700 hover:border-brand-300 hover:text-brand-600"
             }`}
           >
@@ -144,7 +144,7 @@ export function CourseBrowser({
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="mt-4 rounded-card border border-dashed border-ink-600/15 bg-white px-6 py-14 text-center">
+        <div className="mt-4 border border-dashed border-ink-600/15 bg-white px-6 py-14 text-center">
           <p className="font-bold text-ink-900">No course matches that</p>
           <p className="mt-1 text-sm text-ink-700/60">Try another word, or clear the filters.</p>
           <button
@@ -153,7 +153,7 @@ export function CourseBrowser({
               setCat("all");
               setLevel("All levels");
             }}
-            className="mt-4 rounded-md bg-brand-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-600"
+            className="mt-4 rounded-[3px] bg-brand-500 px-6 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-white hover:bg-brand-600"
           >
             Show all courses
           </button>
@@ -164,7 +164,7 @@ export function CourseBrowser({
             <Link
               key={c.slug}
               href={`/learn/${c.slug}`}
-              className="group flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm card-lift"
+              className="group flex flex-col overflow-hidden bg-white card-lift"
             >
               <div className="relative h-36 w-full overflow-hidden">
                 <SafeImage
@@ -223,7 +223,7 @@ export function CourseBrowser({
                   </div>
                 </dl>
 
-                <div className="mt-2.5 rounded-lg bg-brand-50 px-3 py-2">
+                <div className="mt-2.5 rounded-[3px] bg-brand-50 px-3 py-2">
                   <p className="text-[10px] font-bold uppercase tracking-wide text-brand-700/70">
                     Total Investment
                   </p>
@@ -236,7 +236,7 @@ export function CourseBrowser({
                   Or study lesson by lesson from <b className="text-ink-800">{ugx(5000)}</b>
                 </p>
 
-                <span className="press mt-auto flex items-center justify-center gap-1.5 rounded-md bg-brand-500 px-4 py-2.5 pt-2.5 text-sm font-bold text-white transition group-hover:bg-brand-600">
+                <span className="press mt-auto flex items-center justify-center gap-1.5 rounded-[3px] bg-brand-500 px-4 py-2.5 pt-2.5 text-sm font-bold text-white transition group-hover:bg-brand-600">
                   Apply Now <ArrowRight size={15} />
                 </span>
               </div>

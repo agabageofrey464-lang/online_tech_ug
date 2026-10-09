@@ -33,6 +33,12 @@ const EXPERIENCE = [
   { org: "Prime Learn", role: "Educational video production" },
   { org: "Kampala Capital City Authority (KCCA)", role: "IT, Hardware & Software Department" },
 ];
+const WORK = [
+  { name: "Online Tech Uganda — onlinetechug.com", href: "/", what: "Online shop, course academy, vendor marketplace and dashboard on one platform." },
+  { name: "Beds & Beddings — bedsbeddings.com", href: "https://bedsbeddings.com/developer", what: "Online store with storefront, admin dashboard and backend." },
+  { name: "Jdiobe STEM Foundation — jdiobestem.org", href: "https://jdiobestem.org", what: "Website for an education non-profit." },
+  { name: "More projects", href: "/portfolio", what: "Queue management, school and business systems in the portfolio." },
+];
 const SKILLS = [
   "Website development",
   "Mobile application development",
@@ -74,6 +80,8 @@ export default function FounderPage() {
       url: PAGE,
       email: site.ceo.email,
       worksFor: { "@id": `${site.url}/#business` },
+      // Other pages about the same person.
+      sameAs: ["https://bedsbeddings.com/developer"],
       knowsAbout: SKILLS,
       address: { "@type": "PostalAddress", addressLocality: "Kampala", addressCountry: "UG" },
     },
@@ -126,6 +134,18 @@ export default function FounderPage() {
               <li key={e.org} className="px-4 py-3">
                 <span className="block text-[15px] font-semibold text-ink-900">{e.org}</span>
                 <span className="block text-[13.5px] text-ink-700/75">{e.role}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="mt-9 text-[26px] text-ink-900">Work he has built</h2>
+          <ul className="mt-3 divide-y divide-ink-600/10 bg-white">
+            {WORK.map((w) => (
+              <li key={w.name} className="px-4 py-3">
+                <a href={w.href} target={w.href.startsWith("http") ? "_blank" : undefined} rel="noopener" className="block text-[15px] font-semibold text-brand-600 hover:underline">
+                  {w.name}
+                </a>
+                <span className="block text-[13.5px] text-ink-700/75">{w.what}</span>
               </li>
             ))}
           </ul>

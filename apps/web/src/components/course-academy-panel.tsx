@@ -44,7 +44,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
   const work = data.assignments.filter((a) => a.course_slug === slug);
 
   return (
-    <section className="rounded-card border border-brand-200 bg-brand-50/40 p-4 shadow-sm sm:p-5">
+    <section className="border border-brand-200 bg-brand-50/40 p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-base font-extrabold text-ink-900">Your class</h2>
         <Link href="/academy" className="text-xs font-bold text-brand-600 hover:underline">
@@ -56,7 +56,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
       {live.length > 0 ? (
         <div className="mt-3 space-y-2">
           {live.map((c) => (
-            <div key={c.id} className="rounded-xl bg-green-600 p-3.5 text-white shadow-sm">
+            <div key={c.id} className="bg-green-600 p-3.5 text-white">
               <p className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wide">
                 <Radio size={12} className="animate-pulse" />
                 {c.status === "live" ? "Live now" : "Room open"}
@@ -67,7 +67,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
               </p>
               <Link
                 href={`/academy/class/${c.id}`}
-                className="press mt-2.5 flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-black text-green-700"
+                className="press mt-2.5 flex w-full items-center justify-center gap-2 rounded-[3px] bg-white px-4 py-3 text-sm font-black text-green-700"
               >
                 <Video size={17} /> JOIN LIVE CLASS
               </Link>
@@ -75,7 +75,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
           ))}
         </div>
       ) : next ? (
-        <div className="mt-3 rounded-xl border border-ink-600/10 bg-white p-3.5">
+        <div className="mt-3 bg-white p-3.5">
           <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-ink-700/50">
             <CalendarDays size={12} /> Next class
           </p>
@@ -85,7 +85,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
           </p>
         </div>
       ) : (
-        <p className="mt-3 rounded-xl border border-dashed border-ink-600/15 bg-white p-4 text-center text-sm text-ink-700/55">
+        <p className="mt-3 border border-dashed border-ink-600/15 bg-white p-4 text-center text-sm text-ink-700/55">
           No class scheduled yet.
         </p>
       )}
@@ -118,7 +118,7 @@ export function CourseAcademyPanel({ slug }: { slug: string }) {
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-white px-2 py-2.5 shadow-sm">
+    <div className="rounded-[3px] bg-white px-2 py-2.5">
       <p className="text-lg font-black text-ink-900">{value}</p>
       <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-700/55">{label}</p>
     </div>
@@ -139,7 +139,7 @@ function Resource({
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="press flex items-center gap-2 rounded-lg bg-white px-3 py-2.5 text-sm shadow-sm hover:text-brand-600"
+      className="press flex items-center gap-2 rounded-[3px] bg-white px-3 py-2.5 text-sm hover:text-brand-600"
     >
       <Icon size={14} className="shrink-0 text-brand-500" />
       <span className="min-w-0 flex-1 truncate font-semibold text-ink-800">{title}</span>

@@ -58,7 +58,7 @@ export function InternshipPanel() {
   );
 
   return (
-    <div className="overflow-hidden rounded-card shadow-md ring-1 ring-black/5">
+    <div className="overflow-hidden ring-1 ring-black/5">
       <div className="grid lg:grid-cols-[1.15fr_1fr]">
         {/* ── The pitch ─────────────────────────────────────────── */}
         <div className="relative bg-ink-700 p-6 text-white sm:p-8">
@@ -80,7 +80,7 @@ export function InternshipPanel() {
               </span>
             </span>
 
-            <h2 className="mt-3 font-display text-2xl font-black leading-tight sm:text-3xl">
+            <h2 className="mt-3 text-[26px] leading-tight leading-tight sm:text-[32px]">
               Spend your internship doing the work,
               <br className="hidden sm:block" /> not watching it
             </h2>
@@ -102,7 +102,7 @@ export function InternshipPanel() {
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {GUARANTEES.map((g) => (
                 <div key={g.t} className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f3efe9] ring-1 ring-white/15">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[3px] bg-white/10 text-[#f3efe9] ring-1 ring-white/15">
                     <g.icon size={16} />
                   </span>
                   <span className="min-w-0">
@@ -142,7 +142,7 @@ export function InternshipPanel() {
             ))}
           </ul>
 
-          <div className="mt-5 rounded-xl bg-ink-50/70 p-3.5">
+          <div className="mt-5 bg-ink-50/70 p-3.5">
             <p className="flex items-center gap-2 text-[12px] font-bold text-ink-900">
               <Smartphone size={14} className="text-brand-500" /> How to pay
             </p>
@@ -157,13 +157,13 @@ export function InternshipPanel() {
             <JobApply
               jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
               label="Apply for a place"
-              className="press inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm transition hover:bg-brand-600"
+              className="press inline-flex flex-1 items-center justify-center gap-2 rounded-[3px] bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600"
             />
             <a
               href={ask}
               target="_blank"
               rel="noreferrer"
-              className="press inline-flex items-center justify-center gap-2 rounded-lg border border-ink-600/20 px-5 py-3 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
+              className="press inline-flex items-center justify-center gap-2 rounded-[3px] border border-ink-600/20 px-5 py-3 text-sm font-bold text-ink-800 transition hover:bg-ink-50"
             >
               <MessageCircle size={16} /> Ask first
             </a>

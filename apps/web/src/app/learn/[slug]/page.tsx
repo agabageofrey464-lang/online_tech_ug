@@ -58,7 +58,7 @@ export default async function CourseDetailPage({
       </div>
 
       {/* Hero */}
-      <div className="overflow-hidden rounded-card bg-white shadow-sm">
+      <div className="overflow-hidden bg-white">
         <div className="relative h-44 w-full sm:h-56">
           <SafeImage
             src={course.cover ?? `/courses/${course.slug}.webp`}
@@ -99,7 +99,7 @@ export default async function CourseDetailPage({
           <p className="flex-1 text-sm text-ink-700/75">{course.blurb}</p>
           {/* Programme fees — registration is one-time and non-refundable */}
           <div className="w-full shrink-0 sm:w-72">
-            <div className="rounded-lg border border-ink-600/10 bg-ink-50/60 p-4">
+            <div className="rounded-[3px] border border-ink-600/10 bg-ink-50/60 p-4">
               <dl className="space-y-1.5 text-sm">
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-ink-700/65">
@@ -167,8 +167,8 @@ export default async function CourseDetailPage({
           { icon: BadgeCheck, title: "Certificate included", body: "Issued by the school when you complete the course." },
           { icon: Users, title: "Real support", body: "Stuck? Message our trainers on WhatsApp." },
         ].map((f) => (
-          <div key={f.title} className="flex items-start gap-3 rounded-card border border-ink-600/10 bg-white p-4 shadow-sm">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+          <div key={f.title} className="flex items-start gap-3 bg-white p-4">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] bg-brand-50 text-brand-600">
               <f.icon size={18} />
             </span>
             <div>
@@ -183,8 +183,8 @@ export default async function CourseDetailPage({
       <CourseProgress slug={course.slug} total={course.syllabus.length} />
 
       {/* What you'll learn — drawn from the real syllabus */}
-      <h2 className="mt-8 text-lg font-extrabold text-ink-600">What you&apos;ll learn</h2>
-      <ul className="mt-3 grid gap-2 rounded-card border border-ink-600/10 bg-white p-5 shadow-sm sm:grid-cols-2">
+      <h2 className="mt-8 text-[26px] leading-tight text-ink-600">What you&apos;ll learn</h2>
+      <ul className="mt-3 grid gap-2 bg-white p-5 sm:grid-cols-2">
         {course.syllabus.slice(0, 8).map((l) => (
           <li key={l.title} className="flex items-start gap-2 text-sm text-ink-700/80">
             <Check size={16} className="mt-0.5 shrink-0 text-green-600" />
@@ -194,7 +194,7 @@ export default async function CourseDetailPage({
       </ul>
 
       {/* Unlock notice */}
-      <div className="mt-6 flex items-start gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 text-sm text-ink-700">
+      <div className="mt-6 flex items-start gap-3 border border-brand-200 bg-brand-50 p-4 text-sm text-ink-700">
         <Lock size={18} className="mt-0.5 shrink-0 text-brand-600" />
         <p>
           Lessons unlock from{" "}
@@ -205,17 +205,17 @@ export default async function CourseDetailPage({
       </div>
 
       {/* Lessons */}
-      <h2 className="mt-8 text-lg font-extrabold text-ink-600">Video lessons</h2>
+      <h2 className="mt-8 text-[26px] leading-tight text-ink-600">Video lessons</h2>
       <LessonList course={course} />
 
       {/* Course notes (premium — unlocked with the course code) */}
       {noteCount > 0 && (
         <Link
           href={`/learn/${course.slug}/notes`}
-          className="mt-8 flex items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-5 shadow-sm transition hover:shadow-md"
+          className="mt-8 flex items-center justify-between gap-3 border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-5 transition hover:"
         >
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px] bg-brand-500 text-white">
               <FileText size={22} />
             </span>
             <div>
@@ -233,7 +233,7 @@ export default async function CourseDetailPage({
       {/* Materials / downloads */}
       {course.materials && course.materials.length > 0 && (
         <>
-          <h2 className="mt-8 text-lg font-extrabold text-ink-600">Course materials</h2>
+          <h2 className="mt-8 text-[26px] leading-tight text-ink-600">Course materials</h2>
           <ul className="mt-3 space-y-2">
             {course.materials.map((m) => (
               <li key={m.file}>
@@ -242,9 +242,9 @@ export default async function CourseDetailPage({
                   target="_blank"
                   rel="noreferrer"
                   download
-                  className="flex items-center gap-3 rounded-card border border-ink-600/10 bg-white p-4 shadow-sm transition hover:shadow-md"
+                  className="flex items-center gap-3 bg-white p-4 transition hover:"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] bg-brand-50 text-brand-600">
                     <FileText size={20} />
                   </span>
                   <span className="flex-1 text-sm font-semibold text-ink-800">{m.title}</span>

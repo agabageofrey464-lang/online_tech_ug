@@ -204,7 +204,7 @@ export default function LearnPage() {
           ].map((s, i) => (
             <div
               key={s.title}
-              className="card-lift relative flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm"
+              className="card-lift relative flex flex-col overflow-hidden bg-white"
             >
               <span className="relative block h-28 w-full overflow-hidden bg-ink-50">
                 <SafeImage
@@ -225,11 +225,11 @@ export default function LearnPage() {
                   live outside the image, whose overflow-hidden — there to keep
                   the photo inside the rounded corner — was slicing it in half.
                   7rem is the image height, less half the badge. */}
-              <span className="absolute left-4 top-[5.625rem] flex h-11 w-11 items-center justify-center rounded-xl bg-white text-brand-600 shadow-md ring-1 ring-ink-600/10">
+              <span className="absolute left-4 top-[5.625rem] flex h-11 w-11 items-center justify-center bg-white text-brand-600 ring-1 ring-ink-600/10">
                 <s.icon size={21} />
               </span>
               <span className="flex flex-1 flex-col p-5 pt-7">
-                <h2 className="font-extrabold text-ink-900">{s.title}</h2>
+                <h2 className="text-[22px] leading-tight text-ink-900">{s.title}</h2>
                 <p className="mt-1 text-sm text-ink-700/70">{s.body}</p>
               </span>
             </div>
@@ -240,9 +240,9 @@ export default function LearnPage() {
       {/* ── Live classes ───────────────────────────────────────── */}
       {upcoming.length > 0 && (
         <section className="container-page pb-4">
-          <div className="overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm">
+          <div className="overflow-hidden bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink-600/10 bg-ink-50/70 px-5 py-3.5">
-              <h2 className="inline-flex items-center gap-2 text-lg font-extrabold text-ink-900">
+              <h2 className="inline-flex items-center gap-2 text-[26px] leading-tight text-ink-900">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
@@ -256,7 +256,7 @@ export default function LearnPage() {
             <ul className="divide-y divide-ink-600/5">
               {upcoming.slice(0, 4).map((lc) => (
                 <li key={lc.title} className="flex flex-wrap items-center gap-3 p-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-red-50 text-red-600">
                     <Radio size={20} />
                   </span>
                   <div className="min-w-0 flex-1">
@@ -274,7 +274,7 @@ export default function LearnPage() {
                     href={whatsappLink(`Hi, I'd like to join the live class: ${lc.title} (${fmtDate(lc.date)}).`)}
                     target="_blank"
                     rel="noreferrer"
-                    className="press shrink-0 rounded-md bg-brand-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
+                    className="press shrink-0 rounded-[3px] bg-brand-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-600"
                   >
                     Reserve a seat
                   </a>
@@ -295,7 +295,7 @@ export default function LearnPage() {
         />
         <Link
           href="/community"
-          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 p-4 transition hover:shadow-md"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-brand-200 bg-brand-50 p-4 transition hover:"
         >
           <span className="flex items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
@@ -317,12 +317,12 @@ export default function LearnPage() {
 
       {/* ── Certificate ────────────────────────────────────────── */}
       <section className="container-page py-8">
-        <div className="grid items-center gap-6 overflow-hidden rounded-card border border-ink-600/10 bg-white p-6 shadow-sm sm:grid-cols-[1fr_auto] sm:p-8">
+        <div className="grid items-center gap-6 overflow-hidden bg-white p-6 sm:grid-cols-[1fr_auto] sm:p-8">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-green-700">
               <Award size={13} /> On completion
             </span>
-            <h2 className="mt-3 text-xl font-extrabold text-ink-900 sm:text-2xl">
+            <h2 className="mt-3 text-[26px] leading-tight text-ink-900 sm:text-[32px]">
               Finish the course, get your certificate
             </h2>
             <p className="mt-2 max-w-lg text-sm text-ink-700/70">
@@ -346,7 +346,7 @@ export default function LearnPage() {
           </div>
 
           {/* Mini certificate mock */}
-          <div className="w-full max-w-[260px] justify-self-center rounded-lg border-4 border-double border-gold-400/60 bg-gradient-to-br from-white to-gold-50 p-4 text-center shadow-md">
+          <div className="w-full max-w-[260px] justify-self-center rounded-[3px] border-4 border-double border-gold-400/60 bg-gradient-to-br from-white to-gold-50 p-4 text-center">
             <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-700/50">
               Certificate of Completion
             </p>
@@ -371,12 +371,12 @@ export default function LearnPage() {
 
       {/* ── FAQ ────────────────────────────────────────────────── */}
       <section className="container-page py-8">
-        <h2 className="text-xl font-extrabold text-ink-900">Common questions</h2>
+        <h2 className="text-[26px] leading-tight text-ink-900">Common questions</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {FAQ.map((f) => (
             <details
               key={f.q}
-              className="group rounded-card border border-ink-600/10 bg-white p-4 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+              className="group bg-white p-4 [&_summary::-webkit-details-marker]:hidden"
             >
               <summary className="flex cursor-pointer items-center justify-between gap-3 font-bold text-ink-900">
                 {f.q}
@@ -390,8 +390,8 @@ export default function LearnPage() {
 
       {/* ── Group / school enquiry ─────────────────────────────── */}
       <section className="container-page py-10">
-        <div className="rounded-card bg-ink-700 px-6 py-10 text-center text-white sm:px-8">
-          <h2 className="text-2xl font-extrabold">Training a school, church or team?</h2>
+        <div className="bg-ink-700 px-6 py-10 text-center text-white sm:px-8">
+          <h2 className="text-[26px] leading-tight">Training a school, church or team?</h2>
           <p className="mx-auto mt-2 max-w-xl text-white/85">
             We run group training at your premises or ours, with discounted rates for classes and
             staff teams. Tell us how many learners and what they need to learn.
@@ -406,7 +406,7 @@ export default function LearnPage() {
             </Button>
             <Link
               href="/contact"
-              className="press rounded-md border border-white/25 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+              className="press rounded-[3px] border border-white/25 px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
             >
               Contact us
             </Link>
