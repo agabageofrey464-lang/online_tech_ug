@@ -11,6 +11,30 @@ const jsonLd = (data: object) => (
  * Site-wide business profile (for Google's knowledge panel / local results) plus
  * a WebSite entry that enables the sitelinks search box.
  */
+/** Every profile that is this business, somewhere else. "#" marks one not set up yet. */
+const profiles = Object.values(site.socials).filter((u) => u && u !== "#") as string[];
+
+/**
+ * The founder, as a person search engines can connect to the business: a
+ * search for his name can then show him as the owner of Online Tech Uganda,
+ * and a search for the business can name him. Printed on every page, since a
+ * search may land on any of them.
+ */
+const founder = {
+  "@type": "Person",
+  "@id": `${site.url}/about#founder`,
+  name: site.ceo.name,
+  jobTitle: "Founder & CEO",
+  description: `${site.ceo.name} is the founder and owner of ${site.name} (onlinetechug.com), a technology company in Kampala, Uganda.`,
+  image: `${site.url}${site.ceo.photo}`,
+  url: `${site.url}/about#founder`,
+  email: site.ceo.email,
+  nationality: { "@type": "Country", name: "Uganda" },
+  address: { "@type": "PostalAddress", addressLocality: "Kampala", addressCountry: "UG" },
+  worksFor: { "@id": `${site.url}/#business` },
+  knowsAbout: ["Website development", "Mobile application development", "IT support", "Computer hardware", "Software development"],
+};
+
 export function SiteStructuredData() {
   const business = {
     "@context": "https://schema.org",
@@ -33,13 +57,11 @@ export function SiteStructuredData() {
     },
     // Kampala city centre — keep in sync with the pin on your Google Business Profile.
     geo: { "@type": "GeoCoordinates", latitude: 0.3476, longitude: 32.5825 },
-    founder: { "@type": "Person", name: site.ceo.name },
+    founder: { "@id": `${site.url}/about#founder` },
     areaServed: { "@type": "Country", name: "Uganda" },
     currenciesAccepted: "UGX",
     paymentAccepted: "Mobile Money, Cash",
-    sameAs: [site.socials.facebook, site.socials.instagram, site.socials.tiktok].filter(
-      Boolean,
-    ) as string[],
+    sameAs: profiles,
     contactPoint: {
       "@type": "ContactPoint",
       telephone: `+${site.whatsapp}`,
@@ -54,6 +76,7 @@ export function SiteStructuredData() {
     "@type": "WebSite",
     name: site.name,
     url: site.url,
+    publisher: { "@id": `${site.url}/#business` },
     potentialAction: {
       "@type": "SearchAction",
       target: `${site.url}/shop?q={search_term_string}`,
@@ -64,6 +87,7 @@ export function SiteStructuredData() {
   return (
     <>
       {jsonLd(business)}
+      {jsonLd({ "@context": "https://schema.org", ...founder })}
       {jsonLd(website)}
     </>
   );

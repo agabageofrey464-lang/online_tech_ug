@@ -311,7 +311,7 @@ export default function AboutPage() {
             <span className="inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-700">
               Our leadership
             </span>
-            <h2 className="mt-3 text-2xl font-extrabold text-ink-900 sm:text-3xl">
+            <h2 id="founder" className="mt-3 scroll-mt-40 text-2xl font-extrabold text-ink-900 sm:text-3xl">
               Meet the Founder
             </h2>
           </div>

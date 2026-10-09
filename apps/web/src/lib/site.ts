@@ -38,6 +38,10 @@ export const site = {
     facebook: "https://www.facebook.com/onlinetechug",
     x: "#",
     linkedin: "#",
+    // The link to the Google Business Profile ("Share profile" in Google
+    // Maps gives it). Once filled in, search engines are told the profile and
+    // this website are the same business.
+    googleBusiness: "",
   },
 } as const;
 

@@ -245,6 +245,14 @@ export function LessonList({ course }: { course: Course }) {
 
             {/* Said before anyone pays: most lessons have notes but no
                 recording yet, and a learner should know which they are buying. */}
+            {/* Our own short teaching videos: say how long they are, since the
+                time beside a lesson is its study time, not the video's. */}
+            {targetLesson.preview?.startsWith("/lessons/") && (
+              <p className="mt-3 rounded-lg border border-ink-600/15 bg-ink-50 p-3 text-[13px] leading-relaxed text-ink-800">
+                <b>What you get:</b> a short teaching video for this lesson (about 2 to 3 minutes) made by Online Tech
+                Uganda, plus the written notes and the exercise.
+              </p>
+            )}
             {!targetLesson.preview && !targetLesson.youtube && (
               <p className="mt-3 rounded-lg border border-gold-300 bg-gold-50 p-3 text-[13px] leading-relaxed text-ink-800">
                 <b>The video for this lesson is not recorded yet.</b> Unlocking it gives you the full written notes for
