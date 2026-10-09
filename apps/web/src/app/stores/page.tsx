@@ -56,6 +56,9 @@ export default function StoresPage() {
         >
           Find us on Google Maps
         </a>
+        <a href={site.googleReview} target="_blank" rel="noreferrer" className="text-[13px] text-ink-800 underline underline-offset-4 hover:text-brand-600">
+          Been to us? Leave a review on Google
+        </a>
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-3">

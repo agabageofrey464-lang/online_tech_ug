@@ -197,8 +197,14 @@ export function SiteFooter() {
                 {l.label}
               </Link>
             ))}
+            <a href={site.socials.googleBusiness} target="_blank" rel="noreferrer" className="py-1.5 hover:text-brand-600">
+              Find us on Google
+            </a>
+            <a href={site.googleReview} target="_blank" rel="noreferrer" className="py-1.5 font-semibold text-brand-600 hover:underline">
+              Review us on Google
+            </a>
           </nav>
-          <p>Kampala, Uganda 🇺🇬</p>
+          <p>Lubowa, Entebbe Road, Uganda 🇺🇬</p>
         </div>
       </div>
     </footer>

@@ -47,8 +47,10 @@ export const site = {
     // The link to the Google Business Profile ("Share profile" in Google
     // Maps gives it). Once filled in, search engines are told the profile and
     // this website are the same business.
-    googleBusiness: "",
+    googleBusiness: "https://g.page/r/Cb7EOu7hpb5MEBI",
   },
+  // Opens the box to write a review on the Google Business Profile.
+  googleReview: "https://g.page/r/Cb7EOu7hpb5MEBI/review",
 } as const;
 
 // Core top-level links shown on the desktop sub-nav (fill the bar).
