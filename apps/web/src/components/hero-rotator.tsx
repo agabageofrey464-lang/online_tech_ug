@@ -65,28 +65,40 @@ const SLIDES = [
 
 export function HeroRotator() {
   const [i, setI] = useState(0);
+  // The slide just left. It stays whole underneath while the next fades in
+  // over it; fading both at once showed two headlines through each other.
+  const [prev, setPrev] = useState(0);
   const n = SLIDES.length;
   const go = useCallback((d: number) => setI((v) => (v + d + n) % n), [n]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPrev(i), 750);
+    return () => clearTimeout(t);
+  }, [i]);
 
   // Auto-advance; pauses is handled by resetting the timer on manual change.
   useEffect(() => {
     // Snappier — a hero that lingers gets scrolled past unseen.
-    const t = setInterval(() => setI((v) => (v + 1) % n), 4000);
+    const t = setInterval(() => setI((v) => (v + 1) % n), 6000);
     return () => clearInterval(t);
   }, [n, i]);
 
   // Only the slide on show and the one after it carry their photograph. All
   // four used to load with the page, three of them for slides nobody had
   // reached yet, competing with the product pictures below.
-  const near = (idx: number) => idx === i || idx === (i + 1) % n;
+  const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
   return (
     <div className="group/hero relative h-[460px] overflow-hidden sm:h-[520px] xl:h-[600px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
-          className={`absolute inset-0 bg-ink-800 transition-opacity duration-700 ${
-            idx === i ? "opacity-100" : "pointer-events-none opacity-0"
+          className={`absolute inset-0 bg-ink-800 ${
+            idx === i
+              ? "z-[2] opacity-100 transition-opacity duration-700"
+              : idx === prev
+                ? "pointer-events-none z-[1] opacity-100"
+                : "pointer-events-none z-0 opacity-0"
           }`}
           aria-hidden={idx !== i}
         >
@@ -94,7 +106,9 @@ export function HeroRotator() {
           {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${"pos" in s ? s.pos : ""}`} />}
           <div className="absolute inset-0 bg-ink-900/45" />
 
-          <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
+          {/* Only the slide on show has words: the one underneath keeps its
+              photograph while the next fades in, but not its headline. */}
+          <div className={`relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white ${idx === i ? "" : "invisible"}`}>
             <p className="font-display text-[18px] italic text-white/95 sm:text-[21px]">{s.eyebrow}</p>
             <SlideHeading first={idx === 0} className="mt-2 max-w-4xl font-display text-[40px] leading-[1.08] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[58px] xl:text-[68px]">
               {s.title}
@@ -119,20 +133,20 @@ export function HeroRotator() {
       <button
         onClick={() => go(-1)}
         aria-label="Previous slide"
-        className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
+        className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={() => go(1)}
         aria-label="Next slide"
-        className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
+        className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-800 opacity-0 shadow-md transition hover:bg-white group-hover/hero:opacity-100"
       >
         <ChevronRight size={20} />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5">
+      <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5">
         {SLIDES.map((_, idx) => (
           <button
             key={idx}

@@ -133,7 +133,9 @@ export function FestivalStrip() {
     return () => clearInterval(t);
   }, [closed, strips.length]);
 
-  if (closed) return null;
+  // Not on the home page: it has the festival strip above this and the offer
+  // band just below, and a third bar of offers was one too many.
+  if (closed || pathname === "/") return null;
   const s = strips[i % strips.length];
   if (!s) return null;
 

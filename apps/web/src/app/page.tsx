@@ -12,7 +12,6 @@ import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { DailyUpdates } from "@/components/daily-updates";
-import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { ExploreMore } from "@/components/explore-more";
 import { BranchShowcase } from "@/components/branch-showcase";
@@ -143,18 +142,6 @@ const RAIL = 8;
 // past a megabyte.
 const GRID = 12;
 
-function mix(a: Product[], b: Product[], take: number): Product[] {
-  const inStock = (p: Product) => p.inStock !== false;
-  const best = (list: Product[]) =>
-    list.filter(inStock).sort((x, y) => (y.rating ?? 0) - (x.rating ?? 0));
-  const [ls, ps] = [best(a), best(b)];
-  const out: Product[] = [];
-  for (let i = 0; out.length < take && (i < ls.length || i < ps.length); i += 1) {
-    if (ls[i]) out.push(ls[i]);
-    if (out.length < take && ps[i]) out.push(ps[i]);
-  }
-  return out;
-}
 
 function rotate<T>(arr: T[], by: number): T[] {
   if (arr.length === 0) return arr;
@@ -198,12 +185,6 @@ export default async function HomePage() {
     today * 7,
   ).slice(0, RAIL);
 
-  // Brand bands: rotate WHICH brands get a band, so the page varies by visit.
-  const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
-    .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
-    .filter((g) => g.items.length >= 4 && g.brand !== "Generic")
-    .sort((a, b) => b.items.length - a.items.length);
-  const brandSections = rotate(eligibleBrands.filter((g) => !LEAD_BRANDS.includes(g.brand)), slot).slice(0, 3);
 
   // Rotating headline so the same rail doesn't always read the same.
   const TRENDING_TITLES = [
@@ -257,6 +238,9 @@ export default async function HomePage() {
     img: card(productImage(pictured(byCat(c), LEAD[c]))),
     blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
   }));
+  const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
+    .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
+    .filter((g) => g.brand && g.items.length >= 3);
   const brandTiles: ShowcaseTile[] = eligibleBrands
     .slice()
     .sort((a, b) => b.items.length - a.items.length)
@@ -269,7 +253,7 @@ export default async function HomePage() {
     }));
 
   return (
-    <div className="container-wide space-y-3 py-3">
+    <div className="container-wide space-y-6 py-3">
       {/* The hero leads the page, edge to edge, on every screen. */}
       <div className="bleed-wide -mt-3">
         <HeroRotator />
@@ -278,60 +262,6 @@ export default async function HomePage() {
       {/* Call / WhatsApp — first thing on the page, on every device, so nobody
           has to scroll to find how to order. */}
       <OrderBanner />
-
-      {/* The three businesses, side by side. Shop, Learn and Software
-          Development are separate things we sell, and two of them were only
-          reachable through the desktop nav — which a phone never renders.
-          Phones only — on a wide screen the nav bar carries the same three in
-          the same colours, so repeating them here would say it twice. */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-3 md:hidden">
-        {[
-          {
-            href: "/shop",
-            icon: "shop",
-            title: "Shop",
-            tag: "Computers",
-            bg: "bg-brand-500",
-            ink: "text-brand-600",
-          },
-          {
-            href: "/learn",
-            icon: "graduation",
-            title: "Learn",
-            tag: "Academy",
-            bg: "bg-green-600",
-            ink: "text-green-700",
-          },
-          {
-            href: "/development",
-            icon: "code",
-            title: "Develop",
-            tag: "Software",
-            bg: "bg-ink-600",
-            ink: "text-ink-700",
-          },
-        ].map((b) => (
-          <Link
-            key={b.href}
-            href={b.href}
-            className={`press card-lift flex items-center gap-1.5 rounded-full ${b.bg} py-1 pl-1 pr-2 text-white shadow-md ring-1 ring-black/5 sm:gap-2 sm:pr-3`}
-          >
-            <span
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ${b.ink} sm:h-7 sm:w-7`}
-            >
-              <Icon name={b.icon} size={13} strokeWidth={2.6} />
-            </span>
-            <span className="min-w-0 leading-[1.15]">
-              <span className="block truncate text-[11px] font-black tracking-tight sm:text-[13px]">
-                {b.title}
-              </span>
-              <span className="block truncate text-[7.5px] font-bold uppercase tracking-[0.06em] text-white/80 sm:text-[9px]">
-                {b.tag}
-              </span>
-            </span>
-          </Link>
-        ))}
-      </div>
 
       {/* The range, by category or by brand, straight under the hero. */}
       <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
@@ -401,8 +331,10 @@ export default async function HomePage() {
         href="/shop?cat=Laptops"
       />
 
-      {/* Picks of the Day — branded colour band with bookend panels */}
-      <DealsOfTheDay items={picks} />
+      {/* Picks of the Day — the same row of cards as every other section. */}
+      <DealBand title="Picks Of The Day" subtitle="A different set each day" href="/shop" items={picks}>
+        <Rail items={picks.slice(0, RAIL)} />
+      </DealBand>
 
 
 
@@ -482,22 +414,9 @@ export default async function HomePage() {
           this point keeps loading products and has no end to put it at. */}
       <BranchShowcase />
 
-      {/* A teal "Brand | Top Picks" band for every brand — categorises the whole page */}
-      {brandSections.map((g) => (
-        <DealBand
-          key={g.brand}
-          title={g.brand}
-          subtitle="Top Picks"
-          href={`/shop?brand=${encodeURIComponent(g.brand)}`}
-          items={g.items}
-        >
-          <Rail items={g.items} />
-        </DealBand>
-      ))}
-
       {/* Shop by brand */}
-      <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-        <div className="flex items-center justify-between px-4 py-3">
+      <section className="overflow-hidden bg-white">
+        <div className="flex items-center justify-between px-4 py-4">
           <h2 className="text-base font-extrabold text-ink-900">Shop by Brand</h2>
           <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
         </div>
@@ -541,17 +460,6 @@ export default async function HomePage() {
 
       <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
         <Rail items={byCat("Desktops").slice(0, RAIL)} />
-      </Panel>
-
-      {/* A laptop and a phone in one rail, cheapest first. The category panels
-          keep each kind in its own box, which is fine for somebody who knows
-          what they want and useless for somebody kitting themselves out. */}
-      <Panel
-        title="Work & Talk — a phone and a laptop"
-        href="/shop"
-        items={[...byCat("Laptops"), ...byCat("Phones")]}
-      >
-        <Rail items={mix(byCat("Phones"), byCat("Laptops"), RAIL)} />
       </Panel>
 
       <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>
