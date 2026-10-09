@@ -44,31 +44,31 @@ type Offer = {
 const picture = (o: Offer) => (o.photo ? thumb(o.photo) : `/products/${o.img}.webp`);
 
 const STORE: Offer[] = [
-  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-ink-600", img: "hp-elitebook-840-g8" },
-  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-ink-600", img: "hp-elitebook-840-g3" },
+  { title: "Online Tech Festival", deal: "UP TO 20% OFF", note: "Limited stock · T&Cs apply", href: "/shop?deals=1", bg: "bg-teal-600", img: "hp-elitebook-840-g8" },
+  { title: "Laptop Week", deal: "FROM UGX 900,000", note: "UK-used & brand new", href: "/shop?cat=Laptops", bg: "bg-brand-600", img: "hp-elitebook-840-g3" },
   { title: "Storage Deals", deal: "1TB SSD · UGX 580,000", note: "Genuine, warranted", href: "/shop?cat=Storage", bg: "bg-ink-600", img: "ssd-480gb-sata" },
-  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-ink-600", img: "ram-ddr4-8gb-sodimm" },
-  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-ink-600", img: "macbook-air-m1" },
-  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-ink-600", img: "lenovo-legion-5-15" },
-  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-ink-600", img: "ram-ddr4-8gb-dimm" },
-  { title: "Desktops In Stock", deal: "FROM UGX 750,000", note: "Office & home towers", href: "/shop?cat=Desktops", bg: "bg-ink-600", img: "hp-280-g6-desktop" },
-  { title: "Power & Backup", deal: "POWER BANKS & UPS", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-ink-600", img: "power-bank-20000" },
+  { title: "Repairs & Support", deal: "FROM UGX 30,000", note: "Onsite & remote", href: "/services", bg: "bg-green-700", img: "ram-ddr4-8gb-sodimm" },
+  { title: "MacBook Deals", deal: "APPLE IN STOCK", note: "Sealed & UK-used", href: "/shop?brand=Apple", bg: "bg-brand-700", img: "macbook-air-m1" },
+  { title: "Gaming Zone", deal: "RTX LAPTOPS", note: "OMEN · Victus · Legion", href: "/shop?q=gaming", bg: "bg-ink-700", img: "lenovo-legion-5-15" },
+  { title: "Upgrade Your PC", deal: "RAM FROM UGX 130,000", note: "Free fitting in shop", href: "/shop?cat=Components", bg: "bg-teal-800", img: "ram-ddr4-8gb-dimm" },
+  { title: "Desktops In Stock", deal: "FROM UGX 750,000", note: "Office & home towers", href: "/shop?cat=Desktops", bg: "bg-teal-600", img: "hp-280-g6-desktop" },
+  { title: "Power & Backup", deal: "POWER BANKS & UPS", note: "Keep working in outages", href: "/shop?cat=Power", bg: "bg-brand-600", img: "power-bank-20000" },
   { title: "Accessories Sale", deal: "FROM UGX 20,000", note: "Mice · keyboards · bags", href: "/shop?cat=Accessories", bg: "bg-ink-600", img: "logitech-mk270" },
-  { title: "Carry It Safely", deal: "BAGS & SLEEVES", note: "Padded, water-resistant", href: "/shop?cat=Accessories", bg: "bg-ink-600", img: "laptop-sleeve-grey" },
-  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-ink-600", img: "tp-link-archer-c6" },
-  { title: "Charge Anywhere", deal: "65W USB-C", note: "Fast, universal chargers", href: "/shop?cat=Power", bg: "bg-ink-600", img: "usb-c-charger-65w" },
-  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-ink-600", img: "asus-zenbook-14" },
+  { title: "Carry It Safely", deal: "BAGS & SLEEVES", note: "Padded, water-resistant", href: "/shop?cat=Accessories", bg: "bg-teal-700", img: "laptop-sleeve-grey" },
+  { title: "Networking Gear", deal: "ROUTERS & SWITCHES", note: "TP-Link · Netgear", href: "/shop?cat=Networking", bg: "bg-green-700", img: "tp-link-archer-c6" },
+  { title: "Charge Anywhere", deal: "65W USB-C", note: "Fast, universal chargers", href: "/shop?cat=Power", bg: "bg-brand-700", img: "usb-c-charger-65w" },
+  { title: "Sell With Us", deal: "OPEN A SHOP FREE", note: "Reach more buyers", href: "/sell", bg: "bg-ink-700", img: "asus-zenbook-14" },
 ];
 
 /** The academy's standing offers. Dated intakes are added in front of these
  *  from the intake list, so a date that has passed leaves on its own. */
 const ACADEMY: Offer[] = [
-  { title: "Learn & Earn", deal: "22 COURSES", note: "Physical or online · certificates", href: "/learn", bg: "bg-teal-700", photo: "/courses/microsoft-office.webp" },
-  { title: "Microsoft Excel", deal: "UGX 530,000", note: "2 months · certificate", href: "/learn/microsoft-excel", bg: "bg-teal-700", photo: "/courses/microsoft-excel.webp" },
-  { title: "Graphic Design", deal: "PHOTOSHOP · CANVA", note: "The work Kampala businesses buy", href: "/learn/graphic-design", bg: "bg-teal-700", photo: "/courses/graphic-design.webp" },
-  { title: "Web Development", deal: "BUILD REAL SITES", note: "HTML, CSS, JavaScript & WordPress", href: "/learn/web-development", bg: "bg-teal-700", photo: "/courses/web-development.webp" },
-  { title: "Industrial Training", deal: "UGX 150,000 · 2 MONTHS", note: "Every university welcome", href: "/internship", bg: "bg-teal-700", photo: "/courses/python-programming.webp" },
-  { title: "Pay Per Lesson", deal: "FROM UGX 5,000", note: "Study at your own pace", href: "/learn", bg: "bg-teal-700", photo: "/courses/computer-basics.webp" },
+  { title: "Learn & Earn", deal: "22 COURSES", note: "Physical or online · certificates", href: "/learn", bg: "bg-green-700", photo: "/courses/microsoft-office.webp" },
+  { title: "Microsoft Excel", deal: "UGX 530,000", note: "2 months · certificate", href: "/learn/microsoft-excel", bg: "bg-ink-600", photo: "/courses/microsoft-excel.webp" },
+  { title: "Graphic Design", deal: "PHOTOSHOP · CANVA", note: "The work Kampala businesses buy", href: "/learn/graphic-design", bg: "bg-brand-700", photo: "/courses/graphic-design.webp" },
+  { title: "Web Development", deal: "BUILD REAL SITES", note: "HTML, CSS, JavaScript & WordPress", href: "/learn/web-development", bg: "bg-teal-800", photo: "/courses/web-development.webp" },
+  { title: "Industrial Training", deal: "UGX 150,000 · 2 MONTHS", note: "Every university welcome", href: "/internship", bg: "bg-green-800", photo: "/courses/python-programming.webp" },
+  { title: "Pay Per Lesson", deal: "FROM UGX 5,000", note: "Study at your own pace", href: "/learn", bg: "bg-ink-700", photo: "/courses/computer-basics.webp" },
 ];
 
 const academyOffers = (): Offer[] => [
@@ -143,8 +143,8 @@ export function PromoStrip() {
   // The academy keeps one colour — the green of its button in the menu below —
   // and the store never borrows it, so the halves cannot land on the same
   // shade and lose the seam between them.
-  const storeBg = "bg-ink-600";
-  const academyBg = "bg-ink-700";
+  const storeBg = store.bg.startsWith("bg-green") ? "bg-teal-700" : store.bg;
+  const academyBg = "bg-green-700";
   const turn = tick % 2 === 0 ? "store" : "academy";
 
   return (
@@ -171,7 +171,7 @@ export function PromoStrip() {
             that joins the two halves. Desktop only. */}
         <span
           aria-hidden
-          className={`absolute -right-5 top-0 hidden h-full w-10 -skew-x-[18deg] shadow-[4px_0_0_0_#edeae5] transition-colors duration-500 lg:block ${storeBg}`}
+          className={`absolute -right-5 top-0 hidden h-full w-10 -skew-x-[18deg] shadow-[4px_0_0_0_#FCDC04] transition-colors duration-500 lg:block ${storeBg}`}
         />
       </div>
 

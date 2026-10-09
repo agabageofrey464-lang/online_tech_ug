@@ -10,7 +10,7 @@ import { BRANCHES } from "@/lib/branches";
 export function BranchShowcase() {
   return (
     <section aria-label="Our branches">
-      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 bg-ink-500 px-5 py-7 text-center text-white">
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 bg-teal-600 px-5 py-7 text-center text-white">
         <p className="font-display text-[22px] italic text-white/90 sm:text-[26px]">{BRANCHES.length} Locations in Kampala</p>
         <p className="font-display text-[24px] sm:text-[30px]">Discover A Branch Near You</p>
         <Link

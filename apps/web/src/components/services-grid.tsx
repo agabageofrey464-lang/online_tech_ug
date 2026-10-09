@@ -14,7 +14,7 @@ import { ugx } from "@/lib/site";
  */
 export function ServicesGrid() {
   return (
-    <section aria-label="Our services" className="band-sand py-8 sm:py-10">
+    <section aria-label="Our services" className="bg-teal-700 py-8 text-white sm:py-10">
       <div className="container-page">
         <div className="flex items-end justify-between gap-4">
           <h2 className="text-[30px] leading-none sm:text-[36px]">Our Services</h2>

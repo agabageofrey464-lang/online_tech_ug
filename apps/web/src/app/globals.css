@@ -15,66 +15,53 @@
   --color-brand-800: #8c2a0c;
   --color-brand-900: #6e240e;
 
-  /* Sand — the warm neutral. (Named `gold` for the classes that use it.) */
-  --color-gold-50: #faf8f5;
-  --color-gold-100: #f3efe9;
-  --color-gold-200: #e8e1d7;
-  --color-gold-300: #dcd3c6;
-  --color-gold-400: #c9bdab;
-  --color-gold-500: #b3a48e;
-  --color-gold-600: #94856f;
-  --color-gold-700: #766956;
-  --color-gold-800: #5a5042;
-  --color-gold-900: #423b31;
+  /* Accent — gold/amber, for small accents. */
+  --color-gold-50: #fff4e6;
+  --color-gold-100: #ffe3bf;
+  --color-gold-200: #ffcd85;
+  --color-gold-300: #fdb04a;
+  --color-gold-400: #fa9a22;
+  --color-gold-500: #f7941d;
+  --color-gold-600: #e57c0c;
+  --color-gold-700: #bd640c;
+  --color-gold-800: #934f10;
+  --color-gold-900: #6e3d10;
 
-  /* Secondary — a warm brown, the site's one bold colour. (Named `ink` for
-     the classes that use it.) */
-  --color-ink-50: #f4f1ed;
-  --color-ink-100: #e8e3dd;
-  --color-ink-200: #d5cdc5;
-  --color-ink-300: #b9aea3;
-  --color-ink-400: #9a8d80;
-  --color-ink-500: #7a6d5f;
-  --color-ink-600: #5f4638; /* core */
-  --color-ink-700: #4e392e;
-  --color-ink-800: #3d2c24;
-  --color-ink-900: #2a1f1a;
+  /* The dark of the palette — a deep teal, for text and dark surfaces. */
+  --color-ink-50: #eef6f8;
+  --color-ink-100: #d9eaef;
+  --color-ink-200: #b3d3dc;
+  --color-ink-300: #82b4c2;
+  --color-ink-400: #4f8fa1;
+  --color-ink-500: #1f6f86;
+  --color-ink-600: #0c5d75; /* core */
+  --color-ink-700: #0d4b5e;
+  --color-ink-800: #0e3e4e;
+  --color-ink-900: #0b2a35;
 
-  /* Brown is the bold colour, sand the light ground, and the logo's orange
-     the accent. `teal` and `green` are kept as names and drawn in the brown,
-     and `red` in the orange, so the palette is decided here and nowhere else. */
-  --color-teal-50: var(--color-ink-50);
-  --color-teal-100: var(--color-ink-100);
-  --color-teal-200: var(--color-ink-200);
-  --color-teal-300: var(--color-ink-300);
-  --color-teal-400: var(--color-ink-400);
-  --color-teal-500: var(--color-ink-500);
-  --color-teal-600: var(--color-ink-600);
-  --color-teal-700: var(--color-ink-700);
-  --color-teal-800: var(--color-ink-800);
-  --color-teal-900: var(--color-ink-900);
+  /* The site's own colours: orange, teal, green and gold. */
+  --color-teal-50: #eefafd;
+  --color-teal-100: #d3f0f7;
+  --color-teal-200: #a7dfee;
+  --color-teal-300: #6cc6de;
+  --color-teal-400: #33a5c4;
+  --color-teal-500: #1587a9;
+  --color-teal-600: #0e7490;
+  --color-teal-700: #0c5d75;
+  --color-teal-800: #0d4b5e;
+  --color-teal-900: #0e3e4e;
 
-  --color-green-50: var(--color-teal-50);
-  --color-green-100: var(--color-teal-100);
-  --color-green-200: var(--color-teal-200);
-  --color-green-300: var(--color-teal-300);
-  --color-green-400: var(--color-teal-400);
-  --color-green-500: var(--color-teal-500);
-  --color-green-600: var(--color-teal-600);
-  --color-green-700: var(--color-teal-700);
-  --color-green-800: var(--color-teal-800);
-  --color-green-900: var(--color-teal-900);
+  --color-green-50: #e6f7ee;
+  --color-green-100: #c2ebd4;
+  --color-green-200: #8fdbb0;
+  --color-green-300: #57c98a;
+  --color-green-400: #22b56c;
+  --color-green-500: #00a651;
+  --color-green-600: #00994b;
+  --color-green-700: #00803e;
+  --color-green-800: #006633;
+  --color-green-900: #00522a;
 
-  --color-red-50: var(--color-brand-50);
-  --color-red-100: var(--color-brand-100);
-  --color-red-200: var(--color-brand-200);
-  --color-red-300: var(--color-brand-300);
-  --color-red-400: var(--color-brand-400);
-  --color-red-500: var(--color-brand-500);
-  --color-red-600: var(--color-brand-600);
-  --color-red-700: var(--color-brand-700);
-  --color-red-800: var(--color-brand-800);
-  --color-red-900: var(--color-brand-900);
 
   /* Body: Inter, loaded in the root layout, with the device's own UI font
      behind it while it arrives. */
@@ -88,10 +75,10 @@
 }
 
 :root {
-  --background: #f9f7f2; /* warm off-white canvas */
+  --background: #f2f3f6; /* warm off-white canvas */
   --tile: #f0ede6;
   --gutter: clamp(1rem, 2.6vw, 2.75rem); /* the space kept at each side of the page */ /* the soft panel a product sits on */
-  --foreground: #2a1f1a;
+  --foreground: #1f1f29;
 }
 
 * {
@@ -538,4 +525,23 @@ body {
 :is(.band-light, .band-sand) :is([class*="ring-white"], [class*="border-white"]) {
   --tw-ring-color: color-mix(in srgb, var(--color-ink-600) 18%, transparent);
   border-color: color-mix(in srgb, var(--color-ink-600) 30%, transparent);
+}
+
+/* ─── Product cards keep their own colours ─────────────────────────
+   The cards, and the photo tiles and buying panel on a product page, were
+   designed on warm sand with a brown dark. The rest of the site has gone back
+   to its own colours; inside these the dark stays brown, so nothing about
+   them changes. */
+article.card-lift,
+.keeps-card-colours {
+  --color-ink-50: #f4f1ed;
+  --color-ink-100: #e8e3dd;
+  --color-ink-200: #d5cdc5;
+  --color-ink-300: #b9aea3;
+  --color-ink-400: #9a8d80;
+  --color-ink-500: #7a6d5f;
+  --color-ink-600: #5f4638;
+  --color-ink-700: #4e392e;
+  --color-ink-800: #3d2c24;
+  --color-ink-900: #2a1f1a;
 }

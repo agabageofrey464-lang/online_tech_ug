@@ -20,7 +20,7 @@ const POPULAR = [
  */
 export function OrderBanner() {
   return (
-    <section className="band-sand relative overflow-hidden">
+    <section className="relative overflow-hidden bg-teal-700 text-white">
       {/* Decorative drifting glows */}
       <span className="hidden animate-blob pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
       <span className="hidden animate-blob-slow pointer-events-none absolute -bottom-12 left-24 h-28 w-28 rounded-full bg-brand-400/20 blur-2xl" />

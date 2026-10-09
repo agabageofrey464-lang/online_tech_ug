@@ -185,7 +185,7 @@ export default async function ProductDetailPage({
 
       {/* Two zones: the photographs, and beside them everything needed to
           choose and buy. The long-form detail follows underneath. */}
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+      <div className="keeps-card-colours grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
         <div className="min-w-0">
           <ProductGallery images={productImages[product.id] ?? [productImage(product)]} alt={product.name}>
             <div className="absolute left-4 top-4 z-10 flex gap-2">

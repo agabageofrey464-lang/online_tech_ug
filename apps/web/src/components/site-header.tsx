@@ -146,7 +146,7 @@ export function SiteHeader() {
 
       {/* Wide screens: one brown line — a message in the middle, three links
           at the end. */}
-      <div className="hidden bg-ink-600 text-white lg:block">
+      <div className="hidden bg-teal-600 text-white lg:block">
         <div className="container-wide grid grid-cols-[auto_1fr_auto] items-center gap-6 py-2.5 text-[14px] xl:grid-cols-[1fr_auto_1fr]">
           <span />
           <p key={note} className="ad-fade text-center">
@@ -299,7 +299,7 @@ export function SiteHeader() {
               key={c.href}
               href={c.href}
               className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
-                pathname === c.href ? "bg-ink-800" : "bg-ink-600 hover:bg-ink-700"
+                pathname === c.href ? "bg-teal-800" : "bg-teal-600 hover:bg-teal-700"
               }`}
             >
               {c.label}
@@ -334,7 +334,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="my-1 flex items-center gap-2.5 rounded-md bg-[#f3efe9] px-3 py-3 text-base font-extrabold text-ink-900 shadow-sm"
+                  className="my-1 flex items-center gap-2.5 rounded-md bg-[#FCDC04] px-3 py-3 text-base font-extrabold text-ink-900 shadow-sm"
                 >
                   <Briefcase size={18} strokeWidth={2.4} />
                   {item.label}
