@@ -321,7 +321,7 @@ export function HeroRotator() {
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
   return (
-    <div className="group/hero relative h-[590px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
+    <div className="group/hero relative h-[440px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
@@ -358,7 +358,7 @@ export function HeroRotator() {
           {/* Only the slide on show has words and a picture: the one underneath
               keeps its photograph while the next fades in, and nothing else. */}
           <div
-            className={`container-wide relative z-10 grid h-full content-center items-center gap-4 pb-14 pt-5 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-10 ${
+            className={`container-wide relative z-10 grid h-full content-center items-center gap-3 pb-12 pt-3 sm:gap-4 sm:pb-14 sm:pt-5 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-10 ${
               idx === i ? "" : "invisible"
             }`}
           >
@@ -367,23 +367,24 @@ export function HeroRotator() {
                 On a wide screen the words sit left and the scene right. */}
             <div className="contents lg:block lg:text-left">
               <div className="order-1 text-center text-white lg:text-left">
-                <p className="font-display text-[17px] italic text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
-                <SlideHeading first={idx === 0} className="mt-1 font-display text-[30px] leading-[1.08] sm:text-[50px] lg:mt-2 xl:text-[62px]">
+                <p className="font-display text-[15px] italic leading-tight text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
+                <SlideHeading first={idx === 0} className="mt-0.5 font-display text-[25px] leading-[1.08] sm:mt-1 sm:text-[50px] lg:mt-2 xl:text-[62px]">
                   {s.title}
                 </SlideHeading>
               </div>
               <div className="order-3 text-center text-white lg:text-left">
-                <p className="mx-auto max-w-xl text-[15px] text-white/90 sm:text-[19px] lg:mx-0 lg:mt-3">{s.sub}</p>
-                <div className="mx-auto mt-4 flex max-w-sm gap-2 sm:max-w-none sm:justify-center sm:gap-3 lg:mt-5 lg:justify-start">
+                {/* A phone has the headline and the scene; the line is for wider screens. */}
+                <p className="mx-auto hidden max-w-xl text-white/90 sm:block sm:text-[19px] lg:mx-0 lg:mt-3">{s.sub}</p>
+                <div className="mx-auto flex max-w-sm gap-2 pr-14 sm:mt-4 sm:max-w-none sm:justify-center sm:gap-3 sm:pr-0 lg:mt-5 lg:justify-start">
                   <Link
                     href={s.href}
-                    className="press inline-flex flex-1 items-center justify-center bg-brand-500 px-4 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-brand-600 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
+                    className="press inline-flex flex-1 items-center justify-center bg-brand-500 px-3 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-brand-600 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
                   >
                     {s.cta}
                   </Link>
                   <Link
                     href={s.more.href}
-                    className="inline-flex flex-1 items-center justify-center border border-white px-4 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-white hover:text-ink-900 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
+                    className="inline-flex flex-1 items-center justify-center border border-white px-3 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white hover:text-ink-900 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
                   >
                     {s.more.label}
                   </Link>
@@ -393,8 +394,13 @@ export function HeroRotator() {
 
             {/* The scene. Drawn only for the slide on show, so its pieces
                 animate in each time that slide comes round. */}
-            <div className="relative order-2 mx-auto h-[215px] w-full max-w-[340px] sm:h-[270px] sm:max-w-[440px] lg:h-[400px] lg:max-w-[520px] xl:h-[440px] xl:max-w-[580px]">
-              {idx === i && <s.Art />}
+            {/* On a phone the whole scene is drawn at its usual size and
+                shrunk to three quarters, so its pieces keep their proportions
+                in a smaller space. */}
+            <div className="relative order-2 mx-auto h-[162px] w-[255px] sm:h-[270px] sm:w-full sm:max-w-[440px] lg:h-[400px] lg:max-w-[520px] xl:h-[440px] xl:max-w-[580px]">
+              <div className="absolute left-0 top-0 h-[215px] w-[340px] origin-top-left scale-75 sm:relative sm:h-full sm:w-full sm:scale-100">
+                {idx === i && <s.Art />}
+              </div>
             </div>
           </div>
         </div>
@@ -416,21 +422,25 @@ export function HeroRotator() {
         <ChevronRight size={20} />
       </button>
 
-      {/* One tab per service: what the hero is showing, and a way to jump. */}
+      {/* One tab per service. Each is a link to that service's page; pointing
+          at one on a computer shows its slide first. They were buttons that
+          only changed the slide, which read as a link that went nowhere. */}
       <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto bg-ink-900/60 px-2 py-2 backdrop-blur-sm no-scrollbar sm:justify-center">
         {SLIDES.map((s, idx) => (
-          <button
+          <Link
             key={s.tab}
-            onClick={() => setI(idx)}
-            aria-label={`Show ${s.tab}`}
+            href={s.href}
+            onMouseEnter={() => setI(idx)}
+            onFocus={() => setI(idx)}
+            aria-label={`Go to ${s.tab}`}
             aria-current={idx === i}
-            className={`relative shrink-0 overflow-hidden whitespace-nowrap px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] transition ${
+            className={`relative shrink-0 overflow-hidden whitespace-nowrap px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.12em] transition sm:px-4 sm:py-2 sm:text-[11px] ${
               idx === i ? "bg-white text-ink-900" : "text-white/75 hover:text-white"
             }`}
           >
             {s.tab}
             {idx === i && <span key={`c${i}`} className="strip-count !bg-brand-500" style={{ animationDuration: `${STAY}ms` }} />}
-          </button>
+          </Link>
         ))}
       </div>
     </div>
