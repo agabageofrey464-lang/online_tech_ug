@@ -18,6 +18,7 @@ import {
   Video,
 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { PageHeader } from "@/components/page-header";
 import { FilePicker } from "@/components/file-picker";
 import { courses } from "@/lib/data";
 import { academy, countdown, whenLabel, type MyAcademy } from "@/lib/academy";
@@ -120,30 +121,27 @@ export default function AcademyPage() {
   const notes = data.materials.filter((m) => m.kind !== "recording");
 
   return (
-    <div className="container-page py-4">
-      <div className="mb-3">
-        <Breadcrumbs items={[{ label: "My Academy" }]} />
-      </div>
-
-      <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl font-black text-ink-900">
-            Hello, {data.user.name.split(" ")[0] || "there"}
-          </h1>
-          <p className="text-sm text-ink-700/65">
-            {data.courses.length} course{data.courses.length === 1 ? "" : "s"} ·{" "}
-            <span className="capitalize">{data.user.role}</span>
-          </p>
-        </div>
-        {(data.user.role === "lecturer" || data.user.role === "admin") && (
-          <Link
-            href="/academy/teach"
-            className="press inline-flex items-center gap-2 rounded-lg bg-ink-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-ink-700"
-          >
-            <Users size={16} /> Lecturer dashboard
-          </Link>
-        )}
-      </header>
+    <>
+    <PageHeader
+      eyebrow="My Academy"
+      title={`Hello, ${data.user.name.split(" ")[0] || "there"}`}
+      subtitle={`${data.courses.length} course${data.courses.length === 1 ? "" : "s"} · ${data.user.role}`}
+      image="/web/photo-1516321318423-f06f85e504b3.webp"
+      crumbs={[{ label: "My Academy" }]}
+    >
+      <Link href="/learn" className="press bg-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90">
+        Browse courses
+      </Link>
+      {(data.user.role === "lecturer" || data.user.role === "admin") && (
+        <Link
+          href="/academy/teach"
+          className="press inline-flex items-center gap-2 border border-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white hover:text-ink-900"
+        >
+          <Users size={15} /> Lecturer dashboard
+        </Link>
+      )}
+    </PageHeader>
+    <div className="container-page py-6">
 
       {/* ── The reason this page exists ── */}
       {live.length > 0 ? (
@@ -436,6 +434,7 @@ export default function AcademyPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

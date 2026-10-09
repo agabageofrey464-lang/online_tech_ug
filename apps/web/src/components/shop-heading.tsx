@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -33,7 +34,28 @@ export function ShopHeading({ stats }: { stats: string[] }) {
 
   return (
     <>
-      <div className="mb-3">
+
+
+      <section className="relative overflow-hidden bg-ink-800 text-white">
+        <Image src="/hero/shop-floor.webp" alt="" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-ink-900/55" />
+        <div className="relative flex min-h-[230px] flex-col items-center justify-center px-5 py-8 text-center sm:min-h-[330px]">
+          <h1 className="text-[34px] leading-[1.1] sm:text-[52px]">{isFiltered ? title : "The Online Tech Collection"}</h1>
+          <p className="mt-3 max-w-2xl text-[16px] text-white/95 sm:text-[18px]">
+            {isFiltered
+              ? `${title} at Online Tech Uganda — quality-checked, with warranty and countrywide delivery.`
+              : "Genuine laptops, phones and accessories. Tested, warranted and delivered countrywide."}
+          </p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {stats.map((st) => (
+              <span key={st} className="bg-white/10 px-3 py-1 text-xs font-semibold ring-1 ring-white/25">
+                {st}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+      <div className="my-3">
         <Breadcrumbs
           items={
             isFiltered
@@ -42,7 +64,6 @@ export function ShopHeading({ stats }: { stats: string[] }) {
           }
         />
       </div>
-
       {/* Not everyone knows what specs they need — many shoppers know only what
           they can spend, so offer that route before the grid. */}
       <Link
@@ -66,31 +87,6 @@ export function ShopHeading({ stats }: { stats: string[] }) {
           Find my laptop →
         </span>
       </Link>
-
-      <section className="band-light mb-3 overflow-hidden">
-        <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-          <div>
-            <h1 className="flex items-center gap-2 text-lg font-extrabold sm:text-2xl">
-              {isFiltered ? title : <>💻 Computers &amp; Accessories</>}
-            </h1>
-            <p className="mt-1 max-w-xl text-sm text-white/80">
-              {isFiltered
-                ? `Browse ${title} at Online Tech Uganda — quality-checked, warranty & countrywide delivery.`
-                : "Genuine laptops, desktops, components & accessories — quality-checked, with delivery and flexible payments."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {stats.map((s) => (
-              <span
-                key={s}
-                className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/15"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }

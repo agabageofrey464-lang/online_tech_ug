@@ -148,7 +148,8 @@ export function FestivalStrip() {
 
   return (
     <div
-      className={`relative ${s.bg} border-b border-ink-600/10 transition-colors duration-500`}
+      // Every strip is a sand panel, whatever colour its offer was given.
+      className="band-light relative border-b border-ink-600/10"
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">

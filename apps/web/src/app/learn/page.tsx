@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactOptions } from "@/components/contact-options";
+import Image from "next/image";
 import Link from "next/link";
 import { ExploreMore } from "@/components/explore-more";
 import { Radio, CalendarClock, Award, Smartphone, Wallet, MessageCircle, Check, Building2 } from "lucide-react";
@@ -94,39 +95,37 @@ export default function LearnPage() {
   return (
     <>
       {/* ── Hero ───────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-ink-700 via-ink-600 to-brand-600 text-white">
-        {/* soft light blobs */}
-        <span className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-        <span className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-brand-400/20 blur-3xl" />
+      <section className="relative overflow-hidden bg-ink-800 text-white">
+        {/* A photograph the full width of the page, with the title over it. */}
+        <Image src="/web/photo-1509062522246-3755977927d7.webp" alt="" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-ink-900/60" />
 
-        <div className="container-page relative py-10 sm:py-14">
-          <div className="[&_a]:text-white/70 [&_span]:text-white/50">
-            <Breadcrumbs items={[{ label: "Learn" }]} />
-          </div>
+        <div className="container-page relative py-5 sm:py-8">
+          <Breadcrumbs items={[{ label: "Learn" }]} light />
 
-          <div className="mt-4 max-w-2xl">
-            <div className="flex flex-wrap gap-2">
+          <div className="mx-auto mt-8 max-w-3xl text-center">
+            <div className="flex flex-wrap justify-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider ring-1 ring-white/20">
                 <Award size={13} /> Certificate included
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20">
                 <Building2 size={13} /> Physical &amp; Online classes
               </span>
             </div>
-            <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-              Learn real computer skills — <span className="text-gold-300">pay per lesson</span>
+            <h1 className="mt-4 text-[36px] leading-[1.1] sm:text-[54px]">
+              Learn Real Computer Skills, <em className="font-display">Lesson By Lesson</em>
             </h1>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/85">
+            <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-white/95">
               From your very first click to graphic design, Excel and coding. Built for students and
               mature learners in Uganda. Attend in person at our Kampala centre or learn online from
               anywhere — enrol on a full programme or study lesson by lesson, and earn a
               certificate you can show an employer.
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-2.5">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="#courses"
-                className="press rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 shadow-sm transition hover:bg-white/90"
+                className="press bg-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90"
               >
                 Browse courses
               </Link>
@@ -134,7 +133,7 @@ export default function LearnPage() {
                 href={whatsappLink("Hi Online Tech Uganda, I'd like to know more about your computer courses.")}
                 target="_blank"
                 rel="noreferrer"
-                className="press inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-green-700"
+                className="press inline-flex items-center gap-2 border border-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white hover:text-ink-900"
               >
                 <MessageCircle size={16} /> Ask a question
               </a>
@@ -142,10 +141,10 @@ export default function LearnPage() {
           </div>
 
           {/* Stats */}
-          <div className="mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mx-auto mb-4 mt-9 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
-                <p className="text-2xl font-extrabold leading-none">{s.value}</p>
+              <div key={s.label} className="bg-white/10 px-4 py-4 text-center ring-1 ring-white/20 backdrop-blur-sm">
+                <p className="font-display text-[30px] leading-none">{s.value}</p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-white/65">
                   {s.label}
                 </p>
