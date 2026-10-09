@@ -89,7 +89,8 @@
 
 :root {
   --background: #f9f7f2; /* warm off-white canvas */
-  --tile: #f0ede6; /* the soft panel a product sits on */
+  --tile: #f0ede6;
+  --gutter: clamp(1rem, 2.6vw, 2.75rem); /* the space kept at each side of the page */ /* the soft panel a product sits on */
   --foreground: #2a1f1a;
 }
 
@@ -370,9 +371,8 @@ h1, h2, h3, .font-display {
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 100rem;
-  /* Responsive gutter so text never sits flush to the screen edge (mobile → desktop) */
-  padding-inline: clamp(1rem, 3.5vw, 2.5rem);
+  max-width: none;
+  padding-inline: var(--gutter);
 }
 
 /* Brand gradient used in hero / CTAs */
@@ -394,18 +394,19 @@ h1, h2, h3, .font-display {
 @utility container-wide {
   width: 100%;
   margin-inline: auto;
-  max-width: 112rem;
-  /* Responsive gutter so content keeps clear of the screen edge on all sizes */
-  padding-inline: clamp(0.875rem, 2.5vw, 2rem);
+  /* No cap: the page runs the width of the screen, whatever the screen. */
+  max-width: none;
+  padding-inline: var(--gutter);
 }
 @media (min-width: 1700px) {
-  .container-wide { max-width: 120rem; }
+  .container-wide { max-width: none; }
 }
 
 /* Full-bleed on mobile: cancel a container's side gutter so a grid reaches the
    screen edges. Matches the exact clamp() padding of each container utility. */
+/* Breaks a section out of the gutter, edge to edge. */
 @utility bleed-wide {
-  margin-inline: calc(clamp(0.875rem, 3vw, 1.5rem) * -1);
+  margin-inline: calc(var(--gutter) * -1);
 }
 @utility bleed-page {
   margin-inline: calc(clamp(1rem, 4vw, 2rem) * -1);

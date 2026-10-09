@@ -8,14 +8,12 @@ import { byCategory, CATEGORY_ORDER } from "@/lib/browse-order";
 import { FlashSaleCard } from "@/components/flash-sale-card";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
-import { CategoryMenu } from "@/components/category-menu";
 import { HeroRotator } from "@/components/hero-rotator";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { DailyUpdates } from "@/components/daily-updates";
 import { DealsOfTheDay } from "@/components/deals-of-the-day";
 import { RecentlyViewed } from "@/components/recently-viewed";
-import { CategoryStrip } from "@/components/category-strip";
 import { ExploreMore } from "@/components/explore-more";
 import { BranchShowcase } from "@/components/branch-showcase";
 import { CategoryShowcase, type ShowcaseTile } from "@/components/category-showcase";
@@ -232,12 +230,25 @@ export default function HomePage() {
     Storage: "Portable drives and SSDs to keep your work safe.",
     Power: "Chargers, power banks and backup for when power goes.",
   };
-  const pictured = (items: Product[]) =>
-    items.find((p) => productImage(p).startsWith("/products/")) ?? items.find((p) => p.image) ?? items[0];
+  const LEAD: Record<string, string> = {
+    Laptops: "hp-envy-x360-15-i7-29e0ea",
+    Desktops: "hp-all-in-one-i5-1734fd",
+    Components: "kingston-fury-8gb-ddr4",
+    Storage: "sandisk-extreme-2tb-portable",
+    Accessories: "hp-z24-monitor-181ddc",
+    Networking: "tp-link-archer-c6",
+    Power: "anker-powerbank-20000",
+    HP: "hp-envy-x360-15-i7-29e0ea",
+  };
+  const pictured = (items: Product[], lead?: string) =>
+    items.find((p) => p.id === lead) ??
+    items.find((p) => productImage(p).startsWith("/products/")) ??
+    items.find((p) => p.image) ??
+    items[0];
   const categoryTiles: ShowcaseTile[] = CATEGORY_ORDER.filter((c) => byCat(c).length > 0).map((c) => ({
     name: c,
     href: `/shop?cat=${encodeURIComponent(c)}`,
-    img: card(productImage(pictured(byCat(c)))),
+    img: card(productImage(pictured(byCat(c), LEAD[c]))),
     blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
   }));
   const brandTiles: ShowcaseTile[] = eligibleBrands
@@ -247,16 +258,14 @@ export default function HomePage() {
     .map((g) => ({
       name: g.brand,
       href: `/shop?brand=${encodeURIComponent(g.brand)}`,
-      img: card(productImage(pictured(g.items))),
+      img: card(productImage(pictured(g.items, LEAD[g.brand]))),
       blurb: `${g.items.length} ${g.brand} products in stock, each tested before it leaves the shop.`,
     }));
 
   return (
     <div className="container-wide space-y-3 py-3">
-      {/* Phone: the hero leads the page, edge to edge — a photograph with the
-          headline and its buttons over it. A desktop shows it further down,
-          beside the category list. */}
-      <div className="-mx-[clamp(1rem,3.5vw,2.5rem)] -mt-3 md:hidden">
+      {/* The hero leads the page, edge to edge, on every screen. */}
+      <div className="bleed-wide -mt-3">
         <HeroRotator />
       </div>
 
@@ -316,20 +325,6 @@ export default function HomePage() {
             </span>
           </Link>
         ))}
-      </div>
-
-      {/* Hero row — DESKTOP only. On mobile we skip straight to the products
-          (Jumia-style), so the hero, call banner and category circles are hidden. */}
-      <div className="bleed-wide hidden gap-3 sm:mx-0 md:grid lg:grid-cols-[230px_1fr]">
-        {/* Left column: category mega-menu (flyout expands to the right) */}
-        <aside className="hidden lg:block lg:h-[400px]">
-          <div className="relative h-full rounded bg-white shadow-sm">
-            <CategoryMenu />
-          </div>
-        </aside>
-
-        {/* Hero — animated, rotating category banner */}
-        <HeroRotator />
       </div>
 
       {/* The range, by category or by brand, straight under the hero. */}

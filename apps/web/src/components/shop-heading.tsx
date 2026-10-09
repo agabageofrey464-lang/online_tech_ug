@@ -36,10 +36,10 @@ export function ShopHeading({ stats }: { stats: string[] }) {
     <>
 
 
-      <section className="relative overflow-hidden bg-ink-800 text-white">
+      <section className="bleed-wide relative -mt-3 overflow-hidden bg-ink-800 text-white">
         <Image src="/hero/shop-floor.webp" alt="" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-ink-900/55" />
-        <div className="relative flex min-h-[230px] flex-col items-center justify-center px-5 py-8 text-center sm:min-h-[330px]">
+        <div className="relative flex min-h-[240px] flex-col items-center justify-center px-5 py-8 text-center sm:min-h-[360px] xl:min-h-[420px]">
           <h1 className="text-[34px] leading-[1.1] sm:text-[52px]">{isFiltered ? title : "The Online Tech Collection"}</h1>
           <p className="mt-3 max-w-2xl text-[16px] text-white/95 sm:text-[18px]">
             {isFiltered

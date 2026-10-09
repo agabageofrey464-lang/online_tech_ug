@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
 import { card } from "@/lib/thumb";
+import { productImages } from "@/lib/product-images";
 import { ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ProductRating } from "@/components/product-rating";
@@ -114,6 +115,7 @@ export function ProductCard({ product }: { product: Product }) {
   const oldPrice = product.oldPrice && product.oldPrice > product.price ? product.oldPrice : null;
   const discountPct = oldPrice ? Math.max(1, Math.round((1 - product.price / oldPrice) * 100)) : 0;
   const spec = specLines(product);
+  const second = productImages[product.id]?.[1];
 
   return (
     // A container, so the name and price sit side by side on a wide tile and
@@ -131,6 +133,20 @@ export function ProductCard({ product }: { product: Product }) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={`card-zoom object-contain p-4 mix-blend-multiply @[15rem]:p-7 ${inStock ? "" : "opacity-50"}`}
           />
+          {/* Another view of the same product, on hover. The wrapper carries the
+              fade: the image's own opacity belongs to its load-in. */}
+          {second && (
+            <div className="absolute inset-0 bg-[var(--tile)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <SafeImage
+                src={card(second)}
+                alt=""
+                fill
+                loading="lazy"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-contain p-4 mix-blend-multiply @[15rem]:p-7"
+              />
+            </div>
+          )}
         </Link>
 
         {/* A tab at the top of the photo for brand-new stock only. A used

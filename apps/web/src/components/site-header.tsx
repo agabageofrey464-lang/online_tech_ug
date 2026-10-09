@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Briefcase,
   ChevronDown,
@@ -13,6 +13,7 @@ import {
   Menu,
   Package,
   Phone,
+  Search,
   ShoppingBag,
   ShoppingCart,
   Star,
@@ -25,7 +26,6 @@ import { SearchBar } from "@/components/search-bar";
 import { HeaderAccount } from "@/components/header-account";
 import { BrandLogoFull } from "@/components/brand-logo-full";
 import { PromoStrip } from "@/components/promo-strip";
-import { MegaMenu } from "@/components/mega-menu";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -59,7 +59,7 @@ function HeaderCart() {
           </span>
         )}
       </span>
-      <span className="hidden text-sm font-medium sm:inline">Cart</span>
+      <span className="sr-only">Cart</span>
     </button>
   );
 }
@@ -80,145 +80,178 @@ function HeaderWishlist() {
           </span>
         )}
       </span>
-      <span className="hidden text-sm font-medium lg:inline">Saved</span>
+      <span className="sr-only">Saved</span>
     </Link>
   );
 }
 
-/** The strip is split so what we sell is scannable ahead of the info pages. */
-const ALL_UTILITY = navGroups.flatMap((g) => g.items);
-const PRIMARY_COUNT = 5;
-const PRIMARY_LINKS = ALL_UTILITY.slice(0, PRIMARY_COUNT);
-const SECONDARY_LINKS = ALL_UTILITY.slice(PRIMARY_COUNT);
+// A wide screen has two slim rows, as a quiet shop does: a brown line with one
+// message and three links, then the logo, a handful of serif links and the
+// icons. Everything else is one hover away, under "More".
+const MAIN_LINKS = [
+  // In order of who is looking: the first four stay on a small laptop screen.
+  { href: "/shop?cat=Laptops", label: "Laptops" },
+  { href: "/shop?cat=Phones", label: "Phones" },
+  { href: "/learn", label: "Learn" },
+  { href: "/internship", label: "Internships" },
+  { href: "/shop?cat=Desktops", label: "Desktops" },
+  { href: "/shop?cat=Accessories", label: "Accessories" },
+  { href: "/development", label: "Software" },
+  { href: "/services", label: "Services" },
+];
+const TOP_LINKS = [
+  { href: "/track", label: "Track Order" },
+  { href: "/about", label: "About Us" },
+  { href: "/stores", label: "Branches" },
+];
+const MORE_LINKS = [
+  { href: "/shop", label: "All Products" },
+  { href: "/shop?cat=Desktops", label: "Desktops" },
+  { href: "/shop?cat=Accessories", label: "Accessories" },
+  { href: "/shop?cat=Components", label: "Components" },
+  { href: "/shop?cat=Storage", label: "Storage" },
+  { href: "/shop?cat=Networking", label: "Networking" },
+  { href: "/shop?cat=Power", label: "Power" },
+  { href: "/marketplace", label: "Marketplace" },
+  { href: "/sell", label: "Sell With Us" },
+  ...navGroups.flatMap((g) => g.items).filter((it) => !TOP_LINKS.some((t) => t.href === it.href)),
+];
+const ANNOUNCEMENTS = [
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M.", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
+  { text: "Online industrial training for university and college students.", cta: "Apply Now", href: "/internship" },
+  { text: "22 computer courses, in class or online, with a certificate.", cta: "Browse Courses", href: "/learn" },
+  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000.", cta: "Book A Repair", href: "/services#repairs-support" },
+];
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [note, setNote] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setNote((n) => (n + 1) % ANNOUNCEMENTS.length), 6000);
+    return () => clearInterval(t);
+  }, []);
+  const isActive = (href: string) => {
+    const [path, query] = href.split("?");
+    return query ? false : pathname.startsWith(path);
+  };
 
   return (
     <header id="top" className="sticky top-0 z-50">
-      {/* Promo strip — rotating advert on mobile, both messages on desktop */}
-      <PromoStrip />
+      {/* Phones and tablets: the rotating offer strip. */}
+      <div className="lg:hidden">
+        <PromoStrip />
+      </div>
 
-      {/* Utility bar. Dark, so it separates cleanly from the white bar below,
-          and split into what we SELL (bold, up front) and the informational
-          pages (muted) — fifteen identical links were impossible to scan. */}
-      <div className="band-light hidden border-b border-ink-600/10 md:block">
-        <div className="container-wide flex items-center gap-x-5 py-2.5 text-[13.5px] font-semibold">
-          <Link
-            href="/sell"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600"
-          >
-            <Star size={11} className="fill-white" /> Sell on {site.name}
-          </Link>
-
-          <nav className="flex min-w-0 flex-1 items-center gap-x-4 overflow-x-auto no-scrollbar">
-            {/* What we do — these earn the emphasis */}
-            {PRIMARY_LINKS.map((it) =>
-              it.href === "/internship" ? (
-                // Internships get a badge of their own. In a row of plain
-                // white links a student scanning for the placement page read
-                // straight past it; yellow is used for nothing else up here,
-                // and the live dot says the intake is open.
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  aria-current={pathname.startsWith(it.href) ? "page" : undefined}
-                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#f3efe9] px-3 py-1 font-extrabold text-ink-900 shadow-sm transition hover:brightness-105 ${
-                    pathname.startsWith(it.href) ? "ring-2 ring-white" : "ring-1 ring-black/10"
-                  }`}
-                >
-                  <Briefcase size={12} strokeWidth={2.6} />
-                  {it.label}
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75 motion-reduce:hidden" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
-                  </span>
-                </Link>
-              ) : (
-              <Link
-                key={it.href}
-                href={it.href}
-                className={`whitespace-nowrap border-b-2 pb-0.5 transition ${
-                  pathname.startsWith(it.href)
-                    ? "!border-brand-500 !text-brand-600"
-                    : "!border-transparent !text-ink-900 hover:!border-brand-500 hover:!text-brand-600"
-                }`}
-              >
-                {it.label}
-              </Link>
-              ),
-            )}
-
-            <span className="h-4 w-px shrink-0 !bg-ink-600/30" aria-hidden />
-
-            {/* Everything else */}
-            {SECONDARY_LINKS.map((it) => (
-              <Link
-                key={it.href}
-                href={it.href}
-                className="whitespace-nowrap border-b-2 !border-transparent pb-0.5 !text-ink-900 transition hover:!border-brand-500 hover:!text-brand-600"
-              >
-                {it.label}
+      {/* Wide screens: one brown line — a message in the middle, three links
+          at the end. */}
+      <div className="hidden bg-ink-600 text-white lg:block">
+        <div className="container-wide grid grid-cols-[auto_1fr_auto] items-center gap-6 py-2.5 text-[14px] xl:grid-cols-[1fr_auto_1fr]">
+          <span />
+          <p key={note} className="ad-fade text-center">
+            {ANNOUNCEMENTS[note].text}{" "}
+            <Link href={ANNOUNCEMENTS[note].href} className="ml-2 font-semibold underline underline-offset-4 hover:text-brand-200">
+              {ANNOUNCEMENTS[note].cta}
+            </Link>
+          </p>
+          <nav className="flex items-center justify-end gap-8 font-medium">
+            {TOP_LINKS.map((l) => (
+              <Link key={l.href} href={l.href} className="whitespace-nowrap hover:underline hover:underline-offset-4">
+                {l.label}
               </Link>
             ))}
           </nav>
-
-          <a
-            href={telHref(site.phoneDisplay)}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full !bg-ink-600 px-3.5 py-1 font-bold !text-white transition hover:!bg-ink-700"
-          >
-            <Phone size={11} /> {site.phoneDisplay}
-          </a>
         </div>
       </div>
 
-      {/* Main bar — WHITE (Jumia). Mobile leads with the search bar; nav lives
-          in the bottom tab bar, so the top stays clean (no boxes). */}
+      {/* Main bar — white. A phone has the logo, the search box and the menu
+          button; a wide screen has the logo, the serif links and the icons. */}
       <div className="bg-white">
-        <div className="container-wide flex items-center gap-3 py-2.5 md:gap-6 md:py-3.5">
-          {/* Logo — compact on mobile (left), full on desktop */}
+        <div className="container-wide flex items-center gap-3 py-2.5 lg:gap-8 lg:py-4">
           <Link href="/" className="flex shrink-0 items-center text-ink-900">
-            <span className="md:hidden"><BrandLogoFull size="sm" onLight /></span>
-            <span className="hidden md:inline-flex"><BrandLogoFull size="md" onLight /></span>
+            <span className="lg:hidden"><BrandLogoFull size="sm" onLight /></span>
+            <span className="hidden lg:inline-flex"><BrandLogoFull size="md" onLight /></span>
           </Link>
 
-          {/* Search — sits beside the logo on mobile (narrower), capped on desktop */}
-          <div className="min-w-0 flex-1 md:max-w-2xl">
+          {/* Phone and tablet: search beside the logo */}
+          <div className="min-w-0 flex-1 lg:hidden">
             <SearchBar className="border border-ink-600/20" />
           </div>
 
-          {/* Desktop actions */}
-          <div className="ml-auto hidden items-center gap-5 md:flex">
-            <HeaderAccount onLight />
-            <Link
-              href="/help"
-              className="flex items-center gap-1.5 rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600"
+          {/* Wide screens: the serif links */}
+          <nav className="hidden min-w-0 flex-1 items-center gap-x-7 lg:flex xl:gap-x-9">
+            {MAIN_LINKS.map((l, n) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                // A laptop screen has room for five; the rest are under "More".
+                className={`${n > 4 ? "hidden xl:block" : n > 3 ? "hidden min-[1150px]:block" : ""} whitespace-nowrap border-b py-1 font-display text-[19px] transition ${
+                  isActive(l.href) ? "!border-ink-900 text-ink-900" : "!border-transparent text-ink-900 hover:!border-ink-900"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
+            <div className="group/more relative">
+              <button type="button" className="flex items-center gap-1 whitespace-nowrap py-1 font-display text-[19px] text-ink-900">
+                More <ChevronDown size={15} strokeWidth={1.5} />
+              </button>
+              <div className="invisible absolute right-0 top-full z-50 w-[30rem] pt-3 opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-1 bg-white p-6 shadow-2xl ring-1 ring-ink-600/10">
+                  {MORE_LINKS.map((l) => (
+                    <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          {/* Wide screens: the icons */}
+          <div className="ml-auto hidden items-center gap-1 lg:flex">
+            <button
+              type="button"
+              aria-label="Search"
+              aria-expanded={searching}
+              onClick={() => setSearching((v) => !v)}
+              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600"
             >
-              <HelpCircle size={22} strokeWidth={1.4} />
-              <span className="hidden text-sm font-medium lg:inline">Help</span>
-              <ChevronDown size={14} className="hidden lg:inline" />
-            </Link>
+              <Search size={24} strokeWidth={1.4} />
+            </button>
+            <HeaderAccount onLight />
             <HeaderWishlist />
             <HeaderCart />
           </div>
 
-          {/* Mobile menu toggle */}
+          {/* Phone and tablet: menu button */}
           <button
             type="button"
             aria-label="Menu"
             onClick={() => setOpen((v) => !v)}
-            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50 md:hidden"
+            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50 lg:hidden"
           >
             <Menu size={24} />
           </button>
         </div>
 
+        {/* Wide screens: the search box drops open under the bar. */}
+        {searching && (
+          <div className="hidden border-t border-ink-600/10 lg:block">
+            <div className="container-wide py-3">
+              <div className="mx-auto max-w-2xl">
+                <SearchBar className="border border-ink-600/20" />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Phone: the two businesses that aren't the shop. They were reachable
             only through the desktop nav, which a phone never renders. The home
             page shows a larger pair of its own, so this stands down there. */}
         <div
-          className={`container-wide gap-2 pb-2.5 md:hidden ${
+          className={`container-wide gap-2 pb-2.5 lg:hidden ${
             pathname === "/" ? "hidden" : "flex"
           }`}
         >
@@ -257,99 +290,28 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Category strip — the categories as a row of brown chips that scrolls
-          sideways. A phone shows the chips alone; a desktop leads with the
-          menu and the three businesses. */}
-      <nav className="border-y border-ink-600/10 bg-white">
-        <div className="container-wide flex items-center gap-x-4 py-2 text-sm font-semibold md:gap-x-6">
-          <div className="hidden md:block">
-            <MegaMenu />
-          </div>
-
-          {/* Primary destinations — Shop and Learn lead the bar, ahead of the
-              category list, because they're where most visitors are heading. */}
-          <div className="hidden shrink-0 items-center gap-2 border-r border-ink-600/10 pr-5 md:flex">
+      {/* Phones and tablets: the categories as a row of brown chips that
+          slides sideways. */}
+      <nav className="border-y border-ink-600/10 bg-white lg:hidden">
+        <div className="container-wide flex items-center gap-x-2 overflow-x-auto py-2 no-scrollbar">
+          {CATEGORIES.map((c) => (
             <Link
-              href="/shop"
-              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
-                pathname === "/shop" ? "bg-brand-600" : "bg-brand-500 hover:bg-brand-600"
+              key={c.href}
+              href={c.href}
+              className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
+                pathname === c.href ? "bg-ink-800" : "bg-ink-600 hover:bg-ink-700"
               }`}
             >
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-brand-600">
-                <ShoppingBag size={14} strokeWidth={2.6} />
-              </span>
-              <span className="leading-none">
-                Shop
-                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
-                  Computers
-                </span>
-              </span>
+              {c.label}
             </Link>
-            {/* Learn is the academy, not the shop — it carries its own green
-                identity so it reads as a different kind of destination and is
-                findable at a glance. */}
-            <Link
-              href="/learn"
-              className={`group/learn flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
-                pathname.startsWith("/learn")
-                  ? "bg-green-700"
-                  : "bg-green-600 hover:bg-green-700"
-              }`}
-            >
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-green-700">
-                <GraduationCap size={14} strokeWidth={2.6} />
-              </span>
-              <span className="leading-none">
-                Learn
-                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
-                  Academy
-                </span>
-              </span>
-            </Link>
-            {/* Development is a third distinct business — indigo separates it
-                from the orange shop and the green academy. */}
-            <Link
-              href="/development"
-              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 font-bold text-white shadow-sm ring-1 ring-black/5 transition ${
-                pathname.startsWith("/development")
-                  ? "bg-ink-800"
-                  : "bg-ink-600 hover:bg-ink-700"
-              }`}
-            >
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink-700">
-                <Code2 size={14} strokeWidth={2.6} />
-              </span>
-              <span className="leading-none">
-                Develop
-                <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/75 lg:inline">
-                  Software
-                </span>
-              </span>
-            </Link>
-          </div>
-
-          <div className="flex flex-1 items-center gap-x-2 overflow-x-auto no-scrollbar">
-          {CATEGORIES.map((c) => {
-            const active = pathname === c.href;
-            return (
-              <Link
-                key={c.href}
-                href={c.href}
-                className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
-                  active ? "bg-ink-800" : "bg-ink-600 hover:bg-ink-700"
-                }`}
-              >
-                {c.label}
-              </Link>
-            );
-          })}
-          </div>
+          ))}
         </div>
       </nav>
+      <div className="hidden border-b border-ink-600/10 lg:block" />
 
       {/* Mobile slide-down menu */}
       {open && (
-        <div className="border-t border-ink-600/10 bg-white md:hidden">
+        <div className="max-h-[70vh] overflow-y-auto border-t border-ink-600/10 bg-white lg:hidden">
           <nav className="container-wide flex flex-col py-2">
             <div className="flex items-center gap-3 px-3 pb-2 text-sm text-ink-700/70">
               <User size={18} /> <Link href="/account" onClick={() => setOpen(false)} className="font-semibold">Your account</Link>

@@ -24,8 +24,8 @@ export function FeatureBanner({
   align?: "center" | "left";
 }) {
   return (
-    <section className="relative -mx-[clamp(1rem,3.5vw,2.5rem)] overflow-hidden md:mx-0">
-      <div className="relative min-h-[390px] sm:min-h-[420px]">
+    <section className="bleed-wide relative overflow-hidden">
+      <div className="relative min-h-[390px] sm:min-h-[460px] xl:min-h-[540px]">
         <Image src={img} alt="" fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-ink-900/50" />
         <div

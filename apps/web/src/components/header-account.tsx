@@ -34,8 +34,8 @@ export function HeaderAccount({ onLight = false }: { onLight?: boolean }) {
         aria-label="Sign in"
         className={`flex items-center gap-1.5 rounded px-1.5 py-2 ${txt} ${hover}`}
       >
-        <User size={24} strokeWidth={1.8} className="md:hidden" />
-        <span className="hidden flex-col leading-tight md:flex">
+        <User size={25} strokeWidth={1.4} />
+        <span className="sr-only">
           <span className={`text-[11px] ${sub}`}>Hello, sign in</span>
           <span className="text-sm font-bold">Account</span>
         </span>
@@ -68,7 +68,7 @@ export function HeaderAccount({ onLight = false }: { onLight?: boolean }) {
         className={`flex items-center gap-1.5 rounded px-1.5 py-1.5 ${txt} ${hover}`}
       >
         <Avatar name={user.name} seed={user.email} size={28} className={onLight ? "ring-1 ring-ink-600/15" : "ring-1 ring-white/40"} />
-        <span className="hidden flex-col leading-tight text-left md:flex">
+        <span className="hidden flex-col leading-tight text-left xl:flex">
           <span className={`text-[11px] ${sub}`}>Hello,</span>
           <span className="text-sm font-bold">Hi, {first}</span>
         </span>

@@ -79,58 +79,35 @@ export function HeroRotator() {
   const near = (idx: number) => idx === i || idx === (i + 1) % n;
 
   return (
-    <div className="group/hero relative min-h-[440px] overflow-hidden sm:min-h-[320px] lg:h-[400px]">
+    <div className="group/hero relative h-[460px] overflow-hidden sm:h-[520px] xl:h-[600px]">
       {SLIDES.map((s, idx) => (
         <div
           key={idx}
-          // A light panel on a desktop — the photograph carries the colour. A phone
-          // keeps the photograph full-bleed behind white text.
-          className={`absolute inset-0 bg-ink-700 transition-opacity duration-700 sm:bg-[var(--tile)] ${
+          className={`absolute inset-0 bg-ink-800 transition-opacity duration-700 ${
             idx === i ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
           aria-hidden={idx !== i}
         >
-          {/* Mobile: full-bleed photo with a dark scrim (desktop uses the framed photo). */}
-          <div className="absolute inset-0 sm:hidden">
-            {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />}
-            <div className="absolute inset-0 bg-ink-900/45" />
-          </div>
+          {/* The photograph fills the slide; the words sit over it. */}
+          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className="object-cover" />}
+          <div className="absolute inset-0 bg-ink-900/45" />
 
-          <div className="relative z-10 grid h-full min-h-[440px] grid-cols-1 items-center gap-4 p-6 sm:min-h-0 sm:grid-cols-2 sm:p-10">
-            {/* Text */}
-            <div className="mx-auto max-w-md text-center text-white sm:mx-0 sm:text-left sm:text-ink-900">
-              <span className="hidden items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ring-1 ring-white/20 sm:inline-flex sm:rounded-none sm:bg-transparent sm:px-0 sm:text-brand-600 sm:ring-0">
-                <s.icon size={13} /> {s.eyebrow}
+          <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
+            <p className="font-display text-[18px] italic text-white/95 sm:text-[21px]">{s.eyebrow}</p>
+            <SlideHeading first={idx === 0} className="mt-2 max-w-4xl font-display text-[40px] leading-[1.08] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[58px] xl:text-[68px]">
+              {s.title}
+            </SlideHeading>
+            <p className="mt-3 max-w-xl text-[17px] text-white/95 sm:text-[20px]">{s.sub}</p>
+            <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row">
+              <Link
+                href={s.href}
+                className="press inline-flex items-center justify-center gap-1.5 bg-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90"
+              >
+                {s.cta}
+              </Link>
+              <span className="inline-flex items-center justify-center border border-white px-9 py-4 text-[13px] font-bold uppercase tracking-[0.16em] text-white">
+                {s.pill}
               </span>
-              <SlideHeading first={idx === 0} className="mt-3 font-display text-[40px] leading-[1.08] [text-shadow:0_2px_10px_rgba(0,0,0,0.35)] sm:text-[44px] sm:[text-shadow:none]">
-                {s.title}
-              </SlideHeading>
-              <p className="mx-auto mt-3 max-w-sm text-[17px] text-white/95 sm:mx-0 sm:text-base sm:text-ink-700">{s.sub}</p>
-              <div className="mt-6 flex flex-col items-stretch gap-3 sm:mt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                <Link
-                  href={s.href}
-                  className="press inline-flex items-center justify-center gap-1.5 bg-white px-7 py-4 text-[13px] sm:py-3 sm:text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900 transition hover:bg-white/90 sm:bg-ink-600 sm:text-white sm:hover:bg-ink-700"
-                >
-                  {s.cta} <ChevronRight size={16} />
-                </Link>
-                <span className="bg-white px-3 py-4 text-center text-[13px] font-bold uppercase tracking-[0.14em] text-ink-900 sm:rounded-full sm:py-1.5 sm:text-xs sm:normal-case sm:tracking-normal sm:ring-1 sm:ring-ink-600/15">
-                  {s.pill}
-                </span>
-              </div>
-            </div>
-
-            {/* Framed photo (desktop) */}
-            <div className="relative hidden h-[86%] overflow-hidden sm:block">
-              {near(idx) && (
-                <Image
-                  src={s.img}
-                  alt=""
-                  fill
-                  priority={idx === 0}
-                  sizes="(max-width: 1024px) 45vw, 34vw"
-                  className="object-cover"
-                />
-              )}
             </div>
           </div>
         </div>
@@ -159,7 +136,7 @@ export function HeroRotator() {
             key={idx}
             onClick={() => setI(idx)}
             aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2 rounded-full transition-all ${idx === i ? "w-5 bg-white sm:bg-ink-600" : "w-2 bg-white/50 hover:bg-white/80 sm:bg-ink-600/25 sm:hover:bg-ink-600/50"}`}
+            className={`h-2 rounded-full transition-all ${idx === i ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
           />
         ))}
       </div>
