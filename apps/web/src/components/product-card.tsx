@@ -2,7 +2,7 @@ import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
 import { card } from "@/lib/thumb";
 import { productImages } from "@/lib/product-images";
-import { ugx } from "@/lib/site";
+import { site, soldBy, ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ProductRating } from "@/components/product-rating";
 import { SafeImage } from "@/components/safe-image";
@@ -180,7 +180,7 @@ export function ProductCard({ product }: { product: Product }) {
                 name: product.name,
                 price: product.price,
                 category: product.category,
-                condition: product.seller ? `Sold by ${product.seller}` : product.condition,
+                condition: product.seller ? soldBy(product.seller) : product.condition,
                 image: product.seller ? product.image : undefined,
               }}
             />
@@ -212,8 +212,11 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {product.seller && (
-          <p className="mt-1 truncate text-[11px] text-ink-700/60">
-            Sold by <span className="font-semibold text-brand-600">{product.seller}</span>
+          <p className="mt-1 text-[11px] leading-snug text-ink-700/60">
+            <span className="block truncate">
+              Sold by <span className="font-semibold text-brand-600">{site.name}</span>
+            </span>
+            <span className="block truncate">Partner vendor: {product.seller}</span>
           </p>
         )}
 

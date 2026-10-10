@@ -2,6 +2,7 @@
 
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { soldBy } from "@/lib/site";
 
 type Props = {
   id: number;
@@ -24,7 +25,7 @@ export function VendorAddToCart({ id, name, price, category, vendorName, image }
           name,
           price,
           category,
-          condition: `Sold by ${vendorName}`,
+          condition: soldBy(vendorName),
           image,
         })
       }

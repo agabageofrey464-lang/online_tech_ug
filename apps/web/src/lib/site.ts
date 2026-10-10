@@ -133,6 +133,15 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+/**
+ * Who sells a vendor's product, as a cart line and an order say it: the shop
+ * first, since the customer orders from and pays us, then the vendor who
+ * supplies it.
+ */
+export function soldBy(vendor: string) {
+  return `Sold by ${site.name} · Partner vendor: ${vendor}`;
+}
+
 export function whatsappLink(message?: string) {
   const base = `https://wa.me/${site.whatsapp}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;

@@ -26,7 +26,7 @@ export function vendorOrderMessage(p: {
 }): string {
   return (
     `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this marketplace product:\n\n` +
-    `🛒 ${p.name}\n💰 ${p.priceLabel}\n🏪 Sold by: ${p.vendor}\n📦 ${p.category}` +
+    `🛒 ${p.name}\n💰 ${p.priceLabel}\n🏪 Sold by: Online Tech Uganda (partner vendor: ${p.vendor})\n📦 ${p.category}` +
     (p.url ? `\n🔗 ${p.url}` : "")
   );
 }

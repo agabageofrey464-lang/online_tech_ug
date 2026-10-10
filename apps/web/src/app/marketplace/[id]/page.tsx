@@ -13,7 +13,7 @@ import { asShopProducts, getVendorItem, getVendorItems } from "@/lib/vendor-item
 import { fallbackImage } from "@/lib/image-fallback";
 import { vendorOrderMessage } from "@/lib/order-message";
 import { share } from "@/lib/seo";
-import { site, ugx } from "@/lib/site";
+import { site, soldBy, ugx } from "@/lib/site";
 
 export const revalidate = 30;
 
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return share(
     {
       title: item.name,
-      description: `${item.name} — ${ugx(item.price_ugx)}, sold by ${item.vendor_name} on Online Tech Uganda.${item.description ? " " + item.description : ""}`.slice(0, 300),
+      description: `${item.name} — ${ugx(item.price_ugx)}, sold by Online Tech Uganda with our partner vendor ${item.vendor_name}.${item.description ? " " + item.description : ""}`.slice(0, 300),
     },
     `/marketplace/${item.id}`,
     item.image_url || undefined,
@@ -87,7 +87,9 @@ export default async function VendorProductPage({ params }: Params) {
                 {" · "}
               </>
             )}
-            Sold by <span className="font-semibold text-brand-600">{item.vendor_name}</span>
+            Sold by <span className="font-semibold text-brand-600">{site.name}</span>
+            {" · "}
+            Partner vendor: <span className="font-semibold text-ink-900">{item.vendor_name}</span>
             {item.vendor_verified && (
               <span className="ml-1.5 inline-flex items-center gap-0.5 font-semibold text-ink-900">
                 <BadgeCheck size={13} /> Verified
@@ -118,7 +120,7 @@ export default async function VendorProductPage({ params }: Params) {
           <div id="order-now" className="mt-6 border-t border-ink-600/15 pt-6">
             {item.in_stock ? (
               <ProductBuyBox
-                item={{ slug: `vp-${item.id}`, name: item.name, price: item.price_ugx, category: item.category, condition: `Sold by ${item.vendor_name}`, image: item.image_url || undefined }}
+                item={{ slug: `vp-${item.id}`, name: item.name, price: item.price_ugx, category: item.category, condition: soldBy(item.vendor_name), image: item.image_url || undefined }}
                 colors={colours}
                 choices={[]}
               />
@@ -150,7 +152,7 @@ export default async function VendorProductPage({ params }: Params) {
               </li>
               <li className="flex items-start gap-2.5 text-sm">
                 <ShieldCheck size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
-                <span className="text-ink-700/85">Sold by an approved vendor · payment handled by us</span>
+                <span className="text-ink-700/85">Sold by {site.name} · supplied by an approved partner vendor</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm">
                 <RotateCcw size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
@@ -180,7 +182,8 @@ export default async function VendorProductPage({ params }: Params) {
                 { label: "Condition", value: condition },
                 ...specs,
                 { label: "Price", value: ugx(item.price_ugx) },
-                { label: "Sold by", value: item.vendor_name },
+                { label: "Sold by", value: site.name },
+                { label: "Partner vendor", value: item.vendor_name },
               ].map((s, i) => (
                 <div key={`${s.label}-${i}`} className="grid grid-cols-[40%_60%] gap-3 py-2.5 text-sm">
                   <dt className="text-ink-700/60">{s.label}</dt>
@@ -206,7 +209,10 @@ export default async function VendorProductPage({ params }: Params) {
           <h2 className="border-y border-ink-600/10 px-5 py-4 text-[22px] text-ink-900">Seller Information</h2>
           <div className="p-5">
             <p className="flex items-center gap-2 text-sm font-semibold text-ink-900">
-              <Store size={17} strokeWidth={1.5} /> {item.vendor_name}
+              <Store size={17} strokeWidth={1.5} /> {site.name}
+            </p>
+            <p className="mt-1 text-[13px] text-ink-700/80">
+              Partner vendor: <span className="font-semibold text-ink-900">{item.vendor_name}</span>
             </p>
             {item.vendor_verified && (
               <p className="mt-1 inline-flex items-center gap-1 bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-700">
@@ -214,7 +220,7 @@ export default async function VendorProductPage({ params }: Params) {
               </p>
             )}
             <p className="mt-3 text-xs leading-relaxed text-ink-700/70">
-              This item is sold by an independent vendor through Online Tech Uganda. You order and pay through us.
+              You order from and pay {site.name}. This item is supplied by one of our approved partner vendors, and every order and question comes to us on {site.phoneDisplay}.
             </p>
             <Link href="/marketplace" className="mt-4 block border border-ink-700/25 px-3 py-2.5 text-center text-xs font-bold uppercase tracking-[0.1em] text-ink-900 transition hover:border-ink-900">
               More from the marketplace
