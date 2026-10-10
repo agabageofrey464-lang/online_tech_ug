@@ -3,7 +3,7 @@ import type { Product } from "@/lib/data";
  * The order the categories arrive in. Phones lead, ahead of the computers.
  */
 export const CATEGORY_ORDER: Product["category"][] = [
-  "Phones", "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking",
+  "Phones", "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking", "Stickers",
 ];
 
 /** Everything in stock, category by category, newest first within each. */
@@ -20,7 +20,7 @@ export function byCategory<T extends { category: Product["category"] }>(newestLa
  * the rest), so every product lands in exactly one.
  */
 export const LEAD_BRANDS = ["Lenovo", "HP", "Dell"];
-export const GROUP_ORDER: string[] = ["Phones", ...LEAD_BRANDS, "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking"];
+export const GROUP_ORDER: string[] = ["Phones", ...LEAD_BRANDS, "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking", "Stickers"];
 
 export function groupOf(p: { brand: string; category: string }): string {
   if (p.category === "Phones") return "Phones";
@@ -35,7 +35,7 @@ export function groupHref(group: string): string {
 
 /** The heading a group is shown under. */
 export function groupTitle(group: string): string {
-  return LEAD_BRANDS.includes(group) ? `${group} Computers` : group === "Laptops" ? "More Laptops" : group === "Desktops" ? "More Desktops" : group;
+  return LEAD_BRANDS.includes(group) ? `${group} Computers` : group === "Laptops" ? "More Laptops" : group === "Desktops" ? "More Desktops" : group === "Stickers" ? "Laptop Skins & Stickers" : group;
 }
 
 /** Everything, group by group, newest first within each. */

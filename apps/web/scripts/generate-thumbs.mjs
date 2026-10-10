@@ -46,7 +46,8 @@ const SIZES = [
   { dir: "thumbs", px: 96, quality: 74 },
   { dir: "cards", width: 640, quality: 78, sharpen: true },
 ];
-const DIRS = ["products", "courses"];
+// "products/stickers" is the laptop skins' own folder inside products.
+const DIRS = ["products", "products/stickers", "courses"];
 
 let written = 0;
 let skipped = 0;

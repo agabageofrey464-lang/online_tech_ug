@@ -18,6 +18,7 @@ const cols = [
       { label: "Power & Charging", href: "/shop?cat=Power" },
       { label: "Accessories", href: "/shop?cat=Accessories" },
       { label: "Storage", href: "/shop?cat=Storage" },
+      { label: "Laptop Skins & Stickers", href: "/stickers" },
     ],
   },
   {

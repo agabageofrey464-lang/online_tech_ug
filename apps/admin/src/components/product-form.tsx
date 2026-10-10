@@ -13,7 +13,7 @@ import { EMPTY_SPECS, emptyValues, type ProductFormValues } from "@/lib/product-
 export { EMPTY_SPECS, emptyValues };
 export type { ProductFormValues };
 
-const CATEGORIES = ["Laptops", "Desktops", "Phones", "Components", "Power", "Accessories", "Networking", "Storage"];
+const CATEGORIES = ["Laptops", "Desktops", "Phones", "Components", "Power", "Accessories", "Networking", "Storage", "Stickers"];
 const CONDITIONS = ["Brand New", "UK Used", "Refurbished"];
 const COMPUTER_CATS = ["Laptops", "Desktops", "Phones"];
 

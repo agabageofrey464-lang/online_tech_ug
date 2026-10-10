@@ -43,7 +43,8 @@ export type Product = {
     | "Power"
     | "Accessories"
     | "Networking"
-    | "Storage";
+    | "Storage"
+    | "Stickers";
   price: number; // UGX
   oldPrice?: number;
   brand: string;
@@ -63,6 +64,33 @@ export type Product = {
 export function productImage(p: Pick<Product, "id" | "image">): string {
   return p.image ?? `/products/${p.id}.webp`;
 }
+
+// ── Laptop skins (stickers) ─────────────────────────────────
+// One price for any design: UGX 70,000 covers the full body of a laptop.
+// Photographs are in public/products/stickers/ — the pattern close up, then
+// the roll as it is in the shop.
+export const stickerProducts: Product[] = [
+  { image: "/products/stickers/laptop-skin-beige-linen.webp", id: "laptop-skin-beige-linen", name: "Laptop Skin — Beige Linen", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Woven linen texture in warm beige", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-mustard-linen.webp", id: "laptop-skin-mustard-linen", name: "Laptop Skin — Mustard Linen", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Woven linen texture in mustard gold", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-greek-key.webp", id: "laptop-skin-black-greek-key", name: "Laptop Skin — Black Greek Key", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with a gloss maze pattern", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-basket-weave.webp", id: "laptop-skin-black-basket-weave", name: "Laptop Skin — Black Basket Weave", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black weave with gloss squares", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-y-block.webp", id: "laptop-skin-black-y-block", name: "Laptop Skin — Black Y-Block", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with large gloss-edged blocks", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-monogram-link.webp", id: "laptop-skin-black-monogram-link", name: "Laptop Skin — Black Monogram Link", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with a fine linked pattern", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-matte-pink.webp", id: "laptop-skin-matte-pink", name: "Laptop Skin — Matte Pink", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Plain pink with a soft matte finish", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-light-oak-wood.webp", id: "laptop-skin-light-oak-wood", name: "Laptop Skin — Light Oak Wood", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Light oak wood grain", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-charcoal-brushed-wood.webp", id: "laptop-skin-charcoal-brushed-wood", name: "Laptop Skin — Charcoal Brushed Wood", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Charcoal wood grain with a brushed sheen", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-dark-grey-oak.webp", id: "laptop-skin-dark-grey-oak", name: "Laptop Skin — Dark Grey Oak", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Dark grey oak wood grain", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-y-block-mini.webp", id: "laptop-skin-black-y-block-mini", name: "Laptop Skin — Black Y-Block Mini", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with small gloss-edged blocks", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-pinstripe.webp", id: "laptop-skin-black-pinstripe", name: "Laptop Skin — Black Pinstripe", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with thin gloss stripes", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-golden-oriental-scroll.webp", id: "laptop-skin-golden-oriental-scroll", name: "Laptop Skin — Golden Oriental Scroll", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Gold with an oriental village painting", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-crackle.webp", id: "laptop-skin-black-crackle", name: "Laptop Skin — Black Crackle", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with a gloss cracked pattern", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-blue-grey-linen.webp", id: "laptop-skin-blue-grey-linen", name: "Laptop Skin — Blue-Grey Linen", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Woven linen texture in blue-grey", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-grey-ash-wood.webp", id: "laptop-skin-grey-ash-wood", name: "Laptop Skin — Grey Ash Wood", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Grey ash wood grain", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-stacked-firewood.webp", id: "laptop-skin-stacked-firewood", name: "Laptop Skin — Stacked Firewood", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Printed stack of cut logs", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-light-grey-linen.webp", id: "laptop-skin-light-grey-linen", name: "Laptop Skin — Light Grey Linen", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Woven linen texture in light grey", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-silver-grey-texture.webp", id: "laptop-skin-silver-grey-texture", name: "Laptop Skin — Silver Grey Texture", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Fine brushed texture in silver grey", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+  { image: "/products/stickers/laptop-skin-black-butterfly.webp", id: "laptop-skin-black-butterfly", name: "Laptop Skin — Black Butterfly", category: "Stickers", price: 70000, brand: "Online Tech Uganda", condition: "Brand New", rating: 4.5, specs: ["Full-body laptop skin", "Matte black with gloss butterflies", "Cut and fitted to your laptop"], details: { type: "Laptop skin / sticker", compatibility: "Cut to fit your laptop model", purpose: "Protects the body from scratches and gives it a new look" } },
+];
 
 export const products: Product[] = [
   // ── Budget laptops (550k – 1M) ──────────────────────────────
@@ -2317,6 +2345,8 @@ export const products: Product[] = [
  */
 export const listedProducts: Product[] = products.filter((p) => p.inStock !== false && !RETIRED.has(p.id));
 
+products.push(...stickerProducts);
+
 export const productCategories = [
   "All",
   "Laptops",
@@ -2327,6 +2357,7 @@ export const productCategories = [
   "Accessories",
   "Networking",
   "Storage",
+  "Stickers",
 ] as const;
 
 export type Service = {

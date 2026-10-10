@@ -39,6 +39,7 @@ const CATEGORIES = [
   { href: "/shop?cat=Accessories", label: "Accessories" },
   { href: "/shop?cat=Networking", label: "Networking" },
   { href: "/shop?cat=Storage", label: "Storage" },
+  { href: "/stickers", label: "Laptop Skins" },
   { href: "/shop?cat=Power", label: "Power" },
   { href: "/marketplace", label: "Marketplace" },
 ];
@@ -107,6 +108,7 @@ const MENUS: Menu[] = [
       { href: "/shop?cat=Storage", label: "Storage" },
       { href: "/shop?cat=Networking", label: "Networking" },
       { href: "/shop?cat=Power", label: "Power" },
+      { href: "/stickers", label: "Laptop Skins & Stickers" },
       { href: "/shop?deals=1", label: "Price Drops" },
       { href: "/find", label: "Find My Laptop" },
       { href: "/marketplace", label: "Marketplace" },

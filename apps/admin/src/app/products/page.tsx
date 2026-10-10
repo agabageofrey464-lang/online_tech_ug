@@ -5,7 +5,7 @@ import { productThumb } from "@/lib/product-image";
 import { ReturnToRow } from "@/components/return-to-row";
 
 
-const CATEGORY_ORDER = ["Laptops", "Desktops", "Phones", "Components", "Power", "Accessories", "Networking", "Storage"];
+const CATEGORY_ORDER = ["Laptops", "Desktops", "Phones", "Components", "Power", "Accessories", "Networking", "Storage", "Stickers"];
 
 export default async function ProductsPage() {
   const products = (await apiGet<AdminProduct[]>("/api/v1/products?limit=500")) ?? [];
