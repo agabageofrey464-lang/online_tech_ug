@@ -32,9 +32,9 @@ const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 // The category strip — product-first.
 const CATEGORIES = [
   { href: "/shop", label: "All Products" },
+  { href: "/shop?cat=Phones", label: "Phones" },
   { href: "/shop?cat=Laptops", label: "Laptops" },
   { href: "/shop?cat=Desktops", label: "Desktops" },
-  { href: "/shop?cat=Phones", label: "Phones" },
   { href: "/shop?cat=Components", label: "Components" },
   { href: "/shop?cat=Accessories", label: "Accessories" },
   { href: "/shop?cat=Networking", label: "Networking" },
@@ -96,11 +96,11 @@ const MENUS: Menu[] = [
     label: "Shop",
     href: "/shop",
     match: ["/shop", "/marketplace", "/find", "/cart", "/checkout", "/wishlist"],
-    blurb: "Computers, phones and accessories — tested, warranted, delivered countrywide.",
+    blurb: "Phones, computers and accessories — tested, warranted, delivered countrywide.",
     links: [
       { href: "/shop", label: "All Products" },
-      { href: "/shop?cat=Laptops", label: "Laptops" },
       { href: "/shop?cat=Phones", label: "Phones" },
+      { href: "/shop?cat=Laptops", label: "Laptops" },
       { href: "/shop?cat=Desktops", label: "Desktops" },
       { href: "/shop?cat=Components", label: "Components" },
       { href: "/shop?cat=Accessories", label: "Accessories" },

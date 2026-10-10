@@ -11,6 +11,7 @@ const cols = [
   {
     title: "Shop",
     links: [
+      { label: "Phones", href: "/shop?cat=Phones" },
       { label: "Laptops", href: "/shop?cat=Laptops" },
       { label: "Desktops", href: "/shop?cat=Desktops" },
       { label: "Components (RAM/SSD)", href: "/shop?cat=Components" },

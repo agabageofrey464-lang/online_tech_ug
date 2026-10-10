@@ -278,7 +278,15 @@ export default async function HomePage() {
           and "Explore our top categories" covers browsing for everyone. */}
 
 
-      {/* Lenovo, HP and Dell, in that order, then the phones. */}
+      {/* Phones lead the page, ahead of the computers. */}
+      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
+        {/* Every phone we stock, in a row that slides sideways. As a grid of
+            large tiles it ran to four screens on a handset before anything
+            else on the page could be seen. */}
+        <Rail items={byCat("Phones")} />
+      </Panel>
+
+      {/* Then Lenovo, HP and Dell, in that order. */}
       {leadRows.map((g) => (
         <DealBand
           key={g.brand}
@@ -290,13 +298,6 @@ export default async function HomePage() {
           <Rail items={g.items.slice(0, RAIL)} />
         </DealBand>
       ))}
-
-      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
-        {/* Every phone we stock, in a row that slides sideways. As a grid of
-            large tiles it ran to four screens on a handset before anything
-            else on the page could be seen. */}
-        <Rail items={byCat("Phones")} />
-      </Panel>
 
       {/* What approved vendors have listed, beside our own stock. */}
       {fromVendors.length > 0 && (

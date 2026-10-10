@@ -1,10 +1,9 @@
 import type { Product } from "@/lib/data";
 /**
- * The order the categories arrive in. Phones come last: the top of the home
- * page already lists every one of them.
+ * The order the categories arrive in. Phones lead, ahead of the computers.
  */
 export const CATEGORY_ORDER: Product["category"][] = [
-  "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking", "Phones",
+  "Phones", "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking",
 ];
 
 /** Everything in stock, category by category, newest first within each. */
@@ -13,15 +12,15 @@ export function byCategory<T extends { category: Product["category"] }>(newestLa
 }
 
 /**
- * The order products arrive in as a page is scrolled: the three computer
- * brands most people ask for by name, then phones, then everything else by
+ * The order products arrive in as a page is scrolled: phones first, then the
+ * three computer brands most people ask for by name, then everything else by
  * what it is.
  *
  * A group is a brand (for a Lenovo, HP or Dell computer) or a category (for
  * the rest), so every product lands in exactly one.
  */
 export const LEAD_BRANDS = ["Lenovo", "HP", "Dell"];
-export const GROUP_ORDER: string[] = [...LEAD_BRANDS, "Phones", "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking"];
+export const GROUP_ORDER: string[] = ["Phones", ...LEAD_BRANDS, "Laptops", "Desktops", "Components", "Storage", "Power", "Accessories", "Networking"];
 
 export function groupOf(p: { brand: string; category: string }): string {
   if (p.category === "Phones") return "Phones";

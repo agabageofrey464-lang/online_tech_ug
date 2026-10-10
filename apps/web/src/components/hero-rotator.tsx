@@ -305,7 +305,7 @@ const SLIDES: Slide[] = [
     tab: "Shop",
     eyebrow: "Shop · genuine & warranted",
     title: "Powering Uganda, One Device at a Time",
-    sub: "Laptops, desktops & accessories — tested, with warranty and countrywide delivery.",
+    sub: "Phones, laptops, desktops & accessories — tested, with warranty and countrywide delivery.",
     cta: "Shop now",
     href: "/shop",
     more: { label: "Find my laptop", href: "/find" },
