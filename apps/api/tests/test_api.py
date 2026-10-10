@@ -499,3 +499,37 @@ def test_transport_is_charged_on_the_distance_to_the_customers_pin(db_factory):
         # No pin: the town, as before.
         town = create_order(db, OrderCreate(**buyer))
         assert town.delivery_km is None and town.delivery_fee == 14_000
+
+
+def test_a_product_photo_comes_out_the_same_from_any_device():
+    from io import BytesIO
+
+    import pytest
+    from PIL import Image
+
+    from app.services import product_photo
+
+    def made(img, fmt, **kw):
+        out = BytesIO()
+        img.save(out, fmt, **kw)
+        return Image.open(BytesIO(product_photo.standardise(out.getvalue())))
+
+    # A phone: large, tall, stored on its side with a note to turn it.
+    exif = Image.Exif()
+    exif[0x0112] = 6
+    phone = made(Image.new("RGB", (4000, 3000), (200, 30, 30)), "JPEG", exif=exif)
+    # A laptop: a small wide picture saved from somewhere.
+    laptop = made(Image.new("RGB", (800, 500), (30, 30, 200)), "PNG")
+    # A cut-out with a see-through background.
+    cutout = made(Image.new("RGBA", (900, 900), (0, 0, 0, 0)), "PNG")
+
+    for img in (phone, laptop, cutout):
+        assert img.format == "JPEG" and img.mode == "RGB" and img.width == img.height
+    assert phone.size == (1200, 1200) and laptop.size == (800, 800)
+    # Turned upright: the phone's picture is now taller than wide, with white either side.
+    assert phone.getpixel((20, 600))[0] > 240 and phone.getpixel((20, 600))[2] > 240
+    assert phone.getpixel((600, 20))[0] > 150 and phone.getpixel((600, 20))[2] < 90
+    assert cutout.getpixel((450, 450)) == (255, 255, 255)
+
+    with pytest.raises(ValueError):
+        product_photo.standardise(b"not a picture")

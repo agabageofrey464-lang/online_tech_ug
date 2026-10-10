@@ -126,15 +126,16 @@ def remove_product(
         raise HTTPException(status_code=404, detail="Product not found")
 
 
-_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-
-
 @router.post("/upload")
 async def vendor_upload(file: UploadFile = File(...), user: User = Depends(require_vendor)) -> dict:
-    """A vendor uploads a product image. Returns its stored path."""
+    """A vendor uploads a product image. Returns its stored path.
+
+    The picture is standardised on the way in, so a product looks the same
+    whether it was added from a phone or a computer.
+    """
     content = await file.read()
     try:
-        stored = storage.save_file("images", file.filename or "image", content, allowed=_IMAGE_EXT, max_bytes=8 * 1024 * 1024)
+        stored = storage.save_photo(file.filename or "photo", content)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"path": f"images/{stored}"}

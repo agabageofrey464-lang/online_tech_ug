@@ -1,6 +1,7 @@
 "use client";
 
 import { VendorPlans } from "@/components/vendor-plans";
+import { preparePhoto } from "@/lib/prepare-photo";
 import { ProductCard } from "@/components/product-card";
 import { asShopProducts, type VendorItem } from "@/lib/vendor-items";
 import Link from "next/link";
@@ -252,9 +253,13 @@ export default function VendorDashboard() {
     }
   }
 
-  async function uploadImage(file: File) {
+  async function uploadImage(picked: File) {
     setUploadingImg(true);
+    setErr("");
     try {
+      // Made ready here first, so a phone's large camera picture sends as
+      // quickly, and ends up the same, as one from a computer.
+      const file = await preparePhoto(picked);
       const fd = new FormData();
       fd.append("file", file);
       const res = await authFetch("/vendor/upload", { method: "POST", body: fd });
@@ -262,7 +267,11 @@ export default function VendorDashboard() {
       if (res.ok && data.path) {
         const API = process.env.NEXT_PUBLIC_API_URL ?? "";
         setForm((f) => ({ ...f, image_url: `${API}/api/v1/uploads/${data.path}` }));
+      } else {
+        setErr(data.detail || "The photo did not upload. Please try again, or try another photo.");
       }
+    } catch {
+      setErr("The photo did not upload. Check your connection and try again.");
     } finally {
       setUploadingImg(false);
     }

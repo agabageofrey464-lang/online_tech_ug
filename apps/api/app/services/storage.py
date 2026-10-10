@@ -29,6 +29,31 @@ def save_file(subdir: str, filename: str, content: bytes, allowed=IMAGE_DOC_EXT,
     return stored
 
 
+PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".jfif"}
+# What the web server in front of us lets through; a phone's camera picture fits.
+MAX_PHOTO_BYTES = 19 * 1024 * 1024
+
+
+def save_photo(filename: str, content: bytes) -> str:
+    """Save a product photograph, standardised so it looks the same from any device.
+
+    Whatever arrives — a phone's camera picture, a small image saved from a
+    website, a PNG — is stored as an upright JPEG on a white square of one size.
+    """
+    from app.services import product_photo
+
+    ext = os.path.splitext(filename or "")[1].lower()
+    if ext and ext not in PHOTO_EXT:
+        raise ValueError("Please upload a photo: JPG, PNG or WebP.")
+    if len(content) > MAX_PHOTO_BYTES:
+        raise ValueError(f"Photo must be under {MAX_PHOTO_BYTES // (1024 * 1024)} MB")
+    data = product_photo.standardise(content)  # raises ValueError if it is not a picture
+    stem = re.sub(r"[^a-zA-Z0-9_-]", "_", os.path.splitext(os.path.basename(filename or "photo"))[0])[:50] or "photo"
+    stored = f"{secrets.token_hex(6)}_{stem}.jpg"
+    (_dir("images") / stored).write_bytes(data)
+    return stored
+
+
 def file_path(subdir: str, stored: str) -> Path | None:
     p = _dir(subdir) / stored
     return p if p.exists() else None

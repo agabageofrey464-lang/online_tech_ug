@@ -8,9 +8,6 @@ from app.services import storage
 
 router = APIRouter()
 
-IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-MAX_IMAGE_BYTES = 8 * 1024 * 1024  # 8 MB
-
 
 def require_admin(x_admin_key: str = Header(default="")) -> None:
     if not settings.admin_api_key or x_admin_key != settings.admin_api_key:
@@ -22,9 +19,7 @@ async def upload_image(file: UploadFile = File(...)) -> dict:
     """Admin: upload an image. Returns its stored path (e.g. 'images/ab12_pic.jpg')."""
     content = await file.read()
     try:
-        stored = storage.save_file(
-            "images", file.filename or "image", content, allowed=IMAGE_EXT, max_bytes=MAX_IMAGE_BYTES
-        )
+        stored = storage.save_photo(file.filename or "photo", content)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"path": f"images/{stored}"}
