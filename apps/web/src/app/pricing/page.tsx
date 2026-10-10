@@ -3,7 +3,8 @@ import { ugx } from "@/lib/site";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
-import { PricingSection, postingCharges, vendorPlans, freelancerPlans, advertPlans, servicePlans } from "@/components/pricing-section";
+import { PricingSection, postingCharges, freelancerPlans, advertPlans, servicePlans } from "@/components/pricing-section";
+import { VendorPlans } from "@/components/vendor-plans";
 import { share } from "@/lib/seo";
 
 export const metadata: Metadata = share({
@@ -24,7 +25,9 @@ export default function PricingPage() {
 
       <section className="container-page space-y-8 py-8">
         <PricingSection title="Charges per post" subtitle="Pay once per post — we design and publish it for you." plans={postingCharges} showPay={false} />
-        <PricingSection title="Sell on the Marketplace" subtitle="Subscribe weekly, monthly or yearly." plans={vendorPlans} showPay={false} />
+        <div className="py-6">
+          <VendorPlans />
+        </div>
         <PricingSection title="Advertising packages" subtitle="Weekly, monthly or yearly homepage adverts." plans={advertPlans} showPay={false} />
         <PricingSection title="Freelancers — Get Hired" subtitle="List your skills weekly, monthly or yearly." plans={freelancerPlans} showPay={false} />
         <PricingSection title="Websites, Apps & Software" subtitle={`Project-based pricing — websites from ${ugx(SERVICE_FROM.website)}.`} plans={servicePlans} showPay={false} />

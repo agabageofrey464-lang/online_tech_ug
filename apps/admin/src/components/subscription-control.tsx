@@ -7,11 +7,14 @@ export function SubscriptionControl({
   kind,
   id,
   ends,
+  grace = false,
   onChange,
 }: {
   kind: "vendor" | "freelancer" | "advert";
   id: number;
   ends: string | null;
+  /** A vendor on the free month given after a paid period with no sale. */
+  grace?: boolean;
   onChange: () => void;
 }) {
   const [busy, setBusy] = useState(false);
@@ -40,11 +43,24 @@ export function SubscriptionControl({
     <div className="flex flex-wrap items-center gap-1.5 text-xs">
       <span className={expired ? "font-semibold text-red-600" : date ? "text-ink-600/70" : "text-ink-600/40"}>{label}</span>
       <span className="text-ink-600/40">·</span>
-      {[
-        { d: 7, l: "+1wk" },
-        { d: 30, l: "+1mo" },
-        { d: 365, l: "+1yr" },
-      ].map((o) => (
+      {grace && !expired && (
+        <span className="rounded bg-amber-100 px-1.5 py-0.5 font-semibold text-amber-800" title="Nothing sold in the period they paid for, so their products stay one more month at no charge.">
+          Free month — no sale
+        </span>
+      )}
+      {(kind === "vendor"
+        ? [
+            // What a vendor pays: a month, half a year, a year.
+            { d: 30, l: "Paid 50k · 1 month" },
+            { d: 182, l: "Paid 300k · 6 months" },
+            { d: 365, l: "Paid 600k · 1 year" },
+          ]
+        : [
+            { d: 7, l: "+1wk" },
+            { d: 30, l: "+1mo" },
+            { d: 365, l: "+1yr" },
+          ]
+      ).map((o) => (
         <button
           key={o.d}
           disabled={busy}

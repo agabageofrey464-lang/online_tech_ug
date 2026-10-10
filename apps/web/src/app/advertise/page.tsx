@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { HomeAdverts } from "@/components/home-adverts";
 import { site, whatsappLink, ugx } from "@/lib/site";
 import { share } from "@/lib/seo";
+import { VendorPlans } from "@/components/vendor-plans";
 
 export const metadata: Metadata = share({
   title: "Advertise & Grow With Us",
@@ -41,24 +42,6 @@ const adPackages = [
     per: "/post",
     desc: "A dedicated article about your business on our blog + socials.",
     features: ["Written & published for you", "Shared on our socials", "Stays on the blog"],
-  },
-];
-
-const vendorPlans = [
-  {
-    name: "Commission (Pay as you sell)",
-    price: "5–10%",
-    per: "per sale",
-    desc: "No monthly fee. You only pay a small commission when you make a sale.",
-    features: ["No upfront cost", "Great for starting out", "We handle payment & delivery"],
-  },
-  {
-    name: "Monthly Subscription",
-    price: ugx(50000),
-    per: "/month",
-    desc: "Pay a flat monthly fee and keep more of every sale — ideal for high volume.",
-    features: ["0% commission on sales", "Unlimited product listings", "Featured vendor badge", "Priority support"],
-    popular: true,
   },
 ];
 
@@ -162,38 +145,9 @@ export default async function AdvertisePage() {
           </div>
         </div>
 
-        {/* Vendor plans: commission vs subscription */}
+        {/* Vendor plans */}
         <div className="mt-14">
-          <h2 className="text-2xl font-extrabold text-ink-900">Selling on our marketplace? Choose your plan</h2>
-          <p className="mt-1 text-sm text-ink-700/60">Pay commission per sale, or a flat monthly subscription — whichever suits your business.</p>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {vendorPlans.map((p) => (
-              <div key={p.name} className={`relative flex flex-col rounded-card border bg-white p-6 shadow-sm ${p.popular ? "border-brand-400 ring-1 ring-brand-400" : "border-ink-600/10"}`}>
-                {p.popular && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-xs font-bold text-white">Best value for high sales</span>
-                )}
-                <h3 className="text-lg font-extrabold text-ink-900">{p.name}</h3>
-                <p className="mt-1 text-sm text-ink-700/65">{p.desc}</p>
-                <p className="mt-4">
-                  <span className="text-3xl font-extrabold text-ink-900">{p.price}</span>
-                  <span className="text-sm text-ink-700/60"> {p.per}</span>
-                </p>
-                <ul className="mt-4 flex-1 space-y-2">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-ink-700/80"><Check size={15} className="shrink-0 text-brand-500" /> {f}</li>
-                  ))}
-                </ul>
-                <div className="mt-5 flex gap-2">
-                  <Link href="/sell" className="flex-1 rounded-md bg-brand-500 px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-brand-600">
-                    Become a vendor
-                  </Link>
-                  <a href={reqLink(p.name)} target="_blank" rel="noreferrer" className="rounded-md border border-ink-600/20 px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50">
-                    Ask us
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
+          <VendorPlans />
         </div>
 
         {/* Content promotions — pricing lives on the dedicated Pricing page */}

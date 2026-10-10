@@ -115,7 +115,7 @@ const NEEDS: Need[] = [
   {
     key: "sell", icon: "package", label: "Sell my products", tone: "bg-ink-700",
     answer: "Open a shop on our marketplace and put your products in front of the people already buying here.",
-    points: ["No commission on sales", "A flat weekly, monthly or yearly plan", "Your own vendor dashboard", "Verified businesses only"],
+    points: ["No commission on sales", "A flat monthly, half-year or yearly plan", "Your own vendor dashboard", "Verified businesses only"],
     cta: "Become a vendor", href: "/sell",
   },
 ];

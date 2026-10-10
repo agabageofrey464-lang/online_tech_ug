@@ -46,4 +46,9 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     # When a vendor's paid subscription ends (null = no expiry set).
     subscription_ends: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # When the period they last paid for began: sales are counted from here.
+    subscription_started: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # True while a vendor is on the free month given after a paid period
+    # in which nothing sold. Cleared when they next pay.
+    subscription_grace: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

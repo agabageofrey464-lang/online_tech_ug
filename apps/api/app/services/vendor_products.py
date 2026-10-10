@@ -3,6 +3,7 @@
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.models.order import Order, OrderItem
 from app.models.user import User
 from app.models.vendor_payout import VendorPayout
@@ -64,8 +65,10 @@ def _public(vp: VendorProduct, business_name, name, verified, phone, email) -> d
         "specs": vp.specs or [],
         "vendor_name": business_name or name or "Marketplace seller",
         "vendor_verified": bool(verified),
-        "vendor_phone": phone or "",
-        "vendor_email": email or "",
+        # Blank unless the owner has let vendors be contacted directly: the
+        # site then falls back to its own number for every order.
+        "vendor_phone": (phone or "") if settings.vendor_contacts_public else "",
+        "vendor_email": (email or "") if settings.vendor_contacts_public else "",
     }
 
 

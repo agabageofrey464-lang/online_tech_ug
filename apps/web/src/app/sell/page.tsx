@@ -7,21 +7,21 @@ import {
   MessageCircle, Boxes, Truck, UserPlus, LogIn, Check,
 } from "lucide-react";
 import { share } from "@/lib/seo";
+import { VendorPlans } from "@/components/vendor-plans";
+import { VENDOR_PLANS } from "@/lib/vendor-plans";
 
 export const metadata: Metadata = share({
   title: "Sell on OnlineTechUg — Become a Vendor",
   description:
-    "Sell on Online Tech Uganda. A flat vendor subscription from UGX 20,000 a week, 0% commission on every sale, and payment by Mobile Money once the customer has their order.",
+    "Sell on Online Tech Uganda. UGX 50,000 a month, UGX 300,000 for half a year or UGX 600,000 a year — 0% commission on every sale, and one more month free if nothing sells.",
 }, "/sell");
 
 export const revalidate = 300; // ISR: rebuild every 5 min instead of on every request
 
 // We charge a flat vendor subscription and take nothing from a sale. The
-// plans themselves live in components/pricing-section.tsx so the sell page
-// and the pricing page can never quote different figures.
-const WEEKLY = 20000;
-const MONTHLY = 60000;
-const YEARLY = 600000;
+// plans themselves live in lib/vendor-plans.ts so the sell page and the
+// pricing page can never quote different figures.
+const [MONTHLY, HALF_YEAR, YEARLY] = VENDOR_PLANS.map((p) => p.price);
 
 type MItem = { vendor_name: string; vendor_verified?: boolean; image_url: string };
 type VStore = { name: string; verified: boolean; count: number; image: string };
@@ -48,7 +48,7 @@ async function getTopStores(): Promise<VStore[]> {
 const perks = [
   { icon: TrendingUp, title: "Our customers see your stock", text: "Your products sit alongside ours on the marketplace, and go out in the campaigns we run." },
   { icon: Store, title: "Your own online store", text: "A storefront on our marketplace — no website or tech skills needed." },
-  { icon: Wallet, title: "Keep every shilling you sell", text: `0% commission. You pay a flat subscription from ${ugx(WEEKLY)} a week and the whole sale price is yours.` },
+  { icon: Wallet, title: "Keep every shilling you sell", text: `0% commission. You pay a flat ${ugx(MONTHLY)} a month and the whole sale price is yours.` },
   { icon: ShieldCheck, title: "Trusted & supported", text: "We handle secure orders, customer care and delivery together with you." },
 ];
 
@@ -72,7 +72,8 @@ const steps = [
 
 const faqs = [
   { q: "Who can become a vendor?", a: "Any business or individual in Uganda selling genuine products — electronics, phones, fashion, home items and more. You don't need a website or technical skills." },
-  { q: "How much does it cost?", a: `A flat vendor subscription: ${ugx(WEEKLY)} for a week, ${ugx(MONTHLY)} a month for unlimited listings, or ${ugx(YEARLY)} a year which adds featured placement. There is no commission on any sale and no fee per item.` },
+  { q: "How much does it cost?", a: `${ugx(MONTHLY)} a month, ${ugx(HALF_YEAR)} for half a year, or ${ugx(YEARLY)} a year — the same rate, paid for as long as suits you, with as many products as you want to list. There is no commission on any sale and no fee per item.` },
+  { q: "What if I pay and nothing sells?", a: "Then your products are not taken down when your time ends. They stay on the site for one more month at no charge — a second chance to make that first sale. After that month, you renew to stay listed." },
   { q: "How do I get paid?", a: "Once a sale is delivered and confirmed, the full amount goes to you by Mobile Money or bank transfer. Nothing is deducted — your subscription is the only thing you pay us." },
   { q: "Do I handle delivery?", a: "We coordinate delivery with you. You prepare and dispatch the order; we help get it to the customer and keep everyone updated." },
   { q: "How long until my store is live?", a: "Once you register, our team reviews and approves your account — usually within a day. Then you can list products right away." },
@@ -93,8 +94,8 @@ export default async function SellPage() {
             <h1 className="mt-4 text-3xl font-black leading-tight sm:text-5xl">Put your products in front of our customers</h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85 sm:text-base">
               Open a store on our marketplace in minutes. No website and no contract — a flat
-              subscription from UGX 20,000 a week, 0% commission, and the full sale price paid to
-              you once the customer has their order.
+              {ugx(MONTHLY)} a month, 0% commission, and the full sale price paid to you once the
+              customer has their order. No sale in the time you paid for? Your products stay a month more, free.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-lg transition hover:bg-brand-600">
@@ -125,7 +126,7 @@ export default async function SellPage() {
         <section className="-mt-6 grid gap-3 sm:grid-cols-3">
           {[
             { big: "100%", t: "of the sale is yours", d: "We take no commission and no fee per item. What the customer pays, you keep." },
-            { big: ugx(MONTHLY), t: "a month", d: `Unlimited listings. Or ${ugx(WEEKLY)} for a week to try it, or ${ugx(YEARLY)} a year with featured placement.` },
+            { big: ugx(MONTHLY), t: "a month", d: `As many products as you want. Or ${ugx(HALF_YEAR)} for half a year, or ${ugx(YEARLY)} a year. No sale? One more month, free.` },
             { big: "On delivery", t: "you're paid", d: "Once the customer has the order, your money goes out by Mobile Money or bank." },
           ].map((k) => (
             <div key={k.t} className="rounded-card border border-ink-600/10 bg-white p-5 text-center shadow-sm">
@@ -213,14 +214,8 @@ export default async function SellPage() {
           </section>
         )}
 
-        {/* Pricing pointer */}
-        <Link href="/pricing" className="flex items-center justify-between gap-3 rounded-card border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-5 shadow-sm transition hover:shadow-md">
-          <div>
-            <p className="text-sm font-extrabold text-ink-900">💰 Vendor plans & pricing</p>
-            <p className="text-xs text-ink-700/65">Commission-free subscriptions (weekly / monthly / yearly) or pay-as-you-sell.</p>
-          </div>
-          <span className="shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white">View pricing →</span>
-        </Link>
+        {/* The plans, and the second chance */}
+        <VendorPlans />
 
         {/* FAQs */}
         <section>
@@ -241,7 +236,7 @@ export default async function SellPage() {
         {/* Final CTA */}
         <section className="rounded-card bg-ink-700 p-8 text-center text-white">
           <h2 className="text-2xl font-extrabold">Ready to start selling?</h2>
-          <p className="mx-auto mt-1 max-w-lg text-sm text-white/80">Register in two minutes. We approve most stores within a day, and there is nothing to pay until something sells.</p>
+          <p className="mx-auto mt-1 max-w-lg text-sm text-white/80">Register in two minutes. We approve most stores within a day — and if nothing sells in the time you paid for, your products stay a month more at no charge.</p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Link href="/signup?role=vendor" className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-7 py-3 text-sm font-extrabold text-white hover:bg-brand-600">
               <UserPlus size={18} /> Become a Vendor
@@ -251,7 +246,7 @@ export default async function SellPage() {
             </Link>
           </div>
           <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-white/60">
-            <span className="inline-flex items-center gap-1"><Check size={13} /> Free to join</span>
+            <span className="inline-flex items-center gap-1"><Check size={13} /> 0% commission</span>
             <span className="inline-flex items-center gap-1"><Check size={13} /> Approved within a day</span>
             <span className="inline-flex items-center gap-1"><Check size={13} /> Get paid after every sale</span>
           </p>

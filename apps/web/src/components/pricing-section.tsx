@@ -16,11 +16,7 @@ const sub = (plan: string) =>
   whatsappLink(`Hi ${site.name}! I'd like to subscribe to the "${plan}" plan. Please guide me on payment.`);
 
 // --- Shared plan data (single source of truth, used across category pages) ---
-export const vendorPlans: Plan[] = [
-  { name: "Vendor Weekly", price: ugx(20000), per: "/week", desc: "Short-term listing — great for trying it out.", features: ["List your products for 7 days", "0% sales commission", "Verified vendor badge", "We publish for you"] },
-  { name: "Vendor Monthly", price: ugx(60000), per: "/month", desc: "Flat fee, keep 100% of every sale.", features: ["0% sales commission", "Unlimited product listings", "Verified vendor badge", "Priority support"], popular: true },
-  { name: "Vendor Yearly", price: ugx(600000), per: "/year", desc: "2 months free vs monthly.", features: ["Everything in Monthly", "Save ~17%", "Featured vendor slots", "Homepage exposure"] },
-];
+// Vendors' plans are in lib/vendor-plans.ts and drawn by components/vendor-plans.tsx.
 
 export const freelancerPlans: Plan[] = [
   { name: "Freelancer Weekly", price: ugx(7000), per: "/week", desc: "Get listed for a week.", features: ["Listed for 7 days", "Contact & hire buttons", "Show your skills & rate", "Portfolio link"] },
@@ -46,7 +42,7 @@ export const contentPlans: Plan[] = [
 // (Edit the amounts here anytime — it's the single source of truth.)
 export const postingCharges: Plan[] = [
   { name: "Homepage Advert", price: ugx(30000), per: "/post", desc: "A rotating banner advert on the homepage.", features: ["Designed & posted by our team", "Seen by every visitor", "Links to your page", "Runs for 30 days"], popular: true },
-  { name: "Marketplace Product", price: ugx(20000), per: "/product", desc: "List one product on the marketplace.", features: ["We design the listing", "Photo, price & details", "Add-to-cart enabled", "Shown in its category"] },
+  { name: "Marketplace Product", price: ugx(20000), per: "/product", desc: "We list one product for you — for sellers without a vendor plan.", features: ["We design the listing", "Photo, price & details", "Add-to-cart enabled", "Shown in its category"] },
   { name: "Freelancer Listing", price: ugx(20000), per: "/listing", desc: "Get listed in the freelancers directory.", features: ["Profile with skills & rate", "Hire / call / email buttons", "Portfolio link", "Verified badge"] },
   { name: "Sponsored Blog Post", price: ugx(20000), per: "/post", desc: "A promotional article on our blog.", features: ["Published on our blog", "Shared on our socials", "Stays permanently", "Image + links"] },
   { name: "News Feature", price: ugx(50000), per: "/feature", desc: "Announce your news or event.", features: ["Featured on the News page", "Headline + image", "Social share", "Homepage slot"] },

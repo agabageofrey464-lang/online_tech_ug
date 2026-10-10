@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     # sale. Kept as a setting so a commission could be reinstated per-tenant,
     # but it is zero and the sell page promises that.
     platform_commission_rate: float = 0.0
+    # Whether a vendor's own phone and email are given to customers. Off: every
+    # order and enquiry comes to the owner's number, and vendors' numbers stay
+    # on file, unused, until the owner decides to hand that over.
+    vendor_contacts_public: bool = False
 
     # Where uploaded CVs are stored (relative to the API working directory).
     upload_dir: str = "uploads"

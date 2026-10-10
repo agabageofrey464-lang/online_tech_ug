@@ -19,6 +19,7 @@ type Vendor = {
   business_reg: string;
   has_document: boolean;
   subscription_ends: string | null;
+  subscription_grace?: boolean;
   business_category: string;
   location: string;
 };
@@ -341,7 +342,7 @@ export default function VendorsPage() {
                     {v.products} product(s){v.id_number ? ` · ID: ${v.id_number}` : ""}{v.business_reg ? ` · Reg: ${v.business_reg}` : ""}
                   </p>
                   <div className="mt-2">
-                    <SubscriptionControl kind="vendor" id={v.id} ends={v.subscription_ends} onChange={load} />
+                    <SubscriptionControl kind="vendor" id={v.id} ends={v.subscription_ends} grace={v.subscription_grace} onChange={load} />
                   </div>
                 </div>
               </div>

@@ -407,3 +407,65 @@ def test_a_discount_code_never_reduces_a_vendors_price(db_factory):
         # Only a vendor's item: the code takes nothing off.
         only_vendor = create_order(db, OrderCreate(**buyer, items=[{"slug": f"vp-{vp.id}", "quantity": 1}]))
         assert only_vendor.discount == 0 and only_vendor.subtotal == 500_000
+
+
+def test_a_vendor_with_no_sale_keeps_their_products_one_more_month(db_factory, monkeypatch):
+    import asyncio
+    from datetime import datetime, timedelta
+
+    from app.models.order import Order, OrderItem
+    from app.models.user import User
+    from app.services import subscriptions
+
+    async def no_email(**kw):
+        return None
+
+    monkeypatch.setattr(subscriptions, "send_email", no_email)
+
+    with db_factory() as db:
+        quiet = User(name="Quiet", email="quiet@example.com", password_hash="x", role="vendor", vendor_approved=True)
+        busy = User(name="Busy", email="busy@example.com", password_hash="x", role="vendor", vendor_approved=True)
+        db.add_all([quiet, busy])
+        db.flush()
+        for u in (quiet, busy):
+            subscriptions.set_subscription(db, "vendor", u.id, 30)
+            u.subscription_started = datetime.utcnow() - timedelta(days=31)
+            u.subscription_ends = datetime.utcnow() - timedelta(days=1)
+        order = Order(reference="OT-TEST1", customer_name="A", phone="0700000000")
+        db.add(order)
+        db.flush()
+        db.add(OrderItem(order_id=order.id, product_slug="vp-1", name="Thing", unit_price=1000, quantity=1, line_total=1000, vendor_id=busy.id))
+        db.commit()
+
+        out = asyncio.run(subscriptions.sweep(db))
+        assert out["second_chance"] == 1 and out["expired"]["vendors"] == 1
+        # No sale: still listed, on the free month. A sale: renew to stay.
+        assert quiet.vendor_approved and quiet.subscription_grace and quiet.subscription_ends > datetime.utcnow() + timedelta(days=29)
+        assert not busy.vendor_approved
+
+        # The free month is given once.
+        quiet.subscription_ends = datetime.utcnow() - timedelta(days=1)
+        db.commit()
+        out = asyncio.run(subscriptions.sweep(db))
+        assert out["second_chance"] == 0 and not quiet.vendor_approved
+
+        # Paying again clears it.
+        subscriptions.set_subscription(db, "vendor", quiet.id, 182)
+        assert quiet.vendor_approved and not quiet.subscription_grace
+
+
+def test_a_vendors_own_number_is_not_given_to_customers(db_factory):
+    from app.models.user import User
+    from app.models.vendor_product import VendorProduct
+    from app.services import vendor_products
+
+    with db_factory() as db:
+        v = User(name="Abu", email="abu3@example.com", phone="0700111222", password_hash="x", role="vendor", verified=True, vendor_approved=True)
+        db.add(v)
+        db.flush()
+        vp = VendorProduct(vendor_id=v.id, name="Vendor Phone", category="Phones", price_ugx=500_000, approved=True, in_stock=True)
+        db.add(vp)
+        db.commit()
+        item = vendor_products.get_public(db, vp.id)
+        assert item["vendor_phone"] == "" and item["vendor_email"] == ""
+        assert all(i["vendor_phone"] == "" for i in vendor_products.list_public(db))

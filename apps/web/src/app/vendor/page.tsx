@@ -1,5 +1,6 @@
 "use client";
 
+import { VendorPlans } from "@/components/vendor-plans";
 import { ProductCard } from "@/components/product-card";
 import { asShopProducts, type VendorItem } from "@/lib/vendor-items";
 import Link from "next/link";
@@ -93,6 +94,8 @@ export default function VendorDashboard() {
   const [profile, setProfile] = useState({ name: "", business_name: "", business_category: "", location: "", phone: "" });
   const [showProfile, setShowProfile] = useState(false);
   const [profileBusy, setProfileBusy] = useState(false);
+  // When the vendor's listing runs to, and whether this is the free month.
+  const [listing, setListing] = useState<{ ends: string | null; grace: boolean }>({ ends: null, grace: false });
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login?next=/vendor");
@@ -137,7 +140,11 @@ export default function VendorDashboard() {
   const loadProfile = useCallback(async () => {
     try {
       const res = await authFetch("/vendor/profile");
-      if (res.ok) setProfile(await res.json());
+      if (res.ok) {
+        const d = await res.json();
+        setProfile(d);
+        setListing({ ends: d.subscription_ends ?? null, grace: !!d.subscription_grace });
+      }
     } catch {
       /* ignore */
     }
@@ -466,11 +473,32 @@ export default function VendorDashboard() {
         )}
       </section>
 
+      {/* The listing: how long it runs, and the plans to pay for */}
+      <section className="mt-6 bg-[#f0ede6] p-5 sm:p-7">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Your listing</p>
+        <h2 className="mt-2 text-[26px] leading-tight text-ink-900">
+          {listing.ends
+            ? new Date(listing.ends) < new Date()
+              ? "Your time has ended — renew to go live again"
+              : `Your products are listed until ${new Date(listing.ends).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`
+            : "Choose a plan to keep your products listed"}
+        </h2>
+        {listing.grace && listing.ends && new Date(listing.ends) >= new Date() && (
+          <p className="mt-3 border-l-4 border-brand-500 bg-white p-4 text-[14px] leading-relaxed text-ink-800">
+            <b className="text-ink-900">This month is on us.</b> Nothing sold in the time you paid for, so your products are staying on the
+            site for one more month at no charge. Renew before the date above to stay listed after it.
+          </p>
+        )}
+        <div className="mt-5">
+          <VendorPlans vendor={user.business_name || user.name} heading={false} />
+        </div>
+      </section>
+
       {/* How to pay your listing / subscription fee */}
       <section className="mt-6 rounded-card border border-brand-200 bg-brand-50/60 p-6 shadow-sm">
         <h2 className="flex items-center gap-2 font-extrabold text-ink-900">💳 Pay your vendor fee</h2>
         <p className="mt-1 text-sm text-ink-700/70">
-          Send your listing / subscription fee to {site.name} using any of the details below, then message us the confirmation.
+          Send the amount for your plan to {site.name} using any of the details below, then message us the confirmation.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-ink-600/10 bg-white p-4">

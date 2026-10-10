@@ -147,6 +147,10 @@ def my_profile(user: User = Depends(require_vendor)) -> dict:
         "name": user.name, "business_name": user.business_name,
         "business_category": user.business_category, "location": user.location,
         "phone": user.phone, "email": user.email,
+        # Shown on the vendor's dashboard: when their listing runs to, and
+        # whether this is the free month given after a period with no sale.
+        "subscription_ends": user.subscription_ends.isoformat() if user.subscription_ends else None,
+        "subscription_grace": bool(user.subscription_grace),
     }
 
 
@@ -167,12 +171,16 @@ def update_profile(payload: VendorProfileIn, user: User = Depends(require_vendor
 @router.get("/messages")
 def my_messages(user: User = Depends(require_vendor), db: Session = Depends(get_db)) -> list[dict]:
     """Messages customers have sent this vendor."""
+    # The customer's number goes to the vendor only once vendors may deal
+    # with customers directly; until then the owner handles the enquiry.
+    direct = settings.vendor_contacts_public or user.role == "admin"
     rows = db.execute(
         select(VendorMessage).where(VendorMessage.vendor_id == user.id).order_by(VendorMessage.created_at.desc())
     ).scalars().all()
     return [
-        {"id": m.id, "customer_name": m.customer_name, "customer_phone": m.customer_phone,
-         "customer_email": m.customer_email, "product": m.product, "message": m.message,
+        {"id": m.id, "customer_name": m.customer_name,
+         "customer_phone": m.customer_phone if direct else "",
+         "customer_email": m.customer_email if direct else "", "product": m.product, "message": m.message,
          "created_at": m.created_at.isoformat() if m.created_at else None}
         for m in rows
     ]
@@ -245,7 +253,10 @@ async def message_vendor(vendor_id: int, payload: VendorMessageIn, db: Session =
     )
     db.add(msg)
     db.commit()
-    if vendor.email:
+    # The message is kept for the vendor's dashboard either way. It is only
+    # emailed to them, with the customer's number, once vendors may be
+    # contacted directly; until then the owner answers it.
+    if vendor.email and settings.vendor_contacts_public:
         try:
             await send_email(
                 to=vendor.email,
@@ -299,6 +310,7 @@ def admin_list_vendors(db: Session = Depends(get_db)) -> list[dict]:
             "verified": u.verified, "id_number": u.id_number, "business_reg": u.business_reg,
             "has_document": bool(u.id_doc_filename),
             "subscription_ends": u.subscription_ends.isoformat() if u.subscription_ends else None,
+            "subscription_grace": bool(u.subscription_grace),
             "business_category": u.business_category, "location": u.location,
         })
     return out

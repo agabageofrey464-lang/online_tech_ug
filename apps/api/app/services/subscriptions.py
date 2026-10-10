@@ -1,15 +1,41 @@
-"""Subscription expiry — deactivate expired listings, notify the owner & sellers."""
+"""Subscription expiry — deactivate expired listings, notify the owner & sellers.
+
+A vendor pays for a month, half a year or a year. If that period ends and
+nothing of theirs sold in it, their products are not taken down: they stay
+for one more month at no charge, once. A vendor who did sell, or who has
+already had the free month, renews to stay listed.
+"""
 
 from datetime import datetime, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.advert import Advert
 from app.models.freelancer import Freelancer
+from app.models.order import Order, OrderItem
 from app.models.user import User
 from app.services.email import send_email
+
+
+# What a vendor pays to be listed, and for how long. The site quotes the same
+# figures in apps/web/src/lib/vendor-plans.ts.
+VENDOR_PLANS = {30: 50_000, 182: 300_000, 365: 600_000}
+# The free month given after a paid period with no sale.
+SECOND_CHANCE_DAYS = 30
+
+
+def vendor_sales_since(db: Session, vendor_id: int, since: datetime) -> int:
+    """How many of a vendor's items were ordered since a date, cancelled orders aside."""
+    return int(
+        db.execute(
+            select(func.count())
+            .select_from(OrderItem)
+            .join(Order, Order.id == OrderItem.order_id)
+            .where(OrderItem.vendor_id == vendor_id, Order.created_at >= since, Order.status != "cancelled")
+        ).scalar_one()
+    )
 
 
 def set_subscription(db: Session, kind: str, item_id: int, days: int) -> dict:
@@ -20,6 +46,8 @@ def set_subscription(db: Session, kind: str, item_id: int, days: int) -> dict:
         if not row or row.role != "vendor":
             return {}
         row.subscription_ends = ends
+        row.subscription_started = datetime.utcnow()
+        row.subscription_grace = False  # paid again: a fresh period, a fresh chance
         row.vendor_approved = True
     elif kind == "freelancer":
         row = db.get(Freelancer, item_id)
@@ -49,11 +77,20 @@ async def sweep(db: Session) -> dict:
     soon = now + timedelta(days=3)
     expired: dict[str, list] = {"vendors": [], "freelancers": [], "adverts": []}
     expiring: dict[str, list] = {"vendors": [], "freelancers": [], "adverts": []}
+    second_chance: list[User] = []
 
     for u in db.execute(
         select(User).where(User.role == "vendor", User.vendor_approved.is_(True), User.subscription_ends.isnot(None))
     ).scalars():
         if u.subscription_ends < now:
+            started = u.subscription_started or (u.subscription_ends - timedelta(days=30))
+            if not u.subscription_grace and vendor_sales_since(db, u.id, started) == 0:
+                # Nothing sold in what they paid for: their products stay a
+                # further month, free. Once — the next expiry needs a payment.
+                u.subscription_grace = True
+                u.subscription_ends = now + timedelta(days=SECOND_CHANCE_DAYS)
+                second_chance.append(u)
+                continue
             u.vendor_approved = False
             expired["vendors"].append(u)
         elif u.subscription_ends < soon:
@@ -83,8 +120,12 @@ async def sweep(db: Session) -> dict:
     total_soon = sum(len(v) for v in expiring.values())
 
     # Notify the owner if anything changed / is coming up.
-    if total_expired or total_soon:
+    if total_expired or total_soon or second_chance:
         lines: list[str] = []
+        if second_chance:
+            lines.append("<b>Given a free month (no sale in the period they paid for):</b>")
+            lines += [f"• Vendor: {u.business_name or u.name} ({u.phone}) — now ends {_fmt(u.subscription_ends)}" for u in second_chance]
+            lines.append("")
         if total_expired:
             lines.append("<b>Deactivated (expired):</b>")
             lines += [f"• Vendor: {u.business_name or u.name} ({u.phone})" for u in expired["vendors"]]
@@ -105,6 +146,14 @@ async def sweep(db: Session) -> dict:
         except Exception:  # noqa: BLE001
             pass
 
+    for u in second_chance:
+        if u.email:
+            try:
+                await send_email(to=u.email, subject="Your products stay listed — one more month, free",
+                    html=f"<p>Hi {u.name},</p><p>The period you paid for on Online Tech Uganda has ended without a sale, so we are keeping your products on the site for one more month at no charge, until {_fmt(u.subscription_ends)}.</p><p>Good photographs, full specifications and a fair price are what sell. After that date, renew to stay listed.</p>")
+            except Exception:  # noqa: BLE001
+                pass
+
     # Renewal reminders to sellers with an email on file.
     for u in expired["vendors"]:
         if u.email:
@@ -123,5 +172,6 @@ async def sweep(db: Session) -> dict:
 
     return {
         "expired": {k: len(v) for k, v in expired.items()},
+        "second_chance": len(second_chance),
         "expiring_soon": {k: len(v) for k, v in expiring.items()},
     }

@@ -45,6 +45,8 @@ ADDITIONS: list[tuple[str, str, str]] = [
     ("vendor_products", "condition", "VARCHAR(30) NOT NULL DEFAULT 'Brand New'"),
     ("vendor_products", "old_price_ugx", "INTEGER"),
     ("vendor_products", "specs", "JSON"),
+    ("users", "subscription_started", "TIMESTAMP"),
+    ("users", "subscription_grace", "BOOLEAN NOT NULL DEFAULT FALSE"),
 ]
 
 

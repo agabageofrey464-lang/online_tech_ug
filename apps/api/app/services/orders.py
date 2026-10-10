@@ -35,7 +35,7 @@ class OrderError(Exception):
 def commission_rate_for(line_total: int) -> float:
     """What we take from a vendor's sale.
 
-    Nothing. Vendors pay a flat weekly, monthly or yearly subscription and keep
+    Nothing. Vendors pay a flat monthly, half-year or yearly subscription and keep
     the whole sale price, which is what the sell page promises them. The tiered
     5–10% this used to return is gone; the column stays on order_items so past
     orders still read correctly.
