@@ -38,7 +38,7 @@ function ShopArt() {
   const tiles = [
     { src: "/products/macbook-air-15-midnight-p66.webp", name: "MacBook Air 15", cls: "left-0 top-10 w-[46%] -rotate-6", d: "0s" },
     { src: "/products/hp-omnibook-x-flip-14-wa0014-p35.webp", name: "HP OmniBook X Flip", cls: "right-0 top-0 w-[46%] rotate-3", d: "0.8s" },
-    { src: "/products/samsung-galaxy-a06-p75.webp", name: "Galaxy A06", cls: "left-[27%] bottom-0 w-[42%] rotate-1", d: "1.6s" },
+    { src: "/products/hp-elitebook-840-g6-wa0017-p41.webp", name: "HP EliteBook 840", cls: "left-[27%] bottom-0 w-[42%] rotate-1", d: "1.6s" },
   ];
   return (
     <>
@@ -220,7 +220,7 @@ const SLIDES = [
     tab: "Shop",
     eyebrow: "Shop · genuine & warranted",
     title: "Powering Uganda, One Device at a Time",
-    sub: "Laptops, phones & accessories — tested, with warranty and countrywide delivery.",
+    sub: "Laptops, desktops & accessories — tested, with warranty and countrywide delivery.",
     cta: "Shop now",
     href: "/shop",
     more: { label: "Find my laptop", href: "/find" },

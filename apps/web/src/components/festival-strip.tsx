@@ -50,13 +50,6 @@ const FALLBACK: Strip[] = [
   { text: "Build slides that win the room — PowerPoint from scratch", cta: "Start learning", href: "/learn/microsoft-powerpoint", bg: "bg-brand-700", img: "/courses/microsoft-powerpoint.webp" },
   { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "bg-ink-700", img: "/courses/microsoft-access.webp" },
 
-  // iPhones, now that we have photographs of them. The thumbnail is the handset
-  // itself so the strip shows what is on offer, not a generic icon.
-  { text: "iPhone 16 in stock — sealed, Apple warranty, five colours", cta: "Shop iPhone", href: "/shop?cat=Phones&q=iPhone", bg: "bg-ink-700", img: "/products/iphone-16-128gb.webp" },
-  { text: "iPhone 17 256GB — the newest iPhone, UGX 6,300,000", cta: "See it", href: "/shop/iphone-17-256gb", bg: "bg-brand-600", img: "/products/iphone-17-256gb.webp" },
-  { text: "iPhone 14 from UGX 2,850,000 — 14, 14 Plus and 14 Pro Max", cta: "Compare", href: "/shop?cat=Phones&q=iPhone%2014", bg: "bg-brand-600", img: "/products/iphone-14-128gb.webp" },
-  { text: "iPhone 16 Pro Max — 6.9\" 120Hz, 5× telephoto, biggest battery", cta: "View", href: "/shop/iphone-16-pro-max-256gb", bg: "bg-ink-600", img: "/products/iphone-16-pro-max-256gb.webp" },
-  { text: "Every iPhone tested before it leaves the shop — used or sealed", cta: "Browse phones", href: "/shop?cat=Phones", bg: "bg-green-700", img: "/products/iphone-15-pro-256gb.webp" },
   { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-ink-800", img: "/products/ssd-480gb-sata.webp" },
 ];
 
