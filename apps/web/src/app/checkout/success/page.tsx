@@ -163,7 +163,7 @@ function SuccessInner() {
           </div>
           {order.delivery_town && (
             <p className="mt-4 flex items-center gap-1.5 rounded-[3px] bg-green-50 px-3 py-2 text-sm font-bold text-green-700">
-              📅 Estimated delivery to {order.delivery_town}: {formatDeliveryDate(estimatedDeliveryDate(order.delivery_town))}
+              📅 Delivery to {order.delivery_town}: {formatDeliveryDate(estimatedDeliveryDate(order.created_at ? new Date(order.created_at) : new Date()))}
             </p>
           )}
           <p className="mt-3 text-xs text-ink-700/60">

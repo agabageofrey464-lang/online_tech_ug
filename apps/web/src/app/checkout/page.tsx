@@ -8,14 +8,26 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { ugx, site } from "@/lib/site";
 import { createOrder, validateCoupon, initPesapalPayment, onlinePaymentStatus, type OrderPayload } from "@/lib/api";
-import { DELIVERY_TOWNS, estimateDelivery, STORE_LOCATION, deliveryDays, estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
+import dynamic from "next/dynamic";
+import { DELIVERY_TOWNS, estimateDelivery, STORE_LOCATION, arrivalText } from "@/lib/delivery";
+import { loadPlace, savePlace, type DeliveryPlace } from "@/lib/delivery-place";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+
+const DeliveryMap = dynamic(() => import("@/components/delivery-map").then((m) => m.DeliveryMap), {
+  ssr: false,
+  loading: () => <div className="h-64 w-full animate-pulse bg-[#e8e4dc]" />,
+});
 
 export default function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const { user } = useAuth();
   const router = useRouter();
   const [town, setTown] = useState("Kampala");
+  // Where the customer pinned themselves on the map — set on a product page
+  // or here. With it the fee is by the measured road; without, by the town.
+  const [place, setPlace] = useState<DeliveryPlace | null>(null);
+  const [byTown, setByTown] = useState(false);
+  useEffect(() => setPlace(loadPlace()), []);
   const [payment, setPayment] = useState<OrderPayload["payment_method"]>("airtel_money");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -42,12 +54,15 @@ export default function CheckoutPage() {
   const [couponMsg, setCouponMsg] = useState("");
   const [applying, setApplying] = useState(false);
 
-  const { fee: deliveryFee, km } = useMemo(() => estimateDelivery(town), [town]);
+  const pinned = !byTown && place ? place : null;
+  const { fee: townFee, km: townKm } = useMemo(() => estimateDelivery(town), [town]);
+  const deliveryFee = pinned ? pinned.fee : townFee;
+  const km = pinned ? pinned.km : townKm;
   // A code works on our own products only; a vendor's price is the vendor's.
   const ownSubtotal = items.filter((i) => !i.slug.startsWith("vp-")).reduce((s, i) => s + i.price * i.quantity, 0);
   const hasVendorItems = items.some((i) => i.slug.startsWith("vp-"));
   const discount = coupon ? Math.min(coupon.discount, ownSubtotal) : 0;
-  const total = Math.max(0, subtotal - discount) + deliveryFee;
+  const total = Math.max(0, subtotal - discount) + (pinned || byTown ? deliveryFee : 0);
 
   async function applyPromo() {
     const code = promo.trim();
@@ -87,6 +102,11 @@ export default function CheckoutPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!pinned && !byTown) {
+      setError("Please mark where you are on the map, so we can work out your transport.");
+      document.getElementById("delivery-step")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     setSubmitting(true);
     setError("");
     const f = new FormData(e.currentTarget);
@@ -94,7 +114,8 @@ export default function CheckoutPage() {
       customer_name: String(f.get("customer_name") || ""),
       phone: String(f.get("phone") || ""),
       email: String(f.get("email") || ""),
-      delivery_town: town,
+      delivery_town: pinned ? pinned.label.slice(0, 120) : town,
+      ...(pinned ? { delivery_lat: pinned.lat, delivery_lng: pinned.lng, delivery_km: pinned.km } : {}),
       delivery_address: String(f.get("delivery_address") || ""),
       notes: String(f.get("notes") || ""),
       payment_method: payment,
@@ -194,30 +215,58 @@ export default function CheckoutPage() {
             </section>
 
             {/* 2. Delivery details */}
-            <section className="overflow-hidden rounded-[3px] bg-white">
+            <section id="delivery-step" className="scroll-mt-44 overflow-hidden rounded-[3px] bg-white">
               <StepHeader n={2} title="Delivery" done />
               <div className="p-5">
-                <label className="mb-1.5 block text-sm font-medium text-ink-700">Delivery town / district</label>
-                <select
-                  value={town}
-                  onChange={(e) => setTown(e.target.value)}
-                  required
-                  className="w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                >
-                  {DELIVERY_TOWNS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                {!byTown ? (
+                  <>
+                    <p className="mb-1.5 text-sm font-medium text-ink-700">Where should we bring it?</p>
+                    <p className="mb-3 text-xs text-ink-700/65">
+                      Mark your place on the map. We measure the road from our shop to your pin and the transport is worked out from the distance.
+                    </p>
+                    <DeliveryMap
+                      value={place}
+                      onChange={(p) => {
+                        setPlace(p);
+                        savePlace(p);
+                      }}
+                    />
+                    <button type="button" onClick={() => setByTown(true)} className="mt-3 text-xs font-semibold text-ink-700 underline underline-offset-4 hover:text-brand-600">
+                      The map is not working for me — let me choose my town
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <label className="mb-1.5 block text-sm font-medium text-ink-700">Delivery town / district</label>
+                    <select
+                      value={town}
+                      onChange={(e) => setTown(e.target.value)}
+                      required
+                      className="w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                    >
+                      {DELIVERY_TOWNS.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                    <button type="button" onClick={() => setByTown(false)} className="mt-3 text-xs font-semibold text-ink-700 underline underline-offset-4 hover:text-brand-600">
+                      Use the map instead — the fee is exact to where you are
+                    </button>
+                  </>
+                )}
                 <div className="mt-3 flex items-start gap-2 rounded-[3px] bg-brand-50 p-3 text-sm">
                   <span className="text-brand-600">🚚</span>
                   <div>
                     <p className="font-bold text-ink-900">Door Delivery</p>
-                    <p className="text-xs text-ink-700/60">
-                      {km !== null ? `≈ ${km} km from our shop · ` : ""}
-                      Delivery fee <b className="text-ink-900">{ugx(deliveryFee)}</b>, worked out from the distance.
-                    </p>
+                    {pinned || byTown ? (
+                      <p className="text-xs text-ink-700/60">
+                        {km !== null ? `≈ ${km} km from our shop · ` : ""}
+                        Transport <b className="text-ink-900">{ugx(deliveryFee)}</b>, worked out from the distance.
+                      </p>
+                    ) : (
+                      <p className="text-xs font-semibold text-brand-700">Mark your place on the map above to see your transport fee.</p>
+                    )}
                     <p className="mt-1 flex items-center gap-1 text-xs font-bold text-green-700">
-                      📅 Arrives by {formatDeliveryDate(estimatedDeliveryDate(town))} · about {deliveryDays(km)} days
+                      📅 Arrives {arrivalText()} · order before 7pm for same-day delivery
                     </p>
                   </div>
                 </div>
@@ -324,7 +373,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-ink-700/80">
                 <span>Delivery fees</span>
-                <span className="font-semibold text-ink-900">{deliveryFee === 0 ? "Free" : ugx(deliveryFee)}</span>
+                <span className="font-semibold text-ink-900">{pinned || byTown ? ugx(deliveryFee) : "Set your location"}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between font-semibold text-green-600">

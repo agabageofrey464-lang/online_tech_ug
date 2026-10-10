@@ -1,6 +1,5 @@
-// Distance-based delivery (transport) cost, measured from the shop in
-// Kampala. Distances are road-km to each town.
-// (A live Google Maps Distance Matrix upgrade can replace this table later.)
+// Transport cost by town, for a customer who does not mark their place on
+// the map. With a pin, the road is measured to it instead — lib/delivery-place.ts.
 
 export const STORE_LOCATION = "Kampala, Uganda";
 
@@ -58,21 +57,28 @@ export function estimateDelivery(town: string): { fee: number; km: number | null
   return { fee: feeForKm(distance), km };
 }
 
-// Estimated delivery time in days by distance — 2 days base, longer upcountry.
-export function deliveryDays(km: number | null): number {
-  const d = km ?? 150;
-  if (d <= 80) return 2; // Kampala metro & near towns
-  if (d <= 200) return 3; // mid-distance
-  if (d <= 350) return 4; // far
-  return 5; // very far
+// When an order arrives. One made in good time is delivered that same day; one
+// made after seven in the evening goes out the following day. The hour is
+// Kampala's, whatever clock the customer's phone keeps.
+export const LAST_ORDER_HOUR = 19;
+
+const kampalaHour = (at: Date) => (at.getUTCHours() + 3) % 24;
+
+/** 0 when an order made at `at` is delivered that day, 1 when it is the next. */
+export function deliveryDays(at: Date = new Date()): number {
+  return kampalaHour(at) >= LAST_ORDER_HOUR ? 1 : 0;
 }
 
-// The date an order placed now should arrive at `town`.
-export function estimatedDeliveryDate(town: string, from: Date = new Date()): Date {
-  const km = TOWN_DISTANCE_KM[town] ?? null;
+/** The date an order made at `from` should arrive. */
+export function estimatedDeliveryDate(from: Date = new Date()): Date {
   const d = new Date(from);
-  d.setDate(d.getDate() + deliveryDays(km));
+  d.setDate(d.getDate() + deliveryDays(from));
   return d;
+}
+
+/** "today, Sat 10 Oct" or "tomorrow, Sun 11 Oct" for an order made now. */
+export function arrivalText(from: Date = new Date()): string {
+  return `${deliveryDays(from) === 0 ? "today" : "tomorrow"}, ${formatDeliveryDate(estimatedDeliveryDate(from))}`;
 }
 
 export function formatDeliveryDate(d: Date): string {

@@ -9,7 +9,7 @@ from app.db.session import get_db
 from app.schemas.order import OrderCreate, OrderOut, OrderSummary, OrderUpdate
 from app.services import orders as orders_service
 from app.services.email import send_order_confirmation
-from app.services import notify, push, whatsapp
+from app.services import delivery, notify, push, whatsapp
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,22 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
         "/orders",
     )
     return order
+
+
+@router.get("/delivery-quote")
+async def delivery_quote(lat: float, lng: float) -> dict:
+    """Public: road distance from the shop to a point, and the transport fee for it."""
+    if not delivery.in_range(lat, lng):
+        raise HTTPException(status_code=400, detail="That place is outside the area we deliver to.")
+    km, by_road = await delivery.road_km(lat, lng)
+    km = round(km, 1)
+    return {
+        "km": km,
+        "fee": orders_service._fee_for_km(km),
+        # False when the routing service was unreachable and the distance is
+        # the straight line with an allowance for the road.
+        "by_road": by_road,
+    }
 
 
 @router.get("", response_model=list[OrderSummary], dependencies=[Depends(require_admin)])

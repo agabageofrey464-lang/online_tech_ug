@@ -615,7 +615,7 @@ function OrderList({ orders, town }: { orders: SavedOrder[]; town?: string }) {
         const s = o.status.toLowerCase();
         const eta =
           town && !["delivered", "cancelled", "returned"].includes(s)
-            ? formatDeliveryDate(estimatedDeliveryDate(town))
+            ? formatDeliveryDate(estimatedDeliveryDate(o.createdAt ? new Date(o.createdAt) : new Date()))
             : null;
         return (
           <div

@@ -46,6 +46,9 @@ ADDITIONS: list[tuple[str, str, str]] = [
     ("vendor_products", "old_price_ugx", "INTEGER"),
     ("vendor_products", "specs", "JSON"),
     ("users", "subscription_started", "TIMESTAMP"),
+    ("orders", "delivery_lat", "DOUBLE PRECISION"),
+    ("orders", "delivery_lng", "DOUBLE PRECISION"),
+    ("orders", "delivery_km", "DOUBLE PRECISION"),
     ("users", "subscription_grace", "BOOLEAN NOT NULL DEFAULT FALSE"),
 ]
 

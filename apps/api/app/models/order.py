@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Float, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -23,6 +23,12 @@ class Order(Base):
     delivery_town: Mapped[str] = mapped_column(String(120), default="")
     delivery_address: Mapped[str] = mapped_column(Text, default="")
     notes: Mapped[str] = mapped_column(Text, default="")
+    # Where the customer put their pin on the map, and the road distance from
+    # the shop that the delivery fee was worked out from. Empty when they
+    # chose a town from the list instead.
+    delivery_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    delivery_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
+    delivery_km: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Money (all in UGX)
     subtotal: Mapped[int] = mapped_column(Numeric(12, 0), default=0)

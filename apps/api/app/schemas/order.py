@@ -35,6 +35,11 @@ class OrderCreate(BaseModel):
     email: EmailStr | str = ""
     delivery_town: str = Field(default="", max_length=120)
     delivery_address: str = ""
+    # The customer's pin on the map and the road distance we quoted them for
+    # it. With these the fee is by that distance; without, by the town.
+    delivery_lat: float | None = None
+    delivery_lng: float | None = None
+    delivery_km: float | None = None
     notes: str = ""
     payment_method: PaymentMethod = PaymentMethod.mtn_momo
     coupon_code: str = ""
@@ -62,6 +67,9 @@ class OrderOut(BaseModel):
     email: str
     delivery_town: str
     delivery_address: str
+    delivery_lat: float | None = None
+    delivery_lng: float | None = None
+    delivery_km: float | None = None
     notes: str
     subtotal: int
     delivery_fee: int

@@ -13,7 +13,7 @@ from app.core.config import settings
 from app.models.order import Order, OrderItem
 from app.models.vendor_product import VendorProduct
 from app.schemas.order import OrderCreate
-from app.services import catalog, coupons
+from app.services import catalog, coupons, delivery
 from app.services.catalog import get_product
 
 # Distance-based transport: road-km from the shop (Liberty Tower, Kampala Road).
@@ -56,7 +56,7 @@ DELIVERY_BASE_KM = 10
 DELIVERY_PER_KM = 150
 
 
-def _fee_for_km(km: int) -> int:
+def _fee_for_km(km: float) -> int:
     beyond = max(0, km - DELIVERY_BASE_KM)
     return int((DELIVERY_BASE + beyond * DELIVERY_PER_KM + 500) // 1000 * 1000)
 
@@ -67,6 +67,20 @@ def compute_delivery_fee(town: str) -> int:
     # fee, so the total they agreed to was not the total they were charged.
     km = TOWN_DISTANCE_KM.get(town.strip().lower(), 150)  # unknown → mid-distance
     return _fee_for_km(km)
+
+
+def delivery_for_pin(lat: float | None, lng: float | None, quoted_km: float | None) -> tuple[int, float] | None:
+    """Fee and road distance for a pin on the map, or None if there is no usable pin.
+
+    The distance is the one we quoted the customer, so the fee they are
+    charged is the fee they saw. If the figure sent back could not be a real
+    road distance to that point, it is replaced by one worked out here.
+    """
+    if lat is None or lng is None or not delivery.in_range(lat, lng):
+        return None
+    km = quoted_km if quoted_km is not None and delivery.believable(lat, lng, quoted_km) else delivery.straight_km(lat, lng) * delivery.ROAD_FACTOR
+    km = round(km, 1)
+    return _fee_for_km(km), km
 
 
 def _generate_reference() -> str:
@@ -137,7 +151,9 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         # Reduce inventory for tracked house products (no-op for seed/untracked items).
         catalog.decrement_stock(db, product["slug"], item.quantity)
 
-    delivery_fee = compute_delivery_fee(payload.delivery_town)
+    # By the customer's pin on the map when they gave one; by their town otherwise.
+    pin = delivery_for_pin(payload.delivery_lat, payload.delivery_lng, payload.delivery_km)
+    delivery_fee = pin[0] if pin else compute_delivery_fee(payload.delivery_town)
 
     # Apply a discount coupon if one was supplied (server recomputes & records usage).
     discount, coupon_code = 0, ""
@@ -160,6 +176,9 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         email=str(payload.email or ""),
         delivery_town=payload.delivery_town,
         delivery_address=payload.delivery_address,
+        delivery_lat=payload.delivery_lat if pin else None,
+        delivery_lng=payload.delivery_lng if pin else None,
+        delivery_km=pin[1] if pin else None,
         notes=payload.notes,
         subtotal=subtotal,
         delivery_fee=delivery_fee,

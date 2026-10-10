@@ -107,7 +107,7 @@ export default async function VendorProductPage({ params }: Params) {
             )}
           </div>
           <p className={`mt-1.5 text-[13px] ${item.in_stock ? "text-ink-700/70" : "font-semibold text-brand-700"}`}>
-            {item.in_stock ? "In stock" : "Currently unavailable"} · delivery from {ugx(10000)} in and around Kampala
+            {item.in_stock ? "In stock" : "Currently unavailable"} · delivered the same day, transport by distance
           </p>
           <a href="#reviews" className="mt-3 inline-block text-[12px] font-bold uppercase tracking-[0.1em] text-ink-800 underline-offset-4 hover:underline">
             Reviews

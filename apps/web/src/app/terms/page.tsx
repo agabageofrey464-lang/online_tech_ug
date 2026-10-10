@@ -98,8 +98,8 @@ const sections: LegalSection[] = [
           The delivery fee depends on where you are and is shown at checkout before you confirm.
         </li>
         <li>
-          Delivery times are estimates. Kampala orders usually arrive the same or next day;
-          upcountry orders take longer. We confirm the timing with you after you order.
+          Delivery times are estimates. An order made before 7pm is delivered the same day; one made
+          after 7pm is delivered the following day. We confirm the timing with you after you order.
         </li>
         <li>
           Someone must be available to receive the order. Check it on arrival and tell us straight

@@ -46,6 +46,10 @@ export type OrderPayload = {
   email?: string;
   delivery_town: string;
   delivery_address: string;
+  // The customer's pin on the map and the road distance quoted for it.
+  delivery_lat?: number;
+  delivery_lng?: number;
+  delivery_km?: number;
   notes?: string;
   // "cash_on_delivery" is legacy — orders taken before we stopped
   // collecting on delivery. It is no longer offered at checkout.
@@ -57,6 +61,7 @@ export type OrderPayload = {
 
 export type Order = {
   reference: string;
+  created_at?: string | null;
   customer_name: string;
   phone: string;
   email: string;

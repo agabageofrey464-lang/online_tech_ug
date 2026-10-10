@@ -223,7 +223,7 @@ export default async function ProductDetailPage({
             )}
           </div>
           <p className={`mt-1.5 text-[13px] ${inStock ? "text-ink-700/70" : "font-semibold text-brand-700"}`}>
-            {inStock ? "In stock" : "Currently unavailable"} · delivery from {ugx(10000)} in and around Kampala
+            {inStock ? "In stock" : "Currently unavailable"} · delivered the same day, transport by distance
           </p>
           <a href="#reviews" className="mt-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-800 underline-offset-4 hover:underline">
             {ratings ? (

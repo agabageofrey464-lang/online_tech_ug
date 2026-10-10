@@ -469,3 +469,33 @@ def test_a_vendors_own_number_is_not_given_to_customers(db_factory):
         item = vendor_products.get_public(db, vp.id)
         assert item["vendor_phone"] == "" and item["vendor_email"] == ""
         assert all(i["vendor_phone"] == "" for i in vendor_products.list_public(db))
+
+
+def test_transport_is_charged_on_the_distance_to_the_customers_pin(db_factory):
+    from app.models.product import Product
+    from app.schemas.order import OrderCreate
+    from app.services import delivery
+    from app.services.orders import create_order
+
+    # Entebbe town: about 33 km from the shop in a straight line.
+    lat, lng = 0.0512, 32.4637
+    straight = delivery.straight_km(lat, lng)
+    assert 30 < straight < 36
+
+    with db_factory() as db:
+        db.add(Product(slug="own-mouse", name="Own Mouse", category="Accessories", price_ugx=100_000, in_stock=True))
+        db.commit()
+        buyer = dict(customer_name="Test Customer", phone="0700000000", delivery_town="Entebbe", items=[{"slug": "own-mouse", "quantity": 1}])
+
+        # The distance we quoted is the distance charged: 10,000 for the first
+        # ten kilometres, 150 for each one after, to the nearest thousand.
+        o = create_order(db, OrderCreate(**buyer, delivery_lat=lat, delivery_lng=lng, delivery_km=40))
+        assert o.delivery_km == 40 and o.delivery_fee == 15_000 and o.total == 115_000
+
+        # A distance that could not be a road to that point is not believed.
+        cheat = create_order(db, OrderCreate(**buyer, delivery_lat=lat, delivery_lng=lng, delivery_km=1))
+        assert cheat.delivery_km == round(straight * delivery.ROAD_FACTOR, 1) and cheat.delivery_fee > 10_000
+
+        # No pin: the town, as before.
+        town = create_order(db, OrderCreate(**buyer))
+        assert town.delivery_km is None and town.delivery_fee == 14_000

@@ -72,6 +72,10 @@ def order_message(order) -> str:
         lines.append(f"Deliver to: {order.delivery_town}")
     if order.delivery_address:
         lines.append(order.delivery_address)
+    # Their pin, as a link that opens in Google Maps for whoever delivers it.
+    if getattr(order, "delivery_lat", None) is not None and getattr(order, "delivery_lng", None) is not None:
+        km = getattr(order, "delivery_km", None)
+        lines.append(f"Map: https://www.google.com/maps?q={order.delivery_lat:.6f},{order.delivery_lng:.6f}" + (f" ({km:g} km, transport UGX {int(order.delivery_fee):,})" if km else ""))
     if order.notes:
         lines.append(f"Note: {order.notes}")
     return "\n".join(lines)
