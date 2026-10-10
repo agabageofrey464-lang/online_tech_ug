@@ -66,6 +66,8 @@ export default async function VendorProductPage({ params }: Params) {
 
   return (
     <div className="container-page py-8">
+      {/* Read by the green chat button in the corner, so it too orders this phone on the phones' line. */}
+      {isPhone && <span id="phone-order-context" hidden data-product={item.name} data-price={ugx(item.price_ugx)} data-url={`${site.url}/marketplace/${item.id}`} />}
       <div className="mb-6">
         <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Marketplace", href: "/marketplace" }, { label: item.name }]} />
       </div>

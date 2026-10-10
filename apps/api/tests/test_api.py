@@ -555,6 +555,15 @@ def test_the_owner_is_told_when_a_phone_order_chat_is_opened(db_factory, monkeyp
 
     res = TestClient(app).post("/api/v1/orders/whatsapp-lead", json={"product": "iPhone 13 128GB", "price": "UGX 1,500,000", "line": "+256 708 843 577"})
     assert res.status_code == 202
+    # No WhatsApp alert line in the tests, so the owner hears of it by email.
+    assert told == [] and len(db_factory.alerts) == 1
+    assert ("Phone", "iPhone 13 128GB") in db_factory.alerts[0]["pairs"] and ("Sent to", "+256 708 843 577") in db_factory.alerts[0]["pairs"]
+
+    # With one, it goes there.
+    monkeypatch.setattr(whatsapp, "configured", lambda: True)
+    from app.core import ratelimit
+    ratelimit._hits.clear()
+    TestClient(app).post("/api/v1/orders/whatsapp-lead", json={"product": "iPhone 13 128GB", "price": "UGX 1,500,000", "line": "+256 708 843 577"})
     assert len(told) == 1 and "iPhone 13 128GB" in told[0] and "708 843 577" in told[0]
 
     assert whatsapp._is_phone("Samsung Galaxy A15") and not whatsapp._is_phone("iPhone 13 case") and not whatsapp._is_phone("HP EliteBook 840")

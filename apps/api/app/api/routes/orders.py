@@ -73,7 +73,21 @@ async def whatsapp_lead(payload: WhatsAppLead, request: Request, db: Session = D
         )
         if x is not None
     )
-    await whatsapp.notify_owner(text)
+    if whatsapp.configured():
+        await whatsapp.notify_owner(text)
+    else:
+        # No WhatsApp alert line is set up for the owner, so this goes by email
+        # instead: silence would defeat the purpose.
+        await notify.alert_owner(
+            icon="📱",
+            title="Phone order chat opened",
+            pairs=[("Phone", payload.product.strip()), ("Price", payload.price.strip()), ("Customer", who or "not signed in"),
+                   ("Sent to", payload.line.strip() or settings.phone_orders_line), ("Page", payload.url.strip())],
+            note="A customer tapped Order on WhatsApp for this phone. Follow up with the phones' line if you do not hear of the sale.",
+            db=db,
+            url="/orders",
+        )
+        return {"ok": True}
     await push.notify_owner(db, "📱 Phone order chat opened", f"{payload.product.strip()} · sent to {payload.line.strip() or settings.phone_orders_line}", "/orders")
     return {"ok": True}
 
