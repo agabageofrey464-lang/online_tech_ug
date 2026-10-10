@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { site } from "@/lib/site";
+import { PayPanel } from "@/components/pay-panel";
 
 const purposes = [
   "Vendor subscription",
@@ -19,7 +19,7 @@ export default function PayPage() {
     phone: "",
     amount: "",
     purpose: purposes[0],
-    method: "MTN Mobile Money",
+    method: "Airtel Money",
     txn_ref: "",
     note: "",
   });
@@ -44,8 +44,6 @@ export default function PayPage() {
     }
   }
 
-  const momo = site.payment.momo;
-  const momoAlt = site.payment.momoAlt;
 
   if (status === "done") {
     return (
@@ -71,28 +69,12 @@ export default function PayPage() {
       <div className="mx-auto max-w-2xl">
         <h1 className="text-3xl font-extrabold text-ink-900">Confirm a payment</h1>
         <p className="mt-2 text-sm text-ink-700/65">
-          Paid us on Mobile Money? Pay to one of the numbers below, then fill in the form so we can record and confirm
+          Pay to the number below, then fill in the form so we can record and confirm
           your payment.
         </p>
 
-        {/* Numbers to pay to */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {[momo, momoAlt].map((m) => {
-            const merchantId = (m as { merchantId?: string }).merchantId;
-            return (
-              <div key={m.number} className="rounded-card border border-ink-600/10 bg-white p-4 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink-700/50">{m.provider}</p>
-                <p className="mt-1 text-lg font-extrabold tracking-wide text-ink-900">{m.number}</p>
-                <p className="text-xs text-ink-700/60">{m.name}</p>
-                {merchantId && (
-                  <p className="mt-1 text-xs font-bold text-brand-600">
-                    Merchant ID: {merchantId} <span className="font-normal text-ink-700/50">(use “Pay Merchant”)</span>
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {/* Where to pay */}
+        <PayPanel purpose={form.purpose} className="mt-6" />
 
         <form onSubmit={submit} className="mt-8 space-y-4 rounded-card border border-ink-600/10 bg-white p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -105,8 +87,8 @@ export default function PayPage() {
             <label className="block">
               <span className="mb-1 block text-sm font-semibold text-ink-800">Payment method</span>
               <select value={form.method} onChange={(e) => set("method", e.target.value)} className="w-full rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm outline-none focus:border-brand-400">
-                <option>MTN Mobile Money</option>
                 <option>Airtel Money</option>
+                <option>MTN Mobile Money</option>
                 <option>Bank transfer</option>
                 <option>Cash</option>
               </select>

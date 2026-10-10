@@ -19,6 +19,7 @@ type Advert = {
 
 const PLACEMENTS = [
   { v: "advertise", label: "Advertisers page" },
+  { v: "hero", label: "Hero — top of the homepage, rotating with our slides" },
   { v: "home", label: "Homepage banner" },
   { v: "sidebar", label: "Sidebar" },
 ];

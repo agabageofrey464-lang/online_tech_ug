@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { whatsappLink } from "@/lib/site";
 import {
   Award,
   CalendarDays,
@@ -12,6 +13,7 @@ import {
   Code2,
   FileText,
   GraduationCap,
+  Megaphone,
   Play,
   ShieldCheck,
   Smartphone,
@@ -215,7 +217,90 @@ function InternArt() {
   );
 }
 
-const SLIDES = [
+type Slide = {
+  tab: string;
+  eyebrow: string;
+  title: string;
+  sub: string;
+  cta: string;
+  href: string;
+  more: { label: string; href: string };
+  img: string;
+  pos: string;
+  Art: () => ReactNode;
+  /** Set on an advertiser's slide: its picture comes from outside the site. */
+  ad?: boolean;
+};
+
+/* ─── Adverts ─────────────────────────────────────────────────────
+   An advert the owner has placed in the hero takes a turn among the service
+   slides and is drawn the same way: its picture dimmed behind, the mist and
+   droplets over it, the words on the left, and the picture again on the right
+   as a framed card that floats like the other scenes. */
+
+type Advert = { id: number; title: string; advertiser: string; description: string; image_url: string; link_url: string; category: string };
+
+// Only a real web address opens from the button — never an image or upload URL.
+const isWebLink = (url: string) => /^https?:\/\//i.test(url) && !/\.(png|jpe?g|webp|gif|svg)($|\?)/i.test(url) && !/\/uploads\/|\/_next\/image/i.test(url);
+
+function AdArt({ ad }: { ad: Advert }) {
+  return (
+    <>
+      <div className={`${card} hero-float left-[19%] top-0 w-[62%] rotate-1 p-2 sm:left-[8%] sm:top-[4%] sm:w-[84%] lg:p-2.5`}>
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#f0ede6] sm:aspect-[4/3]">
+          {ad.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={ad.image_url} alt={ad.title} className="animate-kenburns-loop absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center text-ink-700/40">
+              <Megaphone size={56} strokeWidth={1.2} />
+            </span>
+          )}
+        </div>
+        <p className="mt-1.5 truncate px-1 font-display text-[16px]">{ad.advertiser || ad.title}</p>
+        <p className="px-1 pb-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-600">{ad.category || "Advert"}</p>
+      </div>
+      <span className={`${chip} hero-float right-[1%] top-0`} style={{ animationDelay: "0.5s" }}>
+        <Megaphone size={14} className="text-brand-500" /> Sponsored
+      </span>
+      <span className={`${chip} hero-float bottom-[2%] left-[2%]`} style={{ animationDelay: "1.1s" }}>
+        <Check size={14} className="text-brand-500" /> On Online Tech Uganda
+      </span>
+    </>
+  );
+}
+
+function adSlide(ad: Advert): Slide {
+  const name = ad.advertiser || "Sponsored";
+  return {
+    tab: name.length > 18 ? `${name.slice(0, 17)}…` : name,
+    eyebrow: `Sponsored · ${name}`,
+    title: ad.title,
+    sub: ad.description,
+    cta: "Learn more",
+    href: isWebLink(ad.link_url) ? ad.link_url : whatsappLink(`Hello Online Tech Uganda, I saw the advert "${ad.title}" by ${name} on your site and would like to know more.`),
+    more: { label: "Advertise here", href: "/advertise" },
+    img: ad.image_url,
+    pos: "",
+    Art: () => <AdArt ad={ad} />,
+    ad: true,
+  };
+}
+
+/** A link that leaves the site in a new tab, or stays in it. */
+function Go({ href, children, ...rest }: { href: string; children: ReactNode; className?: string; onMouseEnter?: () => void; onFocus?: () => void; "aria-label"?: string; "aria-current"?: boolean }) {
+  return /^https?:/i.test(href) ? (
+    <a href={href} target="_blank" rel="noopener sponsored" {...rest}>
+      {children}
+    </a>
+  ) : (
+    <Link href={href} {...rest}>
+      {children}
+    </Link>
+  );
+}
+
+const SLIDES: Slide[] = [
   {
     tab: "Shop",
     eyebrow: "Shop · genuine & warranted",
@@ -303,7 +388,32 @@ export function HeroRotator() {
   // The slide just left. It stays whole underneath while the next fades in
   // over it; fading both at once showed two headlines through each other.
   const [prev, setPrev] = useState(0);
-  const n = SLIDES.length;
+  // Adverts placed in the hero from the dashboard. They join after the page
+  // has loaded, so the first slide a visitor sees is always one of ours.
+  const [ads, setAds] = useState<Advert[]>([]);
+  useEffect(() => {
+    let live = true;
+    fetch("/_api/adverts?placement=hero", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((d) => live && Array.isArray(d) && setAds(d.slice(0, 6)))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+  // One advert after every two of our own slides, so neither crowds out the other.
+  const slides = useMemo(() => {
+    if (ads.length === 0) return SLIDES;
+    const out: Slide[] = [];
+    let a = 0;
+    SLIDES.forEach((s, k) => {
+      out.push(s);
+      if (k % 2 === 1 && a < ads.length) out.push(adSlide(ads[a++]));
+    });
+    while (a < ads.length) out.push(adSlide(ads[a++]));
+    return out;
+  }, [ads]);
+  const n = slides.length;
   const go = useCallback((d: number) => setI((v) => (v + d + n) % n), [n]);
 
   useEffect(() => {
@@ -322,7 +432,7 @@ export function HeroRotator() {
 
   return (
     <div className="group/hero relative h-[440px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
-      {SLIDES.map((s, idx) => (
+      {slides.map((s, idx) => (
         <div
           key={idx}
           className={`absolute inset-0 bg-ink-900 ${
@@ -335,7 +445,13 @@ export function HeroRotator() {
           aria-hidden={idx !== i}
         >
           {/* The photograph, dimmed; a glow in the logo's orange; a fine grid. */}
-          {near(idx) && <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />}
+          {near(idx) &&
+            (s.ad ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              s.img && <img src={s.img} alt="" className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
+            ) : (
+              <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
+            ))}
           <div className="absolute inset-0 bg-gradient-to-r from-ink-900/95 via-ink-900/80 to-ink-900/55" />
           <div className="hero-grid absolute inset-0 opacity-[0.07]" />
           {/* Mist and rising droplets, behind everything that is read. */}
@@ -368,20 +484,26 @@ export function HeroRotator() {
             <div className="contents lg:block lg:text-left">
               <div className="order-1 text-center text-white lg:text-left">
                 <p className="font-display text-[15px] italic leading-tight text-brand-200 sm:text-[21px]">{s.eyebrow}</p>
-                <SlideHeading first={idx === 0} className="mt-0.5 font-display text-[25px] leading-[1.08] sm:mt-1 sm:text-[50px] lg:mt-2 xl:text-[62px]">
+                <SlideHeading
+                  first={idx === 0}
+                  className={`mt-0.5 font-display leading-[1.08] sm:mt-1 lg:mt-2 ${
+                    // An advertiser's headline can be any length; ours are written to fit.
+                    s.ad && s.title.length > 48 ? "line-clamp-3 text-[20px] sm:text-[34px] xl:text-[40px]" : "line-clamp-3 text-[25px] sm:text-[50px] xl:text-[62px]"
+                  }`}
+                >
                   {s.title}
                 </SlideHeading>
               </div>
               <div className="order-3 text-center text-white lg:text-left">
                 {/* A phone has the headline and the scene; the line is for wider screens. */}
-                <p className="mx-auto hidden max-w-xl text-white/90 sm:block sm:text-[19px] lg:mx-0 lg:mt-3">{s.sub}</p>
+                <p className="mx-auto hidden max-w-xl text-white/90 sm:line-clamp-3 sm:text-[19px] lg:mx-0 lg:mt-3">{s.sub}</p>
                 <div className="mx-auto flex max-w-sm gap-2 pr-14 sm:mt-4 sm:max-w-none sm:justify-center sm:gap-3 sm:pr-0 lg:mt-5 lg:justify-start">
-                  <Link
+                  <Go
                     href={s.href}
                     className="press inline-flex flex-1 items-center justify-center bg-brand-500 px-3 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-brand-600 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
                   >
                     {s.cta}
-                  </Link>
+                  </Go>
                   <Link
                     href={s.more.href}
                     className="inline-flex flex-1 items-center justify-center border border-white px-3 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white hover:text-ink-900 sm:flex-none sm:px-9 sm:py-4 sm:text-[13px]"
@@ -426,9 +548,9 @@ export function HeroRotator() {
           at one on a computer shows its slide first. They were buttons that
           only changed the slide, which read as a link that went nowhere. */}
       <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto bg-ink-900/60 px-2 py-2 backdrop-blur-sm no-scrollbar sm:justify-center">
-        {SLIDES.map((s, idx) => (
-          <Link
-            key={s.tab}
+        {slides.map((s, idx) => (
+          <Go
+            key={`${s.tab}-${idx}`}
             href={s.href}
             onMouseEnter={() => setI(idx)}
             onFocus={() => setI(idx)}
@@ -440,7 +562,7 @@ export function HeroRotator() {
           >
             {s.tab}
             {idx === i && <span key={`c${i}`} className="strip-count !bg-brand-500" style={{ animationDuration: `${STAY}ms` }} />}
-          </Link>
+          </Go>
         ))}
       </div>
     </div>

@@ -494,41 +494,6 @@ export default function VendorDashboard() {
         </div>
       </section>
 
-      {/* How to pay your listing / subscription fee */}
-      <section className="mt-6 rounded-card border border-brand-200 bg-brand-50/60 p-6 shadow-sm">
-        <h2 className="flex items-center gap-2 font-extrabold text-ink-900">💳 Pay your vendor fee</h2>
-        <p className="mt-1 text-sm text-ink-700/70">
-          Send the amount for your plan to {site.name} using any of the details below, then message us the confirmation.
-        </p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-ink-600/10 bg-white p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-700/50">{site.payment.momo.provider}</p>
-            <p className="mt-1 text-lg font-extrabold text-ink-900">{site.payment.momo.number}</p>
-            <p className="text-sm text-ink-700/70">{site.payment.momo.name}</p>
-          </div>
-          <div className="rounded-lg border border-ink-600/10 bg-white p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-700/50">{site.payment.momoAlt.provider}</p>
-            <p className="mt-1 text-lg font-extrabold text-ink-900">{site.payment.momoAlt.number}</p>
-            <p className="text-sm text-ink-700/70">{site.payment.momoAlt.name}</p>
-          </div>
-          {site.payment.bank.account && (
-            <div className="rounded-lg border border-ink-600/10 bg-white p-4 sm:col-span-2">
-              <p className="text-xs font-bold uppercase tracking-wide text-ink-700/50">Bank transfer</p>
-              <p className="mt-1 text-lg font-extrabold text-ink-900">{site.payment.bank.account}</p>
-              <p className="text-sm text-ink-700/70">{site.payment.bank.name} · {site.payment.bank.bank}</p>
-            </div>
-          )}
-        </div>
-        <a
-          href={whatsappLink(`Hi ${site.name}, I'm the vendor "${user.business_name || user.name}". I've paid my vendor fee — here is my confirmation.`)}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-block rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600"
-        >
-          I&apos;ve paid — send confirmation
-        </a>
-      </section>
-
       <section className="mt-6 rounded-card border border-ink-600/10 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-extrabold text-ink-900">My products</h2>

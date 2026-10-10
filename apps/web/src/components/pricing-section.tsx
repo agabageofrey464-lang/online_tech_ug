@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { Check, Star } from "lucide-react";
 import { site, whatsappLink, ugx } from "@/lib/site";
+import { PayPanel } from "@/components/pay-panel";
 
 export type Plan = {
   name: string;
@@ -92,18 +93,7 @@ export function PricingSection({ title, subtitle, plans, cols = 3, showPay = tru
         <div className={`mt-6 grid gap-5 ${cols === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
           {plans.map((p) => <PlanCard key={p.name} p={p} />)}
         </div>
-        {showPay && (
-          <div className="mt-6 flex flex-col gap-3 rounded-lg border border-ink-600/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm">
-              <span className="font-bold text-ink-900">Pay via Mobile Money:</span>{" "}
-              <span className="text-ink-700/80">{site.payment.momo.number} ({site.payment.momo.provider}) · {site.payment.momoAlt.number} ({site.payment.momoAlt.provider})</span>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <a href={sub("a plan (need advice)")} target="_blank" rel="noreferrer" className="rounded-md bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">Chat to subscribe</a>
-              <Link href="/contact" className="rounded-md border border-ink-600/20 px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-ink-50">Contact</Link>
-            </div>
-          </div>
-        )}
+        {showPay && <PayPanel purpose={title} className="mt-6" />}
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import { Check, RefreshCw } from "lucide-react";
 import { site, ugx, whatsappLink } from "@/lib/site";
+import { PayPanel } from "@/components/pay-panel";
 import { SECOND_CHANCE, VENDOR_MONTHLY, VENDOR_PLAN_INCLUDES, VENDOR_PLANS } from "@/lib/vendor-plans";
 
 /**
@@ -85,10 +86,7 @@ export function VendorPlans({ vendor, heading = true }: { vendor?: string; headi
         </div>
       </div>
 
-      <p className="mt-4 text-center text-[13px] text-ink-700/70">
-        Pay by {site.payment.momo.provider} <b className="text-ink-900">{site.payment.momo.number}</b> or {site.payment.momoAlt.provider}{" "}
-        <b className="text-ink-900">{site.payment.momoAlt.number}</b>, then send us the confirmation.
-      </p>
+      <PayPanel purpose={vendor ? `my vendor plan (${vendor})` : "a vendor plan"} className="mt-4" />
     </section>
   );
 }

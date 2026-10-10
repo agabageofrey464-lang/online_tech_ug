@@ -147,8 +147,8 @@ export function InternshipPanel() {
               <Smartphone size={14} className="text-brand-500" /> How to pay
             </p>
             <p className="mt-1 text-[12.5px] leading-relaxed text-ink-700/75">
-              Mobile Money to <b className="text-ink-900">{site.payment.momo.number}</b> (
-              {site.payment.momo.name}). Send the confirmation on WhatsApp and we will start your
+              Airtel Money to <b className="text-ink-900">{site.payment.momoAlt.number}</b> (
+              {site.payment.momoAlt.name}). Send the confirmation on WhatsApp and we will start your
               paperwork the same day — there is nowhere to travel to for this intake.
             </p>
           </div>

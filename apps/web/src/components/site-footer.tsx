@@ -3,6 +3,7 @@ import { MapPin, Phone, Mail, Banknote, MessageCircle } from "lucide-react";
 import { site, whatsappAltLink } from "@/lib/site";
 import { BrandLogoFull } from "@/components/brand-logo-full";
 import { NewsletterSignup } from "@/components/newsletter-signup";
+import { PayStrip } from "@/components/pay-panel";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -154,6 +155,9 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
+
+      {/* Where to pay, on every page */}
+      <PayStrip />
 
       {/* Payment methods (Jumia bottom strip) */}
       <div className="border-t border-ink-600/10 bg-ink-50">

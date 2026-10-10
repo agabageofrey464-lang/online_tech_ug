@@ -5,6 +5,7 @@ import { ContactOptions } from "@/components/contact-options";
 import { PageHeader } from "@/components/page-header";
 import { PricingSection, postingCharges, freelancerPlans, advertPlans, servicePlans } from "@/components/pricing-section";
 import { VendorPlans } from "@/components/vendor-plans";
+import { PayPanel } from "@/components/pay-panel";
 import { share } from "@/lib/seo";
 
 export const metadata: Metadata = share({
@@ -31,6 +32,7 @@ export default function PricingPage() {
         <PricingSection title="Advertising packages" subtitle="Weekly, monthly or yearly homepage adverts." plans={advertPlans} showPay={false} />
         <PricingSection title="Freelancers — Get Hired" subtitle="List your skills weekly, monthly or yearly." plans={freelancerPlans} showPay={false} />
         <PricingSection title="Websites, Apps & Software" subtitle={`Project-based pricing — websites from ${ugx(SERVICE_FROM.website)}.`} plans={servicePlans} showPay={false} />
+        <PayPanel purpose="the package I chose" />
       </section>
       <div className="container-page pb-10">
         <ContactOptions
