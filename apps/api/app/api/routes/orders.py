@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core import ratelimit
@@ -38,6 +39,43 @@ async def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> O
         "/orders",
     )
     return order
+
+
+class WhatsAppLead(BaseModel):
+    product: str = Field(max_length=200)
+    price: str = Field(default="", max_length=40)
+    url: str = Field(default="", max_length=300)
+    line: str = Field(default="", max_length=40)
+    customer_name: str = Field(default="", max_length=160)
+    customer_phone: str = Field(default="", max_length=40)
+
+
+@router.post("/whatsapp-lead", status_code=202)
+async def whatsapp_lead(payload: WhatsAppLead, request: Request, db: Session = Depends(get_db)) -> dict:
+    """A customer opened a WhatsApp order on a line that is not the owner's.
+
+    Phone orders are taken on the phones' line. So that an order taken there is
+    never unknown to the shop, the owner is told — on WhatsApp and by push, not
+    by email — which product the customer opened a chat about, and when.
+    """
+    if not ratelimit.allow(f"wa-lead:{ratelimit.peer_ip(request)}", limit=6, window_seconds=600):
+        return {"ok": True}
+    who = " — ".join(x for x in (payload.customer_name.strip(), payload.customer_phone.strip()) if x)
+    text = "\n".join(
+        x
+        for x in (
+            "📱 PHONE ORDER CHAT OPENED",
+            "",
+            f"{payload.product.strip()}" + (f" — {payload.price.strip()}" if payload.price.strip() else ""),
+            f"Customer: {who}" if who else "Customer: not signed in",
+            f"Sent to: {payload.line.strip() or settings.phone_orders_line}",
+            payload.url.strip(),
+        )
+        if x is not None
+    )
+    await whatsapp.notify_owner(text)
+    await push.notify_owner(db, "📱 Phone order chat opened", f"{payload.product.strip()} · sent to {payload.line.strip() or settings.phone_orders_line}", "/orders")
+    return {"ok": True}
 
 
 @router.get("/delivery-quote")

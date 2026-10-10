@@ -12,6 +12,10 @@ export const site = {
   phoneDisplay: "+256 756 839 270",
   phoneAlt: "+256 760 547 211",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "256756839270",
+  // Orders for phones are handled on this line. Every one is also reported
+  // to the owner on the number above, so none goes unseen. Everything that
+  // is not a phone goes to the owner's number alone.
+  phoneOrders: { whatsapp: "256708843577", local: "0708843577", display: "+256 708 843 577" },
   // Second line — WhatsApp only (0760 547 211).
   whatsappAlt: "256760547211",
   whatsappAltDisplay: "+256 760 547 211",

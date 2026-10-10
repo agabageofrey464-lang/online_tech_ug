@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     # order and enquiry comes to the owner's number, and vendors' numbers stay
     # on file, unused, until the owner decides to hand that over.
     vendor_contacts_public: bool = False
+    # The line phone orders are handled on. The owner is told of every one.
+    phone_orders_line: str = "0708843577"
 
     # Where uploaded CVs are stored (relative to the API working directory).
     upload_dir: str = "uploads"

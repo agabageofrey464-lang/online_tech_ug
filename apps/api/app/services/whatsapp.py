@@ -14,6 +14,8 @@ not see an error because a notification didn't go out.
 
 from __future__ import annotations
 
+import re
+
 import logging
 from urllib.parse import quote
 
@@ -56,11 +58,22 @@ async def notify_owner(text: str) -> bool:
         return False
 
 
+# The storefront's test for a phone, by name (apps/web/src/lib/vendor-items.ts).
+_PHONE = re.compile(r"\b(i\s?phone|galaxy|samsung\s+[sa]\d|redmi|xiaomi|tecno|infinix|itel|oppo|vivo|honor|huawei|nokia|pixel|oneplus|realme|smart\s?phone|phone|tablets?|ipad|tab\s?\d)\b", re.I)
+_NOT_PHONE = re.compile(r"\b(case|cover|charger|cable|protector|holder|stand|earphone|headphone|power\s?bank|adapter|screen\s?guard|pouch)\b", re.I)
+
+
+def _is_phone(name: str) -> bool:
+    return bool(_PHONE.search(name or "")) and not _NOT_PHONE.search(name or "")
+
+
 def order_message(order) -> str:
     """The order, written so it reads properly in a WhatsApp notification."""
     lines = [f"🛒 NEW ORDER  {order.reference}", ""]
     for i in order.items:
         lines.append(f"• {i.quantity} x {i.name} — UGX {int(i.line_total):,}")
+    if any(_is_phone(i.name) for i in order.items):
+        lines.append(f"📱 Has a phone — phone orders are handled on {settings.phone_orders_line}")
     lines += [
         "",
         f"Total: UGX {int(order.total):,}",

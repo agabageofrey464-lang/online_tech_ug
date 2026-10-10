@@ -533,3 +533,28 @@ def test_a_product_photo_comes_out_the_same_from_any_device():
 
     with pytest.raises(ValueError):
         product_photo.standardise(b"not a picture")
+
+
+def test_the_owner_is_told_when_a_phone_order_chat_is_opened(db_factory, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.services import push, whatsapp
+
+    told = []
+
+    async def wa(text):
+        told.append(text)
+        return True
+
+    async def no_push(*a, **k):
+        return {}
+
+    monkeypatch.setattr(whatsapp, "notify_owner", wa)
+    monkeypatch.setattr(push, "notify_owner", no_push)
+
+    res = TestClient(app).post("/api/v1/orders/whatsapp-lead", json={"product": "iPhone 13 128GB", "price": "UGX 1,500,000", "line": "+256 708 843 577"})
+    assert res.status_code == 202
+    assert len(told) == 1 and "iPhone 13 128GB" in told[0] and "708 843 577" in told[0]
+
+    assert whatsapp._is_phone("Samsung Galaxy A15") and not whatsapp._is_phone("iPhone 13 case") and not whatsapp._is_phone("HP EliteBook 840")

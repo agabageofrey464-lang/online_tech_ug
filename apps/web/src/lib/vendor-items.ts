@@ -75,6 +75,11 @@ const NOT_PHONE = /\b(case|cover|charger|cable|protector|holder|stand|earphone|h
 const LAPTOP = /\b(laptop|notebook|macbook|thinkpad|elitebook|probook|latitude|inspiron|ideapad|vivobook|zenbook|pavilion|x1\s?carbon|ryzen\s?\d|core\s?i\d|chromebook)\b/i;
 const NOT_LAPTOP = /\b(bag|sleeve|stand|charger|adapter|battery|keyboard|skin|cooler|ram|ssd)\b/i;
 
+/** Whether a product, by its name, is a phone or tablet and not an accessory for one. */
+export function isPhoneName(name: string): boolean {
+  return PHONE.test(name) && !NOT_PHONE.test(name);
+}
+
 export function shelfFor(v: { name: string; category: string }): Product["category"] {
   if (PHONE.test(v.name) && !NOT_PHONE.test(v.name)) return "Phones";
   if (LAPTOP.test(v.name) && !NOT_LAPTOP.test(v.name)) return "Laptops";

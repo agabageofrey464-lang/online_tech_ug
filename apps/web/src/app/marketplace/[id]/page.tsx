@@ -9,7 +9,7 @@ import { WhatsAppOrder } from "@/components/whatsapp-order";
 import { DeliveryCheck } from "@/components/delivery-check";
 import { ProductReviews } from "@/components/product-reviews";
 import { ProductCard } from "@/components/product-card";
-import { asShopProducts, getVendorItem, getVendorItems } from "@/lib/vendor-items";
+import { asShopProducts, getVendorItem, getVendorItems, shelfFor } from "@/lib/vendor-items";
 import { fallbackImage } from "@/lib/image-fallback";
 import { vendorOrderMessage } from "@/lib/order-message";
 import { share } from "@/lib/seo";
@@ -52,6 +52,9 @@ export default async function VendorProductPage({ params }: Params) {
   const specs = item.specs ?? [];
   const image = item.image_url || fallbackImage(item.name, item.category);
   const condition = item.condition || "Brand New";
+  // Phones are ordered on the phones' line; the owner is told of each one.
+  const isPhone = shelfFor(item) === "Phones";
+  const orderLine = isPhone ? site.phoneOrders.display : site.phoneDisplay;
   // A "Colour" row in the vendor's specification becomes the colour choice.
   const colours = (specs.find((s) => /^colou?rs?$/i.test(s.label.trim()))?.value ?? "")
     .split(/[,/]/)
@@ -133,7 +136,8 @@ export default async function VendorProductPage({ params }: Params) {
             <WhatsAppOrder
               className="mt-4"
               label="Order on WhatsApp"
-              phone={item.vendor_verified && item.vendor_phone ? item.vendor_phone : undefined}
+              phone={isPhone ? site.phoneOrders.local : undefined}
+              report={isPhone ? { product: item.name, price: ugx(item.price_ugx), url: `${site.url}/marketplace/${item.id}`, line: site.phoneOrders.display } : undefined}
               message={vendorOrderMessage({ name: item.name, priceLabel: ugx(item.price_ugx), vendor: item.vendor_name, category: item.category, url: `${site.url}/marketplace/${item.id}` })}
             />
 
@@ -146,8 +150,8 @@ export default async function VendorProductPage({ params }: Params) {
               </li>
               <li className="flex items-start gap-2.5 text-sm">
                 <Phone size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
-                <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
-                  Call {site.phoneDisplay} to order
+                <a href={`tel:${orderLine.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
+                  Call {orderLine} to order
                 </a>
               </li>
               <li className="flex items-start gap-2.5 text-sm">
@@ -220,7 +224,7 @@ export default async function VendorProductPage({ params }: Params) {
               </p>
             )}
             <p className="mt-3 text-xs leading-relaxed text-ink-700/70">
-              You order from and pay {site.name}. This item is supplied by one of our approved partner vendors, and every order and question comes to us on {site.phoneDisplay}.
+              You order from and pay {site.name}. This item is supplied by one of our approved partner vendors, and every order and question comes to us on {orderLine}.
             </p>
             <Link href="/marketplace" className="mt-4 block border border-ink-700/25 px-3 py-2.5 text-center text-xs font-bold uppercase tracking-[0.1em] text-ink-900 transition hover:border-ink-900">
               More from the marketplace

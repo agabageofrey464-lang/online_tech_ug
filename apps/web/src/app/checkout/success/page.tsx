@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { isPhoneName } from "@/lib/vendor-items";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { getOrder, type Order } from "@/lib/api";
@@ -127,7 +128,12 @@ function SuccessInner() {
         <p className="mt-3 text-[12.5px] text-ink-700/60">
           Need us?{" "}
           <a
-            href={whatsappLink(orderWhatsAppText(order, ref))}
+            href={
+              // An order with a phone in it is followed up on the phones' line.
+              order?.items.some((i) => isPhoneName(i.name))
+                ? `https://wa.me/${site.phoneOrders.whatsapp}?text=${encodeURIComponent(orderWhatsAppText(order, ref))}`
+                : whatsappLink(orderWhatsAppText(order, ref))
+            }
             target="_blank"
             rel="noreferrer"
             className="font-bold text-green-700 underline-offset-2 hover:underline"

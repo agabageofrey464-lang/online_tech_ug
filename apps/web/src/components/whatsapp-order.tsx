@@ -47,6 +47,7 @@ export function WhatsAppOrder({
   className = "",
   label = "Order on WhatsApp",
   brand = false,
+  report,
 }: {
   message: string;
   /** Route the order to this number instead of the business one (e.g. a paid vendor's phone). */
@@ -57,6 +58,12 @@ export function WhatsAppOrder({
   label?: string;
   /** Use the brand-orange style instead of WhatsApp green. */
   brand?: boolean;
+  /**
+   * Set when the chat opens on a line other than the owner's: the owner is
+   * told which product it was for, so an order taken there is never unknown
+   * to the shop.
+   */
+  report?: { product: string; price: string; url: string; line: string };
 }) {
   const { user } = useAuth();
   const full = message + detailsBlock(user);
@@ -64,6 +71,16 @@ export function WhatsAppOrder({
   return (
     <a
       href={disabled ? undefined : orderHref(full, phone)}
+      onClick={() => {
+        if (disabled || !report) return;
+        try {
+          const body = JSON.stringify({ ...report, customer_name: user?.name ?? "", customer_phone: user?.phone ?? "" });
+          // A beacon is sent even as the page gives way to WhatsApp.
+          navigator.sendBeacon("/_api/orders/whatsapp-lead", new Blob([body], { type: "application/json" }));
+        } catch {
+          /* the chat still opens */
+        }
+      }}
       target="_blank"
       rel="noreferrer"
       aria-disabled={disabled}
