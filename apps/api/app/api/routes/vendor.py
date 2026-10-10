@@ -98,23 +98,9 @@ async def add_product(
     data["approved"] = True
     row = vendor_products.create(db, user.id, data)
 
-    # This one goes live the moment it is posted, which is exactly why the
-    # owner should hear about it rather than find it later.
-    await notify.alert_owner(
-        icon="🏪",
-        title="Vendor listed a product",
-        reference=f"OTU-V{row.id:05d}",
-        pairs=[
-            ("Product", data.get("name", "")),
-            ("Price", f"UGX {int(data.get('price_ugx') or 0):,}"),
-            ("Vendor", user.business_name or user.name),
-            ("Phone", user.phone or ""),
-        ],
-        note=data.get("description", ""),
-        where="It is live now — Admin › Vendors to unapprove it",
-        db=db,
-        url="/vendors",
-    )
+    # No alert here: a vendor stocking up used to set off one for every
+    # product. The owner gets one summary of the day's listings in the evening
+    # instead — see services/vendor_summary.py.
     return row
 
 

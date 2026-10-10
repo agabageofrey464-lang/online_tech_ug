@@ -350,3 +350,32 @@ def test_a_review_can_be_proved_with_the_phone_number_ordered_with(client, order
     assert client.post(f"{API}/reviews", json={**review, "order_reference": "+256 700 000 000"}).status_code == 201
     # And it is still one review per order.
     assert client.post(f"{API}/reviews", json={**review, "order_reference": "0700000000"}).status_code == 409
+
+
+def test_vendor_listings_reach_the_owner_as_one_daily_summary(db_factory):
+    import asyncio
+    from datetime import datetime
+
+    from app.models.user import User
+    from app.models.vendor_product import VendorProduct
+    from app.services import vendor_summary
+
+    with db_factory() as db:
+        v = User(name="Abu", email="abu@example.com", password_hash="x", role="vendor", business_name="Techsoults")
+        db.add(v)
+        db.flush()
+        for n in range(3):
+            db.add(VendorProduct(vendor_id=v.id, name=f"Phone {n}", category="Phones", price_ugx=500_000, approved=True))
+        db.commit()
+
+        evening = datetime.utcnow().replace(hour=16, minute=0)
+        assert vendor_summary.due(evening)
+        out = asyncio.run(vendor_summary.run(db, evening))
+        assert out == {"sent": True, "products": 3, "vendors": 1}
+        # One alert for the three products, naming the vendor and the count.
+        assert len(db_factory.alerts) == 1
+        assert db_factory.alerts[0]["pairs"][0][0] == "Techsoults — 3 new"
+        # Not again the same day, and a day with nothing new sends nothing.
+        assert not vendor_summary.due(evening)
+        assert asyncio.run(vendor_summary.run(db, evening))["sent"] is False
+        assert len(db_factory.alerts) == 1

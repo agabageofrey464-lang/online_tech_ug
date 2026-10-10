@@ -30,7 +30,7 @@ async def _campaign_worker() -> None:
     from datetime import datetime
 
     from app.db.session import SessionLocal
-    from app.services import campaign_auto, catalog_sync, daily_digest, newsletter, push
+    from app.services import campaign_auto, catalog_sync, daily_digest, newsletter, push, vendor_summary
 
     while True:
         try:
@@ -59,6 +59,15 @@ async def _campaign_worker() -> None:
                             logger.info("Daily digest: %s", outcome)
                     except Exception as exc:  # noqa: BLE001
                         logger.warning("Daily digest failed: %s", exc)
+
+                # One message a day to the owner about what vendors listed.
+                if vendor_summary.due():
+                    try:
+                        outcome = await vendor_summary.run(db)
+                        if outcome.get("sent"):
+                            logger.info("Vendor summary: %s", outcome)
+                    except Exception as exc:  # noqa: BLE001
+                        logger.warning("Vendor summary failed: %s", exc)
 
                 campaign_auto.refresh_auto_campaigns(db)
 
