@@ -85,6 +85,9 @@ def _with_option(name: str, option: str) -> str:
 def create_order(db: Session, payload: OrderCreate) -> Order:
     line_items: list[OrderItem] = []
     subtotal = 0
+    # What a discount code may reduce: our own products only. A vendor is paid
+    # the price they set, so their items are left out of the sum a code works on.
+    own_subtotal = 0
 
     for item in payload.items:
         # Vendor marketplace item — slug is "vp-<vendor_product_id>"
@@ -121,6 +124,7 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
         unit_price = int(product["price_ugx"])
         line_total = unit_price * item.quantity
         subtotal += line_total
+        own_subtotal += line_total
         line_items.append(
             OrderItem(
                 product_slug=product["slug"],
@@ -137,8 +141,9 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
 
     # Apply a discount coupon if one was supplied (server recomputes & records usage).
     discount, coupon_code = 0, ""
-    if payload.coupon_code:
-        discount, coupon_code = coupons.redeem(db, payload.coupon_code, subtotal)
+    if payload.coupon_code and own_subtotal > 0:
+        discount, coupon_code = coupons.redeem(db, payload.coupon_code, own_subtotal)
+        discount = min(discount, own_subtotal)
 
     total = max(0, subtotal - discount) + delivery_fee
 

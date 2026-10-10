@@ -15,7 +15,7 @@ import { vendorOrderMessage } from "@/lib/order-message";
 import { share } from "@/lib/seo";
 import { site, ugx } from "@/lib/site";
 
-export const revalidate = 120;
+export const revalidate = 30;
 
 type Params = { params: Promise<{ id: string }> };
 

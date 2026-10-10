@@ -9,7 +9,7 @@ import { share } from "@/lib/seo";
 
 // Rebuilt in the background every few minutes, so a product added or
 // repriced in the admin reaches the shop without a deploy.
-export const revalidate = 300; // keep in step with CATALOG_REVALIDATE
+export const revalidate = 60; // a minute, so a new or newly approved listing shows promptly
 
 // Static, deliberately. This page used to read searchParams on the server,
 // which meant it could never be cached: every visitor waited for a function to

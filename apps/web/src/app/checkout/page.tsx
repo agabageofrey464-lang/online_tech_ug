@@ -43,7 +43,10 @@ export default function CheckoutPage() {
   const [applying, setApplying] = useState(false);
 
   const { fee: deliveryFee, km } = useMemo(() => estimateDelivery(town), [town]);
-  const discount = coupon ? Math.min(coupon.discount, subtotal) : 0;
+  // A code works on our own products only; a vendor's price is the vendor's.
+  const ownSubtotal = items.filter((i) => !i.slug.startsWith("vp-")).reduce((s, i) => s + i.price * i.quantity, 0);
+  const hasVendorItems = items.some((i) => i.slug.startsWith("vp-"));
+  const discount = coupon ? Math.min(coupon.discount, ownSubtotal) : 0;
   const total = Math.max(0, subtotal - discount) + deliveryFee;
 
   async function applyPromo() {
@@ -52,10 +55,15 @@ export default function CheckoutPage() {
     setApplying(true);
     setCouponMsg("");
     try {
-      const res = await validateCoupon(code, subtotal);
+      if (ownSubtotal === 0) {
+        setCoupon(null);
+        setCouponMsg("Discount codes work on Online Tech Uganda's own products. The items in your cart are sold by vendors at their own prices.");
+        return;
+      }
+      const res = await validateCoupon(code, ownSubtotal);
       if (res.valid) {
         setCoupon({ code: res.code, discount: res.discount });
-        setCouponMsg(`✓ ${res.code} applied — you save ${ugx(res.discount)}`);
+        setCouponMsg(`✓ ${res.code} applied — you save ${ugx(res.discount)}${hasVendorItems ? " on our own products. Vendors' items stay at their price." : ""}`);
       } else {
         setCoupon(null);
         setCouponMsg(res.message || "Invalid code");

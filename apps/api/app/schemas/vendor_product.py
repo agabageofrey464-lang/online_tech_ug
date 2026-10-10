@@ -20,7 +20,7 @@ class VendorProductIn(BaseModel):
     brand: str = Field(default="", max_length=80)
     condition: str = Field(default="Brand New", max_length=30)
     old_price_ugx: int | None = Field(default=None, ge=0)
-    specs: list[Spec] = Field(default_factory=list, max_length=30)
+    specs: list[Spec] = Field(default_factory=list, max_length=80)
 
 
 class VendorProductOut(BaseModel):

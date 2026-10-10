@@ -60,7 +60,16 @@ const emptyForm = {
 };
 const CONDITIONS = ["Brand New", "UK Used", "Refurbished"];
 // Offered as one-tap rows; a vendor can also type any label of their own.
-const SPEC_IDEAS = ["Compatible with", "Colour", "Material", "Capacity", "Connector", "Wattage", "Cable length", "Warranty", "In the box"];
+// Offered as one-tap rows, by the kind of product. The first two or three
+// rows are what a card in the store shows under the name, so they lead with
+// what a buyer compares on.
+const SPEC_SETS: { name: string; rows: string[] }[] = [
+  { name: "Phone", rows: ["Storage", "RAM", "Screen", "Camera", "Battery", "Processor", "Network", "SIM", "Operating system", "Colour", "Battery health", "Warranty", "In the box"] },
+  { name: "Laptop", rows: ["Processor", "RAM", "Storage", "Screen", "Graphics", "Operating system", "Battery", "Ports", "Keyboard", "Colour", "Warranty", "In the box"] },
+  { name: "Accessory", rows: ["Compatible with", "Colour", "Material", "Capacity", "Connector", "Wattage", "Cable length", "Warranty", "In the box"] },
+];
+const SPEC_IDEAS = Array.from(new Set(SPEC_SETS.flatMap((s) => s.rows)));
+const MAX_SPECS = 80;
 
 export default function VendorDashboard() {
   const { user, loading, logout } = useAuth();
@@ -599,7 +608,7 @@ export default function VendorDashboard() {
       {/* Add / edit product modal */}
       {showForm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => { setShowForm(false); setEditingId(null); }}>
-          <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[94vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-lg font-extrabold text-ink-900">{editingId ? "Edit product" : "Add a product"}</h3>
               <button onClick={() => { setShowForm(false); setEditingId(null); }} aria-label="Close" className="text-ink-600/50 hover:text-ink-900"><X size={20} /></button>
@@ -645,8 +654,30 @@ export default function VendorDashboard() {
                   case and a charger share no fields, so each row is a label
                   and a value the vendor chooses. */}
               <div className="rounded-lg border border-ink-600/10 bg-ink-50/50 p-3">
-                <p className="text-sm font-bold text-ink-900">Specifications</p>
-                <p className="text-xs text-ink-700/60">Shown as a table on the product&apos;s page. Tap a suggestion or add your own.</p>
+                <p className="text-base font-bold text-ink-900">Specifications <span className="font-normal text-ink-700/55">({form.specs.length} added)</span></p>
+                <p className="text-xs leading-relaxed text-ink-700/65">
+                  Add as many as the product has — up to {MAX_SPECS}. They are shown as a table on the product&apos;s page, and the{" "}
+                  <b className="text-ink-900">first four</b> appear on its card in the store, so put the most important first.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-ink-700/70">Start from a set:</span>
+                  {SPEC_SETS.map((set) => (
+                    <button
+                      key={set.name}
+                      type="button"
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          specs: [...form.specs, ...set.rows.filter((l) => !form.specs.some((r) => r.label === l)).map((l) => ({ label: l, value: "" }))].slice(0, MAX_SPECS),
+                        })
+                      }
+                      className="rounded-md bg-ink-800 px-3 py-1.5 text-xs font-bold text-white hover:bg-ink-900"
+                    >
+                      {set.name}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs font-semibold text-ink-700/70">Or add one at a time:</p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {SPEC_IDEAS.filter((l) => !form.specs.some((r) => r.label === l)).map((l) => (
                     <button key={l} type="button" onClick={() => setForm({ ...form, specs: [...form.specs, { label: l, value: "" }] })} className="rounded-full border border-ink-600/15 bg-white px-2.5 py-1 text-[11px] font-semibold text-ink-700 hover:border-brand-400 hover:text-brand-600">
@@ -658,16 +689,16 @@ export default function VendorDashboard() {
                   {form.specs.map((r, i) => (
                     <div key={i} className="grid grid-cols-[2fr_3fr_auto] gap-2">
                       <input placeholder="Label" maxLength={60} value={r.label} onChange={(e) => setForm({ ...form, specs: form.specs.map((x, n) => (n === i ? { ...x, label: e.target.value } : x)) })} className={input} />
-                      <input placeholder="Value" maxLength={200} value={r.value} onChange={(e) => setForm({ ...form, specs: form.specs.map((x, n) => (n === i ? { ...x, value: e.target.value } : x)) })} className={input} />
+                      <input placeholder="Value — e.g. 128GB, 6.1&quot; OLED, 85% battery health" maxLength={200} value={r.value} onChange={(e) => setForm({ ...form, specs: form.specs.map((x, n) => (n === i ? { ...x, value: e.target.value } : x)) })} className={input} />
                       <button type="button" aria-label="Remove this row" onClick={() => setForm({ ...form, specs: form.specs.filter((_, n) => n !== i) })} className="shrink-0 rounded-md px-2 text-ink-600/50 hover:bg-red-50 hover:text-red-600">
                         <X size={16} />
                       </button>
                     </div>
                   ))}
                 </div>
-                {form.specs.length < 30 && (
+                {form.specs.length < MAX_SPECS && (
                   <button type="button" onClick={() => setForm({ ...form, specs: [...form.specs, { label: "", value: "" }] })} className="mt-2 text-xs font-bold text-brand-600 hover:underline">
-                    + Add another row
+                    + Add a row of your own
                   </button>
                 )}
               </div>

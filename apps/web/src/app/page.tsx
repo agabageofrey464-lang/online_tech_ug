@@ -125,7 +125,9 @@ export const metadata: Metadata = share({
 // The storefront re-renders on a schedule (see `revalidate` below). Each slot
 // gets a different offset, so the home page leads with different products every
 // time it refreshes — the shop feels alive instead of frozen.
-export const revalidate = 600; // 10 minutes
+export const revalidate = 60; // a minute, so new listings appear promptly
+/** How often the rows change which products lead — slower than the page refreshes. */
+const ROTATE_SECONDS = 600;
 
 /** Rotate an array by `by` places — deterministic, no randomness to hydrate. */
 /** Alternate two lists — laptop, phone, laptop, phone — so a mixed rail
@@ -160,7 +162,7 @@ export default async function HomePage() {
   const fromVendors = products.filter((p) => p.seller);
 
   // Which slot of the day we're in — advances every 10 minutes.
-  const slot = Math.floor(Date.now() / (revalidate * 1000));
+  const slot = Math.floor(Date.now() / (ROTATE_SECONDS * 1000));
 
   const inStock = products;
 

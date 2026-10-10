@@ -26,7 +26,9 @@ export type VendorItem = {
 
 export async function getVendorItems(): Promise<VendorItem[]> {
   try {
-    const res = await fetch(`${API}/api/v1/vendor/marketplace`, { next: { revalidate: 300 } });
+    const res = await // Thirty seconds: a product a vendor has just listed, or one the owner has
+    // just approved, should be in the store by the time they go and look.
+    fetch(`${API}/api/v1/vendor/marketplace`, { next: { revalidate: 30 } });
     return res.ok ? await res.json() : [];
   } catch {
     return [];
@@ -35,7 +37,7 @@ export async function getVendorItems(): Promise<VendorItem[]> {
 
 export async function getVendorItem(id: number): Promise<VendorItem | null> {
   try {
-    const res = await fetch(`${API}/api/v1/vendor/marketplace/${id}`, { next: { revalidate: 120 } });
+    const res = await fetch(`${API}/api/v1/vendor/marketplace/${id}`, { next: { revalidate: 30 } });
     return res.ok ? await res.json() : null;
   } catch {
     return null;

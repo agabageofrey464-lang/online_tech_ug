@@ -8,7 +8,7 @@ import { productImage } from "@/lib/data";
  * box. It is the live list — the database's prices and products, and vendors'
  * — where /api/catalog is the catalogue file the API seeds itself from.
  */
-export const revalidate = 300;
+export const revalidate = 60;
 
 export async function GET() {
   const items = (await getStoreProducts()).map((p) => ({
@@ -28,6 +28,6 @@ export async function GET() {
   }));
   return NextResponse.json(
     { count: items.length, items },
-    { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600" } },
+    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600" } },
   );
 }

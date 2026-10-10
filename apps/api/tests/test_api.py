@@ -379,3 +379,31 @@ def test_vendor_listings_reach_the_owner_as_one_daily_summary(db_factory):
         assert not vendor_summary.due(evening)
         assert asyncio.run(vendor_summary.run(db, evening))["sent"] is False
         assert len(db_factory.alerts) == 1
+
+
+def test_a_discount_code_never_reduces_a_vendors_price(db_factory):
+    from app.models.coupon import Coupon
+    from app.models.product import Product
+    from app.models.user import User
+    from app.models.vendor_product import VendorProduct
+    from app.schemas.order import OrderCreate
+    from app.services.orders import create_order
+
+    with db_factory() as db:
+        v = User(name="Abu", email="abu2@example.com", password_hash="x", role="vendor", business_name="Techsoults")
+        db.add(v)
+        db.flush()
+        vp = VendorProduct(vendor_id=v.id, name="Vendor Phone", category="Phones", price_ugx=500_000, approved=True, in_stock=True)
+        db.add_all([vp, Product(slug="own-mouse", name="Own Mouse", category="Accessories", price_ugx=100_000, in_stock=True),
+                    Coupon(code="TEN", discount_type="percent", value=10, active=True)])
+        db.commit()
+        buyer = dict(customer_name="Test Customer", phone="0700000000", delivery_town="Kampala", coupon_code="TEN")
+
+        # Vendor item and one of ours: ten percent of ours only.
+        mixed = create_order(db, OrderCreate(**buyer, items=[{"slug": f"vp-{vp.id}", "quantity": 1}, {"slug": "own-mouse", "quantity": 1}]))
+        assert mixed.discount == 10_000
+        assert [i.unit_price for i in mixed.items if i.product_slug.startswith("vp-")] == [500_000]
+
+        # Only a vendor's item: the code takes nothing off.
+        only_vendor = create_order(db, OrderCreate(**buyer, items=[{"slug": f"vp-{vp.id}", "quantity": 1}]))
+        assert only_vendor.discount == 0 and only_vendor.subtotal == 500_000
