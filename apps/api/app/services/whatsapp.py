@@ -91,6 +91,9 @@ def order_message(order) -> str:
         lines.append(f"Map: https://www.google.com/maps?q={order.delivery_lat:.6f},{order.delivery_lng:.6f}" + (f" ({km:g} km, transport UGX {int(order.delivery_fee):,})" if km else ""))
     if order.notes:
         lines.append(f"Note: {order.notes}")
+    # The order's own page. WhatsApp draws the shop's card, with its logo, for
+    # a link where it can; the link is the way to the order either way.
+    lines += ["", f"{settings.site_url.rstrip('/')}/track?ref={order.reference}"]
     return "\n".join(lines)
 
 

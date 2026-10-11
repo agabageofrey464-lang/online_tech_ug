@@ -11,7 +11,9 @@ import { estimatedDeliveryDate, formatDeliveryDate } from "@/lib/delivery";
 /** The order, written out so it arrives readable in our WhatsApp. */
 function orderWhatsAppText(order: Order | null, ref: string | null): string {
   const head = `Hello Online Tech Uganda, I've placed order ${ref ?? ""}`.trim();
-  if (!order) return `${head}. Please confirm it.`;
+  // A link, so WhatsApp shows the shop's card with its logo above the message.
+  const link = ref ? `${site.url}/track?ref=${encodeURIComponent(ref)}` : site.url;
+  if (!order) return `${head}. Please confirm it.\n\n${link}`;
 
   const parts = [
     `${head}`,
@@ -21,6 +23,7 @@ function orderWhatsAppText(order: Order | null, ref: string | null): string {
     `Total: ${ugx(order.total)}`,
   ];
   if (order.delivery_town) parts.push(`Deliver to: ${order.delivery_town}`);
+  parts.push("", link);
   return parts.join("\n");
 }
 
