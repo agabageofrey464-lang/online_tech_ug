@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Headset, X, Send } from "lucide-react";
 import { whatsappLink, site } from "@/lib/site";
+import { chatMessage, readChatContext } from "@/lib/chat-context";
 
 type Msg = { from: "bot" | "you"; text: string };
 
@@ -53,7 +54,7 @@ export function AiAssistant() {
     const q = text.trim();
     if (!q) return;
     if (q.toLowerCase().includes("human") || q.toLowerCase().includes("agent")) {
-      window.open(whatsappLink("Hi, I'd like to talk to your team."), "_blank");
+      window.open(whatsappLink(chatMessage(readChatContext())), "_blank");
       setMsgs((m) => [...m, { from: "you", text: q }, { from: "bot", text: "Opening WhatsApp so you can chat with our team 👍" }]);
       setInput("");
       return;

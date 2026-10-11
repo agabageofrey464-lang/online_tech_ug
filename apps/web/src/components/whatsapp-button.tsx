@@ -2,63 +2,52 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { chatMessage, readChatContext, type ChatContext } from "@/lib/chat-context";
 import { site, whatsappLink } from "@/lib/site";
-
-const GENERAL =
-  "Hello Online Tech Uganda! 👋 I found you online. You deal in computers & accessories, laptop repairs & IT support, website/app & software development, and computer courses. I'd like to know more / get help with one of these — please assist me.";
-
-type PhoneContext = { product: string; price: string; url: string };
 
 /**
  * The green chat button in the corner of every page.
  *
- * It opens a chat with the shop — except while a customer is looking at a
- * phone. Phone orders are taken on the phones' line, and this button is the
- * one most people reach for, so on a phone's page, and on the phones shelf, it
- * goes to that line too and the owner is told, exactly as the page's own
- * "Order on WhatsApp" button does.
+ * It is the button most people reach for, so the message it opens says what
+ * they were looking at: the product and its price, the course and its fee, or
+ * the page they were on. The shop then knows what is being asked about without
+ * having to ask.
+ *
+ * While the customer is looking at a phone it opens on the phones' line, where
+ * phone orders are taken, and the owner is told — as the page's own "Order on
+ * WhatsApp" button does. Everything else goes to the shop's number.
  */
 export function WhatsAppButton() {
   const pathname = usePathname();
-  const [phone, setPhone] = useState<PhoneContext | null>(null);
+  const [ctx, setCtx] = useState<ChatContext | null>(null);
 
   useEffect(() => {
-    // A phone's page leaves a marker saying which phone it is. The shelf of
-    // phones has no single product, so the chat is about phones in general.
-    const read = () => {
-      const mark = document.getElementById("phone-order-context");
-      if (mark) {
-        setPhone({ product: mark.dataset.product ?? "", price: mark.dataset.price ?? "", url: mark.dataset.url ?? "" });
-      } else if (pathname === "/shop" && new URLSearchParams(window.location.search).get("cat") === "Phones") {
-        setPhone({ product: "", price: "", url: `${site.url}/shop?cat=Phones` });
-      } else {
-        setPhone(null);
-      }
-    };
+    const read = () => setCtx(readChatContext());
     read();
-    // The marker arrives with the page's content, which can follow the route change.
-    const t = setTimeout(read, 600);
+    // A page's marker and heading arrive with its content, which can follow the route change.
+    const t = setTimeout(read, 700);
     return () => clearTimeout(t);
   }, [pathname]);
 
-  const href = phone
-    ? `https://wa.me/${site.phoneOrders.whatsapp}?text=${encodeURIComponent(
-        phone.product
-          ? `Hi Online Tech Uganda! 👋\n\nI'd like to ORDER this phone:\n\n🛒 ${phone.product}\n💰 ${phone.price}\n🔗 ${phone.url}`
-          : "Hi Online Tech Uganda! 👋 I'd like to order a phone. Please help me choose.",
-      )}`
-    : whatsappLink(GENERAL);
+  const message = chatMessage(ctx);
+  const href = ctx?.phone ? `https://wa.me/${site.phoneOrders.whatsapp}?text=${encodeURIComponent(message)}` : whatsappLink(message);
+  const label = ctx?.phone ? "Order this phone" : ctx?.kind === "product" ? "Ask about this" : ctx?.kind === "course" ? "Ask about this course" : "Chat with us";
 
   return (
     <a
       href={href}
       target="_blank"
       rel="noreferrer"
-      aria-label={phone ? "Order this phone on WhatsApp" : "Chat with us on WhatsApp"}
-      onClick={() => {
-        if (!phone) return;
+      aria-label={`${label} on WhatsApp`}
+      onClick={(e) => {
+        // Read again at the moment of the tap, so the message is about what is
+        // on screen now even if the page changed without a new route.
+        const now = readChatContext();
+        const text = chatMessage(now);
+        e.currentTarget.href = now?.phone ? `https://wa.me/${site.phoneOrders.whatsapp}?text=${encodeURIComponent(text)}` : whatsappLink(text);
+        if (!now?.phone) return;
         try {
-          const body = JSON.stringify({ product: phone.product || "A phone (from the phones shelf)", price: phone.price, url: phone.url, line: site.phoneOrders.display });
+          const body = JSON.stringify({ product: now.kind === "product" ? now.name : "A phone (from the phones shelf)", price: now.price, url: now.url, line: site.phoneOrders.display });
           navigator.sendBeacon("/_api/orders/whatsapp-lead", new Blob([body], { type: "application/json" }));
         } catch {
           /* the chat still opens */
@@ -75,7 +64,7 @@ export function WhatsAppButton() {
         <path d="M16 .5C7.5.5.6 7.4.6 15.9c0 2.8.7 5.4 2.1 7.8L.5 31.5l8-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.5 16 .5zm0 28c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.7 1.2 1.3-4.6-.3-.5c-1.3-2.1-2-4.5-2-7 0-7.1 5.8-12.9 12.9-12.9S28.9 8.8 28.9 15.9 23.1 28.5 16 28.5zm7.1-9.6c-.4-.2-2.3-1.1-2.6-1.3-.3-.1-.6-.2-.8.2-.2.4-.9 1.3-1.1 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.1-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7-.1-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.4-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.5 3.8 6 5.3.8.4 1.5.6 2 .8.8.3 1.6.2 2.2.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.7-.5z" />
       </svg>
       {/* label — hidden on small screens, shown from sm so it clearly communicates */}
-      <span className="hidden pr-1 text-sm font-bold sm:inline">{phone ? "Order this phone" : "Chat with us"}</span>
+      <span className="hidden pr-1 text-sm font-bold sm:inline">{label}</span>
     </a>
   );
 }

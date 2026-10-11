@@ -13,7 +13,7 @@ import { CourseProgress } from "@/components/course-progress";
 import { CourseAcademyPanel } from "@/components/course-academy-panel";
 import { courses, REGISTRATION_FEE, courseTotal } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
-import { ugx, whatsappLink } from "@/lib/site";
+import { ugx, whatsappLink, site } from "@/lib/site";
 import { share, shareImage } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -49,6 +49,8 @@ export default async function CourseDetailPage({
 
   return (
     <div className="container-page py-10">
+      {/* Read by the chat buttons, so a message opened from this page names it. */}
+      <span id="chat-context" hidden data-kind="course" data-name={course.title} data-price={`${ugx(courseTotal(course))} full programme`} data-url={`${site.url}/learn/${course.slug}`} />
       <CourseStructuredData course={course} />
       <BreadcrumbStructuredData
         items={[{ name: "Learn", href: "/learn" }, { name: course.title, href: `/learn/${course.slug}` }]}

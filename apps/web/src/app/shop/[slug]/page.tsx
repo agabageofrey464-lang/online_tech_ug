@@ -164,6 +164,8 @@ export default async function ProductDetailPage({
 
   return (
     <div className="container-page py-10">
+      {/* Read by the chat buttons, so a message opened from this page names it. */}
+      <span id="chat-context" hidden data-kind="product" data-name={product.name} data-price={ugx(product.price)} data-url={`${site.url}/shop/${product.id}`} />
       <ProductStructuredData product={product} rating={ratings} />
       <BreadcrumbStructuredData
         items={[
