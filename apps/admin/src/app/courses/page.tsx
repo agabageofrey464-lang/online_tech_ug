@@ -1,7 +1,7 @@
 import { apiGet, ugx, type AdminCourse } from "@/lib/api";
 import { CourseCodes } from "@/components/course-codes";
 import { CourseCatalogue } from "@/components/course-catalogue";
-import { AllCourseSheetsButton, CourseSheetButton } from "@/components/course-sheet-button";
+import { AllCourseSheetsButton, CourseSheetButton, CourseSheetPrintButton } from "@/components/course-sheet-button";
 
 
 export default async function CoursesPage() {
@@ -86,6 +86,7 @@ export default async function CoursesPage() {
                 </div>
                 <p className="mt-1 text-sm text-ink-600/70">{c.blurb}</p>
                 <CourseSheetButton course={c} />
+                <CourseSheetPrintButton course={c} />
 
                 {/* Per-payment unlock codes — generate one to send a learner after they pay via MoMo */}
                 <CourseCodes slug={c.slug} />

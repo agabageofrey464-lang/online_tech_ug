@@ -40,6 +40,30 @@ export function CourseSheetButton({ course }: { course: AdminCourse }) {
   );
 }
 
+/** Opens the course's sheet with the print window ready, for a copy on paper. */
+export function CourseSheetPrintButton({ course }: { course: AdminCourse }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      onClick={async () => {
+        setBusy(true);
+        try {
+          const logo = await loadImg("/logo-lockup-dark.png");
+          const doc = buildCourseSheet(course, { logo, intake: intakeNow() });
+          doc.autoPrint();
+          window.open(doc.output("bloburl"), "_blank");
+        } finally {
+          setBusy(false);
+        }
+      }}
+      disabled={busy}
+      className="ml-2 mt-3 inline-flex items-center gap-2 rounded-lg border border-ink-600/25 px-4 py-2 text-sm font-bold text-ink-700 hover:bg-ink-50 disabled:opacity-60"
+    >
+      {busy ? "Opening…" : "🖨 Print"}
+    </button>
+  );
+}
+
 /** Every course's sheet in a single file, one page each. */
 export function AllCourseSheetsButton({ courses }: { courses: AdminCourse[] }) {
   const [busy, setBusy] = useState(false);
