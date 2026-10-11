@@ -356,7 +356,7 @@ function QuotationInner() {
     // How to pay, so accepting the quote doesn't need a phone call.
     block(
       "HOW TO PAY",
-      `MTN Mobile Money  ·  ${MOMO.mtn}\nAirtel Money  ·  ${MOMO.airtel}\nCash or card at our shop in Kampala.`,
+      `MTN Mobile Money  ·  ${MOMO.mtn}\nAirtel Money  ·  ${MOMO.airtel}  (${MOMO.airtelName})\nCash or card at our shop in Kampala.`,
       TEAL,
     );
 

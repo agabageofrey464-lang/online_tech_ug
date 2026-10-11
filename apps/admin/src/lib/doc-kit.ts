@@ -30,7 +30,9 @@ export const REGISTRATION_FEE = 50000;
 /** Where a client can pay — printed rather than explained on the phone. */
 export const MOMO = {
   mtn: "0760 547 211  (Online Tech Uganda)",
-  airtel: "Pay Merchant ID 7148212  (Online TechUG Services)",
+  // The number and the merchant ID: either one reaches the same account.
+  airtel: "0756 839 270  ·  Merchant ID 7148212",
+  airtelName: "Online TechUG Services",
 };
 
 // House colours, matching the site.
@@ -192,7 +194,7 @@ export function paymentBand(
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7.4);
-  doc.text("AIRTEL MONEY", x + 11 + colW, y + 15.2);
+  doc.text(`AIRTEL MONEY  —  ${MOMO.airtelName}`, x + 11 + colW, y + 15.2);
   doc.setFontSize(8.6);
   doc.text(MOMO.airtel, x + 11 + colW, y + 20.4);
 
