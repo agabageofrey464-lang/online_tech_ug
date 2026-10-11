@@ -76,9 +76,13 @@ export default function StoresPage() {
               <p className="mt-1.5 flex items-center gap-1.5 text-[13px] text-ink-700/75">
                 <MapPin size={14} strokeWidth={1.5} /> Kampala, Uganda
               </p>
+              {b.where && (
+                <p className="mt-3 inline-block self-start bg-ink-800 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-white">{b.where}</p>
+              )}
               <p className="mt-3 text-[13.5px] leading-relaxed text-ink-700/85">
-                The photograph shows what to look for when you arrive. Call or message before you come and we will tell you the floor
-                and shop number, and have what you want ready.
+                {b.where
+                  ? `Find us at ${b.where}. The photograph shows what to look for when you arrive. Call or message before you come and we will have what you want ready.`
+                  : "The photograph shows what to look for when you arrive. Call or message before you come and we will tell you the floor and shop number, and have what you want ready."}
               </p>
               <div className="mt-5 flex gap-2 pt-1">
                 <a

@@ -37,7 +37,7 @@ export function BranchShowcase() {
               </span>
             </div>
             <p className="mt-4 font-display text-[21px] leading-tight text-ink-900">{b.name}</p>
-            <p className="mt-1 text-[14px] text-ink-700/80">Kampala, Uganda</p>
+            <p className="mt-1 text-[14px] text-ink-700/80">{b.where ? `${b.where} · Kampala, Uganda` : "Kampala, Uganda"}</p>
             <span className="mt-2.5 inline-block text-[14px] text-ink-800 underline underline-offset-4 group-hover:text-brand-600">
               Visit {b.name}
             </span>
