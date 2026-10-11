@@ -78,7 +78,14 @@ export function CourseCatalogue({ courses }: Props) {
         Next intake <span className="font-normal text-ink-600/50">(optional)</span>
         <input
           value={intake}
-          onChange={(e) => setIntake(e.target.value)}
+          onChange={(e) => {
+            setIntake(e.target.value);
+            try {
+              localStorage.setItem("otu_intake", e.target.value);
+            } catch {
+              /* it still applies to the three documents here */
+            }
+          }}
           placeholder="e.g. 15 October 2026"
           className="mt-1 w-full max-w-xs rounded-lg border border-ink-600/15 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none"
         />

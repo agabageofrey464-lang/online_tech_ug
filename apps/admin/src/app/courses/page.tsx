@@ -1,6 +1,7 @@
 import { apiGet, ugx, type AdminCourse } from "@/lib/api";
 import { CourseCodes } from "@/components/course-codes";
 import { CourseCatalogue } from "@/components/course-catalogue";
+import { AllCourseSheetsButton, CourseSheetButton } from "@/components/course-sheet-button";
 
 
 export default async function CoursesPage() {
@@ -16,6 +17,18 @@ export default async function CoursesPage() {
       {/* Something to send a student who is still choosing. */}
       <div className="mb-6">
         <CourseCatalogue courses={courses} />
+      </div>
+
+      {/* One sheet per course, to send to whoever asked about that course. */}
+      <div className="mb-6 rounded-2xl border border-ink-600/10 bg-white p-6 shadow-sm">
+        <h2 className="text-base font-extrabold text-ink-600">A PDF for each course</h2>
+        <p className="mt-1 text-sm text-ink-600/65">
+          When a client chooses a course, send them that course&apos;s own sheet: what it covers, how long it runs, the fee and how
+          it is paid, and how to register. Use the <b>Download course PDF</b> button on any course below, or take them all at once.
+        </p>
+        <div className="mt-4">
+          <AllCourseSheetsButton courses={courses} />
+        </div>
       </div>
 
       {/* How the unlock-code flow works — so anyone can handle a "send my code" request. */}
@@ -72,6 +85,7 @@ export default async function CoursesPage() {
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-ink-600/70">{c.blurb}</p>
+                <CourseSheetButton course={c} />
 
                 {/* Per-payment unlock codes — generate one to send a learner after they pay via MoMo */}
                 <CourseCodes slug={c.slug} />
