@@ -25,7 +25,7 @@ export const COMPANY = {
  * the site quotes, so a document printing a different one is quoting a price
  * we do not offer.
  */
-export const REGISTRATION_FEE = 180000;
+export const REGISTRATION_FEE = 50000;
 
 /** Where a client can pay — printed rather than explained on the phone. */
 export const MOMO = {

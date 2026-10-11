@@ -6,7 +6,7 @@
  * change there, update them here too.
  */
 
-export const REGISTRATION_FEE = 180000;
+export const REGISTRATION_FEE = 50000;
 
 export type AdminCourse = {
   title: string;
@@ -15,28 +15,28 @@ export type AdminCourse = {
 };
 
 export const COURSES: AdminCourse[] = [
-  { title: "Computer Basics", months: 2, trainingFee: 320000 },
-  { title: "Microsoft Office", months: 2, trainingFee: 350000 },
-  { title: "Microsoft Word", months: 2, trainingFee: 320000 },
-  { title: "Microsoft Excel", months: 2, trainingFee: 350000 },
-  { title: "Microsoft PowerPoint", months: 2, trainingFee: 320000 },
-  { title: "Microsoft Access", months: 2, trainingFee: 350000 },
-  { title: "Microsoft Publisher", months: 2, trainingFee: 320000 },
-  { title: "Internet & Email", months: 2, trainingFee: 320000 },
-  { title: "Typing Skills", months: 2, trainingFee: 320000 },
-  { title: "Microsoft 365 & Teams", months: 2, trainingFee: 350000 },
-  { title: "Advanced Excel & Data Analysis", months: 2, trainingFee: 400000 },
-  { title: "Graphic Design", months: 3, trainingFee: 450000 },
-  { title: "Computer Networking & IT Essentials", months: 3, trainingFee: 450000 },
-  { title: "Cybersecurity Basics", months: 3, trainingFee: 450000 },
-  { title: "AutoCAD", months: 3, trainingFee: 450000 },
-  { title: "Digital Marketing", months: 3, trainingFee: 400000 },
-  { title: "Video Editing", months: 3, trainingFee: 400000 },
-  { title: "QuickBooks Accounting", months: 3, trainingFee: 400000 },
-  { title: "Photography & Photo Editing", months: 3, trainingFee: 400000 },
-  { title: "Python Programming", months: 4, trainingFee: 500000 },
-  { title: "Web Development", months: 4, trainingFee: 600000 },
-  { title: "Mobile App Development", months: 4, trainingFee: 600000 },
+  { title: "Computer Basics", months: 2, trainingFee: 450000 },
+  { title: "Microsoft Office", months: 2, trainingFee: 480000 },
+  { title: "Microsoft Word", months: 2, trainingFee: 450000 },
+  { title: "Microsoft Excel", months: 2, trainingFee: 480000 },
+  { title: "Microsoft PowerPoint", months: 2, trainingFee: 450000 },
+  { title: "Microsoft Access", months: 2, trainingFee: 480000 },
+  { title: "Microsoft Publisher", months: 2, trainingFee: 450000 },
+  { title: "Internet & Email", months: 2, trainingFee: 450000 },
+  { title: "Typing Skills", months: 2, trainingFee: 450000 },
+  { title: "Microsoft 365 & Teams", months: 2, trainingFee: 480000 },
+  { title: "Advanced Excel & Data Analysis", months: 2, trainingFee: 530000 },
+  { title: "Graphic Design", months: 2, trainingFee: 580000 },
+  { title: "Computer Networking & IT Essentials", months: 2, trainingFee: 580000 },
+  { title: "Cybersecurity Basics", months: 2, trainingFee: 580000 },
+  { title: "AutoCAD", months: 2, trainingFee: 580000 },
+  { title: "Digital Marketing", months: 2, trainingFee: 530000 },
+  { title: "Video Editing", months: 2, trainingFee: 530000 },
+  { title: "QuickBooks Accounting", months: 2, trainingFee: 530000 },
+  { title: "Photography & Photo Editing", months: 2, trainingFee: 530000 },
+  { title: "Python Programming", months: 2, trainingFee: 630000 },
+  { title: "Web Development", months: 2, trainingFee: 730000 },
+  { title: "Mobile App Development", months: 2, trainingFee: 730000 },
 ];
 
 export const courseTotal = (c: AdminCourse) => REGISTRATION_FEE + c.trainingFee;

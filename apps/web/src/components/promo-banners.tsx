@@ -53,7 +53,7 @@ const BANNERS = [
     title: "Learn A Skill This Term",
     pill: "22 COURSES · CERTIFICATE",
     note: "Physical & online classes in Kampala",
-    small: "Registration UGX 180,000",
+    small: "Registration UGX 50,000",
     cta: "Browse courses",
     href: "/learn",
     bg: "bg-brand-600",

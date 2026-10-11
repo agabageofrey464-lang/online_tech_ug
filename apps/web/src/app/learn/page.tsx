@@ -68,7 +68,7 @@ const FAQ = [
   },
   {
     q: "What is the registration fee for?",
-    a: "It is a one-time, non-refundable fee of UGX 180,000 that covers your enrolment, learning materials and certification. It is charged once, on top of the training fee for your course.",
+    a: "It is a one-time, non-refundable fee of UGX 50,000 that covers your enrolment, learning materials and certification. It is charged once, on top of the training fee for your course.",
   },
 ];
 
