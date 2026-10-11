@@ -58,7 +58,8 @@ const STAMP = [210, 218, 220] as const;
 // Where a balance can be settled — printed rather than explained on the phone.
 const MOMO = {
   mtn: "0760 547 211  (Online Tech Uganda)",
-  airtel: "Pay Merchant ID 7148212  (Online TechUG Services)",
+  airtel: "0756 839 270  ·  Merchant ID 7148212",
+  airtelName: "Online TechUG Services",
 };
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
