@@ -567,3 +567,40 @@ def test_the_owner_is_told_when_a_phone_order_chat_is_opened(db_factory, monkeyp
     assert len(told) == 1 and "iPhone 13 128GB" in told[0] and "708 843 577" in told[0]
 
     assert whatsapp._is_phone("Samsung Galaxy A15") and not whatsapp._is_phone("iPhone 13 case") and not whatsapp._is_phone("HP EliteBook 840")
+
+
+def test_an_order_email_brings_the_catalogue_with_it(db_factory, monkeypatch):
+    import asyncio
+
+    from app.models.product import Product
+    from app.schemas.order import OrderCreate
+    from app.services import email as email_service
+    from app.services.orders import create_order
+
+    sent = []
+
+    async def capture(**kw):
+        sent.append(kw)
+        return True
+
+    monkeypatch.setattr(email_service, "send_email", capture)
+
+    with db_factory() as db:
+        db.add_all([
+            Product(slug="own-mouse", name="Own Mouse", category="Accessories", price_ugx=100_000, in_stock=True, image_url="/products/own-mouse.webp"),
+            Product(slug="hp-840", name="HP EliteBook 840", category="Laptops", price_ugx=1_500_000, in_stock=True, image_url="/products/hp-840.webp"),
+            Product(slug="skin-pink", name="Laptop Skin — Matte Pink", category="Stickers", price_ugx=70_000, in_stock=True, image_url="/products/stickers/skin-pink.webp"),
+            Product(slug="gone", name="Sold Out Tower", category="Desktops", price_ugx=900_000, in_stock=False),
+        ])
+        db.commit()
+        order = create_order(db, OrderCreate(customer_name="Test Customer", phone="0700000000", email="buyer@gmail.com", delivery_town="Kampala", items=[{"slug": "own-mouse", "quantity": 1}]))
+        asyncio.run(email_service.send_order_confirmation(order, db))
+
+    shop_copy, customer_copy = sent[0]["html"], sent[1]["html"]
+    assert "More from our shop" in customer_copy and "More from our shop" not in shop_copy
+    # Other products, each a link to its page, with a picture a mail app can draw.
+    assert "/shop/hp-840" in customer_copy and "/shop/skin-pink" in customer_copy
+    assert "/og/products/hp-840.jpg" in customer_copy and "/og/products/stickers/skin-pink.jpg" in customer_copy
+    # Not what they just bought, and not what is out of stock.
+    assert "/shop/own-mouse" not in customer_copy and "Sold Out Tower" not in customer_copy
+    assert "/_next/image" not in customer_copy and "See the full catalogue" in customer_copy

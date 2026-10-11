@@ -36,13 +36,17 @@ def money(amount: int | float) -> str:
 
 
 def product_image(image_url: str) -> str:
-    """A small, absolute URL for a product photo.
+    """An absolute URL for a product photo that every mail app can draw.
 
     Two things have to be true for a photo to show in an email. It must be
-    absolute — an email client has no page to resolve "/products/x.jpg"
-    against — and it must be small: our stored photos run to 300KB each, which
-    on Ugandan mobile data is a thumbnail nobody waits for. The site's image
-    optimiser turns that into about 4KB at the 56px we display.
+    absolute — an email client has no page to resolve "/products/x.webp"
+    against — and it must be a format mail apps draw: several do not draw WebP,
+    which is what the site stores. The site keeps a JPEG of every product and
+    course picture for link previews, the photo whole and centred on white, and
+    that is the one used here.
+
+    (This pointed at the site's image optimiser, which has been switched off,
+    so every photo in every order email was a broken picture.)
     """
     url = (image_url or "").strip()
     site = settings.site_url.rstrip("/")
@@ -51,7 +55,71 @@ def product_image(image_url: str) -> str:
         return f"{site}/icon-192.png"
     if url.startswith("http://") or url.startswith("https://"):
         return url  # a vendor's own upload, already hosted elsewhere
-    return f"{site}/_next/image?url={quote(url, safe='')}&w=128&q=70"
+    for folder in ("/products/", "/courses/"):
+        if url.startswith(folder):
+            stem = url.rsplit(".", 1)[0]
+            return f"{site}/og{quote(stem)}.jpg"
+    return f"{site}{quote(url)}"
+
+
+def catalogue(picks: list[dict], shelves: list[tuple[str, str]]) -> str:
+    """A short catalogue for the foot of an email: products, then the shelves.
+
+    `picks` are products as {name, price, image_url, href}; they are set two to
+    a row, each a picture, a name and a price, and each a link to its page.
+    `shelves` are (label, href) links to the rest of the shop.
+    """
+    if not picks and not shelves:
+        return ""
+    site = settings.site_url.rstrip("/")
+
+    def tile(p: dict) -> str:
+        name = escape(str(p.get("name", "")))
+        href = escape(str(p.get("href", site)), quote=True)
+        return f"""
+          <td width="50%" valign="top" style="padding:6px">
+            <a href="{href}" style="text-decoration:none;color:{INK}">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+                     style="border:1px solid {RULE};border-radius:8px;background:#ffffff">
+                <tr><td align="center" style="padding:8px 8px 0">
+                  <img src="{product_image(p.get('image_url', ''))}" alt="{name}" width="240"
+                       style="width:100%;max-width:240px;height:auto;display:block;border:0;border-radius:4px" />
+                </td></tr>
+                <tr><td style="padding:8px 10px 2px;font-family:Arial,Helvetica,sans-serif;font-size:13px;
+                               line-height:1.35;font-weight:bold;color:{INK}">{name}</td></tr>
+                <tr><td style="padding:0 10px 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;
+                               font-weight:bold;color:{ORANGE}">{money(p.get('price', 0))}
+                  <span style="font-weight:normal;color:{MUTED}">&nbsp;&middot;&nbsp;View &rsaquo;</span></td></tr>
+              </table>
+            </a>
+          </td>"""
+
+    rows = []
+    for i in range(0, len(picks), 2):
+        pair = picks[i:i + 2]
+        cells = "".join(tile(p) for p in pair) + ('<td width="50%"></td>' if len(pair) == 1 else "")
+        rows.append(f"<tr>{cells}</tr>")
+
+    links = " &nbsp;&middot;&nbsp; ".join(
+        f'<a href="{escape(href, quote=True)}" style="color:{INK};font-weight:bold;text-decoration:underline">{escape(label)}</a>'
+        for label, href in shelves
+    )
+
+    return f"""
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:26px 0 0">
+      <tr><td style="border-top:3px solid {ORANGE};padding:16px 0 2px;font-family:Georgia,'Times New Roman',serif;
+                     font-size:20px;color:{INK}">More from our shop</td></tr>
+      <tr><td style="padding:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:{MUTED}">
+        A few things from our catalogue. Tap any one to see it on the site.</td></tr>
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate">
+      {''.join(rows)}
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:10px 0 0">
+      <tr><td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:2;color:{MUTED}">
+        {links}</td></tr>
+    </table>
+    {button("See the full catalogue", f"{site}/shop")}"""
 
 
 def button(label: str, href: str, colour: str = ORANGE) -> str:
@@ -89,9 +157,9 @@ def items_table(rows: list[dict]) -> str:
 
         cells.append(f"""
         <tr>
-          <td width="66" style="padding:12px 10px 12px 0;vertical-align:top">
-            <img src="{img}" alt="{name}" width="56" height="56"
-                 style="width:56px;height:56px;object-fit:contain;border:1px solid {RULE};
+          <td width="106" style="padding:12px 10px 12px 0;vertical-align:top">
+            <img src="{img}" alt="{name}" width="96"
+                 style="width:96px;height:auto;border:1px solid {RULE};
                         border-radius:6px;background:#ffffff;display:block" />
           </td>
           <td style="padding:12px 8px 12px 0;vertical-align:top;font-family:Arial,Helvetica,sans-serif">

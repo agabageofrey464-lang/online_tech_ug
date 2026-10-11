@@ -118,6 +118,52 @@ def _order_rows(order, db=None) -> list[dict]:
     return rows
 
 
+# The shelves an order email points to, in the order the shop shows them.
+_SHELVES = [
+    ("Phones", "/shop?cat=Phones"),
+    ("Laptops", "/shop?cat=Laptops"),
+    ("Desktops", "/shop?cat=Desktops"),
+    ("Accessories", "/shop?cat=Accessories"),
+    ("Storage", "/shop?cat=Storage"),
+    ("Laptop Skins", "/stickers"),
+    ("Computer Courses", "/learn"),
+    ("Repairs", "/services"),
+]
+_CATALOGUE_CATEGORIES = ["Laptops", "Desktops", "Stickers", "Storage", "Accessories", "Components", "Power", "Networking"]
+
+
+def _catalogue_html(order, db=None) -> str:
+    """A short catalogue for the customer's copy: one product from each shelf.
+
+    Never one they have just bought, and a different one from order to order,
+    so a returning customer is shown more of the shop each time. Any failure
+    here leaves the email without a catalogue, never without an order.
+    """
+    site = settings.site_url.rstrip("/")
+    picks: list[dict] = []
+    try:
+        if db is not None:
+            from sqlalchemy import select
+
+            from app.models.product import Product
+
+            bought = {i.product_slug for i in order.items}
+            turn = int(getattr(order, "id", 0) or 0)
+            for category in _CATALOGUE_CATEGORIES:
+                best = db.execute(
+                    select(Product)
+                    .where(Product.category == category, Product.in_stock.is_(True), Product.slug.notin_(bought))
+                    .order_by(Product.rating.desc(), Product.id.desc())
+                    .limit(8)
+                ).scalars().all()
+                if best:
+                    p = best[turn % len(best)]
+                    picks.append({"name": p.name, "price": int(p.price_ugx), "image_url": p.image_url or "", "href": f"{site}/shop/{p.slug}"})
+    except Exception:  # noqa: BLE001 — a catalogue is never worth a failed confirmation
+        picks = []
+    return email_theme.catalogue(picks, [(label, f"{site}{path}") for label, path in _SHELVES])
+
+
 async def send_order_confirmation(order, db=None) -> bool:
     """Email the customer (and notify the shop) about a new order."""
     rows = _order_rows(order, db)
@@ -152,7 +198,8 @@ async def send_order_confirmation(order, db=None) -> bool:
     customer_html = email_theme.shell(
         heading=f"Thank you for your order, {order.customer_name}",
         intro=f"We&rsquo;ve received order <b>{order.reference}</b> and it&rsquo;s with our team now.",
-        body_html=body,
+        # The customer's copy carries a short catalogue under their order.
+        body_html=body + _catalogue_html(order, db),
     )
 
     ok = True
