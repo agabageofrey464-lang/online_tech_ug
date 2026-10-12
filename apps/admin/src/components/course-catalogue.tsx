@@ -70,8 +70,7 @@ export function CourseCatalogue({ courses }: Props) {
       <h2 className="text-base font-extrabold text-ink-600">Course list for students</h2>
       <p className="mt-1 text-sm text-ink-600/65">
         Three documents on your letterhead: course fees for students, project prices for a
-        client pricing a website or system, and a one-page internship brochure to send to
-        university students.
+        client pricing a website or system, and a two-page internship brochure listing every software and IT field, then the fields for students on other courses.
       </p>
 
       <label className="mt-4 block text-sm font-semibold text-ink-700">
