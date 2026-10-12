@@ -9,6 +9,8 @@ import { FlashSaleCard } from "@/components/flash-sale-card";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
+import { SoftwareBand } from "@/components/software-band";
+import { SERVICE_FROM } from "@/lib/service-prices";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
 import { DailyUpdates } from "@/components/daily-updates";
@@ -299,6 +301,10 @@ export default async function HomePage() {
         </DealBand>
       ))}
 
+      {/* That we build software too — said here, among the products, where a
+          visitor who came for a laptop will see it. */}
+      <SoftwareBand />
+
       {/* What approved vendors have listed, beside our own stock. */}
       {fromVendors.length > 0 && (
         <DealBand title="From Our Vendors" subtitle="Sold through Online Tech Uganda" href="/marketplace" items={fromVendors}>
@@ -379,7 +385,7 @@ export default async function HomePage() {
             </span>
             <div className="min-w-0">
               <p className="text-sm font-extrabold text-ink-900">Websites & Software</p>
-              <p className="text-xs text-ink-700/70">Custom sites, systems & apps for your business · from {ugx(500000)}</p>
+              <p className="text-xs text-ink-700/70">Custom sites, systems & apps for your business · from {ugx(SERVICE_FROM.website)}</p>
             </div>
           </div>
           <span className="hidden shrink-0 rounded-full bg-ink-600 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-ink-700 sm:inline-block">

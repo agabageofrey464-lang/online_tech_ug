@@ -170,6 +170,7 @@ const MORE_LINKS = [
 const ANNOUNCEMENTS = [
   { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M.", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
   { text: "Online industrial training for university and college students.", cta: "Apply Now", href: "/internship" },
+  { text: "We build websites, online shops, business systems and mobile apps.", cta: "Get A Quote", href: "/development" },
   { text: "22 computer courses, in class or online, with a certificate.", cta: "Browse Courses", href: "/learn" },
   { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000.", cta: "Book A Repair", href: "/services#repairs-support" },
 ];

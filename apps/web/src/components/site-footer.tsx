@@ -188,6 +188,24 @@ export function SiteFooter() {
         </div>
       </div>
 
+      {/* Every page is an example of the work: say so, and where to ask for the same. */}
+      <div className="border-t border-ink-600/10 bg-[#f0ede6]">
+        <div className="container-wide flex flex-col items-start gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[14px] text-ink-800">
+            <span className="font-display text-[18px] italic text-ink-900">This website was designed and built by our own software team.</span>{" "}
+            We build websites, online shops, business systems and mobile apps for others too.
+          </p>
+          <div className="flex shrink-0 gap-2">
+            <Link href="/development" className="bg-ink-800 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-ink-900">
+              Hire us to build yours
+            </Link>
+            <Link href="/portfolio" className="border border-ink-800 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white">
+              Our work
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Copyright */}
       <div className="border-t border-ink-600/10 bg-white">
         <div className="container-wide flex flex-col items-center justify-between gap-2 py-5 text-xs text-ink-700/55 sm:flex-row">
