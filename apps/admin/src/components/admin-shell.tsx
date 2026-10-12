@@ -175,7 +175,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className="flex-1 p-6 pt-20 md:p-10 md:pt-10">{children}</main>
+      {/* min-w-0: without it a wide table pushes the whole page sideways on a phone. */}
+      <main className="min-w-0 flex-1 p-4 pt-20 sm:p-6 sm:pt-20 md:p-10 md:pt-10">{children}</main>
     </div>
   );
 }

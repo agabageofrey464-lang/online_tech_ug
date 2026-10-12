@@ -230,6 +230,8 @@ type Slide = {
   Art: () => ReactNode;
   /** Set on an advertiser's slide: its picture comes from outside the site. */
   ad?: boolean;
+  /** The picture in the phone billboard's frame, when the background photograph is not the one to show. */
+  thumb?: string;
 };
 
 /* ─── Adverts ─────────────────────────────────────────────────────
@@ -310,6 +312,7 @@ const SLIDES: Slide[] = [
     href: "/shop",
     more: { label: "Find my laptop", href: "/find" },
     img: "/hero/shop-shelves.webp",
+    thumb: "/cards/products/hp-elitebook-840-g6-wa0017-p41.webp",
     pos: "object-[center_58%]",
     Art: ShopArt,
   },
@@ -321,6 +324,7 @@ const SLIDES: Slide[] = [
     cta: "Browse courses",
     href: "/learn",
     more: { label: "My academy", href: "/academy" },
+    thumb: "/cards/courses/web-development.webp",
     img: "/web/photo-1509062522246-3755977927d7.webp",
     pos: "",
     Art: LearnArt,
@@ -430,8 +434,71 @@ export function HeroRotator() {
   // Only the slide on show, the one it replaced and the one after carry a photograph.
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
+  const cur = slides[i] ?? slides[0];
+
   return (
-    <div className="group/hero relative h-[440px] overflow-hidden sm:h-[720px] lg:h-[560px] xl:h-[640px]">
+    <>
+      {/* On a phone: a billboard. The full hero took half the first screen
+          before a single product could be seen; this says the same five
+          things, and shows the adverts, in a third of the space. It is a
+          photograph behind charcoal with a framed picture and an orange
+          button — a different thing from the flat coloured offer strips
+          above it — and it keeps the mist and the float. */}
+      <div className="relative h-[148px] overflow-hidden bg-ink-900 sm:hidden">
+        {slides.map((s, idx) =>
+          near(idx) ? (
+            <div key={idx} className={`absolute inset-0 transition-opacity duration-700 ${idx === i ? "opacity-100" : "opacity-0"}`} aria-hidden>
+              {s.ad ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                s.img && <img src={s.img} alt="" className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
+              ) : (
+                <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
+              )}
+            </div>
+          ) : null,
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/85 to-ink-900/40" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <span className="hero-mist right-[-8%] top-[-30%] h-40 w-40 bg-brand-500/45" />
+          <span className="hero-mist bottom-[-40%] left-[30%] h-36 w-36 bg-gold-400/25" style={{ animationDelay: "-5s", animationDuration: "19s" }} />
+          {DROPS.slice(0, 6).map((d, k) => (
+            <span key={k} className="hero-drop" style={{ left: d.left, width: d.size - 2, height: d.size - 2, animationDuration: d.time, animationDelay: d.delay, ["--sway" as string]: d.sway }} />
+          ))}
+        </div>
+        <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-brand-500" />
+
+        <Go href={cur.href} aria-label={`Go to ${cur.tab}`} className="relative z-10 flex h-full items-center gap-3 pl-5 pr-4">
+          <span key={`t${i}`} className="strip-rise min-w-0 flex-1 text-white">
+            <span className="block truncate font-display text-[13px] italic leading-tight text-brand-200">{cur.eyebrow}</span>
+            <span className="mt-0.5 line-clamp-2 block font-display text-[21px] leading-[1.1]">{cur.title}</span>
+            <span className="mt-2.5 inline-block bg-brand-500 px-4 py-2 text-[10.5px] font-bold uppercase tracking-[0.14em] text-white">{cur.cta} →</span>
+          </span>
+          {/* The slide's own picture, framed and floating as the big hero's scenes do. */}
+          <span key={`p${i}`} className="hero-float relative block h-[92px] w-[92px] shrink-0 rotate-3 bg-white p-1 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.6)]">
+            <span className="relative block h-full w-full overflow-hidden bg-[#f0ede6]">
+              {cur.ad ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                cur.img && <img src={cur.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Image src={cur.thumb ?? cur.img} alt="" fill sizes="92px" className="object-cover" />
+              )}
+            </span>
+            {cur.ad && <span className="absolute -left-2 -top-2 bg-brand-500 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.1em] text-white">Ad</span>}
+          </span>
+        </Go>
+
+        {/* One segment per slide; the one on show fills as its time runs. */}
+        <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 px-5 pb-1.5">
+          {slides.map((s, idx) => (
+            <button key={`${s.tab}-${idx}`} type="button" onClick={() => setI(idx)} aria-label={`Show ${s.tab}`} className="relative h-[3px] flex-1 overflow-hidden bg-white/25">
+              {idx === i && <span key={`c${i}`} className="strip-count !h-full !bg-brand-500" style={{ animationDuration: `${STAY}ms` }} />}
+              {idx < i && <span className="absolute inset-0 bg-white/60" />}
+            </button>
+          ))}
+        </div>
+      </div>
+
+    <div className="group/hero relative hidden overflow-hidden sm:block sm:h-[720px] lg:h-[560px] xl:h-[640px]">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -566,5 +633,6 @@ export function HeroRotator() {
         ))}
       </div>
     </div>
+    </>
   );
 }

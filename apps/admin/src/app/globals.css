@@ -19,3 +19,11 @@ body {
   color: #16151d;
   -webkit-font-smoothing: antialiased;
 }
+
+/* A grid or flex child will not shrink below its longest unbroken content
+   unless told it may, so one long title or a row of buttons pushed a whole
+   page sideways on a phone. Everything in the page area may shrink; text that
+   is too long then truncates or wraps where its own classes say. */
+main :where(div, section, article, header, ul, li, p, form) {
+  min-width: 0;
+}
