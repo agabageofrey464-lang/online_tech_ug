@@ -83,9 +83,46 @@ export const portfolio: PortfolioItem[] = [
     tags: ["E-commerce", "Admin dashboard", "Next.js", "FastAPI"],
     shots: [shot("beds-beddings", 1), shot("beds-beddings", 2), shot("beds-beddings", 3)],
     captions: [
-      "The home page: a featured deal, with search, account and cart always in reach.",
+      "The home page as it is now: the collection up front, with search, account and cart always in reach.",
       "Shop by category — the whole range, browsable from a phone.",
       "The same shop on a phone, where most customers use it.",
+    ],
+  },
+  {
+    kind: "case-study",
+    slug: "home-basket-grocery-store",
+    title: "Home Basket — online grocery store",
+    category: "Websites",
+    client: "Home Basket",
+    industry: "Retail · groceries & delivery",
+    year: "2026",
+    summary: "An online supermarket for Kampala: thirteen departments, combo packs, delivery slots, Mobile Money or cash on delivery, and an admin dashboard.",
+    description:
+      "An online grocery store built for Ugandan households: fresh produce, staples, drinks, household and personal-care goods, sold singly or in combo packs. Customers fill a basket, choose a delivery day and time, and pay by Mobile Money or on delivery; the owners run products, orders and delivery from their own dashboard.",
+    problem:
+      "Buying groceries for a household means a trip to the market and a second to the supermarket, and a phone call for anything delivered. The business wanted one place where a customer could order the week's shopping from a phone, know what delivery would cost and when it would arrive, and reorder the same basket next week.",
+    solution:
+      "We built a supermarket-style storefront in the shop's greens: a wide search, departments, a deals banner and rows of products that slide sideways, each with an Add button. Behind it are a basket and checkout with delivery zones and time slots, order tracking, reviews, and a dashboard for the owners. It needs no paid services to run and was built to be light on mobile data.",
+    built: [
+      { title: "Storefront & departments", body: "Thirteen departments, hot deals, combo packs, search, product pages with reviews, and rails of products that scroll sideways." },
+      { title: "Basket, checkout & delivery", body: "Delivery zones, a chosen delivery day and time slot, a minimum order, free delivery above a threshold, and Mobile Money or cash on delivery." },
+      { title: "Cook Tonight & Buy Again", body: "Ugandan recipes where one tap adds every ingredient to the basket, and one-tap reordering of a past order at today's prices." },
+      { title: "Admin dashboard", body: "Products, prices, stock, orders, delivery slots and requests from businesses, managed by the owners." },
+      { title: "Supply for businesses", body: "A services section for restaurants, hotels, schools, offices and events, with a quote form that lands in the dashboard." },
+      { title: "Data saver", body: "A switch that hides product photographs to save a customer's mobile data, and a WhatsApp button on every page." },
+    ],
+    stack: ["PHP 8", "MySQL / MariaDB", "Bootstrap 5", "JavaScript", "HTML & CSS"],
+    facts: [
+      { value: "13", label: "departments of groceries" },
+      { value: "2", label: "ways to pay: Mobile Money or on delivery" },
+      { value: "Light", label: "a data-saver switch for slow connections" },
+    ],
+    tags: ["E-commerce", "Groceries", "PHP", "MySQL", "Admin dashboard"],
+    shots: [shot("home-basket", 1), shot("home-basket", 2), shot("home-basket", 3)],
+    captions: [
+      "The home page: delivery, search and the basket in the header, this week's combo packs and hot deals beneath.",
+      "A department — fresh vegetables — with every category down the side and an Add button on each product.",
+      "The same shop on a phone, where the week's shopping is ordered.",
     ],
   },
   {
