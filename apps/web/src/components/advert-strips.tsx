@@ -71,7 +71,7 @@ export function AdvertStrips({ className = "" }: { className?: string }) {
   const outside = /^https?:/i.test(s.href);
   const inner = (
     <>
-      <span className="relative block h-full w-[76px] shrink-0 sm:w-[104px] overflow-hidden bg-white/10">
+      <span className="relative ml-2 block h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full bg-white/10 ring-2 ring-white/80 sm:h-[84px] sm:w-[84px]">
         {s.img ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -86,10 +86,11 @@ export function AdvertStrips({ className = "" }: { className?: string }) {
         <span className="mt-1 line-clamp-2 font-display text-[16px] leading-[1.15] sm:text-[19px]">{s.title}</span>
         <span className="mt-1 hidden truncate text-[12.5px] text-white/85 sm:block">{s.text}</span>
       </span>
-      <span className="mr-3 shrink-0 bg-white px-3 py-2 sm:mr-4 sm:px-4 text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-900">{s.cta}</span>
+      <span className="mr-4 shrink-0 rounded-full bg-white px-3.5 py-2.5 sm:mr-5 sm:px-5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-900">{s.cta}</span>
     </>
   );
-  const box = `flex h-[92px] items-center gap-3 sm:h-[104px] sm:gap-4 overflow-hidden text-white ${s.bar}`;
+  // A capsule, not a box: rounded right round, with the picture as a disc at its head.
+  const box = `flex h-[88px] items-center gap-3 overflow-hidden rounded-full text-white shadow-[0_10px_26px_-14px_rgba(22,21,29,0.7)] sm:h-[100px] sm:gap-4 ${s.bar}`;
 
   return (
     <aside aria-label="Adverts" className={className}>
@@ -104,12 +105,10 @@ export function AdvertStrips({ className = "" }: { className?: string }) {
         </Link>
       )}
       </div>
-      {/* One short line per advert; the one on show fills as its time runs. */}
-      <div className="mt-2 flex gap-1.5">
+      {/* One dot per advert; the one on show is the long one. */}
+      <div className="mt-2.5 flex justify-center gap-1.5">
         {strips.map((x, k) => (
-          <button key={x.key} type="button" onClick={() => setI(k)} aria-label={`Show advert ${k + 1}`} className="relative h-[3px] flex-1 overflow-hidden bg-ink-700/20">
-            {k === i % n && <span key={`c${i}`} className="strip-count !h-full !bg-brand-500" style={{ animationDuration: `${STAY}ms` }} />}
-          </button>
+          <button key={x.key} type="button" onClick={() => setI(k)} aria-label={`Show advert ${k + 1}`} className={`h-2 rounded-full transition-all ${k === i % n ? "w-6 bg-brand-500" : "w-2 bg-ink-700/25"}`} />
         ))}
       </div>
     </aside>
