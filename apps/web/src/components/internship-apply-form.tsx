@@ -135,7 +135,7 @@ export function InternshipApplyForm() {
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Apply online</p>
       <h2 className="mt-2 text-[30px] leading-tight text-ink-900 sm:text-[36px]">Internship application</h2>
       <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-ink-700/85">
-        {INTERNSHIP_WINDOW} · online · {ugx(INTERNSHIP_FEE)}. Classes are Monday to Friday, 9:00 am – 12:00 pm, and mostly practical. Fill in the boxes below — each one shows an example of what to write. You pay nothing now.
+        {INTERNSHIP_WINDOW} · online · {ugx(INTERNSHIP_FEE)}. Classes are 3 to 4 days each week, 9:00 am – 12:00 pm, and mostly practical. Fill in the boxes below — each one shows an example of what to write. You pay nothing now.
       </p>
 
       <fieldset className="mt-7 min-w-0">

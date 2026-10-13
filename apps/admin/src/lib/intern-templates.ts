@@ -17,7 +17,8 @@ export const INTAKE = {
   window: "2 November – 18 December 2026",
   /** 1 November is a Sunday, so the first working day is the Monday. */
   firstDay: "Monday 2 November 2026",
-  days: "Monday to Friday",
+  /** Not every weekday: three or four classes a week, the days told in advance. */
+  days: "3 to 4 days each week",
   /** One class a day, three hours. */
   classTime: "9:00 am – 12:00 pm",
   fee: "UGX 150,000",
@@ -29,7 +30,7 @@ const TIMETABLE =
   `• Orientation: ${INTAKE.firstDay}\n` +
   `• Class: ${INTAKE.days}, ${INTAKE.classTime} (3 hours), online\n` +
   `• Each class is practical: the first 30 minutes are theory, the rest is hands-on work\n` +
-  `• There is one session a day, so please keep 9:00 am to 12:00 pm free`;
+  `• The days for each week are shared in advance, so please keep your mornings free`;
 
 export const INTERN_TEMPLATES: Template[] = [
   {
