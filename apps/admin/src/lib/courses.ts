@@ -16,7 +16,8 @@ export type AdminCourse = {
 
 export const COURSES: AdminCourse[] = [
   { title: "Computer Basics", months: 2, trainingFee: 450000 },
-  { title: "Microsoft Office", months: 2, trainingFee: 480000 },
+  // Word, Excel, PowerPoint and Access as one course: UGX 700,000 with registration.
+  { title: "Microsoft Office", months: 2, trainingFee: 650000 },
   { title: "Microsoft Word", months: 2, trainingFee: 450000 },
   { title: "Microsoft Excel", months: 2, trainingFee: 480000 },
   { title: "Microsoft PowerPoint", months: 2, trainingFee: 450000 },

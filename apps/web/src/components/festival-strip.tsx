@@ -46,7 +46,7 @@ const FALLBACK: Strip[] = [
   // at its own cover now, so the thumbnails differ instead of repeating one
   // photograph six times.
   { text: "Microsoft Excel in 2 months — formulas, charts and reports", cta: "Enrol now", href: "/learn/microsoft-excel", bg: "bg-green-700", img: "/courses/microsoft-excel.webp" },
-  { text: "Word, Excel, PowerPoint, Publisher & Access — one programme", cta: "See the suite", href: "/learn/microsoft-office", bg: "bg-brand-600", img: "/courses/microsoft-office.webp" },
+  { text: "Word, Excel, PowerPoint & Access as one course — UGX 700,000", cta: "See the suite", href: "/learn/microsoft-office", bg: "bg-brand-600", img: "/courses/microsoft-office.webp" },
   { text: "Build slides that win the room — PowerPoint from scratch", cta: "Start learning", href: "/learn/microsoft-powerpoint", bg: "bg-brand-700", img: "/courses/microsoft-powerpoint.webp" },
   { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "bg-brand-600", img: "/courses/microsoft-access.webp" },
 

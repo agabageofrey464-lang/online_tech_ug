@@ -177,6 +177,32 @@ export default function AcademyAdminPage() {
         </p>
       </header>
 
+      {/* The classroom is on the site, not in this dashboard — say where, and how to get in. */}
+      <div className="mb-5 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-ink-600">
+        <p className="font-extrabold">Where the classroom, whiteboard and examinations are</p>
+        <p className="mt-1 text-ink-600/80">
+          They are on the website, and you enter them with a <b>website account</b> — not with this dashboard&apos;s login.
+        </p>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-600/80">
+          <li>On the website, sign in with your own account (or create one at onlinetechug.com/signup).</li>
+          <li>
+            Here, under <b>People &amp; roles</b>, find that account and change its role to <b>Lecturer</b> (to teach) or <b>Admin</b> (to see every class).
+          </li>
+          <li>
+            Open the teaching page. It has three tabs: <b>Classes</b> (schedule and start a live class, with the whiteboard, breakout rooms and
+            Files inside the room), <b>Coursework</b> and <b>Examinations</b>.
+          </li>
+        </ol>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a href="https://www.onlinetechug.com/academy/teach" target="_blank" rel="noreferrer" className="rounded-lg bg-brand-500 px-4 py-2 text-xs font-bold text-white hover:bg-brand-600">
+            Open the teaching page →
+          </a>
+          <a href="https://www.onlinetechug.com/academy" target="_blank" rel="noreferrer" className="rounded-lg border border-ink-600/20 bg-white px-4 py-2 text-xs font-bold text-ink-600 hover:bg-ink-50">
+            See it as a student →
+          </a>
+        </div>
+      </div>
+
       <div className="mb-4 flex flex-wrap gap-2">
         {(
           [
