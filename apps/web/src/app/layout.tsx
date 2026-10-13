@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { IntakeBanner } from "@/components/intake-banner";
+import { CompareBar } from "@/components/compare-bar";
 import { SiteHeader } from "@/components/site-header";
 import { FestivalStrip } from "@/components/festival-strip";
 import { PromoStrip } from "@/components/promo-strip";
@@ -103,6 +104,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <FestivalStrip />
                 <main className="pb-14 md:pb-0">{children}</main>
                 <SiteFooter />
+                {/* The products chosen to compare; nothing until one is chosen. */}
+                <CompareBar />
                 <WhatsAppButton />
                 <ScrollToTop />
                 <PushOptIn />

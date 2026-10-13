@@ -7,6 +7,7 @@ import { WishlistButton } from "@/components/wishlist-button";
 import { ProductRating } from "@/components/product-rating";
 import { SafeImage } from "@/components/safe-image";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { CardActions } from "@/components/card-actions";
 
 /**
  * Product tile: the photo on a soft panel with no border or shadow, the name
@@ -106,6 +107,20 @@ function specLines(product: Product): { primary: string; secondary: string } {
   return { primary, secondary: fit(bullets.slice(used, used + 2), 24) };
 }
 
+/** The specification as label and value, for the quick look and for comparing. */
+const DETAIL_LABELS: [keyof NonNullable<Product["details"]>, string][] = [
+  ["processor", "Processor"], ["ram", "Memory"], ["storage", "Storage"], ["capacity", "Capacity"], ["display", "Screen"],
+  ["graphics", "Graphics"], ["os", "System"], ["battery", "Battery"], ["interface", "Connection"], ["speed", "Speed"],
+  ["compatibility", "Works with"], ["warranty", "Warranty"],
+];
+function specRows(product: Product): [string, string][] {
+  const d = product.details;
+  const rows: [string, string][] = d ? DETAIL_LABELS.filter(([k]) => d[k]).map(([k, label]) => [label, String(d[k])]) : [];
+  // A product with no table has its short bullets instead.
+  const bullets = (product.specs ?? []).filter(Boolean).slice(0, 6);
+  return rows.length ? rows : bullets.length ? [["Details", bullets.join(" · ")]] : [];
+}
+
 export function ProductCard({ product }: { product: Product }) {
   const inStock = product.inStock !== false;
   // A crossed-out price is shown only when the product really was that price.
@@ -160,6 +175,24 @@ export function ProductCard({ product }: { product: Product }) {
         <WishlistButton
           slug={product.id}
           className="absolute right-1.5 top-1.5 z-20 opacity-0 transition group-hover:opacity-100"
+        />
+
+        {/* A quick look, compare and share — small round buttons under the heart. */}
+        <CardActions
+          product={{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            oldPrice,
+            image: productImage(product),
+            category: product.category,
+            brand: product.brand,
+            condition: product.condition,
+            cartCondition: product.seller ? soldBy(product.seller) : product.condition,
+            cartImage: product.seller ? product.image : undefined,
+            inStock,
+            rows: specRows(product),
+          }}
         />
 
         {!inStock && (
