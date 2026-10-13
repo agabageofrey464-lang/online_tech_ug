@@ -85,6 +85,33 @@ export type AnnouncementItem = {
   posted_at: string | null;
 };
 
+/** An examination as a student first sees it: that it exists, not what it asks. */
+export type ExamSummary = {
+  id: number;
+  course_slug: string;
+  title: string;
+  instructions: string;
+  duration_minutes: number;
+  pass_mark: number;
+  question_count: number;
+  opens_at: string | null;
+  closes_at: string | null;
+};
+/** The paper, sent when the clock starts. No answers. */
+export type ExamPaper = ExamSummary & { questions: { q: string; options: string[] }[] };
+/** The paper as its lecturer sees it. */
+export type ExamPaperWithAnswers = ExamSummary & { questions: { q: string; options: string[]; answer: number }[] };
+export type ExamAttempt = {
+  exam_id: number;
+  started_at: string;
+  submitted_at: string | null;
+  score: number;
+  total: number;
+  percent: number;
+  passed: boolean;
+  ends_at?: string;
+};
+
 export type MyAcademy = {
   user: { id: number; name: string; email: string; role: Role };
   courses: Enrolment[];
@@ -93,6 +120,8 @@ export type MyAcademy = {
   submissions: Submission[];
   materials: Material[];
   announcements: AnnouncementItem[];
+  exams?: ExamSummary[];
+  exam_attempts?: ExamAttempt[];
 };
 
 const TOKEN_KEYS = ["otu_token", "token", "auth_token"];
@@ -152,6 +181,20 @@ export const academy = {
 
   saveQuiz: (course_slug: string, score: number, total: number) =>
     call("/quiz", { method: "POST", body: JSON.stringify({ course_slug, score, total }) }),
+
+  startExam: (examId: number) => call<{ exam: ExamPaper; attempt: ExamAttempt }>(`/exams/${examId}/start`, { method: "POST" }),
+  submitExam: (examId: number, answers: number[]) =>
+    call<ExamAttempt>(`/exams/${examId}/submit`, { method: "POST", body: JSON.stringify({ answers }) }),
+  createExam: (body: {
+    course_slug: string;
+    title: string;
+    instructions?: string;
+    duration_minutes: number;
+    pass_mark: number;
+    questions: { q: string; options: string[]; answer: number }[];
+  }) => call<ExamPaperWithAnswers>("/exams", { method: "POST", body: JSON.stringify(body) }),
+  courseExams: (course_slug: string) => call<ExamPaperWithAnswers[]>(`/exams?course=${encodeURIComponent(course_slug)}`),
+  examResults: (examId: number) => call<(ExamAttempt & { name: string; email: string })[]>(`/exams/${examId}/results`),
 
   submit: (assignmentId: number, text: string, attachment = "") =>
     call<Submission>(`/assignments/${assignmentId}/submit`, {

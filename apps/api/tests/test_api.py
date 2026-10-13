@@ -604,3 +604,52 @@ def test_an_order_email_brings_the_catalogue_with_it(db_factory, monkeypatch):
     # Not what they just bought, and not what is out of stock.
     assert "/shop/own-mouse" not in customer_copy and "Sold Out Tower" not in customer_copy
     assert "/_next/image" not in customer_copy and "See the full catalogue" in customer_copy
+
+
+def test_an_examination_is_sat_once_against_the_clock_and_marked(db_factory):
+    from datetime import timedelta
+
+    import pytest
+
+    from app.models.academy import ExamAttempt
+    from app.models.user import User
+    from app.services import academy
+
+    with db_factory() as db:
+        student = User(name="Judith", email="judith@example.com", password_hash="x", role="student")
+        db.add(student)
+        db.flush()
+        enrolment = academy.enrol(db, student.id, "graphic-design")
+        academy.set_enrolment_status(db, enrolment["id"], "active")  # the school has confirmed them
+        questions = [
+            {"q": "2 + 2?", "options": ["3", "4"], "answer": 1},
+            {"q": "Capital of Uganda?", "options": ["Kampala", "Jinja"], "answer": 0},
+            {"q": "broken", "options": ["only one"], "answer": 0},
+        ]
+        exam = academy.create_exam(db, course_slug="graphic-design", title="Final", duration_minutes=30, pass_mark=50, questions=questions)
+        assert exam["question_count"] == 2  # the question with one option is dropped
+
+        # A student sees that the paper exists, but not its questions or answers.
+        listed = academy.list_exams(db, ["graphic-design"])[0]
+        assert "questions" not in listed
+
+        started = academy.start_exam(db, exam["id"], student.id)
+        assert len(started["exam"]["questions"]) == 2 and "answer" not in started["exam"]["questions"][0]
+
+        result = academy.submit_exam(db, exam["id"], student.id, [1, 1])
+        assert (result["score"], result["total"], result["passed"]) == (1, 2, True)
+
+        # Sat once: no second start, no second paper.
+        with pytest.raises(academy.AcademyError):
+            academy.start_exam(db, exam["id"], student.id)
+        with pytest.raises(academy.AcademyError):
+            academy.submit_exam(db, exam["id"], student.id, [1, 0])
+
+        # Someone not on the course cannot sit it.
+        other = User(name="Other", email="other@example.com", password_hash="x", role="student")
+        db.add(other)
+        db.flush()
+        with pytest.raises(academy.AcademyError):
+            academy.start_exam(db, exam["id"], other.id)
+
+        assert academy.exam_results(db, exam["id"])[0]["name"] == "Judith"

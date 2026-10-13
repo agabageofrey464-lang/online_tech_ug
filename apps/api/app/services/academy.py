@@ -31,6 +31,8 @@ from app.models.academy import (
     LiveClass,
     QuizAttempt,
     Submission,
+    Exam,
+    ExamAttempt,
 )
 from app.models.user import User
 
@@ -719,3 +721,166 @@ def announcement_dict(r: Announcement) -> dict:
         "kind": r.kind,
         "posted_at": r.posted_at.isoformat() if r.posted_at else None,
     }
+
+
+# ── Examinations ────────────────────────────────────────────────────────────
+# A minute's grace on the clock, for a slow connection at the moment of handing in.
+EXAM_GRACE = timedelta(minutes=1)
+
+
+def _clean_questions(raw: list) -> list[dict]:
+    out: list[dict] = []
+    for item in raw or []:
+        q = str((item or {}).get("q", "")).strip()
+        options = [str(o).strip() for o in (item or {}).get("options", []) if str(o).strip()]
+        try:
+            answer = int((item or {}).get("answer", -1))
+        except (TypeError, ValueError):
+            answer = -1
+        if q and len(options) >= 2 and 0 <= answer < len(options):
+            out.append({"q": q[:500], "options": [o[:300] for o in options[:6]], "answer": answer})
+    return out
+
+
+def create_exam(db: Session, **fields) -> dict:
+    if not (fields.get("title") or "").strip():
+        raise AcademyError("Give the examination a title")
+    questions = _clean_questions(fields.get("questions") or [])
+    if len(questions) < 2:
+        raise AcademyError("An examination needs at least two questions, each with its options and the right answer marked")
+    row = Exam(
+        course_slug=fields["course_slug"],
+        lecturer_id=fields.get("lecturer_id"),
+        title=fields["title"].strip()[:200],
+        instructions=(fields.get("instructions") or "").strip(),
+        duration_minutes=max(5, min(240, int(fields.get("duration_minutes") or 30))),
+        pass_mark=max(1, min(100, int(fields.get("pass_mark") or 50))),
+        questions=questions,
+        opens_at=fields.get("opens_at"),
+        closes_at=fields.get("closes_at"),
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return exam_dict(row, with_answers=True)
+
+
+def exam_dict(r: Exam, *, with_answers: bool = False, with_questions: bool = True) -> dict:
+    """An examination. A student is never sent the answers, and is not sent
+    the questions either until they start the clock."""
+    out = {
+        "id": r.id,
+        "course_slug": r.course_slug,
+        "title": r.title,
+        "instructions": r.instructions,
+        "duration_minutes": r.duration_minutes,
+        "pass_mark": r.pass_mark,
+        "question_count": len(r.questions or []),
+        "opens_at": r.opens_at.isoformat() if r.opens_at else None,
+        "closes_at": r.closes_at.isoformat() if r.closes_at else None,
+    }
+    if with_questions:
+        out["questions"] = [
+            {"q": q["q"], "options": q["options"], **({"answer": q["answer"]} if with_answers else {})}
+            for q in (r.questions or [])
+        ]
+    return out
+
+
+def list_exams(db: Session, course_slugs: list[str], *, for_lecturer: bool = False) -> list[dict]:
+    if not course_slugs:
+        return []
+    rows = db.execute(
+        select(Exam).where(Exam.course_slug.in_(course_slugs), Exam.published.is_(True)).order_by(Exam.id.desc())
+    ).scalars().all()
+    return [exam_dict(r, with_answers=for_lecturer, with_questions=for_lecturer) for r in rows]
+
+
+def _attempt(db: Session, exam_id: int, user_id: int) -> ExamAttempt | None:
+    return db.execute(
+        select(ExamAttempt).where(ExamAttempt.exam_id == exam_id, ExamAttempt.user_id == user_id)
+    ).scalar_one_or_none()
+
+
+def attempt_dict(r: ExamAttempt, exam: Exam | None = None) -> dict:
+    return {
+        "exam_id": r.exam_id,
+        "started_at": r.started_at.isoformat(),
+        "submitted_at": r.submitted_at.isoformat() if r.submitted_at else None,
+        "score": r.score,
+        "total": r.total,
+        "percent": round(r.score * 100 / r.total) if r.total else 0,
+        "passed": r.passed,
+        **({"ends_at": (r.started_at + timedelta(minutes=exam.duration_minutes)).isoformat()} if exam else {}),
+    }
+
+
+def _finish(db: Session, exam: Exam, row: ExamAttempt, answers: list) -> None:
+    questions = exam.questions or []
+    chosen: list[int] = []
+    for i in range(len(questions)):
+        try:
+            chosen.append(int(answers[i]))
+        except (IndexError, TypeError, ValueError):
+            chosen.append(-1)
+    row.answers = chosen
+    row.total = len(questions)
+    row.score = sum(1 for i, q in enumerate(questions) if chosen[i] == q["answer"])
+    row.passed = row.total > 0 and row.score * 100 / row.total >= exam.pass_mark
+    row.submitted_at = datetime.utcnow()
+    db.commit()
+
+
+def start_exam(db: Session, exam_id: int, user_id: int) -> dict:
+    """Start the clock, or carry on a sitting already begun. Returns the questions."""
+    exam = db.get(Exam, exam_id)
+    if not exam or not exam.published:
+        raise AcademyError("That examination is not available")
+    if not is_enrolled(db, user_id, exam.course_slug):
+        raise AcademyError("You are not enrolled on this course")
+    now = datetime.utcnow()
+    row = _attempt(db, exam_id, user_id)
+    if row is None:
+        if exam.opens_at and now < exam.opens_at:
+            raise AcademyError("This examination has not opened yet")
+        if exam.closes_at and now > exam.closes_at:
+            raise AcademyError("This examination has closed")
+        row = ExamAttempt(exam_id=exam_id, user_id=user_id, started_at=now, answers=[])
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+    elif row.submitted_at is None and now > row.started_at + timedelta(minutes=exam.duration_minutes) + EXAM_GRACE:
+        # Time ran out with the paper never handed in: it is marked as it stood.
+        _finish(db, exam, row, row.answers or [])
+    if row.submitted_at is not None:
+        raise AcademyError("You have already sat this examination")
+    return {"exam": exam_dict(exam), "attempt": attempt_dict(row, exam)}
+
+
+def submit_exam(db: Session, exam_id: int, user_id: int, answers: list) -> dict:
+    exam = db.get(Exam, exam_id)
+    row = _attempt(db, exam_id, user_id) if exam else None
+    if not exam or row is None:
+        raise AcademyError("Start the examination first")
+    if row.submitted_at is not None:
+        raise AcademyError("You have already handed in this examination")
+    # A paper handed in after the time is marked on what was sent, so a dropped
+    # connection in the last seconds does not cost a student everything.
+    _finish(db, exam, row, answers)
+    return attempt_dict(row, exam)
+
+
+def my_exam_attempts(db: Session, user_id: int) -> list[dict]:
+    rows = db.execute(select(ExamAttempt).where(ExamAttempt.user_id == user_id)).scalars().all()
+    return [attempt_dict(r) for r in rows]
+
+
+def exam_results(db: Session, exam_id: int) -> list[dict]:
+    """Every sitting of an examination, with the student's name, for the lecturer."""
+    rows = db.execute(
+        select(ExamAttempt, User.name, User.email)
+        .join(User, User.id == ExamAttempt.user_id)
+        .where(ExamAttempt.exam_id == exam_id)
+        .order_by(ExamAttempt.score.desc())
+    ).all()
+    return [{**attempt_dict(a), "name": name, "email": email} for a, name, email in rows]

@@ -122,6 +122,27 @@ class RoleIn(BaseModel):
     role: str
 
 
+class ExamQuestion(BaseModel):
+    q: str
+    options: list[str]
+    answer: int
+
+
+class ExamIn(BaseModel):
+    course_slug: str
+    title: str = Field(min_length=1, max_length=200)
+    instructions: str = ""
+    duration_minutes: int = 30
+    pass_mark: int = 50
+    questions: list[ExamQuestion] = Field(default_factory=list, max_length=200)
+    opens_at: datetime | None = None
+    closes_at: datetime | None = None
+
+
+class ExamAnswers(BaseModel):
+    answers: list[int] = Field(default_factory=list, max_length=200)
+
+
 def _ok(fn, *a, **kw):
     """Turn an AcademyError into a 400 rather than a 500."""
     try:
@@ -157,6 +178,10 @@ def my_academy(user: User = Depends(get_current_user), db: Session = Depends(get
         "submissions": academy.my_submissions(db, user.id),
         "materials": academy.list_materials(db, slugs),
         "announcements": academy.announcements(db, slugs),
+        # Examinations on the student's courses — the questions are sent only
+        # when they start the clock — and the ones they have sat.
+        "exams": academy.list_exams(db, slugs),
+        "exam_attempts": academy.my_exam_attempts(db, user.id),
     }
 
 
@@ -183,6 +208,19 @@ def submit(
     db: Session = Depends(get_db),
 ) -> dict:
     return _ok(academy.submit, db, assignment_id, user.id, payload.text, payload.attachment)
+
+
+@router.post("/exams/{exam_id}/start")
+def start_exam(exam_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
+    """Start the clock on an examination and receive its questions."""
+    return _ok(academy.start_exam, db, exam_id, user.id)
+
+
+@router.post("/exams/{exam_id}/submit")
+def submit_exam(
+    exam_id: int, payload: ExamAnswers, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> dict:
+    return _ok(academy.submit_exam, db, exam_id, user.id, payload.answers)
 
 
 # ── The live classroom ──────────────────────────────────────────────────────
@@ -317,6 +355,23 @@ def mark_submission(
     db: Session = Depends(get_db),
 ) -> dict:
     return _ok(academy.mark, db, submission_id, payload.score, payload.feedback)
+
+
+@router.post("/exams", status_code=201)
+def new_exam(payload: ExamIn, user: User = Depends(require_lecturer), db: Session = Depends(get_db)) -> dict:
+    data = payload.model_dump()
+    return _ok(academy.create_exam, db, **data, lecturer_id=user.id)
+
+
+@router.get("/exams")
+def course_exams(course: str = Query(...), user: User = Depends(require_lecturer), db: Session = Depends(get_db)) -> list[dict]:
+    """Examinations on a course, with their answers, for the lecturer."""
+    return academy.list_exams(db, [course], for_lecturer=True)
+
+
+@router.get("/exams/{exam_id}/results")
+def exam_results(exam_id: int, user: User = Depends(require_lecturer), db: Session = Depends(get_db)) -> list[dict]:
+    return academy.exam_results(db, exam_id)
 
 
 @router.post("/materials", status_code=201)

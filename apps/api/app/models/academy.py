@@ -14,7 +14,7 @@ server, where both of those stop being true.
 
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -194,3 +194,48 @@ class ClassMaterial(Base):
     url: Mapped[str] = mapped_column(String(500), default="")
     size_kb: Mapped[int] = mapped_column(Numeric(10, 0), default=0)
     added_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class Exam(Base):
+    """A timed examination on a course, marked the moment it is handed in.
+
+    A quiz is practice a student may repeat. An examination is sat once,
+    against the clock, and its mark stands — which is what a certificate needs
+    behind it.
+    """
+
+    __tablename__ = "academy_exams"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    course_slug: Mapped[str] = mapped_column(String(160), index=True)
+    lecturer_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+    title: Mapped[str] = mapped_column(String(200))
+    instructions: Mapped[str] = mapped_column(Text, default="")
+    duration_minutes: Mapped[int] = mapped_column(Integer, default=30)
+    # Percentage needed to pass.
+    pass_mark: Mapped[int] = mapped_column(Integer, default=50)
+    # [{"q": "...", "options": ["a", "b", "c", "d"], "answer": 0}, ...]
+    questions: Mapped[list] = mapped_column(JSON, default=list)
+    # Open for sitting between these, if set.
+    opens_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    closes_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    published: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class ExamAttempt(Base):
+    """One student's sitting of an examination. There is only ever one."""
+
+    __tablename__ = "academy_exam_attempts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    exam_id: Mapped[int] = mapped_column(ForeignKey("academy_exams.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # The option chosen for each question, by position; -1 where left blank.
+    answers: Mapped[list] = mapped_column(JSON, default=list)
+    score: Mapped[int] = mapped_column(Integer, default=0)
+    total: Mapped[int] = mapped_column(Integer, default=0)
+    passed: Mapped[bool] = mapped_column(Boolean, default=False)

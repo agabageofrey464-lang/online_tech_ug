@@ -14,14 +14,14 @@ function loadImg(src: string): Promise<HTMLImageElement | null> {
   });
 }
 
-export function Certificate({ courseTitle }: { courseTitle: string }) {
+export function Certificate({ courseTitle, defaultName = "" }: { courseTitle: string; /** The signed-in student's name, offered first. */ defaultName?: string }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const logo = useRef<HTMLImageElement | null>(null);
   const sign = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    setName(learnerName());
+    setName(learnerName() || defaultName);
     loadImg("/logo.webp").then((i) => (logo.current = i));
     loadImg("/signature.webp").then((i) => (sign.current = i));
   }, []);

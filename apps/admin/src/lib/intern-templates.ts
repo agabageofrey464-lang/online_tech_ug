@@ -4,35 +4,32 @@ import type { Template } from "@/components/reply-button";
  * Ready replies for students applying for internship.
  *
  * A student asks the same handful of things — am I in, when does it start,
- * what time are the sessions, how do I pay, where is my letter — and each was
+ * what time are the classes, how do I pay, where is my letter — and each was
  * being typed out again for every one of them. They are written here once,
  * so the answer a student gets is the same whoever sends it, and goes out by
  * WhatsApp or email in one tap from the applicants page.
  *
  * The timetable below is the one place the times are kept. Change them here
- * and every reply that mentions a time follows.
+ * and every reply that mentions a time follows. The email a student is sent
+ * on applying says the same (apps/api/app/services/email.py).
  */
 export const INTAKE = {
   window: "2 November – 18 December 2026",
   /** 1 November is a Sunday, so the first working day is the Monday. */
   firstDay: "Monday 2 November 2026",
-  orientation: "10:00 am",
   days: "Monday to Friday",
-  morning: "9:00 – 10:00 am",
-  evening: "7:00 – 8:00 pm",
-  submitBy: "6:00 pm",
-  review: "Fridays",
+  /** One class a day, three hours. */
+  classTime: "9:00 am – 12:00 pm",
   fee: "UGX 150,000",
   pay: "Airtel Money 0756 839 270 (Online TechUG Services, Merchant ID 7148212)",
   phone: "0756 839 270",
 };
 
 const TIMETABLE =
-  `• Orientation: ${INTAKE.firstDay} at ${INTAKE.orientation}, on Google Meet\n` +
-  `• Daily session with your supervisor, ${INTAKE.days} — you choose one:\n` +
-  `     Morning ${INTAKE.morning}   or   Evening ${INTAKE.evening}\n` +
-  `• Your tasks are done in your own time and submitted by ${INTAKE.submitBy}\n` +
-  `• Weekly review of your work on ${INTAKE.review}`;
+  `• Orientation: ${INTAKE.firstDay}\n` +
+  `• Class: ${INTAKE.days}, ${INTAKE.classTime} (3 hours), online\n` +
+  `• Each class is practical: the first 30 minutes are theory, the rest is hands-on work\n` +
+  `• There is one session a day, so please keep 9:00 am to 12:00 pm free`;
 
 export const INTERN_TEMPLATES: Template[] = [
   {
@@ -52,9 +49,9 @@ export const INTERN_TEMPLATES: Template[] = [
     label: "Training times",
     subject: "Your internship timetable — Online Tech Uganda",
     body: () =>
-      `Thank you for asking. The internship runs online from ${INTAKE.window}, ${INTAKE.days}.\n\n` +
+      `Thank you for asking. The internship runs online from ${INTAKE.window}.\n\n` +
       `${TIMETABLE}\n\n` +
-      `Please reply with the session you prefer — morning or evening — and we will send you the meeting link before the first day.`,
+      `We will send you the meeting link before the first day. Please be online a few minutes before 9:00 am.`,
   },
   {
     label: "Send your details / letter",
@@ -83,15 +80,14 @@ export const INTERN_TEMPLATES: Template[] = [
     body: () =>
       `We have received your placement fee of ${INTAKE.fee}. Thank you — your place is secured.\n\n` +
       `Your acceptance letter, signed and stamped and addressed to your faculty, will reach you within two working days.\n\n` +
-      `Your timetable:\n${TIMETABLE}\n\n` +
-      `Please reply with the session you prefer — morning or evening.`,
+      `Your timetable:\n${TIMETABLE}`,
   },
   {
     label: "Before the first day",
     subject: "Your internship starts on Monday — Online Tech Uganda",
     body: () =>
-      `Your internship begins on ${INTAKE.firstDay}.\n\n` +
-      `Please join the orientation at ${INTAKE.orientation} on Google Meet — the link follows in a separate message. Have ready: a laptop or desktop, a steady internet connection, and a notebook.\n\n` +
+      `Your internship begins with orientation on ${INTAKE.firstDay} at 9:00 am, online. The meeting link follows in a separate message.\n\n` +
+      `Have ready: a laptop or desktop, a steady internet connection, and a notebook.\n\n` +
       `${TIMETABLE}\n\n` +
       `If anything will stop you from joining, tell us before the day on ${INTAKE.phone}.`,
   },

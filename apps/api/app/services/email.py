@@ -506,10 +506,10 @@ async def send_contact_notification(
 # The internship timetable, as students are told it. The dashboard's ready
 # replies say the same (apps/admin/src/lib/intern-templates.ts) — change both.
 INTERNSHIP_TIMETABLE = [
-    "Orientation: Monday 2 November 2026 at 10:00 am, on Google Meet.",
-    "A daily session with your supervisor, Monday to Friday. You choose one: morning 9:00 – 10:00 am, or evening 7:00 – 8:00 pm.",
-    "Your tasks are done in your own time and submitted by 6:00 pm.",
-    "A weekly review of your work on Fridays.",
+    "Orientation: Monday 2 November 2026.",
+    "Class: Monday to Friday, 9:00 am – 12:00 pm (3 hours), online.",
+    "Each class is practical: the first 30 minutes are theory, the rest is hands-on work.",
+    "There is one session a day, so please keep 9:00 am to 12:00 pm free.",
 ]
 
 

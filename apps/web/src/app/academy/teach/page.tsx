@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarPlus, ClipboardList, Radio, Users, Video } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { TeachCoursework } from "@/components/teach-coursework";
+import { TeachExams } from "@/components/teach-exams";
 import { courses } from "@/lib/data";
 import { academy, whenLabel, type LiveClass } from "@/lib/academy";
 
@@ -42,7 +43,7 @@ export default function TeachPage() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const [tab, setTab] = useState<"classes" | "coursework">("classes");
+  const [tab, setTab] = useState<"classes" | "coursework" | "exams">("classes");
 
   const [openRegister, setOpenRegister] = useState<number | null>(null);
   const [register, setRegister] = useState<
@@ -142,6 +143,7 @@ export default function TeachPage() {
         {([
           ["classes", "Classes"],
           ["coursework", "Coursework"],
+          ["exams", "Examinations"],
         ] as const).map(([k, label]) => (
           <button
             key={k}
@@ -158,6 +160,7 @@ export default function TeachPage() {
       </div>
 
       {tab === "coursework" && <TeachCoursework />}
+      {tab === "exams" && <TeachExams />}
 
       <div className={`grid gap-4 lg:grid-cols-[1fr_340px] ${tab === "classes" ? "" : "hidden"}`}>
         {/* Classes */}

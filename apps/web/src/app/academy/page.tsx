@@ -1,5 +1,7 @@
 "use client";
 
+import { ExamRoom } from "@/components/exam-room";
+import { Certificate } from "@/components/certificate";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -36,13 +38,14 @@ const courseTitle = (slug: string) =>
 
 const lessonCount = (slug: string) => courses.find((c) => c.slug === slug)?.lessons ?? 0;
 
-type Tab = "overview" | "courses" | "timetable" | "work" | "notes";
+type Tab = "overview" | "courses" | "timetable" | "work" | "exams" | "notes";
 
 const TABS: { id: Tab; label: string; icon: typeof BookOpen }[] = [
   { id: "overview", label: "Overview", icon: TrendingUp },
   { id: "courses", label: "My Courses", icon: BookOpen },
   { id: "timetable", label: "Timetable", icon: CalendarDays },
   { id: "work", label: "Coursework", icon: ClipboardList },
+  { id: "exams", label: "Examinations", icon: Award },
   { id: "notes", label: "Notes", icon: FileText },
 ];
 
@@ -333,12 +336,16 @@ export default function AcademyPage() {
                     >
                       Open course
                     </Link>
-                    {c.status === "completed" && (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-green-50 px-3 py-2 text-xs font-bold text-green-700">
-                        <Award size={13} /> Certificate ready — ask us to print it
-                      </span>
-                    )}
                   </div>
+                  {/* A finished course: the certificate, to download at once. */}
+                  {c.status === "completed" && (
+                    <div className="mt-3 border-t border-ink-600/10 pt-3">
+                      <p className="mb-2 inline-flex items-center gap-1 rounded-md bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700">
+                        <Award size={13} /> Course completed — your certificate is ready
+                      </p>
+                      <Certificate courseTitle={courseTitle(c.course_slug)} defaultName={data.user.name} />
+                    </div>
+                  )}
                 </li>
               );
             })}
@@ -424,6 +431,10 @@ export default function AcademyPage() {
               );
             })}
           </ul>
+        )}
+
+        {tab === "exams" && (
+          <ExamRoom exams={data.exams ?? []} attempts={data.exam_attempts ?? []} courseTitle={courseTitle} onChange={load} />
         )}
 
         {tab === "notes" && (
