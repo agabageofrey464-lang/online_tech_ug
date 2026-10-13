@@ -64,7 +64,7 @@ export function InternshipAdvert() {
 
           <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">
             <Link
-              href="/internship"
+              href="/internship#apply-form"
               className="inline-flex items-center justify-center gap-2 bg-brand-500 px-7 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-brand-600"
             >
               Apply for a place <ArrowRight size={14} />

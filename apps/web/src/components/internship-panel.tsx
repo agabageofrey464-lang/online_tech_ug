@@ -8,7 +8,6 @@ import {
   Smartphone,
   Users,
 } from "lucide-react";
-import { JobApply } from "@/components/job-apply";
 import { site, ugx, whatsappLink } from "@/lib/site";
 
 /**
@@ -154,11 +153,12 @@ export function InternshipPanel() {
           </div>
 
           <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-            <JobApply
-              jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
-              label="Apply for a place"
+            <a
+              href="#apply-form"
               className="press inline-flex flex-1 items-center justify-center gap-2 rounded-[3px] bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600"
-            />
+            >
+              Apply online now
+            </a>
             <a
               href={ask}
               target="_blank"

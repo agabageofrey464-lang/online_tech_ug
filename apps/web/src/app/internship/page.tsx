@@ -25,7 +25,7 @@ import {
   INTERNSHIP_WINDOW,
 } from "@/components/internship-panel";
 import { ContactOptions } from "@/components/contact-options";
-import { JobApply } from "@/components/job-apply";
+import { InternshipApplyForm } from "@/components/internship-apply-form";
 import { SafeImage } from "@/components/safe-image";
 import { ugx } from "@/lib/site";
 import { share } from "@/lib/seo";
@@ -185,6 +185,11 @@ export default function InternshipPage() {
         <InternshipPanel />
       </section>
 
+      {/* The application itself, filled in here: what the acceptance letter needs, asked once. */}
+      <section className="container-page pt-6">
+        <InternshipApplyForm />
+      </section>
+
       {/* ── The four facts ─────────────────────────────────────── */}
       {/* What it costs, how long, where and what paperwork: the questions a
           student has before any other, answered in four tiles they can read
@@ -333,11 +338,9 @@ export default function InternshipPage() {
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <JobApply
-              jobTitle={`Industrial Training / Internship (${INTERNSHIP_WINDOW})`}
-              label="Apply for a place"
-              className="press inline-flex items-center justify-center rounded-full bg-[#f3efe9] px-7 py-3 text-sm font-black text-ink-900 transition hover:brightness-105"
-            />
+            <a href="#apply-form" className="press inline-flex items-center justify-center gap-2 rounded-[3px] bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600">
+              Apply online
+            </a>
             <Link
               href="/jobs"
               className="press inline-flex items-center justify-center rounded-full bg-white/15 px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white ring-1 ring-white/30 transition hover:bg-white/25"
