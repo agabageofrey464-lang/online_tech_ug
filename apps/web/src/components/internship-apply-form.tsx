@@ -76,6 +76,15 @@ export function InternshipApplyForm() {
     try {
       const res = await fetch("/_api/careers/apply", { method: "POST", body });
       const data = await res.json().catch(() => ({}));
+      // News of the next intake, new courses and offers, to those who asked
+      // for it. It never holds up the application or fails it.
+      if (res.ok && f.get("updates") && get("email")) {
+        fetch("/_api/newsletter/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: get("email"), name: get("name"), source: "internship-application" }),
+        }).catch(() => {});
+      }
       if (!res.ok) {
         setErr(typeof data.detail === "string" ? data.detail : "We could not send your application. Please try again.");
       } else {
@@ -126,7 +135,7 @@ export function InternshipApplyForm() {
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Apply online</p>
       <h2 className="mt-2 text-[30px] leading-tight text-ink-900 sm:text-[36px]">Internship application</h2>
       <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-ink-700/85">
-        {INTERNSHIP_WINDOW} · online · {ugx(INTERNSHIP_FEE)}. It takes about three minutes. You pay nothing now: we confirm your place first.
+        {INTERNSHIP_WINDOW} · online · {ugx(INTERNSHIP_FEE)}. Fill in the boxes below — each one shows an example of what to write. You pay nothing now.
       </p>
 
       <fieldset className="mt-7">
@@ -134,7 +143,7 @@ export function InternshipApplyForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label className={label} htmlFor="ia-name">Full name, as on your student ID</label>
-            <input id="ia-name" name="name" required minLength={3} autoComplete="name" className={input} />
+            <input id="ia-name" name="name" required minLength={3} autoComplete="name" placeholder="e.g. Chandia Judith Bakheit" className={input} />
           </div>
           <div>
             <label className={label} htmlFor="ia-phone">Phone / WhatsApp</label>
@@ -142,7 +151,7 @@ export function InternshipApplyForm() {
           </div>
           <div>
             <label className={label} htmlFor="ia-email">Email</label>
-            <input id="ia-email" name="email" type="email" required autoComplete="email" className={input} />
+            <input id="ia-email" name="email" type="email" required autoComplete="email" placeholder="e.g. yourname@gmail.com" className={input} />
           </div>
         </div>
       </fieldset>
@@ -174,7 +183,7 @@ export function InternshipApplyForm() {
           </div>
           <div>
             <label className={label} htmlFor="ia-reg">Registration number</label>
-            <input id="ia-reg" name="regno" required className={input} />
+            <input id="ia-reg" name="regno" required placeholder="As on your student ID — e.g. 2023-08-12345" className={input} />
           </div>
           <div>
             <label className={label} htmlFor="ia-dates">Dates your school requires</label>
@@ -221,7 +230,7 @@ export function InternshipApplyForm() {
           </div>
           <div className="sm:col-span-2">
             <label className={label} htmlFor="ia-note">Anything we should know <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional)</span></label>
-            <textarea id="ia-note" name="note" rows={3} maxLength={600} className={input} />
+            <textarea id="ia-note" name="note" rows={2} maxLength={600} placeholder="You can leave this empty." className={input} />
           </div>
           <label className="flex cursor-pointer items-center gap-3 border border-dashed border-ink-600/35 px-4 py-3.5 text-[14px] text-ink-700/80 hover:border-ink-900 sm:col-span-2">
             <Upload size={18} className="shrink-0 text-brand-500" />
@@ -236,6 +245,11 @@ export function InternshipApplyForm() {
         <span>
           I understand the placement runs online from {INTERNSHIP_WINDOW}, and that the fee of {ugx(INTERNSHIP_FEE)} is paid once my place is confirmed.
         </span>
+      </label>
+
+      <label className="mt-3 flex items-start gap-3 text-[13.5px] leading-relaxed text-ink-800">
+        <input type="checkbox" name="updates" defaultChecked className="mt-1 h-4 w-4 shrink-0 accent-[#f15a29]" />
+        <span>Email me when new internship intakes, courses and offers are announced. You can stop these at any time.</span>
       </label>
 
       {err && <p className="mt-4 border-l-4 border-brand-500 bg-brand-50 px-3 py-2.5 text-[13.5px] font-semibold text-brand-800">{err}</p>}

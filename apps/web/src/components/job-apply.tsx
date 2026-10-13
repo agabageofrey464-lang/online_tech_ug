@@ -40,7 +40,18 @@ export function JobApply({
     }
   }
 
-  const input = "w-full rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+  const input = "w-full min-w-0 rounded-[3px] border border-ink-600/20 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none";
+  const lab = "mb-1 block text-[12px] font-bold text-ink-800";
+
+  // An internship has a form of its own, which asks for the university, the
+  // course and the registration number the acceptance letter needs.
+  if (/intern|industrial training/i.test(jobTitle)) {
+    return (
+      <a href="/internship#apply-form" className={className}>
+        {label}
+      </a>
+    );
+  }
 
   return (
     <>
@@ -71,12 +82,26 @@ export function JobApply({
               </div>
             ) : (
               <form onSubmit={submit} className="space-y-3">
-                <input required name="name" placeholder="Full name" className={input} />
-                <div className="grid grid-cols-2 gap-3">
-                  <input required name="phone" placeholder="Phone" className={input} />
-                  <input name="email" type="email" placeholder="Email" className={input} />
+                <div>
+                  <label className={lab} htmlFor="ja-name">Your full name</label>
+                  <input id="ja-name" required name="name" autoComplete="name" placeholder="e.g. Chandia Judith" className={input} />
                 </div>
-                <textarea name="message" rows={3} placeholder="Why are you a good fit? (optional)" className={input} />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="min-w-0">
+                    <label className={lab} htmlFor="ja-phone">Phone number</label>
+                    <input id="ja-phone" required name="phone" inputMode="tel" autoComplete="tel" placeholder="07XX XXX XXX" className={input} />
+                  </div>
+                  <div className="min-w-0">
+                    <label className={lab} htmlFor="ja-email">Email</label>
+                    <input id="ja-email" name="email" type="email" autoComplete="email" placeholder="you@gmail.com" className={input} />
+                  </div>
+                </div>
+                <div>
+                  <label className={lab} htmlFor="ja-msg">
+                    About you <span className="font-normal text-ink-700/55">— optional, one or two lines</span>
+                  </label>
+                  <textarea id="ja-msg" name="message" rows={3} placeholder="What you studied, and any experience you have. You can leave this empty." className={input} />
+                </div>
                 <label className="flex cursor-pointer items-center gap-3 rounded-[3px] border border-dashed border-ink-600/30 px-3 py-3 text-sm text-ink-700/70 hover:border-brand-400">
                   <Upload size={18} className="text-brand-500" />
                   <span className="truncate">{fileName || "Attach your CV (PDF, DOC, DOCX — max 5MB)"}</span>
