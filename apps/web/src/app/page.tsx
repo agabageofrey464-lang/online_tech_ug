@@ -10,6 +10,7 @@ import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { SoftwareBand } from "@/components/software-band";
+import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
@@ -266,6 +267,9 @@ export default async function HomePage() {
       {/* Call / WhatsApp — first thing on the page, on every device, so nobody
           has to scroll to find how to order. */}
       <OrderBanner />
+
+      {/* This intake's internship advert — it removes itself once the intake is under way. */}
+      <InternshipAdvert />
 
       {/* The range, by category or by brand, straight under the hero. */}
       <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
