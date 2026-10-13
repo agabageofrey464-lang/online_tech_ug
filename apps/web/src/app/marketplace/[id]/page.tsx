@@ -64,8 +64,31 @@ export default async function VendorProductPage({ params }: Params) {
     .sort((a, b) => Number(b.seller === item.vendor_name) - Number(a.seller === item.vendor_name))
     .slice(0, 4);
 
+  // What search engines read to show the price, stock and photograph beside
+  // the result. The seller is the shop: the customer orders from and pays us.
+  const productData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: item.name,
+    image: image.startsWith("http") ? image : `${site.url}${image}`,
+    description: item.description || `${item.name} — ${ugx(item.price_ugx)} at Online Tech Uganda, Kampala.`,
+    sku: `vp-${item.id}`,
+    category: item.category,
+    ...(item.brand ? { brand: { "@type": "Brand", name: item.brand } } : {}),
+    itemCondition: condition === "Brand New" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition",
+    offers: {
+      "@type": "Offer",
+      url: `${site.url}/marketplace/${item.id}`,
+      priceCurrency: "UGX",
+      price: item.price_ugx,
+      availability: item.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: site.name },
+    },
+  };
+
   return (
     <div className="container-page py-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productData) }} />
       {/* Read by the chat buttons: which product this is, and whether it is a phone, ordered on the phones' line. */}
       <span id="chat-context" hidden data-kind="product" data-name={item.name} data-price={ugx(item.price_ugx)} data-url={`${site.url}/marketplace/${item.id}`} data-phone={isPhone ? "1" : "0"} />
       <div className="mb-6">

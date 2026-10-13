@@ -66,9 +66,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // What approved vendors have listed — each has a page of its own, and
+  // without this no search engine was ever told those pages exist.
+  const listings = await apiList("/vendor/marketplace");
+  const vendorPages: MetadataRoute.Sitemap = listings
+    .filter((v) => v.id)
+    .map((v) => ({
+      url: url(`/marketplace/${v.id as number}`),
+      lastModified: v.created_at ? new Date(v.created_at as string) : now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    }));
+
   // De-duplicate blog slugs (static + dynamic).
   const seen = new Set<string>();
   const blogPages = [...postPages, ...staticBlog].filter((e) => (seen.has(e.url) ? false : seen.add(e.url)));
 
-  return [...staticPages, ...productPages, ...coursePages, ...portfolioPages, ...blogPages];
+  return [...staticPages, ...productPages, ...vendorPages, ...coursePages, ...portfolioPages, ...blogPages];
 }

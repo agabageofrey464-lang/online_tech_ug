@@ -45,7 +45,14 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   // Proves to Google Search Console that we own the site, so its sitemap can
   // be submitted there. Removing this un-verifies the property.
-  verification: { google: "citscyrm2lQ5eMCrUWBhxPwX6Byfd_IduXwOPCQsH3o" },
+  // Proof of ownership for each search engine's webmaster tools. Bing and
+  // Yandex are filled in by setting their code in the site's environment;
+  // until then their tags are simply left out.
+  verification: {
+    google: "citscyrm2lQ5eMCrUWBhxPwX6Byfd_IduXwOPCQsH3o",
+    ...(process.env.NEXT_PUBLIC_YANDEX_VERIFY ? { yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFY } : {}),
+    ...(process.env.NEXT_PUBLIC_BING_VERIFY ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFY } } : {}),
+  },
   robots: {
     index: true,
     follow: true,
