@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Heart,
   HelpCircle,
+  Home,
   Menu,
   Package,
   Phone,
@@ -266,6 +267,10 @@ export function SiteHeader() {
             search box and the icons. */}
         <div className="container-wide hidden grid-cols-[1fr_auto_1fr] items-center gap-6 py-4 lg:grid">
           <nav className="flex items-center gap-6 text-[15px] text-ink-800 xl:gap-9 xl:text-[16px]">
+            {/* The way back to the front page, from anywhere. */}
+            <Link href="/" className={`flex items-center gap-1.5 whitespace-nowrap font-semibold hover:text-brand-600 ${pathname === "/" ? "text-brand-600" : "text-ink-900"}`}>
+              <Home size={17} strokeWidth={1.8} /> Home
+            </Link>
             {[...TOP_LINKS, { href: "/sell", label: "Sell With Us" }].map((l, i) => (
               <Link key={l.href} href={l.href} className={`whitespace-nowrap hover:text-brand-600 hover:underline hover:underline-offset-4 ${i === 3 ? "hidden xl:inline" : ""}`}>
                 {l.label}
@@ -431,6 +436,14 @@ export function SiteHeader() {
           that slides sideways. */}
       <nav className="border-y border-ink-600/10 bg-white lg:hidden">
         <div className="container-wide flex items-center gap-x-2 overflow-x-auto py-2 no-scrollbar">
+          <Link
+            href="/"
+            className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
+              pathname === "/" ? "border-ink-900 bg-ink-900 text-white" : "border-brand-500 bg-white text-brand-600"
+            }`}
+          >
+            <Home size={13} strokeWidth={2.2} /> Home
+          </Link>
           {CATEGORIES.map((c) => (
             <Link
               key={c.href}
