@@ -40,14 +40,14 @@ function details(message: string): [string, string][] {
 export default function ApplicationsPage() {
   const [apps, setApps] = useState<App[]>([]);
   const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState<"all" | "internships" | "jobs">("all");
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/applications", { cache: "no-store" });
       const data = await res.json();
-      setApps(Array.isArray(data) ? data : []);
+      // Students applying for internship have a page of their own.
+      setApps(Array.isArray(data) ? data.filter((a: App) => !isInternship(a)) : []);
     } catch {
       setApps([]);
     } finally {
@@ -73,40 +73,14 @@ export default function ApplicationsPage() {
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-2xl font-extrabold text-ink-600">Applications</h1>
+        <h1 className="text-2xl font-extrabold text-ink-600">Job applications</h1>
         <p className="text-sm text-ink-600/60">
-          {apps.length} application(s): {apps.filter(isInternship).length} for internship, {apps.filter((a) => !isInternship(a)).length} for jobs. Check
-          each student&apos;s details, set where they stand, and reply.
+          {apps.length} application(s) for the jobs on the careers page. Download CVs, set where each stands, and reply.
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {(
-            [
-              ["all", "All"],
-              ["internships", "Internships"],
-              ["jobs", "Jobs"],
-            ] as const
-          ).map(([v, l]) => (
-            <button
-              key={v}
-              onClick={() => setShow(v)}
-              className={`rounded-full px-4 py-1.5 text-sm font-bold ${show === v ? "bg-brand-500 text-white" : "border border-ink-600/20 bg-white text-ink-600"}`}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
+        <a href="/internship-applicants" className="mt-3 inline-block rounded-full bg-brand-500 px-4 py-1.5 text-sm font-bold text-white hover:bg-brand-600">
+          🎓 Internship applicants are on their own page →
+        </a>
       </header>
-
-      {/* How to handle an internship application, for whoever is at the desk. */}
-      <div className="mb-6 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-ink-600">
-        <p className="font-extrabold">How to verify a student and reply</p>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-600/80">
-          <li>Read their details below and open the university letter if they attached one. Call or WhatsApp them if anything is unclear.</li>
-          <li>Set the status: <b>Details checked</b> while you verify, <b>Place confirmed</b> to accept them, <b>Declined</b> if there is no place.</li>
-          <li>Press <b>Edit</b> under the application. The message is already written for that status — change it if you wish and send it by WhatsApp or email.</li>
-          <li>When they pay UGX 150,000, write their acceptance letter under <b>Internship letters</b> in the menu.</li>
-        </ol>
-      </div>
 
       {loading ? (
         <p className="rounded-2xl border border-ink-600/10 bg-white p-8 text-center text-ink-600/50">Loading…</p>
@@ -116,7 +90,7 @@ export default function ApplicationsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {apps.filter((a) => show === "all" || (show === "internships") === isInternship(a)).map((a) => (
+          {apps.map((a) => (
             <div key={a.id} className="rounded-2xl border border-ink-600/10 bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
