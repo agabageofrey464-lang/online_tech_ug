@@ -14,6 +14,17 @@ export function shareImage(src: string | undefined): string {
   return `/og${src.replace(/\.(webp|jpe?g|png)$/i, ".jpg")}`;
 }
 
+/** A description within what a search result shows, ended at a whole word. */
+export function fitDescription(text: string, max = 158): string {
+  const t = text.replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max - 1);
+  // Prefer to stop at the end of a sentence if one falls in the last stretch.
+  const stop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf(" — "));
+  if (stop > max * 0.6) return cut.slice(0, stop + 1).trim().replace(/[—,;:]$/, "").trim();
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:—-]$/, "").trim()}…`;
+}
+
 /**
  * A page's metadata, with what a shared link needs added to it.
  *
@@ -26,9 +37,12 @@ export function shareImage(src: string | undefined): string {
  */
 export function share(meta: Metadata, path: string, image: string = SHARE_IMAGE): Metadata {
   const title = typeof meta.title === "string" ? meta.title : site.name;
-  const description = meta.description ?? site.description;
+  // Search engines show about 160 characters and cut the rest mid-word; Bing
+  // reports a longer one as an error. Cut here instead, at the end of a word.
+  const description = fitDescription(meta.description ?? site.description);
   return {
     ...meta,
+    description,
     alternates: { canonical: path, ...meta.alternates },
     openGraph: {
       title,
