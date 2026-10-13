@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { ProductRail } from "@/components/product-rail";
 import { ProductCard } from "@/components/product-card";
@@ -9,6 +9,8 @@ import { FlashSaleCard } from "@/components/flash-sale-card";
 import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
+import { ShopHeading } from "@/components/shop-heading";
+import { ShopGrid } from "@/components/shop-grid";
 import { SoftwareBand } from "@/components/software-band";
 import { PromoBand } from "@/components/promo-band";
 import { InternshipAdvert } from "@/components/internship-advert";
@@ -244,8 +246,13 @@ export default async function HomePage() {
     img: card(productImage(pictured(byCat(c), LEAD[c]))),
     blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
   }));
+  // The rail at the top of the page: the shop's categories, each by its photograph.
+  const railTiles = categoryTiles.map((t) => ({ name: t.name, img: t.img }));
+  const listingStats = [`${products.length}+ Products`, `${new Set(products.map((p) => p.brand)).size}+ Brands`, "Warranty included", "Countrywide delivery"];
   // What has just arrived leads the grid, as words on the shop's orange.
-  categoryTiles.unshift({ name: "See what is new", href: "/shop?sort=new", img: "", blurb: "Just arrived at the shop" });
+  // It is pictured by the four newest brand-new products (the newest are last in the list).
+  const newest = inStock.filter((p) => p.condition === "Brand New" && (p.image || productImage(p).startsWith("/products/"))).slice(-6).reverse();
+  categoryTiles.unshift({ name: "See what is new", href: "/shop?sort=new", img: "", blurb: "Just arrived at the shop", imgs: newest.map((p) => card(productImage(p))) });
   // Software and courses stand in the grid with the range, which also brings
   // it to twelve — three full rows of four.
   categoryTiles.push(
@@ -268,9 +275,21 @@ export default async function HomePage() {
 
   return (
     <div className="container-wide space-y-6 py-3">
-      {/* The hero leads the page, edge to edge, on every screen. */}
-      <div className="bleed-wide -mt-3">
-        <HeroRotator />
+      {/* The page opens as the shop does: its name, the categories as a rail,
+          the filters, and the first rows of products. */}
+      <div>
+        <Suspense fallback={<div className="mb-3 h-40 bg-ink-600/10" />}>
+          <ShopHeading stats={listingStats} tiles={railTiles} fresh={newest.map((p) => card(productImage(p)))} home />
+        </Suspense>
+        <Suspense fallback={null}>
+          <ShopGrid items={products} home />
+        </Suspense>
+      </div>
+
+      {/* The rotating hero — the shop, the academy, the software, repairs,
+          internships and adverts — follows the first rows of products. */}
+      <div className="bleed-wide">
+        <HeroRotator heading={false} />
       </div>
 
       {/* One band under the hero: what the shop promises, and the way in. */}

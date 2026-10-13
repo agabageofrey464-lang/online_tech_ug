@@ -126,7 +126,8 @@ const SLIDES: Slide[] = [
 /** How long a slide stays. */
 const STAY = 6500;
 
-export function HeroRotator() {
+/** `heading` is false where the page already has its main heading above the hero. */
+export function HeroRotator({ heading = true }: { heading?: boolean }) {
   const [i, setI] = useState(0);
   // The slide just left. It stays whole underneath while the next fades in
   // over it; fading both at once showed two headlines through each other.
@@ -207,7 +208,7 @@ export function HeroRotator() {
             <div key={`w${i}`} className="strip-rise max-w-[34rem] text-center text-white lg:w-[30rem]">
               <p className="text-[11.5px] font-semibold uppercase tracking-[0.22em] sm:text-[13px]">{s.eyebrow}</p>
               <SlideHeading
-                first={idx === 0}
+                first={heading && idx === 0}
                 className={`mt-4 font-display leading-[1.1] ${
                   // An advertiser's headline can be any length; ours are written to fit.
                   s.ad && s.title.length > 48 ? "line-clamp-3 text-[24px] sm:text-[30px] xl:text-[34px]" : "line-clamp-3 text-[30px] sm:text-[40px] xl:text-[46px]"

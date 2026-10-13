@@ -65,11 +65,18 @@ export default async function ShopPage() {
     return [{ name: c as string, img: card(productImage(face)) }];
   });
 
+  // The four newest brand-new products picture the "New In" tile.
+  const fresh = products
+    .filter((p) => p.inStock !== false && p.condition === "Brand New" && (p.image || productImage(p).startsWith("/products/")))
+    .slice(-6)
+    .reverse()
+    .map((p) => card(productImage(p)));
+
   return (
     <div className="container-wide py-3">
       {/* useSearchParams needs a Suspense boundary to prerender. */}
       <Suspense fallback={<div className="mb-3 h-40 rounded-lg bg-ink-600/10" />}>
-        <ShopHeading stats={stats} tiles={tiles} />
+        <ShopHeading stats={stats} tiles={tiles} fresh={fresh} />
       </Suspense>
 
       <Suspense fallback={<div className="rounded bg-white p-12 text-center text-ink-700/60 shadow-sm">Loading…</div>}>

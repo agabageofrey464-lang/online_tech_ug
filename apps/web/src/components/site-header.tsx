@@ -168,7 +168,7 @@ const MORE_LINKS = [
   ...navGroups.flatMap((g) => g.items).filter((it) => !IN_MENUS.has(it.href)),
 ];
 const ANNOUNCEMENTS = [
-  { text: "Free Windows & Office setup on laptops over UGX 1M", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
+  { text: "Free setup on laptops over UGX 1M", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
   { text: "We build websites, apps & business systems", cta: "Get A Quote", href: "/development" },
   { text: "Online internships for university students", cta: "Apply Now", href: "/internship" },
   { text: "22 computer courses, in class or online", cta: "Browse Courses", href: "/learn" },
@@ -208,7 +208,7 @@ export function SiteHeader() {
           return (
             <p key={tick} className="strip-rise container-wide flex items-center justify-center gap-2 py-2.5 text-[12.5px] font-semibold">
               <span className="truncate">{a.text} ›</span>
-              <Link href={a.href} className="shrink-0 font-medium underline underline-offset-4">
+              <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4">
                 {a.cta}
               </Link>
             </p>
@@ -224,7 +224,7 @@ export function SiteHeader() {
             return (
               <p key={i} className={`min-w-0 items-center justify-center gap-2 px-4 py-1 font-semibold ${i === 2 ? "hidden xl:flex" : "flex"}`}>
                 <span className="truncate">{a.text} ›</span>
-                <Link href={a.href} className="shrink-0 font-medium underline underline-offset-4 hover:text-brand-300">
+                <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4 hover:text-brand-300">
                   {a.cta}
                 </Link>
               </p>

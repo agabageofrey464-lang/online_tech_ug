@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
+import { NewInTile } from "@/components/new-in-tile";
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@/lib/data";
 
@@ -18,7 +19,7 @@ import type { Product } from "@/lib/data";
  * was, and the products further down the page are more of the same thing.
  * Clear the box and the categories come back.
  */
-export type ShowcaseTile = { name: string; href: string; img: string; blurb: string };
+export type ShowcaseTile = { name: string; href: string; img: string; blurb: string; imgs?: string[] };
 
 type FeedItem = {
   slug: string;
@@ -229,7 +230,10 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
             {tiles.map((t, i) => (
               <Link key={t.href} href={t.href} className={`group block ${i >= 8 ? "hidden lg:block" : ""}`}>
                 {/* A tile with no photograph is the "New In" tile: words on the shop's orange. */}
-                {!t.img ? (
+                {t.imgs && t.imgs.length >= 4 ? (
+                  // "New In": four of the newest brand-new products, with its name across the foot.
+                  <NewInTile imgs={t.imgs} aspect="aspect-square" big="text-[30px] sm:text-[44px]" small="text-[14px] sm:text-[19px]" />
+                ) : !t.img ? (
                   <div className="flex aspect-square flex-col items-center justify-center bg-brand-500 px-3 text-center text-white transition group-hover:bg-brand-600">
                     <span className="font-display text-[38px] leading-none sm:text-[52px]">New In</span>
                     <span className="mt-2 font-display text-[17px] leading-tight sm:text-[21px]">{t.blurb}</span>

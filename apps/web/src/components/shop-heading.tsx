@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SafeImage } from "@/components/safe-image";
+import { NewInTile } from "@/components/new-in-tile";
 
 export type ShopTile = { name: string; img: string };
 
@@ -24,7 +25,7 @@ export type ShopTile = { name: string; img: string };
  * Filtered views were never meant to be indexed separately anyway — they
  * already declare /shop as their canonical.
  */
-export function ShopHeading({ stats, tiles }: { stats: string[]; tiles: ShopTile[] }) {
+export function ShopHeading({ stats, tiles, fresh = [], home = false }: { stats: string[]; tiles: ShopTile[]; fresh?: string[]; home?: boolean }) {
   const params = useSearchParams();
   const cat = params.get("cat") ?? "";
   const brand = params.get("brand") ?? "";
@@ -53,9 +54,14 @@ export function ShopHeading({ stats, tiles }: { stats: string[]; tiles: ShopTile
 
   return (
     <>
-      <div className="mb-4 mt-1">
-        <Breadcrumbs items={isFiltered ? [{ label: "Shop", href: "/shop" }, { label: title }] : [{ label: "Shop" }]} />
-      </div>
+      {/* The home page opens with this too, and needs no trail back to itself. */}
+      {home ? (
+        <div className="mt-3" />
+      ) : (
+        <div className="mb-4 mt-1">
+          <Breadcrumbs items={isFiltered ? [{ label: "Shop", href: "/shop" }, { label: title }] : [{ label: "Shop" }]} />
+        </div>
+      )}
 
       <h1 className="text-[30px] leading-[1.15] text-ink-900 sm:text-[40px]">{isFiltered ? title : "The Online Tech Collection"}</h1>
       <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-ink-800 sm:text-[17px]">
@@ -79,10 +85,14 @@ export function ShopHeading({ stats, tiles }: { stats: string[]; tiles: ShopTile
         </button>
         <div ref={rail} onScroll={measure} className="flex snap-x gap-4 overflow-x-auto no-scrollbar">
           <Link href="/shop?sort=new" className={tile}>
+            {fresh.length >= 4 ? (
+              <NewInTile imgs={fresh} aspect="aspect-[4/3]" big="text-[24px] sm:text-[28px]" small="text-[12.5px] sm:text-[14px]" />
+            ) : (
             <div className="flex aspect-[4/3] flex-col items-center justify-center bg-brand-500 px-3 text-center text-white transition group-hover:bg-brand-600">
               <span className="font-display text-[30px] leading-none sm:text-[36px]">New In</span>
               <span className="mt-2 font-display text-[16px] leading-tight sm:text-[18px]">Just arrived at the shop</span>
             </div>
+            )}
             <p className={`${label} ${isNew ? "text-brand-600" : "text-ink-900"}`}>
               See what is new <span aria-hidden>›</span>
             </p>

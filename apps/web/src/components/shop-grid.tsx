@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -96,7 +97,11 @@ function Option({ checked, onChange, square = false, children }: { checked: bool
   );
 }
 
-export function ShopGrid({ items }: { items?: Product[] }) {
+/**
+ * `home` is the same listing as the front of the home page: the first rows
+ * only, and a link on to the shop where the rest is.
+ */
+export function ShopGrid({ items, home = false }: { items?: Product[]; home?: boolean }) {
   const products = items?.length ? items : seedProducts;
   const params = useSearchParams();
 
@@ -125,7 +130,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   // requests and makes the page crawl on mobile data. Sixty at a time, though:
   // at thirty-six a shopper on a wide screen reached "Loading more products…"
   // after six rows and read the shop as a small one.
-  const PAGE = 24;
+  const PAGE = home ? 12 : 24;
   const [shown, setShown] = useState(PAGE);
   // Sentinel at the end of the grid: when it scrolls into view we reveal the
   // next batch, so the catalogue just keeps going.
@@ -461,13 +466,22 @@ export function ShopGrid({ items }: { items?: Product[] }) {
               <p className="text-[13px] text-ink-700/70">
                 Showing {pageItems.length} of {filtered.length} products
               </p>
-              <button
-                type="button"
-                onClick={() => setShown((n) => n + PAGE)}
-                className="border border-ink-900 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
-              >
-                Show more
-              </button>
+              {home ? (
+                <Link
+                  href="/shop"
+                  className="bg-brand-500 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white transition hover:bg-brand-600"
+                >
+                  See everything in the shop ›
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShown((n) => n + PAGE)}
+                  className="border border-ink-900 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+                >
+                  Show more
+                </button>
+              )}
             </div>
           )}
         </>
@@ -483,7 +497,7 @@ export function ShopGrid({ items }: { items?: Product[] }) {
 
       {/* What used to fill the filter column: a way to choose, what is
           trending, and the courses and repairs — now a row beneath the products. */}
-      <SidebarExtras />
+      {!home && <SidebarExtras />}
     </div>
   );
 }
