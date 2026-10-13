@@ -107,6 +107,45 @@ export function applicationMessage(a: {
 }): AutoMessage {
   const role = a.job_title?.trim() || "the position you applied for";
 
+  // An internship is a placement the student pays for, not a job they are
+  // interviewed for, so each stage says something different.
+  if (/intern|industrial training/i.test(role)) {
+    const field = role.split("—")[1]?.trim();
+    const place = field ? `an internship place in ${field}` : "an internship place";
+    switch (a.status) {
+      case "shortlisted":
+        return {
+          subject: "Your internship place is confirmed — Online Tech Uganda",
+          body:
+            `Good news — we have confirmed ${place} for you, running online from 1 November to 18 December 2026.\n\n` +
+            `To secure it, please pay the placement fee of UGX 150,000 by Airtel Money to 0756 839 270 (Online TechUG Services, Merchant ID 7148212) and send us the confirmation message.\n\n` +
+            `Once we have it we issue your acceptance letter, signed and stamped and addressed to your faculty, and send you how to join on the first day.`,
+        };
+      case "reviewed":
+        return {
+          subject: "We are checking your internship details",
+          body:
+            `Thank you for applying for ${place}. We have read your application and are confirming your details.\n\n` +
+            `Please reply with a clear photo or PDF of the introduction letter from your university, if you have not sent it yet, and tell us if any of your details have changed.`,
+        };
+      case "rejected":
+        return {
+          subject: "Your internship application — Online Tech Uganda",
+          body:
+            `Thank you for applying for ${place}.\n\n` +
+            `We are not able to offer you a place in this intake. The places in that field are taken, and we keep the intake small so that every student has a supervisor.\n\n` +
+            `We will let you know when the next intake opens. We wish you the very best with your studies.`,
+        };
+      default:
+        return {
+          subject: "We have received your internship application",
+          body:
+            `Thank you for applying for ${place} with Online Tech Uganda (1 November – 18 December 2026, online).\n\n` +
+            `We are checking that there is a place in your field and will confirm within two working days. You do not need to pay anything until we confirm.`,
+        };
+    }
+  }
+
   switch (a.status) {
     case "shortlisted":
       return {
