@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { IntakeBanner } from "@/components/intake-banner";
+import { MobileAdSlot } from "@/components/mobile-ad-slot";
 import { CompareBar } from "@/components/compare-bar";
 import { SiteHeader } from "@/components/site-header";
 import { FestivalStrip } from "@/components/festival-strip";
@@ -106,16 +107,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 >
                   Skip to the main content
                 </a>
-                {/* This intake's announcement, above everything, on every page. */}
-                <IntakeBanner />
+                {/* This intake's announcement, above everything — on wide screens.
+                    A phone has one strip above the header and one beneath it;
+                    the intake takes its turn in the one beneath. */}
+                <div className="hidden lg:block">
+                  <IntakeBanner />
+                </div>
                 <SiteHeader />
+                {/* Phones: the one advert under the header, changing every two hours. */}
+                <MobileAdSlot />
                 {/* Wide screens: the Store and Academy festival strip, under the header.
                     (Phones show it above the header, from inside SiteHeader.) It is
                     outside the sticky header, so it scrolls away with the page. */}
                 <div className="hidden lg:block">
                   <PromoStrip />
                 </div>
-                <FestivalStrip />
+                {/* The slim offer bar is for wide screens; a phone has its one slot above. */}
+                <div className="hidden lg:block">
+                  <FestivalStrip />
+                </div>
                 <main id="content" tabIndex={-1} className="pb-14 outline-none md:pb-0">{children}</main>
                 <SiteFooter />
                 {/* The products chosen to compare; nothing until one is chosen. */}

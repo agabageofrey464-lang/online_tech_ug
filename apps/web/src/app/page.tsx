@@ -268,8 +268,12 @@ export default async function HomePage() {
           has to scroll to find how to order. */}
       <OrderBanner />
 
-      {/* This intake's internship advert — it removes itself once the intake is under way. */}
-      <InternshipAdvert />
+      {/* This intake's internship advert — it removes itself once the intake is under way.
+          Here on wide screens; on a phone it follows the first rows of products,
+          so the shop is what a phone shows first. */}
+      <div className="hidden lg:block">
+        <InternshipAdvert />
+      </div>
 
       {/* The range, by category or by brand, straight under the hero. */}
       <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
@@ -308,6 +312,11 @@ export default async function HomePage() {
       {/* That we build software too — said here, among the products, where a
           visitor who came for a laptop will see it. */}
       <SoftwareBand />
+
+      {/* Phones: the internship poster, after the shop and the software. */}
+      <div className="lg:hidden">
+        <InternshipAdvert />
+      </div>
 
       {/* What approved vendors have listed, beside our own stock. */}
       {fromVendors.length > 0 && (
