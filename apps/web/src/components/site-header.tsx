@@ -168,12 +168,21 @@ const MORE_LINKS = [
   ...navGroups.flatMap((g) => g.items).filter((it) => !IN_MENUS.has(it.href)),
 ];
 const ANNOUNCEMENTS = [
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M.", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
-  { text: "Online industrial training for university and college students.", cta: "Apply Now", href: "/internship" },
-  { text: "We build websites, online shops, business systems and mobile apps.", cta: "Get A Quote", href: "/development" },
-  { text: "22 computer courses, in class or online, with a certificate.", cta: "Browse Courses", href: "/learn" },
-  { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000.", cta: "Book A Repair", href: "/services#repairs-support" },
+  { text: "Free Windows & Office setup on laptops over UGX 1M", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
+  { text: "We build websites, apps & business systems", cta: "Get A Quote", href: "/development" },
+  { text: "Online internships for university students", cta: "Apply Now", href: "/internship" },
+  { text: "22 computer courses, in class or online", cta: "Browse Courses", href: "/learn" },
+  { text: "Free diagnosis, repairs from UGX 30,000", cta: "Book A Repair", href: "/services#repairs-support" },
 ];
+// The row of plain capitals under the logo: the four businesses, each with its
+// menu, and between them the parts of the shop people ask for by name.
+const SHOP_ROW = [
+  { href: "/shop?cat=Phones", label: "Phones" },
+  { href: "/shop?cat=Laptops", label: "Laptops" },
+  { href: "/shop?cat=Desktops", label: "Desktops" },
+  { href: "/shop?cat=Accessories", label: "Accessories" },
+];
+const rowLink = "flex items-center gap-1 whitespace-nowrap border-b-2 py-4 font-sans text-[12.5px] font-medium uppercase tracking-[0.14em] transition xl:text-[14px]";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -182,6 +191,13 @@ export function SiteHeader() {
   // Known only in the browser — see the note in festival-strip.tsx.
   const [onInnerPage, setOnInnerPage] = useState(false);
   useEffect(() => setOnInnerPage(pathname !== "/"), [pathname]);
+  // The top line shows three messages at a time and moves on by one, so all
+  // five have their turn.
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick((n) => n + 1), 7000);
+    return () => clearInterval(t);
+  }, []);
 
   return (
     <header id="top" className="sticky top-0 z-50">
@@ -190,90 +206,143 @@ export function SiteHeader() {
         <PromoStrip />
       </div>
 
-      {/* Wide screens: one brown line — a message in the middle, three links
-          at the end. */}
+      {/* Wide screens: one dark line of three messages, a rule between each. */}
       <div className="hidden bg-ink-900 text-white lg:block">
-        <div className="container-wide grid grid-cols-[1fr_auto] items-center gap-8 py-2.5 text-[14px]">
-          {/* Every message, moving past in a line; it pauses under the pointer. */}
-          <div className="ticker-mask min-w-0">
-            <div className="ticker">
-              {[...ANNOUNCEMENTS, ...ANNOUNCEMENTS].map((a, n) => (
-                <span key={n} className="flex shrink-0 items-center whitespace-nowrap pr-14" aria-hidden={n >= ANNOUNCEMENTS.length}>
-                  <span className="mr-4 h-1.5 w-1.5 rounded-full bg-brand-400" />
-                  {a.text}
-                  <Link href={a.href} tabIndex={n >= ANNOUNCEMENTS.length ? -1 : 0} className="ml-3 font-semibold text-brand-300 underline underline-offset-4 hover:text-brand-200">
-                    {a.cta}
-                  </Link>
-                </span>
-              ))}
-            </div>
-          </div>
-          <nav className="flex items-center justify-end gap-8 font-medium">
-            {TOP_LINKS.map((l) => (
-              <Link key={l.href} href={l.href} className="whitespace-nowrap hover:underline hover:underline-offset-4">
-                {l.label}
-              </Link>
-            ))}
-          </nav>
+        <div className="container-wide grid grid-cols-2 divide-x divide-white/60 py-2.5 text-[13px] xl:grid-cols-3 xl:text-[14px]">
+          {[0, 1, 2].map((i) => {
+            const a = ANNOUNCEMENTS[(i + tick) % ANNOUNCEMENTS.length];
+            return (
+              <p key={i} className={`min-w-0 items-center justify-center gap-2 px-4 py-1 font-semibold ${i === 2 ? "hidden xl:flex" : "flex"}`}>
+                <span className="truncate">{a.text} ›</span>
+                <Link href={a.href} className="shrink-0 font-medium underline underline-offset-4 hover:text-brand-300">
+                  {a.cta}
+                </Link>
+              </p>
+            );
+          })}
         </div>
       </div>
 
       {/* Main bar — white. A phone has the logo, the search box and the menu
           button; a wide screen has the logo, the serif links and the icons. */}
       <div className="bg-white">
-        <div className="container-wide flex items-center gap-3 py-2.5 lg:gap-8 lg:py-4">
+        {/* Phone and tablet: logo, search, menu button. */}
+        <div className="container-wide flex items-center gap-3 py-2.5 lg:hidden">
           <Link href="/" className="flex shrink-0 items-center text-ink-900">
-            <span className="lg:hidden"><BrandLogoFull size="sm" onLight /></span>
-            <span className="hidden lg:inline-flex"><BrandLogoFull size="md" onLight /></span>
+            <BrandLogoFull size="sm" onLight />
           </Link>
-
-          {/* Phone and tablet: search beside the logo */}
-          <div className="min-w-0 flex-1 lg:hidden">
+          <div className="min-w-0 flex-1">
             <SearchBar className="border border-ink-600/20" />
           </div>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => setOpen((v) => !v)}
+            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
 
-          {/* Wide screens: the four businesses, each with its own menu */}
-          <nav className="relative hidden min-w-0 flex-1 items-center gap-x-8 lg:flex xl:gap-x-11">
-            {MENUS.map((m) => {
-              const on = m.match.some((x) => pathname.startsWith(x));
-              return (
-                <div key={m.href} className="group/menu">
-                  <Link
-                    href={m.href}
-                    className={`flex items-center gap-1 whitespace-nowrap border-b-2 py-1 font-display text-[20px] transition ${
-                      on
-                        ? "!border-brand-500 text-brand-600"
-                        : "!border-transparent text-ink-900 group-hover/menu:!border-brand-500 group-hover/menu:text-brand-600"
-                    }`}
-                  >
-                    {m.label} <ChevronDown size={15} strokeWidth={1.5} />
-                  </Link>
-                  <div className="invisible absolute left-0 top-full z-50 w-[34rem] pt-3 opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
-                    <div className="grid grid-cols-[13rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
-                      <div className="bg-brand-500 p-6 text-white">
-                        <p className="font-display text-[26px] leading-tight">{m.label}</p>
-                        <p className="mt-2 text-[13.5px] leading-relaxed text-white/90">{m.blurb}</p>
-                        <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
-                          Go to {m.label}
-                        </Link>
-                      </div>
-                      <div className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
-                        {m.links.map((l) => (
-                          <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
-                            {l.label}
+        {/* Wide screens: a few plain links, the logo in the middle, then the
+            search box and the icons. */}
+        <div className="container-wide hidden grid-cols-[1fr_auto_1fr] items-center gap-6 py-4 lg:grid">
+          <nav className="flex items-center gap-6 text-[15px] text-ink-800 xl:gap-9 xl:text-[16px]">
+            {[...TOP_LINKS, { href: "/sell", label: "Sell With Us" }].map((l, i) => (
+              <Link key={l.href} href={l.href} className={`whitespace-nowrap hover:text-brand-600 hover:underline hover:underline-offset-4 ${i === 3 ? "hidden xl:inline" : ""}`}>
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <Link href="/" className="flex shrink-0 items-center justify-center text-ink-900">
+            <BrandLogoFull size="md" onLight />
+          </Link>
+
+          <div className="flex items-center justify-end gap-1">
+            {/* The search box, open and ready to type in, where there is room
+                for it; a labelled button that drops it open where there is not. */}
+            <div className="mr-2 hidden w-[250px] shrink-0 xl:block min-[1500px]:w-[300px]">
+              <SearchBar className="border border-ink-600/25" />
+            </div>
+            <button
+              type="button"
+              aria-label="Search"
+              aria-expanded={searching}
+              onClick={() => setSearching((v) => !v)}
+              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600 xl:hidden"
+            >
+              <span className="flex items-center gap-2 rounded-full border border-ink-600/25 py-2 pl-3 pr-4 text-[13px] text-ink-700/70">
+                <Search size={18} strokeWidth={1.6} /> Search
+              </span>
+            </button>
+            <a href={telHref(site.phoneDisplay)} aria-label={`Call ${site.phoneDisplay}`} className="rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600">
+              <Phone size={22} strokeWidth={1.4} />
+            </a>
+            <HeaderAccount onLight />
+            <HeaderWishlist />
+            <HeaderCart />
+          </div>
+        </div>
+
+        {/* Wide screens: the row of capitals, spread from edge to edge. */}
+        <div className="hidden border-t border-ink-600/10 lg:block">
+          <nav className="container-wide relative flex items-center justify-between gap-x-4">
+            {(() => {
+              const menu = (m: Menu, accent = false) => {
+                const on = m.match.some((x) => pathname.startsWith(x));
+                return (
+                  <div key={m.href} className="group/menu">
+                    <Link
+                      href={m.href}
+                      className={`${rowLink} ${
+                        on
+                          ? "!border-brand-500 text-brand-600"
+                          : `!border-transparent ${accent ? "text-brand-600" : "text-ink-900"} group-hover/menu:!border-brand-500 group-hover/menu:text-brand-600`
+                      }`}
+                    >
+                      {m.label} <ChevronDown size={14} strokeWidth={1.5} />
+                    </Link>
+                    <div className="invisible absolute left-0 top-full z-50 w-[34rem] opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
+                      <div className="grid grid-cols-[13rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
+                        <div className="bg-brand-500 p-6 text-white">
+                          <p className="font-display text-[26px] leading-tight">{m.label}</p>
+                          <p className="mt-2 text-[13.5px] leading-relaxed text-white/90">{m.blurb}</p>
+                          <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
+                            Go to {m.label}
                           </Link>
-                        ))}
+                        </div>
+                        <div className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
+                          {m.links.map((l) => (
+                            <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
+                              {l.label}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                );
+              };
+              return (
+                <>
+                  {menu(MENUS[0])}
+                  {SHOP_ROW.map((c) => (
+                    <Link key={c.href} href={c.href} className={`${rowLink} !border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600`}>
+                      {c.label}
+                    </Link>
+                  ))}
+                  {menu(MENUS[1])}
+                  {menu(MENUS[2])}
+                  {menu(MENUS[3], true)}
+                </>
               );
-            })}
+            })()}
             <div className="group/more">
-              <button type="button" className="flex items-center gap-1 whitespace-nowrap py-1 font-display text-[20px] text-ink-900">
-                More <ChevronDown size={15} strokeWidth={1.5} />
+              <button type="button" className={`${rowLink} !border-transparent text-ink-900 group-hover/more:text-brand-600`}>
+                More <ChevronDown size={14} strokeWidth={1.5} />
               </button>
-              <div className="invisible absolute left-0 top-full z-50 w-[26rem] pt-3 opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
+              <div className="invisible absolute right-0 top-full z-50 w-[26rem] opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-1 bg-white p-6 shadow-2xl ring-1 ring-ink-600/10">
                   {MORE_LINKS.map((l) => (
                     <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
@@ -284,47 +353,11 @@ export function SiteHeader() {
               </div>
             </div>
           </nav>
-
-          {/* Wide screens: the search box, open and ready to type in. It was a
-              bare magnifying glass that had to be clicked first, and people
-              did not find it. A laptop has no room for it beside the menus, so
-              there the glass is a labelled button that drops the box open. */}
-          <div className="hidden w-[300px] shrink-0 min-[1480px]:block min-[1700px]:w-[400px]">
-            <SearchBar className="border border-ink-600/25" />
-          </div>
-
-          {/* Wide screens: the icons */}
-          <div className="ml-auto hidden items-center gap-1 lg:flex min-[1480px]:ml-0">
-            <button
-              type="button"
-              aria-label="Search"
-              aria-expanded={searching}
-              onClick={() => setSearching((v) => !v)}
-              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600 min-[1480px]:hidden"
-            >
-              <span className="flex items-center gap-2 rounded-full border border-ink-600/25 py-2 pl-3 pr-4 text-[13px] text-ink-700/70">
-                <Search size={18} strokeWidth={1.6} /> Search
-              </span>
-            </button>
-            <HeaderAccount onLight />
-            <HeaderWishlist />
-            <HeaderCart />
-          </div>
-
-          {/* Phone and tablet: menu button */}
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => setOpen((v) => !v)}
-            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50 lg:hidden"
-          >
-            <Menu size={24} />
-          </button>
         </div>
 
         {/* Wide screens: the search box drops open under the bar. */}
         {searching && (
-          <div className="hidden border-t border-ink-600/10 lg:block min-[1480px]:hidden">
+          <div className="hidden border-t border-ink-600/10 lg:block xl:hidden">
             <div className="container-wide py-3">
               <div className="mx-auto max-w-2xl">
                 <SearchBar className="border border-ink-600/20" />
