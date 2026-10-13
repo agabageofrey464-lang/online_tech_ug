@@ -4,7 +4,8 @@ import { site } from "@/lib/site";
 // answers on a direct link, but there is no reason to put it in front of a
 // search engine as something we sell; it comes back here the moment it is
 // relisted.
-import { listedProducts as products, courses } from "@/lib/data";
+import { listedProducts as seedProducts, courses } from "@/lib/data";
+import { getProducts } from "@/lib/catalog";
 import { portfolio } from "@/lib/portfolio";
 import { articles } from "@/lib/blog";
 
@@ -44,6 +45,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: p === "/" ? 1 : p === "/shop" || p === "/marketplace" ? 0.9 : 0.8,
   }));
 
+  // The live catalogue, so a product added from the dashboard is listed too —
+  // this used to read only the list built into the site, and everything added
+  // since was left out. That list is the fallback if the catalogue is empty.
+  const live = await getProducts().catch(() => []);
+  const products = live.length ? live : seedProducts;
   const productPages: MetadataRoute.Sitemap = products.map((p) => ({
     url: url(`/shop/${p.id}`), lastModified: now, changeFrequency: "weekly", priority: 0.7,
   }));
