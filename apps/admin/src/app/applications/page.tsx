@@ -88,7 +88,7 @@ export default function ApplicationsPage() {
                   {a.has_cv ? (
                     <a href={`/api/applications/${a.id}/cv`} target="_blank" rel="noreferrer" className="rounded-md bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600">Download CV</a>
                   ) : (
-                    <span className="text-xs text-ink-600/40">No CV attached</span>
+                    <span className="text-xs text-ink-600/40">No file attached</span>
                   )}
                   <select value={a.status} onChange={(e) => setStatus(a.id, e.target.value)} className="rounded-md border border-ink-600/15 px-2 py-1 text-xs">
                     {STATUSES.map((s) => <option key={s} value={s} className="capitalize">{s}</option>)}

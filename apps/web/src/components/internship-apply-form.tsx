@@ -33,7 +33,7 @@ const UNIVERSITIES = [
   "Ndejje University", "Bugema University", "Nkumba University", "Mbarara University (MUST)", "Gulu University",
 ];
 
-const input = "w-full border border-ink-600/25 bg-white px-3 py-3 text-[15px] text-ink-900 focus:border-ink-900 focus:outline-none";
+const input = "w-full min-w-0 max-w-full border border-ink-600/25 bg-white px-3 py-3 text-[15px] text-ink-900 focus:border-ink-900 focus:outline-none";
 const label = "mb-1.5 block text-[12px] font-bold uppercase tracking-[0.1em] text-ink-800";
 
 export function InternshipApplyForm() {
@@ -131,35 +131,35 @@ export function InternshipApplyForm() {
   }
 
   return (
-    <form id="apply-form" onSubmit={submit} className="scroll-mt-44 bg-white p-5 sm:p-8">
+    <form id="apply-form" onSubmit={submit} className="min-w-0 scroll-mt-44 overflow-hidden bg-white p-5 sm:p-8">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-600">Apply online</p>
       <h2 className="mt-2 text-[30px] leading-tight text-ink-900 sm:text-[36px]">Internship application</h2>
       <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-ink-700/85">
         {INTERNSHIP_WINDOW} · online · {ugx(INTERNSHIP_FEE)}. Fill in the boxes below — each one shows an example of what to write. You pay nothing now.
       </p>
 
-      <fieldset className="mt-7">
+      <fieldset className="mt-7 min-w-0">
         <legend className="mb-4 w-full border-b-2 border-ink-900 pb-2 font-display text-[20px] text-ink-900">1 · About you</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
+        <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="min-w-0 sm:col-span-2">
             <label className={label} htmlFor="ia-name">Full name, as on your student ID</label>
             <input id="ia-name" name="name" required minLength={3} autoComplete="name" placeholder="e.g. Chandia Judith Bakheit" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-phone">Phone / WhatsApp</label>
             <input id="ia-phone" name="phone" required inputMode="tel" autoComplete="tel" placeholder="07XX XXX XXX" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-email">Email</label>
             <input id="ia-email" name="email" type="email" required autoComplete="email" placeholder="e.g. yourname@gmail.com" className={input} />
           </div>
         </div>
       </fieldset>
 
-      <fieldset className="mt-8">
+      <fieldset className="mt-8 min-w-0">
         <legend className="mb-4 w-full border-b-2 border-ink-900 pb-2 font-display text-[20px] text-ink-900">2 · Your school</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
+        <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="min-w-0 sm:col-span-2">
             <label className={label} htmlFor="ia-uni">University or institution</label>
             <input id="ia-uni" name="university" required list="ia-unis" placeholder="Start typing — e.g. Kampala International University" className={input} />
             <datalist id="ia-unis">
@@ -168,11 +168,11 @@ export function InternshipApplyForm() {
               ))}
             </datalist>
           </div>
-          <div className="sm:col-span-2">
+          <div className="min-w-0 sm:col-span-2">
             <label className={label} htmlFor="ia-course">Course / programme</label>
             <input id="ia-course" name="course" required placeholder="e.g. Bachelor of Information Technology" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-year">Year of study</label>
             <select id="ia-year" name="year" required defaultValue="" className={input}>
               <option value="" disabled>Choose…</option>
@@ -181,25 +181,25 @@ export function InternshipApplyForm() {
               ))}
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-reg">Registration number</label>
             <input id="ia-reg" name="regno" required placeholder="As on your student ID — e.g. 2023-08-12345" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-dates">Dates your school requires</label>
             <input id="ia-dates" name="dates" defaultValue="1 November – 18 December 2026" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-addr">Who the letter is addressed to <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional)</span></label>
             <input id="ia-addr" name="addressee" placeholder="e.g. The Dean, School of Computing" className={input} />
           </div>
         </div>
       </fieldset>
 
-      <fieldset className="mt-8">
+      <fieldset className="mt-8 min-w-0">
         <legend className="mb-4 w-full border-b-2 border-ink-900 pb-2 font-display text-[20px] text-ink-900">3 · Your placement</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
+        <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-field">Field you want</label>
             <select id="ia-field" name="field" required defaultValue="" className={input}>
               <option value="" disabled>Choose a field…</option>
@@ -211,32 +211,38 @@ export function InternshipApplyForm() {
               </optgroup>
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-field2">Second choice <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional)</span></label>
             <select id="ia-field2" name="field2" defaultValue="" className={input}>
               <option value="">None</option>
               {[...IT_FIELDS, ...OTHER_FIELDS].map((x) => <option key={x}>{x}</option>)}
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-district">Where you will do it from <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional)</span></label>
             <input id="ia-district" name="district" placeholder="Town or district" className={input} />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className={label} htmlFor="ia-device">What you will use</label>
             <select id="ia-device" name="device" defaultValue="A laptop and internet" className={input}>
               {["A laptop and internet", "A desktop and internet", "A smartphone only", "I need advice on this"].map((d) => <option key={d}>{d}</option>)}
             </select>
           </div>
-          <div className="sm:col-span-2">
+          <div className="min-w-0 sm:col-span-2">
             <label className={label} htmlFor="ia-note">Anything we should know <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional)</span></label>
             <textarea id="ia-note" name="note" rows={2} maxLength={600} placeholder="You can leave this empty." className={input} />
           </div>
-          <label className="flex cursor-pointer items-center gap-3 border border-dashed border-ink-600/35 px-4 py-3.5 text-[14px] text-ink-700/80 hover:border-ink-900 sm:col-span-2">
-            <Upload size={18} className="shrink-0 text-brand-500" />
-            <span className="truncate">{fileName || "Attach your introduction letter or CV — optional (PDF, DOC, DOCX, up to 5MB)"}</span>
-            <input type="file" name="cv" accept=".pdf,.doc,.docx" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")} />
-          </label>
+          <div className="min-w-0 sm:col-span-2">
+            <p className={label}>
+              Letter from your university <span className="font-normal normal-case tracking-normal text-ink-700/55">(optional — you can send it later)</span>
+            </p>
+            <label className="flex cursor-pointer items-center gap-3 border border-dashed border-ink-600/35 px-4 py-3.5 text-[14px] text-ink-700/80 hover:border-ink-900">
+              <Upload size={18} className="shrink-0 text-brand-500" />
+              <span className="min-w-0 truncate">{fileName || "Tap to upload your introduction / recommendation letter"}</span>
+              <input type="file" name="cv" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,image/*" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")} />
+            </label>
+            <p className="mt-1.5 text-[12px] text-ink-700/60">The letter your faculty gives you for internship. A clear photo or a PDF, up to 5MB. We do not need a CV.</p>
+          </div>
         </div>
       </fieldset>
 

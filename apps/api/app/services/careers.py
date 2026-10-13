@@ -13,7 +13,9 @@ from app.models.application import Application
 from app.models.freelancer import Freelancer
 from app.models.freelancer_contact import FreelancerContact
 
-ALLOWED_CV_EXT = {".pdf", ".doc", ".docx"}
+# A CV for a job, or the university's introduction letter for an internship —
+# which a student usually has as a photograph taken on their phone.
+ALLOWED_CV_EXT = {".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"}
 MAX_CV_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
@@ -27,9 +29,9 @@ def save_cv(filename: str, content: bytes) -> str:
     """Save an uploaded CV, returning the stored filename. Raises ValueError on bad file."""
     ext = os.path.splitext(filename or "")[1].lower()
     if ext not in ALLOWED_CV_EXT:
-        raise ValueError("CV must be a PDF, DOC or DOCX file")
+        raise ValueError("The file must be a PDF, a Word document or a photo (JPG or PNG)")
     if len(content) > MAX_CV_BYTES:
-        raise ValueError("CV must be under 5 MB")
+        raise ValueError("The file must be under 5 MB")
     safe = re.sub(r"[^a-zA-Z0-9._-]", "_", os.path.basename(filename or "cv"))[:60]
     stored = f"{secrets.token_hex(6)}_{safe}"
     (_cv_dir() / stored).write_bytes(content)
