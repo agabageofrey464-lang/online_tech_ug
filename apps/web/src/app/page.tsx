@@ -10,6 +10,7 @@ import { Icon } from "@/components/icon";
 import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { SoftwareBand } from "@/components/software-band";
+import { PromoBand } from "@/components/promo-band";
 import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { OrderBanner } from "@/components/order-banner";
@@ -243,6 +244,13 @@ export default async function HomePage() {
     img: card(productImage(pictured(byCat(c), LEAD[c]))),
     blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
   }));
+  // The three things we do besides sell: they stand in the grid with the range,
+  // which also brings it to twelve — three full rows of four.
+  categoryTiles.push(
+    { name: "Software Development", href: "/development", img: "/portfolio/online-tech-uganda-1.webp", blurb: "Websites, online shops and business systems." },
+    { name: "Computer Courses", href: "/learn", img: "/courses/microsoft-office.webp", blurb: "22 courses, in class or online." },
+    { name: "Repairs & Support", href: "/services#repairs-support", img: "/hero/hero-5.webp", blurb: "Free diagnosis, onsite or remote." },
+  );
   const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
     .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))
     .filter((g) => g.brand && g.items.length >= 3);
@@ -264,19 +272,21 @@ export default async function HomePage() {
         <HeroRotator />
       </div>
 
-      {/* Call / WhatsApp — first thing on the page, on every device, so nobody
-          has to scroll to find how to order. */}
-      <OrderBanner />
+      {/* One band under the hero: what the shop promises, and the way in. */}
+      <PromoBand eyebrow="Online Tech Uganda" title="Tested, warranted and delivered the same day" cta="Shop now" href="/shop" />
 
-      {/* This intake's internship advert — it removes itself once the intake is under way.
-          Here on wide screens; on a phone it follows the first rows of products,
-          so the shop is what a phone shows first. */}
+      {/* The range, by category or by brand, straight under the band. */}
+      <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
+
+      {/* This intake's internship advert, as the wide banner after the range —
+          it removes itself once the intake is under way. Here on wide screens;
+          on a phone it follows the first rows of products. */}
       <div className="hidden lg:block">
         <InternshipAdvert />
       </div>
 
-      {/* The range, by category or by brand, straight under the hero. */}
-      <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
+      {/* Call / WhatsApp — after the range, on every device. */}
+      <OrderBanner />
 
       {/* The rotating offers, as a festival strip directly under the hero —
           where an offer is seen — rather than a full campaign board halfway

@@ -9,8 +9,8 @@ import { ProductCard } from "@/components/product-card";
 import type { Product } from "@/lib/data";
 
 /**
- * "Find what you need" — a centred heading, a search, two tabs, and a row of
- * tall picture tiles that slides sideways: by category, or by brand.
+ * "Find what you need" — a centred heading, a search, two tabs, and a grid of
+ * square picture tiles: by category, or by brand.
  *
  * The search answers in the row itself. As a name is typed, the tiles give
  * way to the products that match — the same cards the rest of the shop uses,
@@ -221,26 +221,36 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
           )}
         </div>
       ) : (
-        <div className="mt-6 flex snap-x gap-3 overflow-x-auto pb-3 no-scrollbar">
-          {tiles.map((t) => (
-            <Link key={t.href} href={t.href} className="group w-[62%] shrink-0 snap-start sm:w-[36%] lg:w-[calc((100%-2.25rem)/4)]">
-              <div className="relative aspect-[4/5] overflow-hidden bg-[var(--tile)]">
-                <SafeImage
-                  src={t.img}
-                  alt={t.name}
-                  fill
-                  sizes="(max-width: 640px) 62vw, (max-width: 1024px) 36vw, 24vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.04]"
-                />
-              </div>
-              <h3 className="mt-4 text-[21px] leading-tight text-ink-900">{t.name}</h3>
-              <p className="mt-1.5 line-clamp-2 text-[14px] leading-relaxed text-ink-700/80">{t.blurb}</p>
-              <span className="mt-3 inline-block text-[14px] text-ink-800 underline underline-offset-4 group-hover:text-brand-600">
-                Shop Now
-              </span>
-            </Link>
-          ))}
-        </div>
+        <>
+          {/* A grid, not a row to drag: every part of the range in view at once,
+              four across on a wide screen and two on a phone. Each is a square
+              photograph with its name beneath. A phone shows the first eight. */}
+          <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-9 lg:grid-cols-4">
+            {tiles.map((t, i) => (
+              <Link key={t.href} href={t.href} className={`group block ${i >= 8 ? "hidden lg:block" : ""}`}>
+                <div className="relative aspect-square overflow-hidden bg-[var(--tile)]">
+                  <SafeImage
+                    src={t.img}
+                    alt={t.name}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                  />
+                </div>
+                <h3 className="mt-3.5 text-center font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] text-ink-900 group-hover:text-brand-600 sm:text-[12.5px]">
+                  {t.name} <span aria-hidden>›</span>
+                </h3>
+              </Link>
+            ))}
+          </div>
+          {tiles.length > 8 && (
+            <p className="mt-6 text-center lg:hidden">
+              <Link href="/shop" className="text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 underline underline-offset-4">
+                See everything in the shop ›
+              </Link>
+            </p>
+          )}
+        </>
       )}
     </section>
   );
