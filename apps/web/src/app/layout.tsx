@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
+import { IntakeBanner } from "@/components/intake-banner";
 import { SiteHeader } from "@/components/site-header";
 import { FestivalStrip } from "@/components/festival-strip";
 import { PromoStrip } from "@/components/promo-strip";
@@ -90,6 +91,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <WishlistProvider>
               <RecentlyViewedProvider>
                 <ReferralCapture />
+                {/* This intake's announcement, above everything, on every page. */}
+                <IntakeBanner />
                 <SiteHeader />
                 {/* Wide screens: the Store and Academy festival strip, under the header.
                     (Phones show it above the header, from inside SiteHeader.) It is
