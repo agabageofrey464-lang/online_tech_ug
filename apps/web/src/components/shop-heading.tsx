@@ -79,9 +79,9 @@ export function ShopHeading({ stats, tiles }: { stats: string[]; tiles: ShopTile
         </button>
         <div ref={rail} onScroll={measure} className="flex snap-x gap-4 overflow-x-auto no-scrollbar">
           <Link href="/shop?sort=new" className={tile}>
-            <div className="flex aspect-[4/3] flex-col items-center justify-center border border-ink-700/15 bg-white px-3 text-center">
-              <span className="font-display text-[30px] leading-none text-ink-900 sm:text-[36px]">New In</span>
-              <span className="mt-2 font-display text-[16px] leading-tight text-ink-800 sm:text-[18px]">Just arrived at the shop</span>
+            <div className="flex aspect-[4/3] flex-col items-center justify-center bg-brand-500 px-3 text-center text-white transition group-hover:bg-brand-600">
+              <span className="font-display text-[30px] leading-none sm:text-[36px]">New In</span>
+              <span className="mt-2 font-display text-[16px] leading-tight sm:text-[18px]">Just arrived at the shop</span>
             </div>
             <p className={`${label} ${isNew ? "text-brand-600" : "text-ink-900"}`}>
               See what is new <span aria-hidden>›</span>

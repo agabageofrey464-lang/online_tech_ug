@@ -244,12 +244,13 @@ export default async function HomePage() {
     img: card(productImage(pictured(byCat(c), LEAD[c]))),
     blurb: BLURBS[c] ?? `${byCat(c).length} products in stock.`,
   }));
-  // The three things we do besides sell: they stand in the grid with the range,
-  // which also brings it to twelve — three full rows of four.
+  // What has just arrived leads the grid, as words on the shop's orange.
+  categoryTiles.unshift({ name: "See what is new", href: "/shop?sort=new", img: "", blurb: "Just arrived at the shop" });
+  // Software and courses stand in the grid with the range, which also brings
+  // it to twelve — three full rows of four.
   categoryTiles.push(
     { name: "Software Development", href: "/development", img: "/portfolio/online-tech-uganda-1.webp", blurb: "Websites, online shops and business systems." },
     { name: "Computer Courses", href: "/learn", img: "/courses/microsoft-office.webp", blurb: "22 courses, in class or online." },
-    { name: "Repairs & Support", href: "/services#repairs-support", img: "/hero/hero-5.webp", blurb: "Free diagnosis, onsite or remote." },
   );
   const eligibleBrands = Array.from(new Set(products.map((p) => p.brand)))
     .map((brand) => ({ brand, items: products.filter((p) => p.brand === brand) }))

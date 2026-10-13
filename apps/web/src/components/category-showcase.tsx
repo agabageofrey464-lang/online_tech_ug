@@ -228,6 +228,13 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
           <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-9 lg:grid-cols-4">
             {tiles.map((t, i) => (
               <Link key={t.href} href={t.href} className={`group block ${i >= 8 ? "hidden lg:block" : ""}`}>
+                {/* A tile with no photograph is the "New In" tile: words on the shop's orange. */}
+                {!t.img ? (
+                  <div className="flex aspect-square flex-col items-center justify-center bg-brand-500 px-3 text-center text-white transition group-hover:bg-brand-600">
+                    <span className="font-display text-[38px] leading-none sm:text-[52px]">New In</span>
+                    <span className="mt-2 font-display text-[17px] leading-tight sm:text-[21px]">{t.blurb}</span>
+                  </div>
+                ) : (
                 <div className="relative aspect-square overflow-hidden bg-[var(--tile)]">
                   <SafeImage
                     src={t.img}
@@ -237,6 +244,7 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
                     className="object-cover transition duration-500 group-hover:scale-[1.04]"
                   />
                 </div>
+                )}
                 <h3 className="mt-3.5 text-center font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] text-ink-900 group-hover:text-brand-600 sm:text-[12.5px]">
                   {t.name} <span aria-hidden>›</span>
                 </h3>

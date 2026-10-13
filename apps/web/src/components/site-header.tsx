@@ -25,7 +25,6 @@ import { useWishlist } from "@/lib/wishlist";
 import { SearchBar } from "@/components/search-bar";
 import { HeaderAccount } from "@/components/header-account";
 import { BrandLogoFull } from "@/components/brand-logo-full";
-import { PromoStrip } from "@/components/promo-strip";
 
 const telHref = (p: string) => `tel:${p.replace(/\s/g, "")}`;
 
@@ -201,9 +200,19 @@ export function SiteHeader() {
 
   return (
     <header id="top" className="sticky top-0 z-50">
-      {/* Phones and tablets: the rotating offer strip. */}
-      <div className="lg:hidden">
-        <PromoStrip />
+      {/* Phones and tablets: the same dark line, one message at a time. */}
+      <div className="bg-ink-900 text-white lg:hidden">
+        {(() => {
+          const a = ANNOUNCEMENTS[tick % ANNOUNCEMENTS.length];
+          return (
+            <p key={tick} className="strip-rise container-wide flex items-center justify-center gap-2 py-2.5 text-[12.5px] font-semibold">
+              <span className="truncate">{a.text} ›</span>
+              <Link href={a.href} className="shrink-0 font-medium underline underline-offset-4">
+                {a.cta}
+              </Link>
+            </p>
+          );
+        })()}
       </div>
 
       {/* Wide screens: one dark line of three messages, a rule between each. */}
@@ -227,21 +236,30 @@ export function SiteHeader() {
           button; a wide screen has the logo, the serif links and the icons. */}
       <div className="bg-white">
         {/* Phone and tablet: logo, search, menu button. */}
-        <div className="container-wide flex items-center gap-3 py-2.5 lg:hidden">
-          <Link href="/" className="flex shrink-0 items-center text-ink-900">
-            <BrandLogoFull size="sm" onLight />
-          </Link>
-          <div className="min-w-0 flex-1">
-            <SearchBar className="border border-ink-600/20" />
+        <div className="container-wide lg:hidden">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center py-2">
+            <button
+              type="button"
+              aria-label="Menu"
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="-ml-2 justify-self-start rounded-md p-2 text-ink-800 hover:bg-ink-50"
+            >
+              <Menu size={25} strokeWidth={1.5} />
+            </button>
+            <Link href="/" className="flex shrink-0 items-center text-ink-900">
+              <BrandLogoFull size="sm" onLight />
+            </Link>
+            <div className="-mr-2 flex items-center justify-end">
+              <Link href="/account" aria-label="Your account" className="rounded-md px-2 py-2 text-ink-800 hover:text-brand-600">
+                <User size={23} strokeWidth={1.4} />
+              </Link>
+              <HeaderCart />
+            </div>
           </div>
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => setOpen((v) => !v)}
-            className="shrink-0 rounded-md p-2 text-ink-800 hover:bg-ink-50"
-          >
-            <Menu size={24} />
-          </button>
+          <div className="pb-2.5">
+            <SearchBar className="border border-ink-600/25" />
+          </div>
         </div>
 
         {/* Wide screens: a few plain links, the logo in the middle, then the
@@ -409,16 +427,16 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Phones and tablets: the categories as a row of brown chips that
-          slides sideways. */}
+      {/* Phones and tablets: the categories as a row of quiet white pills
+          that slides sideways. */}
       <nav className="border-y border-ink-600/10 bg-white lg:hidden">
         <div className="container-wide flex items-center gap-x-2 overflow-x-auto py-2 no-scrollbar">
           {CATEGORIES.map((c) => (
             <Link
               key={c.href}
               href={c.href}
-              className={`shrink-0 whitespace-nowrap rounded-[3px] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition ${
-                pathname === c.href ? "bg-brand-700" : "bg-brand-500 hover:bg-brand-600"
+              className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
+                pathname === c.href ? "border-ink-900 bg-ink-900 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
               }`}
             >
               {c.label}
