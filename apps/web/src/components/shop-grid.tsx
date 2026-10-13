@@ -449,9 +449,9 @@ export function ShopGrid({ items }: { items?: Product[] }) {
       {/* Results */}
       {filtered.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 xl:grid-cols-4 min-[1700px]:grid-cols-5">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-5 sm:gap-x-4 sm:gap-y-8 md:grid-cols-3 lg:gap-x-8 lg:gap-y-12 min-[1900px]:grid-cols-4">
             {pageItems.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} large />
             ))}
           </div>
           {shown < filtered.length && (

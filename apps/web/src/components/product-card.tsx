@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { productImage, type Product } from "@/lib/data";
-import { card } from "@/lib/thumb";
+import { card, tile } from "@/lib/thumb";
 import { productImages } from "@/lib/product-images";
 import { site, soldBy, ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
@@ -121,7 +121,10 @@ function specRows(product: Product): [string, string][] {
   return rows.length ? rows : bullets.length ? [["Details", bullets.join(" · ")]] : [];
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, large = false }: { product: Product; large?: boolean }) {
+  // In the shop's own grid a tile on a computer is large, so it is given the
+  // larger copy of the photograph there; a phone keeps the light one.
+  const big = large ? tile(productImage(product)) : null;
   const inStock = product.inStock !== false;
   // A crossed-out price is shown only when the product really was that price.
   // Every card used to carry one, worked out from the product's id so that
@@ -141,13 +144,16 @@ export function ProductCard({ product }: { product: Product }) {
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           {/* Multiply lets a photo shot on white sit on the panel instead of
               in a white box of its own. */}
-          <SafeImage
-            src={card(productImage(product))}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={`card-zoom object-contain p-4 mix-blend-multiply @[15rem]:p-7 ${inStock ? "" : "opacity-50"}`}
-          />
+          <picture>
+            {big && <source media="(min-width: 1024px)" srcSet={big} />}
+            <SafeImage
+              src={card(productImage(product))}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className={`card-zoom object-contain p-4 mix-blend-multiply @[15rem]:p-7 ${inStock ? "" : "opacity-50"}`}
+            />
+          </picture>
           {/* Another view of the same product, on hover. The wrapper carries the
               fade: the image's own opacity belongs to its load-in. */}
           {second && (

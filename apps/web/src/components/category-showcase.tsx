@@ -88,8 +88,10 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
   const all = `/shop?q=${encodeURIComponent(q.trim())}`;
 
   return (
-    <section aria-label="Find a product, or shop by category or brand" className="py-6 sm:py-8">
-      <div className="mx-auto max-w-2xl px-2 text-center">
+    <section aria-label="Find a product, or shop by category or brand" className="flex flex-col py-6 sm:py-8">
+      {/* The range comes first, straight under the band; the search follows it.
+          Once something is typed, the search and what it found take the top. */}
+      <div className={`mx-auto w-full max-w-2xl px-2 text-center ${searching ? "" : "order-2 mt-12"}`}>
         <h2 className="text-[28px] leading-tight text-ink-900 sm:text-[36px]">Find What You Need</h2>
         <p className="mt-2 text-[15px] leading-relaxed text-ink-700/80">
           Laptops, phones and everything that goes with them — tested, warranted and delivered countrywide.
@@ -152,28 +154,6 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
           ))}
         </div>
 
-        {!searching && (
-          <div className="mt-6 flex justify-center gap-3">
-            {(
-              [
-                ["category", "Shop By Category"],
-                ["brand", "Shop By Brand"],
-              ] as const
-            ).map(([value, label]) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setTab(value)}
-                aria-pressed={tab === value}
-                className={`px-5 py-2.5 text-[14px] transition ${
-                  tab === value ? "bg-brand-500 font-semibold text-white" : "border border-ink-700/25 bg-white text-ink-800 hover:border-ink-900"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {searching ? (
@@ -221,7 +201,27 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
           )}
         </div>
       ) : (
-        <>
+        <div className="order-1">
+          <div className="flex justify-center gap-3">
+            {(
+              [
+                ["category", "Shop By Category"],
+                ["brand", "Shop By Brand"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setTab(value)}
+                aria-pressed={tab === value}
+                className={`px-5 py-2.5 text-[14px] transition ${
+                  tab === value ? "bg-brand-500 font-semibold text-white" : "border border-ink-700/25 bg-white text-ink-800 hover:border-ink-900"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           {/* A grid, not a row to drag: every part of the range in view at once,
               four across on a wide screen and two on a phone. Each is a square
               photograph with its name beneath. A phone shows the first eight. */}
@@ -250,7 +250,7 @@ export function CategoryShowcase({ categories, brands }: { categories: ShowcaseT
               </Link>
             </p>
           )}
-        </>
+        </div>
       )}
     </section>
   );

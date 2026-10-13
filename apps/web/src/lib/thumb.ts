@@ -45,3 +45,13 @@ export function thumb(src: string): string {
 export function card(src: string): string {
   return derived(src, "cards");
 }
+
+/**
+ * The large-tile copy — 1000px wide — for the shop's own grid on a computer,
+ * where a tile is twice the width of a card anywhere else and the card copy
+ * was being stretched. Null when there is no derived copy to offer.
+ */
+export function tile(src: string): string | null {
+  const t = derived(src, "tiles");
+  return t.startsWith("/tiles/") ? t : null;
+}

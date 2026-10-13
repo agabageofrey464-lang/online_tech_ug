@@ -45,6 +45,10 @@ const PUB = fileURLToPath(new URL("../public", import.meta.url));
 const SIZES = [
   { dir: "thumbs", px: 96, quality: 74 },
   { dir: "cards", width: 640, quality: 78, sharpen: true },
+  // The shop's own grid on a computer: three large tiles across, each about
+  // 440px wide, so up to 900 on a 2x screen. Only that grid asks for these,
+  // and only on a wide screen, so the weight is not paid anywhere else.
+  { dir: "tiles", width: 1000, quality: 86, sharpen: true },
 ];
 // "products/stickers" is the laptop skins' own folder inside products.
 const DIRS = ["products", "products/stickers", "courses"];
