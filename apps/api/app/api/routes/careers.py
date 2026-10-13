@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
+from app.core import ratelimit
 from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.careers import FreelancerIn, FreelancerPatch, StatusIn
@@ -19,6 +20,7 @@ def require_admin(x_admin_key: str = Header(default="")) -> None:
 # --- Public: apply to a job (with optional CV upload) ---
 @router.post("/apply", status_code=201)
 async def apply(
+    request: Request,
     name: str = Form(...),
     email: str = Form(""),
     phone: str = Form(""),
@@ -28,6 +30,11 @@ async def apply(
     cv: UploadFile | None = File(None),
     db: Session = Depends(get_db),
 ) -> dict:
+    # Each application alerts the owner by email and WhatsApp, so an open form
+    # is a way to bury them. Five in ten minutes from one address is plenty.
+    if not ratelimit.allow(f"apply:{ratelimit.peer_ip(request)}", limit=5, window_seconds=600):
+        raise HTTPException(status_code=429, detail="Too many applications from this connection. Please try again in a few minutes.")
+
     stored = ""
     if cv is not None and cv.filename:
         content = await cv.read()

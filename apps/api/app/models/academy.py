@@ -60,13 +60,18 @@ class LiveClass(Base):
     starts_at: Mapped[datetime] = mapped_column(DateTime, index=True)
     duration_mins: Mapped[int] = mapped_column(Integer, default=60)
 
-    # scheduled | live | ended | cancelled
+    # requested | scheduled | live | ended | cancelled
+    # (requested: a student has asked for a consultation and no lecturer has confirmed it yet)
     status: Mapped[str] = mapped_column(String(20), default="scheduled", index=True)
     started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     recording_url: Mapped[str] = mapped_column(String(500), default="")
     notes_url: Mapped[str] = mapped_column(String(500), default="")
+
+    # Set on a private consultation: the one student it is for. Nobody else
+    # on the course sees it, may enter it, or is shown its recording.
+    private_user_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
 
 
 class ClassAttendance(Base):

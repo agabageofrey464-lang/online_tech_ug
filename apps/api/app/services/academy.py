@@ -195,6 +195,8 @@ def schedule_class(
     duration_mins: int = 60,
     lecturer_id: int | None = None,
     topic: str = "",
+    private_user_id: int | None = None,
+    status: str = "scheduled",
 ) -> dict:
     if not title.strip():
         raise AcademyError("Give the class a title")
@@ -209,7 +211,8 @@ def schedule_class(
         room=_room_name(course_slug),
         starts_at=starts_at,
         duration_mins=duration_mins,
-        status="scheduled",
+        status=status,
+        private_user_id=private_user_id,
     )
     db.add(row)
     db.commit()
@@ -270,6 +273,7 @@ def timetable(
     lecturer_id: int | None = None,
     upcoming_only: bool = True,
     limit: int = 60,
+    viewer_id: int | None = None,
 ) -> list[dict]:
     """Classes, soonest first. A class that has just ended still shows, so a
     student who was a minute late can still find the room."""
@@ -279,6 +283,10 @@ def timetable(
         if not course_slugs:
             return []
         stmt = stmt.where(LiveClass.course_slug.in_(course_slugs))
+    if viewer_id is not None:
+        # A student sees the classes for everyone and their own consultations,
+        # never another student's.
+        stmt = stmt.where((LiveClass.private_user_id.is_(None)) | (LiveClass.private_user_id == viewer_id))
     if lecturer_id is not None:
         stmt = stmt.where(LiveClass.lecturer_id == lecturer_id)
     if upcoming_only:
@@ -305,6 +313,8 @@ def class_dict(db: Session, row: LiveClass) -> dict:
         "lecturer_name": lecturer.name if lecturer else "",
         "recording_url": row.recording_url,
         "notes_url": row.notes_url,
+        "private_user_id": row.private_user_id,
+        "private_with": (db.get(User, row.private_user_id).name if row.private_user_id and db.get(User, row.private_user_id) else ""),
         "joinable": joinable(row)[0],
         "join_note": joinable(row)[1],
         "attendees": db.execute(
@@ -319,6 +329,8 @@ def joinable(row: LiveClass) -> tuple[bool, str]:
     """Whether the door is open, and what to tell someone if it isn't."""
     if row.status == "cancelled":
         return False, "This class was cancelled."
+    if row.status == "requested":
+        return False, "Waiting for a lecturer to confirm the time."
     if row.status == "live":
         return True, "In progress — join now."
 
@@ -354,6 +366,8 @@ def join_class(db: Session, class_id: int, user_id: int) -> dict:
 
     if not is_lecturer(user) and not is_enrolled(db, user_id, row.course_slug):
         raise AcademyError("You are not enrolled on this course.")
+    if row.private_user_id and not is_lecturer(user) and row.private_user_id != user_id:
+        raise AcademyError("This is a private consultation for another student.")
 
     ok, note = joinable(row)
     if not ok and not is_lecturer(user):
@@ -660,14 +674,97 @@ def add_material(db: Session, **fields) -> dict:
     return material_dict(row)
 
 
-def list_materials(db: Session, course_slugs: list[str], kind: str | None = None) -> list[dict]:
+def list_materials(
+    db: Session, course_slugs: list[str], kind: str | None = None, viewer_id: int | None = None
+) -> list[dict]:
+    """Notes and recordings on these courses.
+
+    Given a `viewer_id`, whatever was recorded or shared in another student's
+    private consultation is left out: a recording is seen by those who were
+    entitled to be in the room.
+    """
     if not course_slugs:
         return []
     stmt = select(ClassMaterial).where(ClassMaterial.course_slug.in_(course_slugs))
     if kind:
         stmt = stmt.where(ClassMaterial.kind == kind)
     rows = db.execute(stmt.order_by(ClassMaterial.added_at.desc())).scalars().all()
+    if viewer_id is not None:
+        private = {
+            cid: owner
+            for cid, owner in db.execute(
+                select(LiveClass.id, LiveClass.private_user_id).where(LiveClass.private_user_id.isnot(None))
+            ).all()
+        }
+        rows = [r for r in rows if r.live_class_id not in private or private[r.live_class_id] == viewer_id]
     return [material_dict(r) for r in rows]
+
+
+def class_files(db: Session, class_id: int, user_id: int) -> list[dict]:
+    """What has been shared for one class: its course's notes and its own files."""
+    row = db.get(LiveClass, class_id)
+    user = db.get(User, user_id)
+    if not row or not user:
+        raise AcademyError("No such class")
+    lecturer = is_lecturer(user)
+    if not lecturer and not is_enrolled(db, user_id, row.course_slug):
+        raise AcademyError("You are not enrolled on this course.")
+    if row.private_user_id and not lecturer and row.private_user_id != user_id:
+        raise AcademyError("This is a private consultation for another student.")
+    files = list_materials(db, [row.course_slug], viewer_id=None if lecturer else user_id)
+    # This class's own files first.
+    return sorted(files, key=lambda m: m.get("live_class_id") != class_id)
+
+
+# ── Private consultations ───────────────────────────────────────────────────
+def request_consultation(db: Session, user_id: int, course_slug: str, topic: str, preferred_at: datetime) -> dict:
+    """A student asks for time alone with a lecturer. It waits to be confirmed."""
+    if not is_enrolled(db, user_id, course_slug):
+        raise AcademyError("You are not enrolled on this course.")
+    if not (topic or "").strip():
+        raise AcademyError("Say what you would like help with")
+    waiting = db.execute(
+        select(func.count()).select_from(LiveClass).where(
+            LiveClass.private_user_id == user_id, LiveClass.status == "requested"
+        )
+    ).scalar_one()
+    if waiting >= 3:
+        raise AcademyError("You already have three requests waiting. Your lecturer will answer those first.")
+    user = db.get(User, user_id)
+    return schedule_class(
+        db,
+        course_slug=course_slug,
+        title=f"Consultation — {user.name if user else 'student'}",
+        starts_at=preferred_at,
+        duration_mins=30,
+        topic=topic.strip()[:1000],
+        private_user_id=user_id,
+        status="requested",
+    )
+
+
+def consultation_requests(db: Session) -> list[dict]:
+    rows = db.execute(
+        select(LiveClass).where(LiveClass.status == "requested").order_by(LiveClass.starts_at.asc())
+    ).scalars().all()
+    return [class_dict(db, r) for r in rows]
+
+
+def confirm_consultation(
+    db: Session, class_id: int, lecturer_id: int, starts_at: datetime | None = None, duration_mins: int | None = None
+) -> dict:
+    row = db.get(LiveClass, class_id)
+    if not row or not row.private_user_id:
+        raise AcademyError("No such consultation")
+    row.lecturer_id = lecturer_id
+    row.status = "scheduled"
+    if starts_at is not None:
+        row.starts_at = starts_at
+    if duration_mins:
+        row.duration_mins = max(10, min(180, int(duration_mins)))
+    db.commit()
+    db.refresh(row)
+    return class_dict(db, row)
 
 
 def material_dict(r: ClassMaterial) -> dict:

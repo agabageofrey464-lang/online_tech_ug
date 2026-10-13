@@ -65,6 +65,20 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // HTTPS only, on this address and every address under it.
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+          // Device features no page here uses are switched off outright, so a
+          // script that should not be on the page cannot reach for them.
+          // (Camera, microphone and location are left alone: the classroom
+          // and the delivery map use them.)
+          { key: "Permissions-Policy", value: "usb=(), serial=(), bluetooth=(), midi=(), magnetometer=(), gyroscope=(), accelerometer=(), payment=(), browsing-topics=()" },
+          // No other site may put ours in a frame, change where its links
+          // resolve, or load a plug-in into it.
+          {
+            key: "Content-Security-Policy",
+            value: `frame-ancestors 'self'; base-uri 'self'; object-src 'none'${process.env.NODE_ENV === "production" ? "; upgrade-insecure-requests" : ""}`,
+          },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
     ];

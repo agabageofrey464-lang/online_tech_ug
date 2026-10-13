@@ -20,7 +20,7 @@ import { productImages } from "@/lib/product-images";
 import { productCopy, keyFeatures, boxContents, warrantyFor } from "@/lib/product-copy";
 import { ShareProduct } from "@/components/share-product";
 import { ProductReviews } from "@/components/product-reviews";
-import { shareImage } from "@/lib/seo";
+import { shareImage, fitDescription } from "@/lib/seo";
 import { DeliveryCheck } from "@/components/delivery-check";
 import { StockAlert } from "@/components/stock-alert";
 import { StickyOrderBar } from "@/components/sticky-order-bar";
@@ -55,7 +55,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return { title: "Product not found" };
-  const desc = `${product.name} — ${product.specs.join(", ")}. ${ugx(product.price)} at Online Tech Uganda. ${product.condition}, warranty & countrywide delivery.`;
+  // The price and the name first, so they survive where a search result cuts the line.
+  const desc = fitDescription(`${product.name} — ${ugx(product.price)} at Online Tech Uganda, Kampala. ${product.condition}, with warranty and same-day delivery. ${product.specs.join(", ")}.`);
   return {
     title: product.name,
     description: desc,

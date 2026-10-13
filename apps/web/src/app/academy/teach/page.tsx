@@ -31,6 +31,9 @@ function defaultStart(): string {
 
 export default function TeachPage() {
   const [classes, setClasses] = useState<LiveClass[]>([]);
+  const [requests, setRequests] = useState<LiveClass[]>([]);
+  const [privateFor, setPrivateFor] = useState<number | "">("");
+  const [onCourse, setOnCourse] = useState<{ id: number; name: string }[]>([]);
   const [who, setWho] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,6 +57,7 @@ export default function TeachPage() {
     try {
       const d = await academy.teaching();
       setClasses(d.classes);
+      setRequests(d.requests ?? []);
       setWho(d.user.name);
       setError("");
     } catch (e) {
@@ -66,6 +70,25 @@ export default function TeachPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // The students on the chosen course, for a private session with one of them.
+  useEffect(() => {
+    setPrivateFor("");
+    if (!course) return;
+    academy
+      .students(course)
+      .then((list) => setOnCourse(list.map((x) => ({ id: x.id, name: x.name }))))
+      .catch(() => setOnCourse([]));
+  }, [course]);
+
+  async function confirm(id: number) {
+    try {
+      await academy.confirmConsultation(id);
+      load();
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "Couldn't confirm that.");
+    }
+  }
 
   async function schedule(e: React.FormEvent) {
     e.preventDefault();
@@ -80,6 +103,7 @@ export default function TeachPage() {
         // The picker gives local time; the server keeps everything in UTC.
         starts_at: new Date(startsAt).toISOString(),
         duration_mins: mins,
+        private_user_id: privateFor === "" ? null : privateFor,
       });
       setTitle("");
       setTopic("");
@@ -165,6 +189,28 @@ export default function TeachPage() {
       <div className={`grid gap-4 lg:grid-cols-[1fr_340px] ${tab === "classes" ? "" : "hidden"}`}>
         {/* Classes */}
         <section className="space-y-2.5">
+          {/* Students waiting for a private session. Confirm one and it is yours. */}
+          {requests.length > 0 && (
+            <div className="rounded-xl border border-brand-200 bg-brand-50 p-4">
+              <p className="font-extrabold text-ink-900">Consultation requests ({requests.length})</p>
+              <ul className="mt-2 space-y-2">
+                {requests.map((r) => (
+                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-lg bg-white p-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-ink-900">{r.private_with || "A student"}</p>
+                      <p className="text-[12.5px] text-ink-700/70">
+                        {courseTitle(r.course_slug)} · asks for {whenLabel(r.starts_at)}
+                      </p>
+                      {r.topic && <p className="mt-0.5 text-[12.5px] text-ink-800">&ldquo;{r.topic}&rdquo;</p>}
+                    </div>
+                    <button onClick={() => confirm(r.id)} className="press shrink-0 rounded-lg bg-green-600 px-4 py-2.5 text-xs font-black text-white">
+                      Confirm this time
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {classes.length === 0 && (
             <p className="rounded-xl border border-dashed border-ink-600/20 bg-white p-8 text-center text-sm text-ink-700/55">
               No classes yet. Schedule your first one.
@@ -185,6 +231,9 @@ export default function TeachPage() {
                   {c.status === "live" ? "● Live" : c.status}
                 </span>
                 <span className="text-[12px] text-ink-700/60">{courseTitle(c.course_slug)}</span>
+                {c.private_user_id && (
+                  <span className="rounded-full bg-ink-800 px-2.5 py-0.5 text-[11px] font-bold text-white">Private · {c.private_with}</span>
+                )}
               </div>
               <p className="mt-1.5 font-extrabold text-ink-900">{c.title}</p>
               <p className="text-[12.5px] text-ink-700/60">
@@ -257,6 +306,16 @@ export default function TeachPage() {
               {courses.map((c) => (
                 <option key={c.slug} value={c.slug}>
                   {c.title}
+                </option>
+              ))}
+            </select>
+
+            <label className="mt-3 block text-sm font-semibold text-ink-700">Who it is for</label>
+            <select value={privateFor} onChange={(e) => setPrivateFor(e.target.value === "" ? "" : Number(e.target.value))} className={input}>
+              <option value="">The whole class</option>
+              {onCourse.map((st) => (
+                <option key={st.id} value={st.id}>
+                  Private — {st.name}
                 </option>
               ))}
             </select>

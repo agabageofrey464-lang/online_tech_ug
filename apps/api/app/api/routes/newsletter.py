@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.core import ratelimit
 from app.core.config import settings
 from app.db.session import get_db
 from app.services import newsletter
@@ -27,8 +28,11 @@ class BroadcastIn(BaseModel):
 
 
 @router.post("/subscribe", status_code=201)
-def subscribe(payload: SubscribeIn, db: Session = Depends(get_db)) -> dict:
+def subscribe(payload: SubscribeIn, request: Request, db: Session = Depends(get_db)) -> dict:
     """Public: join the list for new stock, offers and discounts."""
+    # So the form cannot be used to sign up a list of other people's addresses.
+    if not ratelimit.allow(f"subscribe:{ratelimit.peer_ip(request)}", limit=8, window_seconds=600):
+        raise HTTPException(status_code=429, detail="Too many sign-ups from this connection. Please try again later.")
     try:
         row = newsletter.subscribe(db, payload.email, payload.name, payload.source)
     except ValueError as exc:

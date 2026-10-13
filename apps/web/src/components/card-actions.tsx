@@ -20,9 +20,8 @@ import { site, ugx } from "@/lib/site";
  *     the price, the specification and the buttons to buy.
  *   • Compare — set up to three products side by side.
  *   • Share — send the product to someone on WhatsApp.
- * With a mouse they appear as the card is pointed at. On a phone, where there
- * is no pointing, the one for a quick look is always there and the other two
- * are inside it.
+ * They are always on show, on a phone as on a computer, each in its own
+ * colour: orange to look, charcoal to compare, green to share.
  */
 
 export type CardProduct = {
@@ -41,7 +40,9 @@ export type CardProduct = {
   rows: [string, string][];
 };
 
-const round = "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-800 shadow-sm backdrop-blur transition hover:bg-white hover:text-brand-600";
+// Always on show, each in a colour of its own so it is known at a glance:
+// orange to look, charcoal to compare, green to share.
+const round = "flex h-8 w-8 items-center justify-center rounded-full text-white shadow-md ring-2 ring-white/90 transition hover:scale-110";
 
 const asCompare = (p: CardProduct): CompareItem => ({
   id: p.id, name: p.name, price: p.price, image: p.image, category: p.category, brand: p.brand, condition: p.condition, rows: p.rows,
@@ -112,7 +113,7 @@ export function CardActions({ product }: { product: CardProduct }) {
           }}
           aria-label={`Quick look at ${product.name}`}
           title="Quick look"
-          className={`${round} opacity-100 transition group-hover:opacity-100 [@media(hover:hover)]:opacity-0`}
+          className={`${round} bg-brand-500 hover:bg-brand-600`}
         >
           <Eye size={15} />
         </button>
@@ -122,7 +123,7 @@ export function CardActions({ product }: { product: CardProduct }) {
           aria-pressed={comparing}
           aria-label={comparing ? `Remove ${product.name} from compare` : `Compare ${product.name}`}
           title={comparing ? "Remove from compare" : "Compare"}
-          className={`${round} hidden opacity-0 group-hover:opacity-100 [@media(hover:hover)]:flex ${comparing ? "!bg-ink-800 !text-white !opacity-100" : ""}`}
+          className={`${round} ${comparing ? "bg-[#fcdc04] !text-ink-900" : "bg-ink-800 hover:bg-ink-900"}`}
         >
           <Scale size={15} />
         </button>
@@ -131,7 +132,7 @@ export function CardActions({ product }: { product: CardProduct }) {
           onClick={share}
           aria-label={`Share ${product.name}`}
           title="Share"
-          className={`${round} hidden opacity-0 group-hover:opacity-100 [@media(hover:hover)]:flex`}
+          className={`${round} bg-[#25D366] hover:brightness-95`}
         >
           <Share2 size={15} />
         </button>

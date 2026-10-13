@@ -1,5 +1,7 @@
 "use client";
 
+import { ClassCalendar } from "@/components/class-calendar";
+import { ConsultationRequest } from "@/components/consultation-request";
 import { ExamRoom } from "@/components/exam-room";
 import { Certificate } from "@/components/certificate";
 import { useCallback, useEffect, useState } from "react";
@@ -353,6 +355,17 @@ export default function AcademyPage() {
         )}
 
         {tab === "timetable" && (
+          <div className="mb-3 space-y-3">
+            <ClassCalendar classes={data.timetable} courseTitle={courseTitle} />
+            <ConsultationRequest
+              courses={data.courses.filter((c) => c.status === "active" || c.status === "completed").map((c) => ({ slug: c.course_slug, title: courseTitle(c.course_slug) }))}
+              onDone={load}
+            />
+            <p className="pt-1 text-[11px] font-bold uppercase tracking-wide text-ink-700/50">Coming up</p>
+          </div>
+        )}
+
+        {tab === "timetable" && (
           <ul className="space-y-2.5">
             {data.timetable.length === 0 && <Empty text="Nothing scheduled yet." />}
             {data.timetable.map((c) => (
@@ -369,6 +382,11 @@ export default function AcademyPage() {
                     {whenLabel(c.starts_at)} · {c.duration_mins} min
                     {c.lecturer_name ? ` · ${c.lecturer_name}` : ""}
                   </p>
+                  {c.private_user_id && (
+                    <p className="mt-0.5 inline-block rounded bg-ink-800 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                      Private — only you and the lecturer
+                    </p>
+                  )}
                 </div>
                 {c.joinable ? (
                   <Link

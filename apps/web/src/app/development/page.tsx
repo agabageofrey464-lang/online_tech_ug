@@ -24,7 +24,7 @@ import { site, ugx, whatsappLink } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Software & Website Development in Uganda",
   description:
-    "We build custom software, mobile apps, websites, e-commerce shops, management systems and student final-year projects in Kampala. Mobile Money integration, hosting and support included. Get a quote from Online Tech Uganda.",
+    "Custom software, mobile apps, websites, online shops and management systems built in Kampala, with Mobile Money, hosting and support. Get a quote.",
   alternates: { canonical: "/development" },
   openGraph: {
     title: "Software & Website Development in Uganda",

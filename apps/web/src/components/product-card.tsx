@@ -174,7 +174,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         <WishlistButton
           slug={product.id}
-          className="absolute right-1.5 top-1.5 z-20 opacity-0 transition group-hover:opacity-100"
+          className="absolute right-1.5 top-1.5 z-20 ring-2 ring-white/90"
         />
 
         {/* A quick look, compare and share — small round buttons under the heart. */}

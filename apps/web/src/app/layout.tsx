@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { IntakeBanner } from "@/components/intake-banner";
@@ -27,6 +27,13 @@ import { site } from "@/lib/site";
 // everything read at small sizes — prices, specifications, forms.
 const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif-face", display: "swap" });
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans-face", display: "swap" });
+
+// The browser's own bars take the shop's orange, and a visitor may always zoom.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#f15a29",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -92,6 +99,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <WishlistProvider>
               <RecentlyViewedProvider>
                 <ReferralCapture />
+                {/* First thing a keyboard reaches: a way past the header, shown only when focused. */}
+                <a
+                  href="#content"
+                  className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[200] focus:bg-ink-900 focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-white"
+                >
+                  Skip to the main content
+                </a>
                 {/* This intake's announcement, above everything, on every page. */}
                 <IntakeBanner />
                 <SiteHeader />
@@ -102,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <PromoStrip />
                 </div>
                 <FestivalStrip />
-                <main className="pb-14 md:pb-0">{children}</main>
+                <main id="content" tabIndex={-1} className="pb-14 outline-none md:pb-0">{children}</main>
                 <SiteFooter />
                 {/* The products chosen to compare; nothing until one is chosen. */}
                 <CompareBar />

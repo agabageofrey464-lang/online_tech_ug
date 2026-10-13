@@ -60,6 +60,19 @@ class ClassIn(BaseModel):
     duration_mins: int = 60
     topic: str = ""
     lecturer_id: int | None = None
+    # A private session for one student on the course.
+    private_user_id: int | None = None
+
+
+class ConsultationIn(BaseModel):
+    course_slug: str = Field(min_length=1, max_length=160)
+    topic: str = Field(min_length=3, max_length=1000)
+    preferred_at: datetime
+
+
+class ConfirmIn(BaseModel):
+    starts_at: datetime | None = None
+    duration_mins: int | None = None
 
 
 class ClassPatch(BaseModel):
@@ -173,10 +186,10 @@ def my_academy(user: User = Depends(get_current_user), db: Session = Depends(get
             }
             for c in courses
         ],
-        "timetable": academy.timetable(db, course_slugs=slugs),
+        "timetable": academy.timetable(db, course_slugs=slugs, viewer_id=user.id),
         "assignments": academy.list_assignments(db, slugs),
         "submissions": academy.my_submissions(db, user.id),
-        "materials": academy.list_materials(db, slugs),
+        "materials": academy.list_materials(db, slugs, viewer_id=user.id),
         "announcements": academy.announcements(db, slugs),
         # Examinations on the student's courses — the questions are sent only
         # when they start the clock — and the ones they have sat.
@@ -233,7 +246,19 @@ def classes(
     """A student sees their own timetable; a lecturer sees everything."""
     if academy.is_lecturer(user):
         return academy.timetable(db, course_slugs=[course] if course else None)
-    return academy.timetable(db, course_slugs=_slugs(db, user))
+    return academy.timetable(db, course_slugs=_slugs(db, user), viewer_id=user.id)
+
+
+@router.get("/classes/{class_id}/files")
+def class_files(class_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> list[dict]:
+    """The notes, slides and recordings shared for a class, to those allowed in it."""
+    return _ok(academy.class_files, db, class_id, user.id)
+
+
+@router.post("/consultations", status_code=201)
+def ask_consultation(payload: ConsultationIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
+    """A student asks for a private session with a lecturer."""
+    return _ok(academy.request_consultation, db, user.id, payload.course_slug, payload.topic, payload.preferred_at)
 
 
 @router.post("/classes/{class_id}/join")
@@ -264,7 +289,17 @@ def teaching(user: User = Depends(require_lecturer), db: Session = Depends(get_d
         "user": {"id": user.id, "name": user.name, "role": user.role},
         "classes": academy.timetable(db, lecturer_id=user.id, upcoming_only=False),
         "all_classes": academy.timetable(db, upcoming_only=False) if academy.is_admin(user) else [],
+        # Students waiting for a private session; any lecturer may take one.
+        "requests": academy.consultation_requests(db),
     }
+
+
+@router.post("/consultations/{class_id}/confirm")
+def confirm_consultation(
+    class_id: int, payload: ConfirmIn, user: User = Depends(require_lecturer), db: Session = Depends(get_db)
+) -> dict:
+    """Take a student's request and fix its time."""
+    return _ok(academy.confirm_consultation, db, class_id, user.id, payload.starts_at, payload.duration_mins)
 
 
 @router.post("/classes", status_code=201)
@@ -278,6 +313,7 @@ def create_class(payload: ClassIn, user: User = Depends(require_lecturer), db: S
         duration_mins=payload.duration_mins,
         topic=payload.topic,
         lecturer_id=payload.lecturer_id or user.id,
+        private_user_id=payload.private_user_id,
     )
 
 

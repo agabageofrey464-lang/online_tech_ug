@@ -653,3 +653,44 @@ def test_an_examination_is_sat_once_against_the_clock_and_marked(db_factory):
             academy.start_exam(db, exam["id"], other.id)
 
         assert academy.exam_results(db, exam["id"])[0]["name"] == "Judith"
+
+
+def test_a_private_consultation_is_seen_and_entered_only_by_its_student(db_factory):
+    from datetime import datetime, timedelta
+
+    import pytest
+
+    from app.models.user import User
+    from app.services import academy
+
+    with db_factory() as db:
+        lec = User(name="Lecturer", email="lec@example.com", password_hash="x", role="lecturer")
+        a = User(name="Aisha", email="aisha@example.com", password_hash="x", role="student")
+        b = User(name="Brian", email="brian@example.com", password_hash="x", role="student")
+        db.add_all([lec, a, b])
+        db.flush()
+        for u in (a, b):
+            academy.set_enrolment_status(db, academy.enrol(db, u.id, "web-development")["id"], "active")
+
+        soon = datetime.utcnow() + timedelta(minutes=5)
+        asked = academy.request_consultation(db, a.id, "web-development", "Help with my project", soon)
+        assert asked["status"] == "requested" and not asked["joinable"]
+
+        # Only Aisha sees it on her timetable; lecturers see it among the requests.
+        assert [c["id"] for c in academy.timetable(db, course_slugs=["web-development"], viewer_id=a.id)] == [asked["id"]]
+        assert academy.timetable(db, course_slugs=["web-development"], viewer_id=b.id) == []
+        assert [c["id"] for c in academy.consultation_requests(db)] == [asked["id"]]
+
+        confirmed = academy.confirm_consultation(db, asked["id"], lec.id)
+        assert confirmed["status"] == "scheduled" and confirmed["lecturer_name"] == "Lecturer"
+
+        academy.join_class(db, asked["id"], a.id)
+        with pytest.raises(academy.AcademyError):
+            academy.join_class(db, asked["id"], b.id)
+
+        # What is recorded in it is Aisha's, not the whole course's.
+        academy.add_material(db, course_slug="web-development", title="Recording", kind="recording", url="x", live_class_id=asked["id"])
+        assert len(academy.list_materials(db, ["web-development"], viewer_id=a.id)) == 1
+        assert academy.list_materials(db, ["web-development"], viewer_id=b.id) == []
+        with pytest.raises(academy.AcademyError):
+            academy.class_files(db, asked["id"], b.id)

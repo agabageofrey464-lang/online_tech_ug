@@ -16,7 +16,7 @@ export type LiveClass = {
   room: string;
   starts_at: string;
   duration_mins: number;
-  status: "scheduled" | "live" | "ended" | "cancelled";
+  status: "requested" | "scheduled" | "live" | "ended" | "cancelled";
   lecturer_id: number | null;
   lecturer_name: string;
   recording_url: string;
@@ -24,6 +24,9 @@ export type LiveClass = {
   joinable: boolean;
   join_note: string;
   attendees: number;
+  /** Set on a private consultation: the one student it is for. */
+  private_user_id?: number | null;
+  private_with?: string;
 };
 
 export type JoinInfo = LiveClass & {
@@ -73,6 +76,7 @@ export type Material = {
   title: string;
   kind: "note" | "recording" | "slide" | "resource";
   url: string;
+  live_class_id?: number | null;
   added_at: string | null;
 };
 
@@ -167,7 +171,12 @@ async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const academy = {
   me: () => call<MyAcademy>("/me"),
-  teaching: () => call<{ user: { id: number; name: string; role: Role }; classes: LiveClass[] }>("/teaching"),
+  teaching: () => call<{ user: { id: number; name: string; role: Role }; classes: LiveClass[]; requests?: LiveClass[] }>("/teaching"),
+  classFiles: (classId: number) => call<Material[]>(`/classes/${classId}/files`),
+  askConsultation: (body: { course_slug: string; topic: string; preferred_at: string }) =>
+    call<LiveClass>("/consultations", { method: "POST", body: JSON.stringify(body) }),
+  confirmConsultation: (classId: number, body: { starts_at?: string; duration_mins?: number } = {}) =>
+    call<LiveClass>(`/consultations/${classId}/confirm`, { method: "POST", body: JSON.stringify(body) }),
   classes: (course?: string) => call<LiveClass[]>(`/classes${course ? `?course=${encodeURIComponent(course)}` : ""}`),
 
   join: (classId: number) => call<JoinInfo>(`/classes/${classId}/join`, { method: "POST" }),
@@ -209,6 +218,7 @@ export const academy = {
     starts_at: string;
     duration_mins?: number;
     topic?: string;
+    private_user_id?: number | null;
   }) => call<LiveClass>("/classes", { method: "POST", body: JSON.stringify(body) }),
 
   startClass: (id: number) => call<LiveClass>(`/classes/${id}/start`, { method: "POST" }),

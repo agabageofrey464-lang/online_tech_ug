@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Loader2, ShieldAlert, Users } from "lucide-react";
+import { ArrowLeft, FolderOpen, Loader2, ShieldAlert, Users } from "lucide-react";
+import { ClassFiles } from "@/components/class-files";
 import { academy, type JoinInfo } from "@/lib/academy";
 
 /**
@@ -51,6 +52,7 @@ export default function ClassroomPage() {
   const [info, setInfo] = useState<JoinInfo | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("Checking your place in this class…");
+  const [files, setFiles] = useState(false);
 
   const holder = useRef<HTMLDivElement | null>(null);
   const callRef = useRef<{ dispose: () => void } | null>(null);
@@ -89,6 +91,9 @@ export default function ClassroomPage() {
             startWithAudioMuted: !joined.is_host,
             startWithVideoMuted: !joined.is_host,
             disableDeepLinking: true,
+            // Groups for discussion. Only the lecturer may make or close them.
+            breakoutRooms: { hideAddRoomButton: !joined.is_host, hideAutoAssignButton: !joined.is_host, hideJoinRoomButton: false },
+            whiteboard: { enabled: true },
           },
           interfaceConfigOverwrite: {
             // Our own branding, and no invitations to leave for the Jitsi app.
@@ -100,11 +105,16 @@ export default function ClassroomPage() {
               "microphone",
               "camera",
               "desktop",
+              // A board everyone in the room can draw on together.
+              "whiteboard",
               "chat",
               "raisehand",
+              // The people in the room — and, for the lecturer, the breakout
+              // rooms: split the class into groups and bring them back.
               "participants-pane",
               "tileview",
               "filmstrip",
+              "fullscreen",
               "settings",
               "hangup",
               ...(joined.is_host ? ["recording", "mute-everyone", "security"] : []),
@@ -186,9 +196,18 @@ export default function ClassroomPage() {
           </p>
           <p className="truncate text-[11px] text-white/60">
             {info?.lecturer_name ? `${info.lecturer_name} · ` : ""}
-            {info?.is_host ? "You are the lecturer" : "Live class"}
+            {info?.private_user_id ? "Private consultation" : info?.is_host ? "You are the lecturer" : "Live class"}
           </p>
         </div>
+        {info && (
+          <button
+            onClick={() => setFiles((v) => !v)}
+            aria-pressed={files}
+            className="press flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1.5 text-[11px] font-bold hover:bg-brand-600"
+          >
+            <FolderOpen size={13} /> Files
+          </button>
+        )}
         {info && (
           <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold">
             <Users size={12} /> {info.attendees}
@@ -207,8 +226,11 @@ export default function ClassroomPage() {
         </div>
       )}
 
-      {/* The call fills whatever is left. */}
-      <div ref={holder} className={`min-h-0 flex-1 ${status ? "hidden" : ""}`} />
+      {/* The call fills whatever is left; the files slide in over its edge. */}
+      <div className={`relative flex min-h-0 flex-1 ${status ? "hidden" : ""}`}>
+        <div ref={holder} className="min-h-0 flex-1" />
+        {files && info && <ClassFiles classId={classId} courseSlug={info.course_slug} isHost={info.is_host} onClose={() => setFiles(false)} />}
+      </div>
     </div>
   );
 }
