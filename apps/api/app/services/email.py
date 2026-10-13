@@ -501,3 +501,54 @@ async def send_contact_notification(
         ),
         reply_to=email or None,
     )
+
+
+# The internship timetable, as students are told it. The dashboard's ready
+# replies say the same (apps/admin/src/lib/intern-templates.ts) — change both.
+INTERNSHIP_TIMETABLE = [
+    "Orientation: Monday 2 November 2026 at 10:00 am, on Google Meet.",
+    "A daily session with your supervisor, Monday to Friday. You choose one: morning 9:00 – 10:00 am, or evening 7:00 – 8:00 pm.",
+    "Your tasks are done in your own time and submitted by 6:00 pm.",
+    "A weekly review of your work on Fridays.",
+]
+
+
+async def send_internship_received(*, to: str, name: str, reference: str, field: str = "") -> bool:
+    """Answer a student the moment they apply for internship.
+
+    They used to hear nothing until somebody read the application, and wrote
+    in to ask whether it had arrived and when training starts. This tells them
+    it arrived, what happens next, what it costs and when the sessions are.
+    """
+    first = (name or "there").split(" ")[0]
+    pairs = [("Reference", reference), ("Intake", "2 November – 18 December 2026, online")]
+    if field:
+        pairs.append(("Field", field))
+    pairs.append(("Placement fee", "UGX 150,000, paid once your place is confirmed"))
+
+    body = (
+        email_theme.text(f"Hello {first},")
+        + email_theme.text(
+            "Thank you for applying for industrial training with Online Tech Uganda. "
+            "We have your application and are checking that there is a place in your field. "
+            "You do not need to pay anything yet."
+        )
+        + email_theme.details(pairs)
+        + email_theme.panel("What happens next", "")
+        + email_theme.steps([
+            "We confirm your place, usually within two working days, by phone or WhatsApp.",
+            "You pay the placement fee by Airtel Money to 0756 839 270 (Online TechUG Services, Merchant ID 7148212).",
+            "We issue your acceptance letter, signed and stamped, addressed to your faculty.",
+        ])
+        + email_theme.panel("Your timetable", "<br />".join(f"&bull; {line}" for line in INTERNSHIP_TIMETABLE))
+        + email_theme.text(
+            "If you have not sent them yet, reply to this email with your university, course, "
+            "registration number and a photo of your introduction letter from the university."
+        )
+        + email_theme.button("About the internship", f"{settings.site_url.rstrip('/')}/internship")
+    )
+    return await send_email(
+        to=to,
+        subject=f"We have received your internship application — {reference}",
+        html=email_theme.shell(heading="Internship application received", body_html=body),
+    )

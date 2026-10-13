@@ -6,6 +6,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.careers import FreelancerIn, FreelancerPatch, StatusIn
 from app.services import careers, notify
+from app.services.email import send_internship_received
 
 router = APIRouter()
 
@@ -41,6 +42,14 @@ async def apply(
             "job_id": job_id, "job_title": job_title, "cv_filename": stored,
         },
     )
+
+    # A student applying for internship is answered at once, by email, with
+    # what happens next and the timetable. It must never fail the application.
+    if email and ("intern" in job_title.lower() or "industrial training" in job_title.lower()):
+        try:
+            await send_internship_received(to=email, name=name, reference=f"OTU-A{app.id:05d}", field=job_title.split("—")[-1].strip() if "—" in job_title else "")
+        except Exception:  # noqa: BLE001
+            pass
 
     # Until now an application reached nobody — it sat in the database waiting
     # to be noticed. Tell the owner on both channels.

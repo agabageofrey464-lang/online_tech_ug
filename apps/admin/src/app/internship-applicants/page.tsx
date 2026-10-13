@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { applicationMessage } from "@/lib/auto-message";
-import { ReplyButton, APPLICANT_TEMPLATES } from "@/components/reply-button";
+import { ReplyButton } from "@/components/reply-button";
+import { INTERN_TEMPLATES } from "@/lib/intern-templates";
 import { loadImg, todayISO } from "@/lib/doc-kit";
 import { buildInternList } from "@/lib/intern-list-pdf";
 
@@ -165,7 +166,7 @@ export default function InternshipApplicantsPage() {
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-600/80">
           <li>Find the student below and press <b>View details</b> to check what they filled in. Open their university letter if there is one.</li>
           <li>Change the box on the right from <b>New</b> to <b>Place confirmed</b>.</li>
-          <li>Press <b>Edit</b> under their name. The approval message is already written, with the fee and the Airtel number. Send it by WhatsApp or email.</li>
+          <li>Press <b>Reply</b> under their name and pick a ready message: Place approved, Training times, Send your details, How to pay, Payment received, Before the first day. Send it by WhatsApp or email.</li>
           <li>When they have paid, write their letter under <b>Internship letters</b> in the menu.</li>
         </ol>
       </div>
@@ -249,8 +250,8 @@ export default function InternshipApplicantsPage() {
                   name={a.name}
                   email={a.email}
                   phone={a.phone}
-                  templates={APPLICANT_TEMPLATES}
-                  label="Edit"
+                  templates={INTERN_TEMPLATES}
+                  label="Reply"
                   context={`Internship — ${LABEL[a.status] ?? a.status}`}
                   auto={applicationMessage({ name: a.name, status: a.status, job_title: a.job_title })}
                 />

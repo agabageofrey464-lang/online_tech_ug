@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { apiGetAdmin, ugx, orderDate, type AdminOrder } from "@/lib/api";
 import { OrderRowActions } from "@/components/order-row-actions";
+import { OrderSelection, OrderTick } from "@/components/order-selection";
 
 
 const statusTone: Record<string, string> = {
@@ -93,6 +94,9 @@ export default async function OrdersPage({
           No orders yet. Orders placed on the storefront will appear here.
         </div>
       ) : (
+        <OrderSelection
+          orders={orders.map((o) => ({ reference: o.reference, status: o.status, payment_status: o.payment_status, customer_name: o.customer_name, total: o.total }))}
+        >
         <div className="overflow-x-auto rounded-2xl border border-ink-600/10 bg-white shadow-sm">
           <table className="w-full text-sm">
             <thead className="border-b border-ink-600/10 bg-ink-50 text-left text-xs uppercase tracking-wider text-ink-600/60">
@@ -114,6 +118,7 @@ export default async function OrdersPage({
                 <tr key={o.id} className="border-b border-ink-600/5 last:border-0 hover:bg-ink-50/50">
                   <td className="p-4">
                     <div className="flex items-center gap-2">
+                      <OrderTick reference={o.reference} />
                       <Link
                         href={`/orders/${o.reference}`}
                         className="font-mono font-semibold text-brand-600 underline-offset-2 hover:underline"
@@ -180,6 +185,7 @@ export default async function OrdersPage({
             </tbody>
           </table>
         </div>
+        </OrderSelection>
       )}
     </div>
   );
