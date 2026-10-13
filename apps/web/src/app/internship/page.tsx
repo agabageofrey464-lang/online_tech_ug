@@ -244,7 +244,7 @@ export default function InternshipPage() {
               <div className="relative w-28 shrink-0 overflow-hidden sm:h-36 sm:w-full">
                 <SafeImage
                   src={a.img}
-                  alt=""
+                  alt={`${a.title} — internship at Online Tech Uganda`}
                   fill
                   sizes="(max-width: 640px) 112px, (max-width: 1024px) 50vw, 33vw"
                   className="card-zoom object-cover"

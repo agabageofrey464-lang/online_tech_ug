@@ -58,7 +58,7 @@ export function BandPreview({ items }: { items: BandItem[] }) {
               empty on a slow connection. */}
           <Image
             src={thumb(productImage(p))}
-            alt=""
+            alt={p.name}
             width={44}
             height={44}
             loading="eager"

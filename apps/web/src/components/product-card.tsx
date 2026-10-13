@@ -139,7 +139,7 @@ export function ProductCard({ product }: { product: Product }) {
             <div className="absolute inset-0 bg-[var(--tile)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <SafeImage
                 src={card(second)}
-                alt=""
+                alt={`${product.name} — another view`}
                 fill
                 loading="lazy"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

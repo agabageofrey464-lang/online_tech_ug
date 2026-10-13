@@ -5,8 +5,10 @@ export const site = {
   // Printed for search engines so the profile and this site are read as one.
   tradingName: "OnlineTechUG Services",
   tagline: "Buy. Build. Learn. Repair.",
+  // Kept under 160 characters: search engines cut a longer one short, and Bing
+  // reports it as an error.
   description:
-    "Your one-stop tech partner in Uganda — quality computers & accessories, website & app development, software systems, IT support & repairs, and online computer courses.",
+    "Phones, laptops, desktops and accessories in Kampala with warranty and same-day delivery. Plus software development, repairs and 22 computer courses.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   email: "onlinetechug@gmail.com",
   phoneDisplay: "+256 756 839 270",

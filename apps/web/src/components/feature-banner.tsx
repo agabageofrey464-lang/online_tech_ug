@@ -26,7 +26,7 @@ export function FeatureBanner({
   return (
     <section className="bleed-wide relative overflow-hidden">
       <div className="relative min-h-[390px] sm:min-h-[460px] xl:min-h-[540px]">
-        <Image src={img} alt="" fill sizes="100vw" className="object-cover" />
+        <Image src={img} alt={`${eyebrow} — ${title}`} fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-ink-900/50" />
         <div
           className={`relative z-10 flex min-h-[390px] flex-col justify-center px-6 py-10 text-white sm:min-h-[420px] sm:px-12 ${

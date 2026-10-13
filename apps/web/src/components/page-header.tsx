@@ -29,7 +29,7 @@ export function PageHeader({
 }) {
   return (
     <section className="relative overflow-hidden bg-ink-800 text-white">
-      <Image src={image} alt="" fill priority sizes="100vw" className="object-cover" />
+      <Image src={image} alt={`${title} — Online Tech Uganda`} fill priority sizes="100vw" className="object-cover" />
       <div className="absolute inset-0 bg-ink-900/55" />
       <div className="container-page relative flex min-h-[250px] flex-col py-5 sm:min-h-[360px] xl:min-h-[420px]">
         {crumbs && crumbs.length > 0 && (

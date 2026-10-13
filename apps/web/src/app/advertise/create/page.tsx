@@ -195,7 +195,7 @@ function AdvertPreview({ data, theme }: { data: typeof empty; theme: (typeof THE
     >
       {data.image_url && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={data.image_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={data.image_url} alt={data.title || "Advert preview"} className="absolute inset-0 h-full w-full object-cover" />
       )}
       {/* Illustrations: soft blobs + diagonal texture for depth */}
       <span className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl" />

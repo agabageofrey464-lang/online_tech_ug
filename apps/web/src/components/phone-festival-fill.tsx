@@ -89,7 +89,7 @@ export function PhoneFestivalFill({ count }: { count: number }) {
         <div className="relative min-h-[6rem] flex-1 @lg:min-h-0 @lg:max-w-[55%]">
           <Image
             src={o.img}
-            alt=""
+            alt={o.series}
             fill
             sizes="(max-width: 640px) 50vw, 40vw"
             className="object-cover object-center transition duration-700 group-hover:scale-105"

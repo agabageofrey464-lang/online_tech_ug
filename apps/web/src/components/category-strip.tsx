@@ -85,7 +85,7 @@ export function CategoryStrip({ className = "" }: { className?: string }) {
               {c.img ? (
                 <Image
                   src={c.img}
-                  alt=""
+                  alt={c.name}
                   width={48}
                   height={48}
                   loading="lazy"

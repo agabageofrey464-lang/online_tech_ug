@@ -185,7 +185,7 @@ export function ProductGallery({
                   i === open ? "border-ink-900" : "border-transparent"
                 }`}
               >
-                <SafeImage src={t.src} alt="" fill sizes="64px" className="object-contain p-1 mix-blend-multiply" style={zoom(t)} />
+                <SafeImage src={t.src} alt={`${alt} — ${label(t, i)}`} fill sizes="64px" className="object-contain p-1 mix-blend-multiply" style={zoom(t)} />
               </button>
             ))}
           </div>

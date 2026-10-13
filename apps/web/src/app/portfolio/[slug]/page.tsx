@@ -265,7 +265,7 @@ export default async function ProjectDetailPage({
             {others.map((c) => (
               <Link key={c.slug} href={`/portfolio/${c.slug}`} className="card-lift group flex overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink-600/10">
                 <div className="relative w-32 shrink-0 overflow-hidden bg-ink-50 sm:w-44">
-                  <Image src={c.shots[0]} alt="" fill sizes="176px" className="card-zoom object-cover object-top" />
+                  <Image src={c.shots[0]} alt={c.title} fill sizes="176px" className="card-zoom object-cover object-top" />
                 </div>
                 <div className="min-w-0 p-4">
                   <p className="text-[11px] font-bold uppercase tracking-wide text-ink-700/55">{c.category}</p>

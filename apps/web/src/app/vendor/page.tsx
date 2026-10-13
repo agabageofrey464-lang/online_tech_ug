@@ -638,7 +638,7 @@ export default function VendorDashboard() {
                   <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-md border border-ink-600/10 bg-ink-50">
                     {form.image_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={form.image_url} alt="" className="h-full w-full object-cover" />
+                      <img src={form.image_url} alt={form.name || "Product photo"} className="h-full w-full object-cover" />
                     ) : (
                       <Package size={20} className="text-ink-700/30" />
                     )}

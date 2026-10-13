@@ -47,7 +47,7 @@ function ShopArt() {
       {tiles.map((t) => (
         <div key={t.src} className={`${card} hero-float p-2 ${t.cls}`} style={{ animationDelay: t.d }}>
           <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
-            <Image src={t.src} alt="" fill sizes="220px" className="object-cover" />
+            <Image src={t.src} alt={t.name} fill sizes="220px" className="object-cover" />
           </div>
           <p className="mt-1.5 truncate px-1 font-display text-[15px]">{t.name}</p>
           <p className="px-1 pb-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-600">In stock · tested</p>
@@ -68,7 +68,7 @@ function LearnArt() {
     <>
       <div className={`${card} hero-float left-[12%] top-0 w-[66%] p-2 lg:left-[6%] lg:top-4 lg:w-[78%] lg:p-2.5`}>
         <div className="relative aspect-video overflow-hidden bg-ink-900">
-          <Image src="/courses/web-development.webp" alt="" fill sizes="360px" className="object-cover opacity-80" />
+          <Image src="/courses/web-development.webp" alt="A video lesson from the Online Tech Uganda academy" fill sizes="360px" className="object-cover opacity-80" />
           <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white shadow-lg">
             <Play size={20} className="ml-0.5 fill-white" />
           </span>
@@ -84,7 +84,7 @@ function LearnArt() {
       </span>
       <div className={`${card} hero-float bottom-0 left-0 w-[40%] p-1.5 lg:w-[36%]`} style={{ animationDelay: "0.8s" }}>
         <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
-          <Image src="/web/photo-1516321318423-f06f85e504b3.webp" alt="" fill sizes="200px" className="object-cover" />
+          <Image src="/web/photo-1516321318423-f06f85e504b3.webp" alt="A student learning online" fill sizes="200px" className="object-cover" />
         </div>
         <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Hands-on practicals</p>
       </div>
@@ -122,7 +122,7 @@ function SoftwareArt() {
       </div>
       <div className={`${card} hero-float bottom-0 right-0 w-[52%] p-1.5`} style={{ animationDelay: "0.9s" }}>
         <div className="relative aspect-[16/10] overflow-hidden bg-[#f0ede6]">
-          <Image src="/portfolio/beds-beddings-1.webp" alt="" fill sizes="280px" className="object-cover object-top" />
+          <Image src="/portfolio/beds-beddings-1.webp" alt="Beds & Beddings, an online store built by Online Tech Uganda" fill sizes="280px" className="object-cover object-top" />
         </div>
         <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">A store we built · live</p>
       </div>
@@ -166,7 +166,7 @@ function RepairArt() {
       </span>
       <div className={`${card} hero-float bottom-0 right-0 w-[44%] p-1.5`} style={{ animationDelay: "1s" }}>
         <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
-          <Image src="/products/hp-elitebook-x360-1030-0af99d-p62.webp" alt="" fill sizes="240px" className="object-cover" />
+          <Image src="/products/hp-elitebook-x360-1030-0af99d-p62.webp" alt="A laptop in for repair" fill sizes="240px" className="object-cover" />
         </div>
         <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">On our bench</p>
       </div>
@@ -203,7 +203,7 @@ function InternArt() {
       </span>
       <div className={`${card} hero-float bottom-0 right-0 w-[46%] p-1.5`} style={{ animationDelay: "1s" }}>
         <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede6]">
-          <Image src="/web/photo-1523240795612-9a054b0db644.webp" alt="" fill sizes="240px" className="object-cover" />
+          <Image src="/web/photo-1523240795612-9a054b0db644.webp" alt="University students on industrial training" fill sizes="240px" className="object-cover" />
         </div>
         <p className="px-1 pt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-700/70">Practical work, in teams</p>
       </div>
@@ -450,9 +450,9 @@ export function HeroRotator() {
             <div key={idx} className={`absolute inset-0 transition-opacity duration-700 ${idx === i ? "opacity-100" : "opacity-0"}`} aria-hidden>
               {s.ad ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                s.img && <img src={s.img} alt="" className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
+                s.img && <img src={s.img} alt={s.title} className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
               ) : (
-                <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
+                <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
               )}
             </div>
           ) : null,
@@ -478,9 +478,9 @@ export function HeroRotator() {
             <span className="relative block h-full w-full overflow-hidden bg-[#f0ede6]">
               {cur.ad ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                cur.img && <img src={cur.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                cur.img && <img src={cur.img} alt={cur.title} className="absolute inset-0 h-full w-full object-cover" />
               ) : (
-                <Image src={cur.thumb ?? cur.img} alt="" fill sizes="92px" className="object-cover" />
+                <Image src={cur.thumb ?? cur.img} alt={cur.tab} fill sizes="92px" className="object-cover" />
               )}
             </span>
             {cur.ad && <span className="absolute -left-2 -top-2 bg-brand-500 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.1em] text-white">Ad</span>}
@@ -515,9 +515,9 @@ export function HeroRotator() {
           {near(idx) &&
             (s.ad ? (
               // eslint-disable-next-line @next/next/no-img-element
-              s.img && <img src={s.img} alt="" className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
+              s.img && <img src={s.img} alt={s.title} className="absolute inset-0 h-full w-full scale-110 object-cover blur-sm" />
             ) : (
-              <Image src={s.img} alt="" fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
+              <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
             ))}
           <div className="absolute inset-0 bg-gradient-to-r from-ink-900/95 via-ink-900/80 to-ink-900/55" />
           <div className="hero-grid absolute inset-0 opacity-[0.07]" />

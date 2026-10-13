@@ -37,7 +37,7 @@ export function ShopHeading({ stats }: { stats: string[] }) {
 
 
       <section className="bleed-wide relative -mt-3 overflow-hidden bg-ink-800 text-white">
-        <Image src="/hero/shop-floor.webp" alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/hero/shop-floor.webp" alt="Inside the Online Tech Uganda computer shop in Kampala" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-ink-900/55" />
         <div className="relative flex min-h-[240px] flex-col items-center justify-center px-5 py-8 text-center sm:min-h-[360px] xl:min-h-[420px]">
           <h1 className="text-[34px] leading-[1.1] sm:text-[52px]">{isFiltered ? title : "The Online Tech Collection"}</h1>

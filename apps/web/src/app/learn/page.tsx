@@ -97,7 +97,7 @@ export default function LearnPage() {
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-ink-800 text-white">
         {/* A photograph the full width of the page, with the title over it. */}
-        <Image src="/web/photo-1509062522246-3755977927d7.webp" alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/web/photo-1509062522246-3755977927d7.webp" alt="Students in a computer class at Online Tech Uganda" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-ink-900/60" />
 
         <div className="container-page relative py-5 sm:py-8">
@@ -209,7 +209,7 @@ export default function LearnPage() {
               <span className="relative block h-28 w-full overflow-hidden bg-ink-50">
                 <SafeImage
                   src={s.img}
-                  alt=""
+                  alt={s.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover"

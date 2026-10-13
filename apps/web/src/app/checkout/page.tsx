@@ -486,7 +486,7 @@ function PayOption({
       {opt.icon && (
         <span className="flex h-7 w-10 shrink-0 items-center justify-center rounded bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={opt.icon} alt="" className="h-5 w-auto object-contain" />
+          <img src={opt.icon} alt={opt.label} className="h-5 w-auto object-contain" />
         </span>
       )}
     </label>

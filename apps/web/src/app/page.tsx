@@ -120,7 +120,7 @@ function DealBand({
 export const metadata: Metadata = share({
   title: "Computers, IT Services & Computer Courses in Uganda",
   description:
-    "Buy quality laptops, desktops, SSDs and accessories in Kampala with warranty and countrywide delivery. Plus website and software development, IT support and repairs, and 22 computer courses with certificates — physical and online.",
+    "Buy phones, laptops, desktops and accessories in Kampala with warranty and same-day delivery. Plus software development, repairs and 22 computer courses.",
   alternates: { canonical: "/" },
 }, "/");
 

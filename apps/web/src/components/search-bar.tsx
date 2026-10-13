@@ -167,7 +167,7 @@ export function SearchBar({ className = "" }: { className?: string }) {
               className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${i === active ? "bg-brand-50" : "hover:bg-ink-50"}`}
             >
               <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-md bg-white ring-1 ring-ink-600/10">
-                <Image src={thumb(p.image_url)} alt="" fill sizes="44px" className="object-contain p-0.5" unoptimized={p.image_url.startsWith("http")} />
+                <Image src={thumb(p.image_url)} alt={p.name} fill sizes="44px" className="object-contain p-0.5" unoptimized={p.image_url.startsWith("http")} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold text-ink-900">{p.name}</span>

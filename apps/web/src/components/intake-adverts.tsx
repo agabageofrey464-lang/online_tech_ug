@@ -101,7 +101,7 @@ export function IntakeAdverts() {
                 <div className="relative hidden w-36 shrink-0 overflow-hidden sm:block lg:hidden xl:block xl:w-40">
                   <SafeImage
                     src={intake.img}
-                    alt=""
+                    alt={`${intake.title} at Online Tech Uganda`}
                     fill
                     sizes="160px"
                     className="card-zoom object-cover"

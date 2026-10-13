@@ -116,7 +116,7 @@ export function OrderBanner() {
               <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white/95 ring-1 ring-white/30 transition group-hover:ring-2 group-hover:ring-white">
                 <Image
                   src={`/products/${p.img}.webp`}
-                  alt=""
+                  alt={p.label}
                   width={48}
                   height={48}
                   loading="lazy"

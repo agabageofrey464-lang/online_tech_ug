@@ -158,11 +158,11 @@ function Side({
       <span className="strip-photo relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 sm:h-11 sm:w-11">
         {offer.photo?.startsWith("http") ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={offer.photo} alt="" width={44} height={44} loading="lazy" className="h-full w-full object-cover" />
+          <img src={offer.photo} alt={offer.title} width={44} height={44} loading="lazy" className="h-full w-full object-cover" />
         ) : (
           <Image
             src={picture(offer)}
-            alt=""
+            alt={offer.title}
             width={44}
             height={44}
             loading="lazy"

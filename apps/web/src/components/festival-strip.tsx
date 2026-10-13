@@ -162,7 +162,7 @@ export function FestivalStrip() {
                   to fill 28 pixels. */}
               <Image
                 src={thumb(s.img)}
-                alt=""
+                alt={s.cta}
                 width={28}
                 height={28}
                 loading="eager"
