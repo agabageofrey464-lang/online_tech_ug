@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SafeImage } from "@/components/safe-image";
+import { AdvertStrips } from "@/components/advert-strips";
 import { NewInTile } from "@/components/new-in-tile";
 
 export type ShopTile = { name: string; img: string };
@@ -63,6 +64,9 @@ export function ShopHeading({ stats, tiles, fresh = [], home = false }: { stats:
         </div>
       )}
 
+      {/* The page's name on the left; the space beside it is kept for adverts. */}
+      <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
+      <div className="min-w-0">
       <h1 className="text-[30px] leading-[1.15] text-ink-900 sm:text-[40px]">{isFiltered ? title : "The Online Tech Collection"}</h1>
       <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-ink-800 sm:text-[17px]">
         {isFiltered
@@ -74,6 +78,9 @@ export function ShopHeading({ stats, tiles, fresh = [], home = false }: { stats:
         </Link>
       </p>
       <p className="mt-2 text-[12.5px] text-ink-700/70">{stats.join("  ·  ")}</p>
+      </div>
+      <AdvertStrips className="mt-4 w-full shrink-0 lg:mt-1 lg:w-[30rem] xl:w-[34rem]" />
+      </div>
 
       {/* The categories, as a rail to slide through. */}
       <div className="relative mb-6 mt-6">
