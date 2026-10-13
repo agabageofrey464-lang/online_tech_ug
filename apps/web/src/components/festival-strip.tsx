@@ -32,15 +32,15 @@ type Strip = {
 
 /** Used until the live campaigns load, and whenever none are running. */
 const FALLBACK: Strip[] = [
-  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-ink-600", img: "/products/hp-elitebook-840-g3.webp" },
+  { text: "Free Windows, Office & antivirus setup on laptops over UGX 1M", cta: "Shop laptops", href: "/shop?cat=Laptops", bg: "bg-brand-600", img: "/products/hp-elitebook-840-g3.webp" },
   { text: "Not sure what to buy? Tell us your budget and we'll advise honestly", cta: "Find my laptop", href: "/find", bg: "bg-brand-600", img: "/products/dell-xps-13-9310.webp" },
   { text: "22 computer courses — physical or online, certificate included", cta: "Browse courses", href: "/learn", bg: "bg-green-700", img: "/courses/microsoft-office.webp" },
   { text: "Laptop trouble? Free diagnosis, repairs from UGX 30,000", cta: "Book a repair", href: "/services#repairs-support", bg: "bg-brand-700", img: "/products/ram-ddr4-8gb-dimm.webp" },
   // Industrial training, aimed squarely at the universities. Software first,
   // because that is most of what an intern here actually does.
-  { text: "ONLINE industrial training — UGX 150,000, 1 Nov to 18 Dec", cta: "Apply now", href: "/internship", bg: "bg-ink-700", img: "/courses/python-programming.webp" },
+  { text: "ONLINE industrial training — UGX 150,000, 1 Nov to 18 Dec", cta: "Apply now", href: "/internship", bg: "bg-brand-500", img: "/courses/python-programming.webp" },
   { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — online internships from 1 Nov", cta: "See placements", href: "/internship", bg: "bg-green-700", img: "/courses/web-development.webp" },
-  { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "bg-ink-800", img: "/courses/computer-networking.webp" },
+  { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "bg-brand-700", img: "/courses/computer-networking.webp" },
   { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/internship", bg: "bg-brand-700", img: "/courses/graphic-design.webp" },
   // Office skills — the courses that actually fill the classroom. Each points
   // at its own cover now, so the thumbnails differ instead of repeating one
@@ -48,9 +48,9 @@ const FALLBACK: Strip[] = [
   { text: "Microsoft Excel in 2 months — formulas, charts and reports", cta: "Enrol now", href: "/learn/microsoft-excel", bg: "bg-green-700", img: "/courses/microsoft-excel.webp" },
   { text: "Word, Excel, PowerPoint, Publisher & Access — one programme", cta: "See the suite", href: "/learn/microsoft-office", bg: "bg-brand-600", img: "/courses/microsoft-office.webp" },
   { text: "Build slides that win the room — PowerPoint from scratch", cta: "Start learning", href: "/learn/microsoft-powerpoint", bg: "bg-brand-700", img: "/courses/microsoft-powerpoint.webp" },
-  { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "bg-ink-700", img: "/courses/microsoft-access.webp" },
+  { text: "Keep proper records — Microsoft Access databases", cta: "Browse course", href: "/learn/microsoft-access", bg: "bg-brand-600", img: "/courses/microsoft-access.webp" },
 
-  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-ink-800", img: "/products/ssd-480gb-sata.webp" },
+  { text: "1TB & 2TB SSDs in stock — make an old laptop feel new", cta: "Shop storage", href: "/shop?cat=Storage", bg: "bg-brand-500", img: "/products/ssd-480gb-sata.webp" },
 ];
 
 const DISMISS_KEY = "otu_strip_closed";
