@@ -1,8 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { listedProducts as seedProducts, productCategories, type Product } from "@/lib/data";
 import { ProductCard } from "@/components/product-card";
 import { GROUP_ORDER, groupOf } from "@/lib/browse-order";
@@ -42,6 +43,44 @@ function Section({ title, defaultOpen = false, children }: { title: string; defa
   );
 }
 
+/** One drop-down in the row above the products: a bordered button and its list. */
+function Menu({ label, count = 0, children }: { label: string; count?: number; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: MouseEvent) => {
+      if (box.current && !box.current.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+  return (
+    <div ref={box} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className={`flex items-center gap-3 border bg-white px-5 py-3.5 text-[15px] text-ink-900 transition hover:border-ink-900 ${open ? "border-ink-900" : "border-ink-700/25"}`}
+      >
+        {label}
+        {count > 0 && <span className="text-ink-700/70">({count})</span>}
+        <ChevronDown size={17} strokeWidth={1.75} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full z-30 mt-1 flex max-h-80 w-72 flex-col gap-3.5 overflow-y-auto border border-ink-700/20 bg-white p-5 text-[14px] text-ink-800 shadow-xl">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** A round option (one of several) or a square one (any of several). */
 function Option({ checked, onChange, square = false, children }: { checked: boolean; onChange: () => void; square?: boolean; children: ReactNode }) {
   return (
@@ -76,10 +115,8 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   const [conditions, setConditions] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("popular");
-  // The panel starts closed on a phone and open on a desktop, and one button
-  // flips whichever applies — hence two flags rather than one.
+  // Every filter at once, in a panel that slides in from the left.
   const [showFilters, setShowFilters] = useState(false);
-  const [hideOnDesktop, setHideOnDesktop] = useState(false);
   const [priceIdx, setPriceIdx] = useState(0);
   // ?deals=1 — only products reduced from a recorded old price. The link said
   // "deals" for a long time while the page showed the whole catalogue.
@@ -100,24 +137,52 @@ export function ShopGrid({ items }: { items?: Product[] }) {
     const br = params.get("brand");
     const q = params.get("q");
     const s = params.get("sort");
-    if (cat && (productCategories as readonly string[]).includes(cat)) setCategory(cat);
+    setCategory(cat && (productCategories as readonly string[]).includes(cat) ? cat : "All");
     if (br) setBrands(br.split(",").filter((b) => BRANDS.includes(b)));
     if (q) setQuery(q);
     setOnlyDeals(params.get("deals") === "1" || params.get("deals") === "true");
     if (s === "new" || s === "price-asc" || s === "price-desc" || s === "popular") setSort(s);
   }, [params]);
 
+  // The heading and the rail above read the address, so a filter changed here
+  // is written to it and the page's name follows the choice.
+  const router = useRouter();
+  function setParam(key: string, value: string | null) {
+    const next = new URLSearchParams(window.location.search);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    const qs = next.toString();
+    router.replace(qs ? `/shop?${qs}` : "/shop", { scroll: false });
+  }
+  function pickCategory(c: string) {
+    setCategory(c);
+    setParam("cat", c === "All" ? null : c);
+  }
+  function pickSort(v: Sort) {
+    setSort(v);
+    setParam("sort", v === "popular" ? null : v);
+  }
+  function toggleDeals() {
+    setParam("deals", onlyDeals ? null : "1");
+    setOnlyDeals((v) => !v);
+  }
+
   const anyFilter =
-    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || onlyDeals;
+    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || onlyDeals || query.trim() !== "";
   function clearAll() {
     setCategory("All");
     setBrands([]);
     setConditions([]);
     setPriceIdx(0);
     setOnlyDeals(false);
+    setQuery("");
+    setSort("popular");
+    router.replace("/shop", { scroll: false });
   }
   function toggleBrand(b: string) {
-    setBrands((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
+    const next = brands.includes(b) ? brands.filter((x) => x !== b) : [...brands, b];
+    setBrands(next);
+    setParam("brand", next.length ? next.join(",") : null);
   }
   function toggleCondition(c: string) {
     setConditions((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
@@ -215,171 +280,210 @@ export function ShopGrid({ items }: { items?: Product[] }) {
   const activeCount =
     (category !== "All" ? 1 : 0) + brands.length + conditions.length + (priceIdx !== 0 ? 1 : 0) + (onlyDeals ? 1 : 0);
 
+  const count = (c: string) => (c === "All" ? products.length : products.filter((p) => p.category === c).length);
+  const SORTS: [Sort, string][] = [
+    ["popular", "Best Matches"],
+    ["price-asc", "Price: Low to High"],
+    ["price-desc", "Price: High to Low"],
+    ["new", "Newest"],
+  ];
+
+  // The lists themselves, drawn once and used twice: in the row of drop-downs
+  // on a wide screen, and in the panel that holds every filter.
+  const categoryOptions = (productCategories as readonly string[]).map((c) => (
+    <Option key={c} checked={category === c} onChange={() => pickCategory(c)}>
+      <span className="flex-1">{c === "All" ? "All Categories" : c}</span>
+      <span className="text-[12px] text-ink-700/45">{count(c)}</span>
+    </Option>
+  ));
+  const brandOptions = BRANDS.map((b) => (
+    <Option key={b} square checked={brands.includes(b)} onChange={() => toggleBrand(b)}>
+      {b}
+    </Option>
+  ));
+  const conditionOptions = CONDITIONS.map((c) => (
+    <Option key={c} square checked={conditions.includes(c)} onChange={() => toggleCondition(c)}>
+      {c}
+    </Option>
+  ));
+  const priceOptions = PRICE_BANDS.map((b, i) => (
+    <Option key={b.label} checked={priceIdx === i} onChange={() => setPriceIdx(i)}>
+      {b.label}
+    </Option>
+  ));
+
+  // What is switched on, each as a chip that switches it off again.
+  const chips: { label: string; off: () => void }[] = [
+    ...(category !== "All" ? [{ label: category, off: () => pickCategory("All") }] : []),
+    ...brands.map((b) => ({ label: b, off: () => toggleBrand(b) })),
+    ...conditions.map((c) => ({ label: c, off: () => toggleCondition(c) })),
+    ...(priceIdx !== 0 ? [{ label: PRICE_BANDS[priceIdx].label, off: () => setPriceIdx(0) }] : []),
+    ...(onlyDeals ? [{ label: "Reduced prices", off: toggleDeals }] : []),
+    ...(query.trim() ? [{ label: `“${query.trim()}”`, off: () => { setQuery(""); setParam("q", null); } }] : []),
+  ];
+
   return (
     <div>
-      {/* The bar above everything: filter toggle, search, how many products. */}
-      <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2 bg-[#f0eeea] px-4 py-3 sm:px-6">
+      {/* The row above the products: every filter, then how many and in what order. */}
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={() => {
-            setShowFilters((v) => !v);
-            setHideOnDesktop((v) => !v);
-          }}
-          className="flex shrink-0 items-center gap-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-900 hover:text-brand-600"
+          onClick={() => setShowFilters(true)}
+          className="flex items-center gap-3 border border-ink-700/25 bg-white px-5 py-3.5 text-[15px] text-ink-900 transition hover:border-ink-900"
         >
-          <SlidersHorizontal size={20} strokeWidth={1.5} />
-          <span className="lg:hidden">{showFilters ? "Hide" : "Show"} filter &amp; sort</span>
-          <span className="hidden lg:inline">{hideOnDesktop ? "Show" : "Hide"} filter &amp; sort</span>
-          {activeCount > 0 && (
-            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-500 px-1.5 text-[11px] font-bold tracking-normal text-white">
-              {activeCount}
-            </span>
-          )}
+          Filters{activeCount > 0 && <span className="text-ink-700/70">({activeCount})</span>}
+          <SlidersHorizontal size={18} strokeWidth={1.75} />
         </button>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search products…"
-          className="order-3 w-full border-0 border-b border-ink-700/30 bg-transparent px-0 py-1.5 text-sm placeholder:text-ink-700/45 focus:border-brand-500 focus:outline-none sm:order-none sm:ml-auto sm:w-64"
-        />
-        <span className="ml-auto text-[13px] text-ink-700/80 sm:ml-0">
-          {filtered.length} {filtered.length === 1 ? "Product" : "Products"}
-        </span>
+        <div className="hidden flex-wrap items-center gap-3 lg:flex">
+          <Menu label="Category" count={category !== "All" ? 1 : 0}>{categoryOptions}</Menu>
+          <Menu label="Brand" count={brands.length}>{brandOptions}</Menu>
+          {CONDITIONS.length > 0 && <Menu label="Condition" count={conditions.length}>{conditionOptions}</Menu>}
+          <Menu label="Price" count={priceIdx !== 0 ? 1 : 0}>{priceOptions}</Menu>
+        </div>
+
+        <div className="ml-auto flex items-center gap-4">
+          <span className="hidden text-[15px] text-ink-800 sm:inline">
+            {filtered.length} {filtered.length === 1 ? "Result" : "Results"}
+          </span>
+          <span className="hidden h-5 w-px bg-ink-700/25 sm:block" aria-hidden />
+          <label className="flex items-center gap-3 text-[15px] text-ink-800">
+            <span className="hidden sm:inline">Sort By</span>
+            <select
+              value={sort}
+              onChange={(e) => pickSort(e.target.value as Sort)}
+              aria-label="Sort products by"
+              className="border border-ink-700/25 bg-white py-3.5 pl-4 pr-9 text-[15px] text-ink-900 hover:border-ink-900 focus:border-ink-900 focus:outline-none"
+            >
+              {SORTS.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </div>
 
-      {/* Mobile category chips — a scrolling row that sticks to the top, so a
-          long grid can be re-filtered without scrolling back up for it. */}
-      <div className="sticky top-0 z-20 -mx-1 mb-2 flex gap-2 overflow-x-auto bg-[#f9f7f2]/95 px-1 py-2 no-scrollbar backdrop-blur lg:hidden">
-        {(productCategories as readonly string[]).map((c) => (
+      {/* What is switched on, and the way to switch it all off. */}
+      <div className="mb-5 mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="text-[14px] text-ink-800 sm:hidden">
+          {filtered.length} {filtered.length === 1 ? "Result" : "Results"}
+        </span>
+        {chips.map((c) => (
           <button
-            key={c}
-            onClick={() => setCategory(c)}
-            className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
-              category === c ? "bg-ink-600 text-white" : "bg-white text-ink-700 hover:bg-brand-50"
-            }`}
+            key={c.label}
+            type="button"
+            onClick={c.off}
+            className="flex items-center gap-2 rounded-full bg-[#e9e6df] px-4 py-2 text-[13.5px] tracking-[0.04em] text-ink-900 hover:bg-[#dedad1]"
           >
-            {c}
-            <span className={category === c ? "ml-1 text-white/70" : "ml-1 text-ink-700/45"}>
-              {c === "All" ? products.length : products.filter((p) => p.category === c).length}
-            </span>
+            {c.label}
+            <X size={13} strokeWidth={2} aria-label="Remove" />
           </button>
         ))}
+        {anyFilter && (
+          <button type="button" onClick={clearAll} className="ml-1 text-[14px] text-ink-900 underline underline-offset-4 hover:text-brand-600">
+            Clear Filters
+          </button>
+        )}
       </div>
 
-      <div className={`grid gap-3 ${hideOnDesktop ? "" : "lg:grid-cols-[19rem_1fr]"}`}>
-        {/* Filter panel — sticky so the column isn't a big empty space */}
-        <div className={`h-fit lg:sticky lg:top-4 lg:self-start ${showFilters ? "block" : "hidden"} ${hideOnDesktop ? "lg:hidden" : "lg:block"}`}>
-          <aside className="bg-white">
-            <Section title="Sort By" defaultOpen>
-              {(
-                [
-                  ["popular", "Recommended"],
-                  ["price-asc", "Price: Low to High"],
-                  ["price-desc", "Price: High to Low"],
-                  ["new", "Newest"],
-                ] as [Sort, string][]
-              ).map(([value, label]) => (
-                <Option key={value} checked={sort === value} onChange={() => setSort(value)}>
-                  {label}
-                </Option>
-              ))}
-            </Section>
-
-            <Section title="Category" defaultOpen>
-              {(productCategories as readonly string[]).map((c) => (
-                <Option key={c} checked={category === c} onChange={() => setCategory(c)}>
-                  <span className="flex-1">{c === "All" ? "All Categories" : c}</span>
-                  <span className="text-[12px] text-ink-700/45">
-                    {c === "All" ? products.length : products.filter((p) => p.category === c).length}
-                  </span>
-                </Option>
-              ))}
-            </Section>
-
-            <Section title="Brand">
-              {BRANDS.map((b) => (
-                <Option key={b} square checked={brands.includes(b)} onChange={() => toggleBrand(b)}>
-                  {b}
-                </Option>
-              ))}
-            </Section>
-
-            {CONDITIONS.length > 0 && (
-              <Section title="Condition">
-                {CONDITIONS.map((c) => (
-                  <Option key={c} square checked={conditions.includes(c)} onChange={() => toggleCondition(c)}>
-                    {c}
-                  </Option>
-                ))}
-              </Section>
-            )}
-
-            <Section title="Price">
-              {PRICE_BANDS.map((b, i) => (
-                <Option key={b.label} checked={priceIdx === i} onChange={() => setPriceIdx(i)}>
-                  {b.label}
-                </Option>
-              ))}
-            </Section>
-
-            <Section title="Offers" defaultOpen>
-              <Option square checked={onlyDeals} onChange={() => setOnlyDeals((v) => !v)}>
-                Reduced prices only
-              </Option>
-            </Section>
-
-            {anyFilter && (
-              <div className="border-t border-ink-600/10 px-5 py-4">
-                <button onClick={clearAll} className="text-[12px] font-bold uppercase tracking-[0.1em] text-brand-600 hover:underline">
-                  Clear all filters
+      {/* Every filter in one panel, from the left. */}
+      {showFilters &&
+        createPortal(
+          <div className="fixed inset-0 z-[150]" role="dialog" aria-modal="true" aria-label="Filter and sort">
+            <button type="button" aria-label="Close filters" onClick={() => setShowFilters(false)} className="absolute inset-0 h-full w-full cursor-default bg-ink-900/50" />
+            <aside className="absolute left-0 top-0 flex h-full w-[22rem] max-w-[88vw] flex-col bg-white shadow-2xl">
+              <div className="flex items-center justify-between border-b border-ink-600/10 px-5 py-4">
+                <span className="font-display text-[24px] leading-none text-ink-900">Filter &amp; Sort</span>
+                <button type="button" onClick={() => setShowFilters(false)} aria-label="Close filters" className="flex h-10 w-10 items-center justify-center text-ink-900 hover:text-brand-600">
+                  <X size={22} strokeWidth={1.5} />
                 </button>
               </div>
-            )}
-          </aside>
-          <SidebarExtras />
-        </div>
-
-        {/* Results */}
-        <div>
-          {filtered.length > 0 ? (
-            <>
-              <div
-                className={`grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 ${
-                  hideOnDesktop ? "xl:grid-cols-4 min-[1700px]:grid-cols-5" : "min-[1700px]:grid-cols-4"
-                }`}
-              >
-                {pageItems.map((p) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
-              {shown < filtered.length && (
-                // A page of twenty-four, and a button for the next. The grid used
-                // to keep loading as it was scrolled, sixty at a time.
-                <div className="mt-8 flex flex-col items-center gap-3 py-4">
-                  <p className="text-[13px] text-ink-700/70">
-                    Showing {pageItems.length} of {filtered.length} products
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setShown((n) => n + PAGE)}
-                    className="border border-ink-900 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
-                  >
-                    Show more
-                  </button>
+              <div className="flex-1 overflow-y-auto">
+                <div className="border-b border-ink-600/10 px-5 py-4">
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search products…"
+                    className="w-full border border-ink-700/25 bg-white px-4 py-3 text-[15px] placeholder:text-ink-700/45 focus:border-ink-900 focus:outline-none"
+                  />
                 </div>
-              )}
-            </>
-          ) : (
-            <EmptyState
-              art="search"
-              title="No products match your search"
-              message="Try a different word, or clear a filter or two to see more."
-              actionLabel="Browse everything"
-              actionHref="/shop"
-            />
+                <Section title="Sort By" defaultOpen>
+                  {SORTS.map(([value, label]) => (
+                    <Option key={value} checked={sort === value} onChange={() => pickSort(value)}>
+                      {label}
+                    </Option>
+                  ))}
+                </Section>
+                <Section title="Category" defaultOpen>
+                  {categoryOptions}
+                </Section>
+                <Section title="Brand">{brandOptions}</Section>
+                {CONDITIONS.length > 0 && <Section title="Condition">{conditionOptions}</Section>}
+                <Section title="Price">{priceOptions}</Section>
+                <Section title="Offers" defaultOpen>
+                  <Option square checked={onlyDeals} onChange={toggleDeals}>
+                    Reduced prices only
+                  </Option>
+                </Section>
+              </div>
+              <div className="flex items-center gap-3 border-t border-ink-600/10 px-5 py-4">
+                {anyFilter && (
+                  <button type="button" onClick={clearAll} className="text-[13px] text-ink-900 underline underline-offset-4 hover:text-brand-600">
+                    Clear Filters
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setShowFilters(false)}
+                  className="ml-auto bg-brand-500 px-6 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-white hover:bg-brand-600"
+                >
+                  Show {filtered.length} {filtered.length === 1 ? "result" : "results"}
+                </button>
+              </div>
+            </aside>
+          </div>,
+          document.body,
+        )}
+
+      {/* Results */}
+      {filtered.length > 0 ? (
+        <>
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 xl:grid-cols-4 min-[1700px]:grid-cols-5">
+            {pageItems.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+          {shown < filtered.length && (
+            // A page of twenty-four, and a button for the next. The grid used
+            // to keep loading as it was scrolled, sixty at a time.
+            <div className="mt-8 flex flex-col items-center gap-3 py-4">
+              <p className="text-[13px] text-ink-700/70">
+                Showing {pageItems.length} of {filtered.length} products
+              </p>
+              <button
+                type="button"
+                onClick={() => setShown((n) => n + PAGE)}
+                className="border border-ink-900 px-10 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-ink-600 hover:text-white"
+              >
+                Show more
+              </button>
+            </div>
           )}
-        </div>
-      </div>
+        </>
+      ) : (
+        <EmptyState
+          art="search"
+          title="No products match your search"
+          message="Try a different word, or clear a filter or two to see more."
+          actionLabel="Browse everything"
+          actionHref="/shop"
+        />
+      )}
+
+      {/* What used to fill the filter column: a way to choose, what is
+          trending, and the courses and repairs — now a row beneath the products. */}
+      <SidebarExtras />
     </div>
   );
 }

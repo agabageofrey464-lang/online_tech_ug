@@ -25,7 +25,7 @@ export function SidebarExtras() {
     .slice(0, 5);
 
   return (
-    <div className="mt-3 space-y-3">
+    <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {/* Budget finder — the most useful thing we can offer someone still deciding */}
       <Link
         href="/find"
