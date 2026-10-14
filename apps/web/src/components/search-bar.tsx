@@ -139,7 +139,7 @@ export function SearchBar({ className = "", variant = "pill" }: { className?: st
           aria-label="Search"
           className={
             store
-              ? "flex shrink-0 items-center self-stretch bg-ink-900 px-3.5 text-white transition hover:bg-brand-600"
+              ? "green-ribbon flex shrink-0 items-center self-stretch px-3.5 text-white transition hover:brightness-110"
               : "flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 sm:px-7"
           }
         >

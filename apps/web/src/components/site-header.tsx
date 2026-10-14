@@ -204,7 +204,7 @@ const UTILITY_SECONDARY = UTILITY.slice(5);
 const PILLS = [
   { href: "/shop", label: "Shop", sub: "Computers", icon: ShoppingBag, bg: "bg-brand-500 hover:bg-brand-600", ink: "text-brand-600" },
   { href: "/learn", label: "Learn", sub: "Academy", icon: GraduationCap, bg: "bg-green-600 hover:bg-green-700", ink: "text-green-700" },
-  { href: "/development", label: "Develop", sub: "Software", icon: Code2, bg: "bg-ink-700 hover:bg-ink-800", ink: "text-ink-700" },
+  { href: "/development", label: "Develop", sub: "Software", icon: Code2, bg: "bg-[#7a1f5c] hover:bg-[#651a4c]", ink: "text-[#7a1f5c]" },
 ];
 const deptLink = "flex items-center gap-1 whitespace-nowrap border-b-[3px] py-3 text-[14.5px] transition xl:text-[15.5px]";
 
@@ -521,7 +521,7 @@ export function SiteHeader() {
             <Link
               href="/"
               className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
-                pathname === "/" ? "border-ink-900 bg-ink-900 text-white" : "border-brand-500 bg-white text-brand-600"
+                pathname === "/" ? "green-ribbon border-green-700 text-white" : "border-brand-500 bg-white text-brand-600"
               }`}
             >
               <Home size={13} strokeWidth={2.2} /> Home
@@ -531,7 +531,7 @@ export function SiteHeader() {
                 key={c.href}
                 href={c.href}
                 className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
-                  pathname === c.href ? "border-ink-900 bg-ink-900 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
+                  pathname === c.href ? "green-ribbon border-green-700 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
                 }`}
               >
                 {c.label}

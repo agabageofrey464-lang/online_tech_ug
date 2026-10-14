@@ -7,7 +7,7 @@ import Link from "next/link";
  */
 export function PromoBand({ eyebrow, title, cta, href }: { eyebrow: string; title: string; cta: string; href: string }) {
   return (
-    <section className="bleed-wide bg-ink-800 text-white">
+    <section className="green-ribbon bleed-wide text-white">
       <div className="container-wide flex flex-col items-center gap-3 py-6 text-center sm:py-7 lg:flex-row lg:justify-center lg:gap-8 lg:text-left">
         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-300">{eyebrow}</p>
         <p className="font-display text-[23px] leading-tight sm:text-[28px]">{title}</p>

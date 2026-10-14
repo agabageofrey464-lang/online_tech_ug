@@ -74,7 +74,7 @@ export function DealTiles({ tiles }: { tiles: DealTile[] }) {
 
 /** The rest of the business, as a mosaic: one large photograph, one wide one, two dark tiles. */
 export function BeyondMosaic() {
-  const dark = "group relative flex flex-col items-center justify-center overflow-hidden rounded-md bg-ink-800 p-6 text-center text-white";
+  const dark = "group relative flex flex-col items-center justify-center overflow-hidden rounded-md green-ribbon p-6 text-center text-white";
   return (
     <section aria-label="Beyond the shop">
       <SectionTitle sub="Software, training and support — under the same roof as the shop." href="/services" cta="All services">Beyond The Shop</SectionTitle>
