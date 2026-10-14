@@ -65,13 +65,13 @@
   --color-green-900: #00522a;
 
 
-  /* Body: Inter, loaded in the root layout, with the device's own UI font
+  /* Body: Jost, loaded in the root layout, with the device's own UI font
      behind it while it arrives. */
   --font-sans: var(--font-sans-face), system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  /* Headings, product names and navigation: EB Garamond. */
-  --font-display: var(--font-serif-face), "Garamond", "Iowan Old Style", Georgia,
-    "Times New Roman", serif;
+  /* Headings, product names and navigation: the same Jost, set heavier. */
+  --font-display: var(--font-sans-face), system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 
   --radius-card: 0.25rem;
 }
@@ -353,7 +353,6 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display);
   font-weight: 500;
   letter-spacing: 0;
-  font-size-adjust: 0.46;
 }
 
 /* Reusable layout helpers */

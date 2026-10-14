@@ -31,7 +31,12 @@ const loadCatalogue = () =>
 
 const MAX = 6;
 
-export function SearchBar({ className = "" }: { className?: string }) {
+/**
+ * `store` is the header's long box: square corners, a light field and a dark
+ * square button holding the magnifier, as the big home stores draw it.
+ */
+export function SearchBar({ className = "", variant = "pill" }: { className?: string; variant?: "pill" | "store" }) {
+  const store = variant === "store";
   const router = useRouter();
   const [q, setQ] = useState("");
   const [items, setItems] = useState<Item[]>([]);
@@ -104,8 +109,11 @@ export function SearchBar({ className = "" }: { className?: string }) {
     <div ref={box} className="relative w-full">
       {/* Pill-shaped search: magnifier sits inside the field, action button
           rides flush inside the right edge. */}
-      <form onSubmit={submit} className={`flex w-full items-center gap-2 rounded-full bg-white p-1 pl-4 ${className}`}>
-        <Search size={18} strokeWidth={2.2} className="shrink-0 text-ink-700/40" />
+      <form
+        onSubmit={submit}
+        className={`flex w-full items-center gap-2 ${store ? "overflow-hidden rounded-[3px] border border-ink-700/35 bg-[#f7f6f3] pl-3.5 focus-within:border-ink-900" : "rounded-full bg-white p-1 pl-4"} ${className}`}
+      >
+        {!store && <Search size={18} strokeWidth={2.2} className="shrink-0 text-ink-700/40" />}
         <input
           value={q}
           onChange={(e) => {
@@ -118,8 +126,8 @@ export function SearchBar({ className = "" }: { className?: string }) {
             void loadCatalogue().then(setItems);
           }}
           onKeyDown={onKey}
-          placeholder="Search products, brands and categories"
-          className="w-full min-w-0 bg-transparent py-1.5 text-sm text-ink-900 outline-none placeholder:text-ink-700/40"
+          placeholder={store ? "Find all things tech & beyond" : "Search products, brands and categories"}
+          className={`w-full min-w-0 bg-transparent text-ink-900 outline-none placeholder:text-ink-700/55 ${store ? "py-2 text-[16px]" : "py-1.5 text-sm"}`}
           aria-label="Search products"
           role="combobox"
           aria-expanded={showPanel}
@@ -129,10 +137,14 @@ export function SearchBar({ className = "" }: { className?: string }) {
         <button
           type="submit"
           aria-label="Search"
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 sm:px-7"
+          className={
+            store
+              ? "flex shrink-0 items-center self-stretch bg-ink-900 px-3.5 text-white transition hover:bg-brand-600"
+              : "flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 sm:px-7"
+          }
         >
-          <Search size={17} strokeWidth={2.5} className="sm:hidden" />
-          <span className="hidden sm:inline">Search</span>
+          <Search size={store ? 22 : 17} strokeWidth={store ? 2 : 2.5} className={store ? "" : "sm:hidden"} />
+          {!store && <span className="hidden sm:inline">Search</span>}
         </button>
       </form>
 

@@ -6,7 +6,6 @@ import { site, soldBy, ugx } from "@/lib/site";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ProductRating } from "@/components/product-rating";
 import { SafeImage } from "@/components/safe-image";
-import { AddToCartButton } from "@/components/add-to-cart-button";
 import { CardActions } from "@/components/card-actions";
 
 /**
@@ -139,8 +138,8 @@ export function ProductCard({ product, large = false }: { product: Product; larg
     // A container, so the name and price sit side by side on a wide tile and
     // stack on a narrow one — the same card is used in three-across grids and
     // in 13rem rails.
-    <article className="group card-lift @container relative flex h-full w-full flex-col overflow-hidden bg-[var(--tile)]">
-      <div className="relative aspect-square overflow-hidden">
+    <article className="group @container relative flex h-full w-full flex-col overflow-hidden bg-white transition hover:shadow-[0_12px_30px_-16px_rgba(22,21,29,0.45)]">
+      <div className="relative aspect-square overflow-hidden bg-white">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           {/* Multiply lets a photo shot on white sit on the panel instead of
               in a white box of its own. */}
@@ -151,30 +150,29 @@ export function ProductCard({ product, large = false }: { product: Product; larg
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className={`card-zoom object-contain p-4 mix-blend-multiply @[15rem]:p-7 ${inStock ? "" : "opacity-50"}`}
+              className={`card-zoom object-contain p-2 mix-blend-multiply @[15rem]:p-3 ${inStock ? "" : "opacity-50"}`}
             />
           </picture>
           {/* Another view of the same product, on hover. The wrapper carries the
               fade: the image's own opacity belongs to its load-in. */}
           {second && (
-            <div className="absolute inset-0 bg-[var(--tile)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <SafeImage
                 src={card(second)}
                 alt={`${product.name} — another view`}
                 fill
                 loading="lazy"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-contain p-4 mix-blend-multiply @[15rem]:p-7"
+                className="object-contain p-2 mix-blend-multiply @[15rem]:p-3"
               />
             </div>
           )}
         </Link>
 
-        {/* A tab at the top of the photo for brand-new stock only. A used
-            machine's condition is given on its own page, in the specification. */}
-        {product.condition === "Brand New" && (
-          <span className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap bg-ink-600 px-3 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-white @[15rem]:px-5 @[15rem]:text-[10.5px]">
-            New
+        {/* The condition, as a white pill at the foot of the photograph. */}
+        {product.condition && (
+          <span className="pointer-events-none absolute bottom-2.5 right-2.5 z-10 whitespace-nowrap rounded-full bg-white/95 px-2.5 py-1 text-[11.5px] text-ink-800 shadow-sm @[15rem]:text-[12.5px]">
+            {product.condition}
           </span>
         )}
 
@@ -207,59 +205,33 @@ export function ProductCard({ product, large = false }: { product: Product; larg
           </span>
         )}
 
-        {/* Quick add — over the photo, for a pointer that can hover. A phone
-            opens the product instead. */}
-        {inStock && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 hidden justify-center opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:opacity-100 @[13rem]:flex">
-            <AddToCartButton
-              label="Quick add"
-              className="!rounded-none !bg-white !px-5 !py-2.5 !text-[11px] !font-bold uppercase !tracking-[0.16em] !text-ink-900 shadow-sm hover:!bg-brand-500 hover:!text-white"
-              item={{
-                slug: product.id,
-                name: product.name,
-                price: product.price,
-                category: product.category,
-                condition: product.seller ? soldBy(product.seller) : product.condition,
-                image: product.seller ? product.image : undefined,
-              }}
-            />
-          </div>
-        )}
       </div>
 
-      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-3 pb-3.5 pt-3 @[15rem]:px-4 @[15rem]:pb-4">
-        <div className="flex flex-col gap-1 @[20rem]:flex-row @[20rem]:items-start @[20rem]:justify-between @[20rem]:gap-3">
-          <h3 className="clamp-2 min-h-[2.5em] text-[16px] leading-[1.25] text-ink-900 transition-colors duration-200 group-hover:text-brand-600 @[15rem]:text-[19px]">
-            {product.name}
-          </h3>
-          <div className="shrink-0 @[20rem]:pt-1 @[20rem]:text-right">
-            <p className="whitespace-nowrap text-[13px] font-semibold text-ink-900">{ugx(product.price)}</p>
-            {oldPrice && (
-              <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap @[20rem]:justify-end">
-                <span className="text-[11px] text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                <span className="text-[11px] font-bold text-green-700">-{discountPct}%</span>
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Specs — fixed height so every card in a row still lines up, whether
-            the product has a full specification or only short bullets. */}
-        <div className="mt-2 min-h-[2.2em]">
-          {spec.primary && <p className="truncate text-[11.5px] text-ink-700/75">{spec.primary}</p>}
-          {spec.secondary && <p className="truncate text-[11px] text-ink-700/50">{spec.secondary}</p>}
-        </div>
-
+      {/* Under the photograph, as the big home stores set it: a coloured tag
+          and the price on one line, the name, the stars, and small grey tags. */}
+      <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pb-3.5 pt-3 @[15rem]:px-3">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="rounded-md bg-brand-600 px-2 py-0.5 text-[12px] font-medium text-white @[15rem]:text-[13.5px]">
+            {product.condition === "Brand New" ? "New" : product.category === "Phones" ? "Phone" : "In stock"}
+          </span>
+          <span className="whitespace-nowrap text-[15px] font-semibold text-brand-700 @[15rem]:text-[16.5px]">{ugx(product.price)}</span>
+          {oldPrice && <span className="whitespace-nowrap text-[12px] text-ink-700/60 line-through decoration-dotted @[15rem]:text-[13px]">{ugx(oldPrice)}</span>}
+        </p>
+        <h3 className="mt-2 line-clamp-2 text-[14.5px] !font-normal leading-[1.35] text-ink-900 transition-colors group-hover:text-brand-600 @[15rem]:text-[16.5px]">
+          {product.name}
+        </h3>
+        {spec.primary && <p className="mt-0.5 truncate text-[12px] text-ink-700/60">{spec.primary}</p>}
+        <ProductRating slug={product.id} className="mt-1.5" />
         {product.seller && (
-          <p className="mt-1 text-[11px] leading-snug text-ink-700/60">
-            <span className="block truncate">
-              Sold by <span className="font-semibold text-brand-600">{site.name}</span>
-            </span>
-            <span className="block truncate">Partner vendor: {product.seller}</span>
+          <p className="mt-1 truncate text-[11.5px] text-ink-700/60">
+            Sold by <span className="font-semibold text-brand-600">{site.name}</span> · {product.seller}
           </p>
         )}
-
-        <ProductRating slug={product.id} className="mt-1.5" />
+        <span className="mt-2.5 flex flex-wrap gap-1.5">
+          {inStock && <span className="bg-[#f1efea] px-2 py-1 text-[11.5px] text-ink-700 @[15rem]:text-[12.5px]">Same-Day Delivery</span>}
+          <span className="hidden bg-[#f1efea] px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Warranty</span>
+          {(product.rating ?? 0) >= 4.7 && <span className="hidden bg-[#f1efea] px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Best Seller</span>}
+        </span>
       </Link>
     </article>
   );

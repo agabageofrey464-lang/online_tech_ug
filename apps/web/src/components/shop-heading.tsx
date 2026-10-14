@@ -33,6 +33,7 @@ export function ShopHeading({ stats, tiles, fresh = [], home = false }: { stats:
   const q = params.get("q") ?? "";
   const deals = params.get("deals") === "1" || params.get("deals") === "true";
   const isNew = params.get("sort") === "new";
+  const max = Number(params.get("max")) || 0;
   const rail = useRef<HTMLDivElement | null>(null);
   // An arrow shows only while there is something that way to slide to.
   const [ends, setEnds] = useState({ start: true, end: false });
@@ -44,8 +45,8 @@ export function ShopHeading({ stats, tiles, fresh = [], home = false }: { stats:
 
   const title = q
     ? `Search: “${q}”`
-    : brand || cat || (deals ? "Reduced Prices" : isNew ? "New Arrivals" : "Computers & Accessories");
-  const isFiltered = Boolean(q || brand || cat || deals || isNew);
+    : brand || cat || (deals ? "Reduced Prices" : isNew ? "New Arrivals" : max ? `Under UGX ${max.toLocaleString("en-US")}` : "Computers & Accessories");
+  const isFiltered = Boolean(q || brand || cat || deals || isNew || max);
 
   const slide = (dir: 1 | -1) => rail.current?.scrollBy({ left: dir * rail.current.clientWidth * 0.8, behavior: "smooth" });
   const arrow =

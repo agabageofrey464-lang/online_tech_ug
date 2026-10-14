@@ -12,6 +12,8 @@ import {
   HelpCircle,
   Home,
   Menu,
+  Truck,
+  MapPin,
   Package,
   Phone,
   Search,
@@ -168,202 +170,226 @@ const MORE_LINKS = [
   ...navGroups.flatMap((g) => g.items).filter((it) => !IN_MENUS.has(it.href)),
 ];
 const ANNOUNCEMENTS = [
+  { text: "Same-day delivery when you order before 7pm", cta: "Details", href: "/help" },
   { text: "Free setup on laptops over UGX 1M", cta: "Shop Laptops", href: "/shop?cat=Laptops" },
   { text: "We build websites, apps & business systems", cta: "Get A Quote", href: "/development" },
   { text: "Online internships for university students", cta: "Apply Now", href: "/internship" },
   { text: "22 computer courses, in class or online", cta: "Browse Courses", href: "/learn" },
   { text: "Free diagnosis, repairs from UGX 30,000", cta: "Book A Repair", href: "/services#repairs-support" },
 ];
-// The row of plain capitals under the logo: the four businesses, each with its
-// menu, and between them the parts of the shop people ask for by name.
-const SHOP_ROW = [
+// The thin line at the very top: the businesses under one roof, side by side,
+// the way a family of stores names its sisters.
+const FAMILY = [
+  { href: "/shop", label: "Online Tech Shop", match: ["/shop", "/marketplace", "/stickers", "/find"] },
+  { href: "/learn", label: "Learn Academy", match: ["/learn", "/academy"] },
+  { href: "/development", label: "Software & Websites", match: ["/development", "/portfolio", "/request", "/pricing"] },
+  { href: "/internship", label: "Internships", match: ["/internship", "/jobs"] },
+];
+// The row of departments under the search box.
+const DEPARTMENTS = [
   { href: "/shop?cat=Phones", label: "Phones" },
   { href: "/shop?cat=Laptops", label: "Laptops" },
   { href: "/shop?cat=Desktops", label: "Desktops" },
+  { href: "/shop?cat=Components", label: "Components" },
   { href: "/shop?cat=Accessories", label: "Accessories" },
+  { href: "/shop?cat=Storage", label: "Storage", wide: true },
+  { href: "/shop?cat=Networking", label: "Networking", wide: true },
+  { href: "/stickers", label: "Laptop Skins", wide: true },
 ];
-const rowLink = "flex items-center gap-1 whitespace-nowrap border-b-2 py-4 font-sans text-[12.5px] font-medium uppercase tracking-[0.14em] transition xl:text-[14px]";
+const deptLink = "flex items-center gap-1 whitespace-nowrap border-b-[3px] py-3 text-[14.5px] transition xl:text-[15.5px]";
+
+/** An icon with its name beneath it, as the header's right-hand buttons are drawn. */
+function IconLabel({ href, icon: I, label, badge = 0 }: { href: string; icon: typeof User; label: string; badge?: number }) {
+  return (
+    <Link href={href} className="group flex flex-col items-center gap-0.5 px-2 text-ink-800 transition hover:text-brand-600">
+      <span className="relative">
+        <I size={25} strokeWidth={1.4} />
+        {badge > 0 && (
+          <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-bold leading-none text-white ring-2 ring-white">
+            {badge}
+          </span>
+        )}
+      </span>
+      <span className="text-[12px] leading-none">{label}</span>
+    </Link>
+  );
+}
+
+function WishlistLabel() {
+  const { count } = useWishlist();
+  return <IconLabel href="/wishlist" icon={Heart} label="Lists" badge={count} />;
+}
+
+function CartLabel() {
+  const { count, open } = useCart();
+  return (
+    <button type="button" onClick={open} aria-label={`Cart, ${count} items`} className="flex flex-col items-center gap-0.5 px-2 text-ink-800 transition hover:text-brand-600">
+      <span className="relative">
+        <ShoppingCart size={25} strokeWidth={1.4} />
+        <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-bold leading-none text-white ring-2 ring-white">
+          {count}
+        </span>
+      </span>
+      <span className="text-[12px] leading-none">Cart</span>
+    </button>
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [searching, setSearching] = useState(false);
-  // Known only in the browser — see the note in festival-strip.tsx.
-  const [onInnerPage, setOnInnerPage] = useState(false);
-  useEffect(() => setOnInnerPage(pathname !== "/"), [pathname]);
-  // The top line shows three messages at a time and moves on by one, so all
-  // five have their turn.
+  // The message line moves on to the next message every few seconds.
   const [tick, setTick] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setTick((n) => n + 1), 7000);
+    const t = setInterval(() => setTick((n) => n + 1), 6000);
     return () => clearInterval(t);
   }, []);
+  const a = ANNOUNCEMENTS[tick % ANNOUNCEMENTS.length];
+
+  const menu = (m: Menu, accent = false) => {
+    const on = m.match.some((x) => pathname.startsWith(x));
+    return (
+      <div key={m.href} className="group/menu">
+        <Link
+          href={m.href}
+          className={`${deptLink} ${
+            on
+              ? "!border-brand-500 text-brand-600"
+              : `!border-transparent ${accent ? "font-semibold text-brand-600" : "text-ink-900"} group-hover/menu:!border-brand-500 group-hover/menu:text-brand-600`
+          }`}
+        >
+          {m.label} <ChevronDown size={14} strokeWidth={1.75} />
+        </Link>
+        <div className="invisible absolute left-0 top-full z-50 w-[34rem] opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
+          <div className="grid grid-cols-[13rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
+            <div className="bg-brand-500 p-6 text-white">
+              <p className="text-[24px] font-semibold leading-tight">{m.label}</p>
+              <p className="mt-2 text-[13.5px] leading-relaxed text-white/90">{m.blurb}</p>
+              <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
+                Go to {m.label}
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
+              {m.links.map((l) => (
+                <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <header id="top" className="sticky top-0 z-50">
-      {/* Phones and tablets: the same dark line, one message at a time. */}
-      <div className="bg-ink-900 text-white lg:hidden">
-        {(() => {
-          const a = ANNOUNCEMENTS[tick % ANNOUNCEMENTS.length];
-          return (
-            <p key={tick} className="strip-rise container-wide flex items-center justify-center gap-2 py-2.5 text-[12.5px] font-semibold">
-              <span className="truncate">{a.text} ›</span>
-              <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4">
-                {a.cta}
-              </Link>
-            </p>
-          );
-        })()}
-      </div>
-
-      {/* Wide screens: one dark line of three messages, a rule between each. */}
-      <div className="hidden bg-ink-900 text-white lg:block">
-        <div className="container-wide grid grid-cols-2 divide-x divide-white/60 py-2.5 text-[13px] xl:grid-cols-3 xl:text-[14px]">
-          {[0, 1, 2].map((i) => {
-            const a = ANNOUNCEMENTS[(i + tick) % ANNOUNCEMENTS.length];
+    <>
+      {/* The family of businesses, in one thin dark line. */}
+      <div className="bg-ink-900 text-white">
+        <nav className="container-wide flex items-center overflow-x-auto py-2 text-[12px] no-scrollbar sm:justify-center sm:text-[13px]">
+          {FAMILY.map((f, i) => {
+            const on = f.match.some((x) => pathname.startsWith(x));
             return (
-              <p key={i} className={`min-w-0 items-center justify-center gap-2 px-4 py-1 font-semibold ${i === 2 ? "hidden xl:flex" : "flex"}`}>
-                <span className="truncate">{a.text} ›</span>
-                <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4 hover:text-brand-300">
-                  {a.cta}
+              <span key={f.href} className="flex shrink-0 items-center">
+                {i > 0 && <span aria-hidden className="mx-3 h-3.5 w-px bg-white/45 sm:mx-4" />}
+                <Link href={f.href} className={`whitespace-nowrap hover:underline hover:underline-offset-4 ${on ? "font-bold" : "text-white/90"}`}>
+                  {f.label}
                 </Link>
-              </p>
+              </span>
             );
           })}
+        </nav>
+      </div>
+
+      {/* One message at a time, with its link. */}
+      <div className="bg-ink-700 text-white">
+        <div key={tick} className="strip-rise">
+        <p className="container-wide flex items-center justify-center gap-2 py-2 text-[13px] font-semibold sm:text-[14px]">
+          <Truck size={17} strokeWidth={1.8} className="hidden shrink-0 sm:block" />
+          <span className="truncate">{a.text}</span>
+          <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4 hover:text-brand-200">
+            {a.cta}
+          </Link>
+        </p>
         </div>
       </div>
 
-      {/* Main bar — white. A phone has the logo, the search box and the menu
-          button; a wide screen has the logo, the serif links and the icons. */}
-      <div className="bg-white">
-        {/* Phone and tablet: logo, search, menu button. */}
+      <header id="top" className="sticky top-0 z-50 border-b border-ink-600/15 bg-white">
+        {/* Phone and tablet: menu, logo, account and cart; the search beneath. */}
         <div className="container-wide lg:hidden">
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center py-2">
+          <div className="flex items-center gap-2 py-2">
             <button
               type="button"
               aria-label="Menu"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="-ml-2 justify-self-start rounded-md p-2 text-ink-800 hover:bg-ink-50"
+              className="-ml-2 rounded-md p-2 text-ink-800 hover:bg-ink-50"
             >
-              <Menu size={25} strokeWidth={1.5} />
+              <Menu size={26} strokeWidth={1.5} />
             </button>
             <Link href="/" className="flex shrink-0 items-center text-ink-900">
               <BrandLogoFull size="sm" onLight />
             </Link>
-            <div className="-mr-2 flex items-center justify-end">
+            <div className="-mr-2 ml-auto flex items-center">
               <Link href="/account" aria-label="Your account" className="rounded-md px-2 py-2 text-ink-800 hover:text-brand-600">
-                <User size={23} strokeWidth={1.4} />
+                <User size={24} strokeWidth={1.4} />
               </Link>
               <HeaderCart />
             </div>
           </div>
           <div className="pb-2.5">
-            <SearchBar className="border border-ink-600/25" />
+            <SearchBar variant="store" />
           </div>
         </div>
 
-        {/* Wide screens: a few plain links, the logo in the middle, then the
-            search box and the icons. */}
-        <div className="container-wide hidden grid-cols-[1fr_auto_1fr] items-center gap-6 py-4 lg:grid">
-          <nav className="flex items-center gap-6 text-[15px] text-ink-800 xl:gap-9 xl:text-[16px]">
-            {/* The way back to the front page, from anywhere. */}
-            <Link href="/" className={`flex items-center gap-1.5 whitespace-nowrap font-semibold hover:text-brand-600 ${pathname === "/" ? "text-brand-600" : "text-ink-900"}`}>
-              <Home size={17} strokeWidth={1.8} /> Home
-            </Link>
-            {[...TOP_LINKS, { href: "/sell", label: "Sell With Us" }].map((l, i) => (
-              <Link key={l.href} href={l.href} className={`whitespace-nowrap hover:text-brand-600 hover:underline hover:underline-offset-4 ${i === 3 ? "hidden xl:inline" : ""}`}>
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-
-          <Link href="/" className="flex shrink-0 items-center justify-center text-ink-900">
+        {/* Wide screens: the logo, a long search box, and the icons with their names. */}
+        <div className="container-wide hidden items-center gap-6 py-3 lg:flex xl:gap-8">
+          <Link href="/" className="flex shrink-0 items-center text-ink-900">
             <BrandLogoFull size="md" onLight />
           </Link>
-
-          <div className="flex items-center justify-end gap-1">
-            {/* The search box, open and ready to type in, where there is room
-                for it; a labelled button that drops it open where there is not. */}
-            <div className="mr-2 hidden w-[250px] shrink-0 xl:block min-[1500px]:w-[300px]">
-              <SearchBar className="border border-ink-600/25" />
+          <div className="min-w-0 flex-1">
+            <SearchBar variant="store" />
+          </div>
+          <div className="flex shrink-0 items-end gap-1">
+            <div className="flex flex-col items-center gap-0.5 text-ink-800">
+              <HeaderAccount onLight />
             </div>
-            <button
-              type="button"
-              aria-label="Search"
-              aria-expanded={searching}
-              onClick={() => setSearching((v) => !v)}
-              className="rounded-md p-2 text-ink-900 transition hover:text-brand-600 xl:hidden"
-            >
-              <span className="flex items-center gap-2 rounded-full border border-ink-600/25 py-2 pl-3 pr-4 text-[13px] text-ink-700/70">
-                <Search size={18} strokeWidth={1.6} /> Search
-              </span>
-            </button>
-            <a href={telHref(site.phoneDisplay)} aria-label={`Call ${site.phoneDisplay}`} className="rounded-md px-2 py-2 text-ink-800 transition hover:text-brand-600">
-              <Phone size={22} strokeWidth={1.4} />
+            <WishlistLabel />
+            <IconLabel href="/track" icon={Package} label="Orders" />
+            <IconLabel href="/stores" icon={MapPin} label="Branches" />
+            <a href={telHref(site.phoneDisplay)} className="hidden flex-col items-center gap-0.5 px-2 text-ink-800 transition hover:text-brand-600 xl:flex">
+              <Phone size={24} strokeWidth={1.4} />
+              <span className="text-[12px] leading-none">Call us</span>
             </a>
-            <HeaderAccount onLight />
-            <HeaderWishlist />
-            <HeaderCart />
+            <CartLabel />
           </div>
         </div>
 
-        {/* Wide screens: the row of capitals, spread from edge to edge. */}
+        {/* Wide screens: the departments, spread from edge to edge. */}
         <div className="hidden border-t border-ink-600/10 lg:block">
-          <nav className="container-wide relative flex items-center justify-between gap-x-4">
-            {(() => {
-              const menu = (m: Menu, accent = false) => {
-                const on = m.match.some((x) => pathname.startsWith(x));
-                return (
-                  <div key={m.href} className="group/menu">
-                    <Link
-                      href={m.href}
-                      className={`${rowLink} ${
-                        on
-                          ? "!border-brand-500 text-brand-600"
-                          : `!border-transparent ${accent ? "text-brand-600" : "text-ink-900"} group-hover/menu:!border-brand-500 group-hover/menu:text-brand-600`
-                      }`}
-                    >
-                      {m.label} <ChevronDown size={14} strokeWidth={1.5} />
-                    </Link>
-                    <div className="invisible absolute left-0 top-full z-50 w-[34rem] opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
-                      <div className="grid grid-cols-[13rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
-                        <div className="bg-brand-500 p-6 text-white">
-                          <p className="font-display text-[26px] leading-tight">{m.label}</p>
-                          <p className="mt-2 text-[13.5px] leading-relaxed text-white/90">{m.blurb}</p>
-                          <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
-                            Go to {m.label}
-                          </Link>
-                        </div>
-                        <div className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
-                          {m.links.map((l) => (
-                            <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
-                              {l.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              };
-              return (
-                <>
-                  {menu(MENUS[0])}
-                  {SHOP_ROW.map((c) => (
-                    <Link key={c.href} href={c.href} className={`${rowLink} !border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600`}>
-                      {c.label}
-                    </Link>
-                  ))}
-                  {menu(MENUS[1])}
-                  {menu(MENUS[2])}
-                  {menu(MENUS[3], true)}
-                </>
-              );
-            })()}
+          <nav className="container-wide relative flex items-center justify-between gap-x-3">
+            <Link
+              href="/"
+              className={`${deptLink} gap-1.5 ${pathname === "/" ? "!border-brand-500 font-semibold text-brand-600" : "!border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600"}`}
+            >
+              <Home size={16} strokeWidth={1.8} /> Home
+            </Link>
+            {menu(MENUS[0])}
+            {DEPARTMENTS.map((d) => (
+              <Link
+                key={d.href}
+                href={d.href}
+                className={`${deptLink} !border-transparent text-ink-900 hover:!border-brand-500 hover:text-brand-600 ${d.wide ? "hidden xl:flex" : ""}`}
+              >
+                {d.label}
+              </Link>
+            ))}
+            {menu(MENUS[1])}
+            {menu(MENUS[2])}
+            {menu(MENUS[3], true)}
             <div className="group/more">
-              <button type="button" className={`${rowLink} !border-transparent text-ink-900 group-hover/more:text-brand-600`}>
-                More <ChevronDown size={14} strokeWidth={1.5} />
+              <button type="button" className={`${deptLink} !border-transparent text-ink-900 group-hover/more:text-brand-600`}>
+                More <ChevronDown size={14} strokeWidth={1.75} />
               </button>
               <div className="invisible absolute right-0 top-full z-50 w-[26rem] opacity-0 transition duration-150 group-hover/more:visible group-hover/more:opacity-100 group-focus-within/more:visible group-focus-within/more:opacity-100">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-1 bg-white p-6 shadow-2xl ring-1 ring-ink-600/10">
@@ -378,86 +404,31 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        {/* Wide screens: the search box drops open under the bar. */}
-        {searching && (
-          <div className="hidden border-t border-ink-600/10 lg:block xl:hidden">
-            <div className="container-wide py-3">
-              <div className="mx-auto max-w-2xl">
-                <SearchBar className="border border-ink-600/20" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Phone: the two businesses that aren't the shop. They were reachable
-            only through the desktop nav, which a phone never renders. The home
-            page shows a larger pair of its own, so this stands down there. */}
-        <div
-          className={`container-wide gap-2 pb-2.5 lg:hidden ${
-            onInnerPage ? "flex" : "hidden"
-          }`}
-        >
-          <Link
-            href="/learn"
-            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 pl-1 pr-3 font-bold text-white shadow-md ring-1 ring-black/5 ${
-              pathname.startsWith("/learn") ? "bg-green-700" : "bg-green-600"
-            }`}
-          >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-green-700">
-              <GraduationCap size={13} strokeWidth={2.6} />
-            </span>
-            <span className="leading-[1.15]">
-              <span className="block text-[11px] font-black tracking-tight">Learn</span>
-              <span className="block text-[7.5px] font-bold uppercase tracking-[0.06em] text-white/80">
-                Academy
-              </span>
-            </span>
-          </Link>
-          <Link
-            href="/development"
-            className={`press flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 pl-1 pr-3 font-bold text-white shadow-md ring-1 ring-black/5 ${
-              pathname.startsWith("/development") ? "bg-ink-800" : "bg-ink-600"
-            }`}
-          >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink-700">
-              <Code2 size={13} strokeWidth={2.6} />
-            </span>
-            <span className="leading-[1.15]">
-              <span className="block text-[11px] font-black tracking-tight">Develop</span>
-              <span className="block text-[7.5px] font-bold uppercase tracking-[0.06em] text-white/80">
-                Software
-              </span>
-            </span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Phones and tablets: the categories as a row of quiet white pills
-          that slides sideways. */}
-      <nav className="border-y border-ink-600/10 bg-white lg:hidden">
-        <div className="container-wide flex items-center gap-x-2 overflow-x-auto py-2 no-scrollbar">
-          <Link
-            href="/"
-            className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
-              pathname === "/" ? "border-ink-900 bg-ink-900 text-white" : "border-brand-500 bg-white text-brand-600"
-            }`}
-          >
-            <Home size={13} strokeWidth={2.2} /> Home
-          </Link>
-          {CATEGORIES.map((c) => (
+        {/* Phones and tablets: the departments as a row of quiet white pills
+            that slides sideways. */}
+        <nav className="border-t border-ink-600/10 bg-white lg:hidden">
+          <div className="container-wide flex items-center gap-x-2 overflow-x-auto py-2 no-scrollbar">
             <Link
-              key={c.href}
-              href={c.href}
-              className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
-                pathname === c.href ? "border-ink-900 bg-ink-900 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
+              href="/"
+              className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
+                pathname === "/" ? "border-ink-900 bg-ink-900 text-white" : "border-brand-500 bg-white text-brand-600"
               }`}
             >
-              {c.label}
+              <Home size={13} strokeWidth={2.2} /> Home
             </Link>
-          ))}
-        </div>
-      </nav>
-      <div className="hidden border-b border-ink-600/10 lg:block" />
+            {CATEGORIES.map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
+                  pathname === c.href ? "border-ink-900 bg-ink-900 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
+                }`}
+              >
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
 
       {/* Mobile slide-down menu */}
       {open && (
@@ -519,6 +490,7 @@ export function SiteHeader() {
           </nav>
         </div>
       )}
-    </header>
+      </header>
+    </>
   );
 }

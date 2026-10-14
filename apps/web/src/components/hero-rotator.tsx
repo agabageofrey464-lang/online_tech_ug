@@ -174,12 +174,12 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
   // Only the slide on show, the one it replaced and the one after carry a photograph.
   const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
 
-  // A photograph from edge to edge, shown as it is, with a few words over it:
-  // a line of small capitals, the headline, and a plain link. Nothing else is
-  // drawn on it, so the picture does the work. On a wide screen the words sit
-  // to the left; on a phone they sit low and centred.
+  // A banner from edge to edge, as the big home stores run theirs: the
+  // photograph behind, the headline large and centred in capitals, one solid
+  // button, and the dots beneath the banner rather than on it.
   return (
-    <div className="group/hero relative h-[400px] overflow-hidden bg-ink-900 sm:h-[460px] lg:h-[500px] xl:h-[560px]">
+    <div>
+    <div className="group/hero relative h-[420px] overflow-hidden bg-ink-900 sm:h-[400px] xl:h-[440px]">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -200,29 +200,29 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
               <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
             ))}
           {/* Just enough shade under the words for them to be read. */}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/35 to-ink-900/10 lg:bg-gradient-to-r lg:from-ink-900/80 lg:via-ink-900/35 lg:to-transparent" />
+          <div className="absolute inset-0 bg-ink-900/55" />
 
           {/* Only the slide on show has words: the one underneath keeps its
               photograph while the next fades in, and nothing else. */}
-          <div className={`container-wide relative z-10 flex h-full items-end justify-center pb-12 lg:items-center lg:justify-start lg:pb-0 ${idx === i ? "" : "invisible"}`}>
-            <div key={`w${i}`} className="strip-rise max-w-[34rem] text-center text-white lg:w-[30rem]">
-              <p className="text-[11.5px] font-semibold uppercase tracking-[0.22em] sm:text-[13px]">{s.eyebrow}</p>
+          <div className={`container-wide relative z-10 flex h-full items-center justify-center ${idx === i ? "" : "invisible"}`}>
+            <div key={`w${i}`} className="strip-rise max-w-[56rem] text-center text-white">
+              <p className="text-[13px] font-medium uppercase tracking-[0.2em] sm:text-[16px]">{s.eyebrow}</p>
               <SlideHeading
                 first={heading && idx === 0}
-                className={`mt-4 font-display leading-[1.1] ${
+                className={`mt-2 font-display !font-semibold uppercase leading-[1.02] tracking-[0.01em] ${
                   // An advertiser's headline can be any length; ours are written to fit.
-                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[24px] sm:text-[30px] xl:text-[34px]" : "line-clamp-3 text-[30px] sm:text-[40px] xl:text-[46px]"
+                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[28px] sm:text-[40px] xl:text-[46px]" : "line-clamp-3 text-[38px] sm:text-[58px] xl:text-[70px]"
                 }`}
               >
                 {s.title}
               </SlideHeading>
-              <p className="mx-auto mt-3 hidden max-w-md text-[16px] leading-relaxed text-white/90 sm:line-clamp-2">{s.sub}</p>
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[12px] font-bold uppercase tracking-[0.16em] sm:mt-6 sm:text-[13px]">
-                <Go href={s.href} className="border-b border-transparent pb-0.5 transition hover:border-white">
-                  {s.cta} ›
+              <p className="mx-auto mt-3 line-clamp-2 max-w-xl text-[15px] leading-snug text-white/95 sm:text-[20px]">{s.sub}</p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+                <Go href={s.href} className="rounded-[3px] bg-brand-500 px-10 py-3 text-[17px] font-medium text-white shadow-md transition hover:bg-brand-600 sm:text-[19px]">
+                  {s.cta}
                 </Go>
-                <Link href={s.more.href} className="border-b border-transparent pb-0.5 text-white/85 transition hover:border-white hover:text-white">
-                  {s.more.label} ›
+                <Link href={s.more.href} className="text-[15px] font-medium text-white underline underline-offset-4 hover:text-brand-200 sm:text-[16px]">
+                  {s.more.label}
                 </Link>
               </div>
               {s.ad && <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">Sponsored</p>}
@@ -247,8 +247,10 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
         <ChevronRight size={20} />
       </button>
 
-      {/* One short line per slide; the one on show fills as its time runs. */}
-      <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center gap-1.5 pb-4">
+    </div>
+
+      {/* One dot per slide, beneath the banner; the one on show is filled. */}
+      <div className="flex justify-center gap-3 py-4">
         {slides.map((s, idx) => (
           <button
             key={`${s.tab}-${idx}`}
@@ -256,10 +258,8 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
             onClick={() => setI(idx)}
             aria-label={`Show ${s.tab}`}
             aria-current={idx === i}
-            className="relative h-[3px] w-9 overflow-hidden bg-white/40 sm:w-12"
-          >
-            {idx === i && <span key={`c${i}`} className="strip-count !h-full !bg-white" style={{ animationDuration: `${STAY}ms` }} />}
-          </button>
+            className={`h-2.5 w-2.5 rounded-full transition ${idx === i ? "bg-ink-900" : "bg-ink-700/25 hover:bg-ink-700/50"}`}
+          />
         ))}
       </div>
     </div>

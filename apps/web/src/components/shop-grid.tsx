@@ -126,6 +126,8 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
   // ?deals=1 — only products reduced from a recorded old price. The link said
   // "deals" for a long time while the page showed the whole catalogue.
   const [onlyDeals, setOnlyDeals] = useState(false);
+  // ?max= — everything under a budget, from the home page's budget tiles.
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
   // Render in pages — showing all ~200 products at once fires hundreds of image
   // requests and makes the page crawl on mobile data. Sixty at a time, though:
   // at thirty-six a shopper on a wide screen reached "Loading more products…"
@@ -146,6 +148,8 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
     if (br) setBrands(br.split(",").filter((b) => BRANDS.includes(b)));
     if (q) setQuery(q);
     setOnlyDeals(params.get("deals") === "1" || params.get("deals") === "true");
+    const mx = Number(params.get("max"));
+    setMaxPrice(Number.isFinite(mx) && mx > 0 ? mx : null);
     if (s === "new" || s === "price-asc" || s === "price-desc" || s === "popular") setSort(s);
   }, [params]);
 
@@ -173,13 +177,14 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
   }
 
   const anyFilter =
-    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || onlyDeals || query.trim() !== "";
+    category !== "All" || brands.length > 0 || conditions.length > 0 || priceIdx !== 0 || onlyDeals || maxPrice !== null || query.trim() !== "";
   function clearAll() {
     setCategory("All");
     setBrands([]);
     setConditions([]);
     setPriceIdx(0);
     setOnlyDeals(false);
+    setMaxPrice(null);
     setQuery("");
     setSort("popular");
     router.replace("/shop", { scroll: false });
@@ -223,6 +228,7 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
     if (brands.length) list = list.filter((p) => brands.includes(p.brand));
     if (conditions.length) list = list.filter((p) => p.condition != null && conditions.includes(p.condition));
     list = list.filter((p) => p.price >= band.min && p.price < band.max);
+    if (maxPrice) list = list.filter((p) => p.price < maxPrice);
     if (onlyDeals) list = list.filter((p) => p.oldPrice != null && p.oldPrice > p.price);
     if (query.trim()) {
       const q = query.toLowerCase();
@@ -266,7 +272,7 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
       return [...list, ...related];
     }
     return list;
-  }, [products, category, brands, conditions, query, sort, priceIdx, onlyDeals]);
+  }, [products, category, brands, conditions, query, sort, priceIdx, onlyDeals, maxPrice]);
 
   const pageItems = filtered.slice(0, shown);
 
@@ -324,6 +330,7 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
     ...conditions.map((c) => ({ label: c, off: () => toggleCondition(c) })),
     ...(priceIdx !== 0 ? [{ label: PRICE_BANDS[priceIdx].label, off: () => setPriceIdx(0) }] : []),
     ...(onlyDeals ? [{ label: "Reduced prices", off: toggleDeals }] : []),
+    ...(maxPrice ? [{ label: `Under UGX ${maxPrice.toLocaleString("en-US")}`, off: () => { setMaxPrice(null); setParam("max", null); } }] : []),
     ...(query.trim() ? [{ label: `“${query.trim()}”`, off: () => { setQuery(""); setParam("q", null); } }] : []),
   ];
 
@@ -454,7 +461,7 @@ export function ShopGrid({ items, home = false }: { items?: Product[]; home?: bo
       {/* Results */}
       {filtered.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-5 sm:gap-x-4 sm:gap-y-8 md:grid-cols-3 lg:gap-x-8 lg:gap-y-12 min-[1900px]:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 min-[1800px]:grid-cols-5">
             {pageItems.map((p) => (
               <ProductCard key={p.id} product={p} large />
             ))}

@@ -11,8 +11,8 @@ import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { ShopHeading } from "@/components/shop-heading";
 import { ShopGrid } from "@/components/shop-grid";
+import { BeyondMosaic, BudgetTiles, DealTiles, FeaturedBrands, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
 import { SoftwareBand } from "@/components/software-band";
-import { PromoBand } from "@/components/promo-band";
 import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { OrderBanner } from "@/components/order-banner";
@@ -21,7 +21,7 @@ import { DailyUpdates } from "@/components/daily-updates";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { ExploreMore } from "@/components/explore-more";
 import { BranchShowcase } from "@/components/branch-showcase";
-import { CategoryShowcase, type ShowcaseTile } from "@/components/category-showcase";
+import { type ShowcaseTile } from "@/components/category-showcase";
 import { FeatureBanner } from "@/components/feature-banner";
 import { card } from "@/lib/thumb";
 import { Reveal } from "@/components/reveal";
@@ -273,10 +273,62 @@ export default async function HomePage() {
       blurb: `${g.items.length} ${g.brand} products in stock, each tested before it leaves the shop.`,
     }));
 
+  // ── The sections in the big home stores' manner ──
+  // Each department by a photograph, its lowest price and its name.
+  const dealTiles: DealTile[] = CATEGORY_ORDER.filter((c) => byCat(c).length > 0)
+    .slice(0, 8)
+    .map((c) => ({
+      name: c === "Stickers" ? "Laptop Skins" : c,
+      href: c === "Stickers" ? "/stickers" : `/shop?cat=${encodeURIComponent(c)}`,
+      img: card(productImage(pictured(byCat(c), LEAD[c]))),
+      from: Math.min(...byCat(c).map((p) => p.price)),
+    }));
+  // Four budgets, each pictured by the dearest thing that still fits it.
+  // Each is pictured from the kind of thing most bought at that budget.
+  const BUDGETS: [number, string, string[]][] = [
+    [100_000, "Accessories & upgrades", ["Accessories", "Power", "Storage"]],
+    [500_000, "Phones & storage", ["Phones"]],
+    [2_000_000, "Laptops & phones", ["Laptops"]],
+    [5_000_000, "Premium laptops", ["Laptops"]],
+  ];
+  const photographed = (p: Product) => productImage(p).startsWith("/products/");
+  const budgetTiles: BudgetTile[] = BUDGETS.map(([max, name, kinds], i) => {
+    const floor = i === 0 ? 0 : BUDGETS[i - 1][0];
+    const fits = inStock.filter((p) => p.price < max && p.price >= floor && photographed(p));
+    const pool = [...fits.filter((p) => kinds.includes(p.category)), ...fits].sort((a, b) => Number(kinds.includes(b.category)) - Number(kinds.includes(a.category)) || (b.rating ?? 0) - (a.rating ?? 0));
+    return { max, name, href: `/shop?max=${max}`, img: card(productImage(pool[0] ?? inStock[0])) };
+  });
+  // The best-rated products, one from each department.
+  const seenCat = new Set<string>();
+  const topPicks: PickTile[] = [...inStock]
+    .filter(photographed)
+    .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+    .filter((p) => (seenCat.has(p.category) ? false : (seenCat.add(p.category), true)))
+    .slice(0, 5)
+    .map((p) => ({ name: p.name, href: `/shop/${p.id}`, img: card(productImage(p)), price: p.price }));
+  const featured = ["HP", "Lenovo", "Dell", "Apple"]
+    .map((b) => ({ name: b, items: inStock.filter((p) => p.brand.toLowerCase() === b.toLowerCase()) }))
+    .filter((g) => g.items.length > 0)
+    .map((g) => ({ name: g.name, count: g.items.length, img: card(productImage(pictured(g.items, LEAD[g.name]))) }));
+
   return (
-    <div className="container-wide space-y-6 py-3">
-      {/* The page opens as the shop does: its name, the categories as a rail,
-          the filters, and the first rows of products. */}
+    <div className="container-wide space-y-10 py-3 sm:space-y-14">
+      {/* The rotating banner leads the page, edge to edge. */}
+      <div className="bleed-wide -mt-3">
+        <HeroRotator heading={false} />
+      </div>
+
+      {/* Every department: a photograph, its lowest price, its name. */}
+      <DealTiles tiles={dealTiles} />
+
+      {/* Software, training, internships and repairs, as a mosaic. */}
+      <BeyondMosaic />
+
+      {/* Spending to a budget. */}
+      <BudgetTiles tiles={budgetTiles} />
+
+      {/* The whole collection: the categories as a rail, the filters, and the
+          first rows of products. */}
       <div>
         <Suspense fallback={<div className="mb-3 h-40 bg-ink-600/10" />}>
           <ShopHeading stats={listingStats} tiles={railTiles} fresh={newest.map((p) => card(productImage(p)))} home />
@@ -286,17 +338,9 @@ export default async function HomePage() {
         </Suspense>
       </div>
 
-      {/* The rotating hero — the shop, the academy, the software, repairs,
-          internships and adverts — follows the first rows of products. */}
-      <div className="bleed-wide">
-        <HeroRotator heading={false} />
-      </div>
-
-      {/* One band under the hero: what the shop promises, and the way in. */}
-      <PromoBand eyebrow="Online Tech Uganda" title="Tested, warranted and delivered the same day" cta="Shop now" href="/shop" />
-
-      {/* The range, by category or by brand, straight under the band. */}
-      <CategoryShowcase categories={categoryTiles} brands={brandTiles} />
+      {/* Single best-rated products, and the brands people ask for by name. */}
+      <TopPicks picks={topPicks} />
+      <FeaturedBrands brands={featured} />
 
       {/* This intake's internship advert, as the wide banner after the range —
           it removes itself once the intake is under way. Here on wide screens;
