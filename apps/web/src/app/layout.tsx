@@ -110,9 +110,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* This intake's announcement, above everything — on wide screens.
                     A phone has one strip above the header and one beneath it;
                     the intake takes its turn in the one beneath. */}
-                <div className="hidden lg:block">
-                  <IntakeBanner />
-                </div>
+                {/* On every screen: most students who apply do it from a phone. */}
+                <IntakeBanner />
                 {/* The Store and Academy festival strip, above the header on every
                     screen. It is outside the sticky header, so it scrolls away. */}
                 <PromoStrip />

@@ -322,7 +322,7 @@ export function SiteHeader() {
   return (
     <>
       {/* Phones: the family of businesses, in one thin dark line. */}
-      <div className="bg-ink-900 text-white lg:hidden">
+      <div className="hidden bg-ink-900 text-white">
         <nav className="container-wide flex items-center overflow-x-auto py-2 text-[12px] no-scrollbar sm:justify-center sm:text-[13px]">
           {FAMILY.map((f, i) => {
             const on = f.match.some((x) => pathname.startsWith(x));

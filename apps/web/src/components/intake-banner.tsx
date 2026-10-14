@@ -50,7 +50,7 @@ export function IntakeBanner() {
           <span className="mt-1 block font-display text-[17px] font-semibold leading-tight sm:text-[22px]">
             Industrial training begins Monday 2 November
           </span>
-          <span className="mt-0.5 block text-[11.5px] leading-snug text-white/85 sm:text-[13px]">
+          <span className="mt-0.5 hidden text-[11.5px] leading-snug text-white/85 sm:block sm:text-[13px]">
             7 weeks · online · classes 9:00 am – 12:00 pm, 3–4 days a week · UGX 150,000
           </span>
         </Link>
