@@ -521,7 +521,7 @@ export function SiteHeader() {
             <Link
               href="/"
               className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
-                pathname === "/" ? "green-ribbon border-green-700 text-white" : "border-brand-500 bg-white text-brand-600"
+                pathname === "/" ? "green-ribbon border-[#1b7a8c] text-white" : "border-brand-500 bg-white text-brand-600"
               }`}
             >
               <Home size={13} strokeWidth={2.2} /> Home
@@ -531,7 +531,7 @@ export function SiteHeader() {
                 key={c.href}
                 href={c.href}
                 className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition ${
-                  pathname === c.href ? "green-ribbon border-green-700 text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
+                  pathname === c.href ? "green-ribbon border-[#1b7a8c] text-white" : "border-ink-700/25 bg-white text-ink-900 hover:border-ink-900"
                 }`}
               >
                 {c.label}
