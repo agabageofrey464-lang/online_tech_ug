@@ -368,7 +368,7 @@ export function SiteHeader() {
 
         {/* Wide screens: a dark row of links — selling, what we do with the
             internships as a yellow badge, the rest muted, and the phone. */}
-        <div className="hidden bg-green-700 text-white lg:block">
+        <div className="green-ribbon hidden text-white lg:block">
           <div className="container-wide flex items-center gap-x-4 py-2 text-[13px] font-medium">
             <Link href="/sell" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600">
               <Star size={12} className="fill-white" /> Sell on {site.name}

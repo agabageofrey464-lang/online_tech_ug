@@ -36,7 +36,7 @@ export function IntakeBanner() {
   if (hidden) return null;
 
   return (
-    <div className="relative overflow-hidden bg-[#067a39] text-white">
+    <div className="green-ribbon relative overflow-hidden text-white">
       <span aria-hidden className="strip-shine" />
       <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-brand-500" />
       <div className="container-wide flex items-center gap-3 py-2.5 pr-10 sm:gap-4 sm:py-3">

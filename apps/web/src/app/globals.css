@@ -674,3 +674,10 @@ main h2 > span.rounded-full:empty,
 main h2 > span.rounded-sm:empty {
   display: none;
 }
+
+/* The green of the top bars: the academy green with soft diagonal bands of a
+   lighter and a darker shade, so it reads as a material rather than a flat fill. */
+.green-ribbon {
+  background-color: var(--color-green-700);
+  background-image: repeating-linear-gradient(115deg, transparent 0 46px, rgba(255, 255, 255, 0.07) 46px 70px, transparent 70px 96px, rgba(0, 0, 0, 0.07) 96px 108px);
+}
