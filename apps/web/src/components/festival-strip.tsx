@@ -39,6 +39,7 @@ const FALLBACK: Strip[] = [
   // Industrial training, aimed squarely at the universities. Software first,
   // because that is most of what an intern here actually does.
   { text: "ONLINE industrial training — UGX 150,000, 1 Nov to 18 Dec", cta: "Apply now", href: "/internship", bg: "bg-brand-500", img: "/courses/python-programming.webp" },
+  { text: "KIU students — your Nov–Dec internship, online, starts 2 Nov", cta: "Apply now", href: "/apply", bg: "bg-green-700", img: "/courses/web-development.webp" },
   { text: "Makerere · Kyambogo · MUBS · UCU · Ndejje — online internships from 1 Nov", cta: "See placements", href: "/internship", bg: "bg-green-700", img: "/courses/web-development.webp" },
   { text: "Intern on real client software from home — websites, systems, databases", cta: "Apply for a place", href: "/internship", bg: "bg-brand-700", img: "/courses/computer-networking.webp" },
   { text: "Acceptance & completion letters signed on our letterhead", cta: "Start your application", href: "/internship", bg: "bg-brand-700", img: "/courses/graphic-design.webp" },
