@@ -179,7 +179,7 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
   // button, and the dots beneath the banner rather than on it.
   return (
     <div>
-    <div className="group/hero relative h-[420px] overflow-hidden bg-ink-900 sm:h-[400px] xl:h-[440px]">
+    <div className="group/hero relative h-[440px] overflow-hidden bg-ink-900 sm:h-[480px] xl:h-[560px]">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -200,28 +200,28 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
               <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
             ))}
           {/* Just enough shade under the words for them to be read. */}
-          <div className="absolute inset-0 bg-ink-900/55" />
+          <div className="absolute inset-0 bg-ink-900/45" />
 
           {/* Only the slide on show has words: the one underneath keeps its
               photograph while the next fades in, and nothing else. */}
           <div className={`container-wide relative z-10 flex h-full items-center justify-center ${idx === i ? "" : "invisible"}`}>
             <div key={`w${i}`} className="strip-rise max-w-[56rem] text-center text-white">
-              <p className="text-[13px] font-medium uppercase tracking-[0.2em] sm:text-[16px]">{s.eyebrow}</p>
+              <p className="font-display text-[18px] italic leading-tight sm:text-[24px]">{s.eyebrow}</p>
               <SlideHeading
                 first={heading && idx === 0}
-                className={`mt-2 font-display !font-semibold uppercase leading-[1.02] tracking-[0.01em] ${
+                className={`mt-2 font-display uppercase leading-[1.02] tracking-[0.01em] ${
                   // An advertiser's headline can be any length; ours are written to fit.
-                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[28px] sm:text-[40px] xl:text-[46px]" : "line-clamp-3 text-[38px] sm:text-[58px] xl:text-[70px]"
+                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[28px] sm:text-[40px] xl:text-[46px]" : "line-clamp-3 text-[36px] sm:text-[52px] xl:text-[60px]"
                 }`}
               >
                 {s.title}
               </SlideHeading>
               <p className="mx-auto mt-3 line-clamp-2 max-w-xl text-[15px] leading-snug text-white/95 sm:text-[20px]">{s.sub}</p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-                <Go href={s.href} className="rounded-[3px] bg-brand-500 px-10 py-3 text-[17px] font-medium text-white shadow-md transition hover:bg-brand-600 sm:text-[19px]">
+                <Go href={s.href} className="bg-white px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-900 shadow-md transition hover:bg-brand-500 hover:text-white sm:text-[13px]">
                   {s.cta}
                 </Go>
-                <Link href={s.more.href} className="text-[15px] font-medium text-white underline underline-offset-4 hover:text-brand-200 sm:text-[16px]">
+                <Link href={s.more.href} className="text-[12px] font-semibold uppercase tracking-[0.16em] text-white underline underline-offset-4 hover:text-brand-200 sm:text-[13px]">
                   {s.more.label}
                 </Link>
               </div>

@@ -11,7 +11,7 @@ import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { ShopHeading } from "@/components/shop-heading";
 import { ShopGrid } from "@/components/shop-grid";
-import { BeyondMosaic, BudgetTiles, DealTiles, FeaturedBrands, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
+import { BeyondMosaic, Bestsellers, BudgetTiles, DealTiles, FeaturedBrands, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
 import { SoftwareBand } from "@/components/software-band";
 import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
@@ -282,6 +282,7 @@ export default async function HomePage() {
       href: c === "Stickers" ? "/stickers" : `/shop?cat=${encodeURIComponent(c)}`,
       img: card(productImage(pictured(byCat(c), LEAD[c]))),
       from: Math.min(...byCat(c).map((p) => p.price)),
+      blurb: c === "Stickers" ? "Twenty designs, fitted at the shop." : (BLURBS[c] ?? `${byCat(c).length} in stock.`),
     }));
   // Four budgets, each pictured by the dearest thing that still fits it.
   // Each is pictured from the kind of thing most bought at that budget.
@@ -294,7 +295,8 @@ export default async function HomePage() {
   const photographed = (p: Product) => productImage(p).startsWith("/products/");
   const budgetTiles: BudgetTile[] = BUDGETS.map(([max, name, kinds], i) => {
     const floor = i === 0 ? 0 : BUDGETS[i - 1][0];
-    const fits = inStock.filter((p) => p.price < max && p.price >= floor && photographed(p));
+    // Any product with a photograph of its own — our shelf's or a vendor's upload.
+    const fits = inStock.filter((p) => p.price < max && p.price >= floor && (photographed(p) || Boolean(p.image)));
     const pool = [...fits.filter((p) => kinds.includes(p.category)), ...fits].sort((a, b) => Number(kinds.includes(b.category)) - Number(kinds.includes(a.category)) || (b.rating ?? 0) - (a.rating ?? 0));
     return { max, name, href: `/shop?max=${max}`, img: card(productImage(pool[0] ?? inStock[0])) };
   });
@@ -323,6 +325,15 @@ export default async function HomePage() {
 
       {/* Software, training, internships and repairs, as a mosaic. */}
       <BeyondMosaic />
+
+      {/* The best-rated products, in a rail. */}
+      <Bestsellers>
+        {topSelling.map((p) => (
+          <div key={p.id} className="w-[46%] shrink-0 snap-start sm:w-[30%] lg:w-[calc((100%-3.75rem)/5)]">
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </Bestsellers>
 
       {/* Spending to a budget. */}
       <BudgetTiles tiles={budgetTiles} />

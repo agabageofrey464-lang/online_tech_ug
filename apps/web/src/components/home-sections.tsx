@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
+import { ProgressRail } from "@/components/progress-rail";
 import { SafeImage } from "@/components/safe-image";
 import { ugx } from "@/lib/site";
 
@@ -9,11 +10,19 @@ import { ugx } from "@/lib/site";
  * price in large figures and the name with an arrow beneath.
  */
 
-export function SectionTitle({ children, sub }: { children: React.ReactNode; sub?: string }) {
+/** Every section's title the same way: the name in the serif on the left, and "Shop all" on the right. */
+export function SectionTitle({ children, sub, href, cta = "Shop all" }: { children: React.ReactNode; sub?: string; href?: string; cta?: string }) {
   return (
-    <div className="mb-5 text-center sm:mb-7">
-      <h2 className="text-[23px] !font-bold uppercase leading-tight tracking-[0.01em] text-ink-900 sm:text-[32px]">{children}</h2>
-      {sub && <p className="mt-1.5 text-[14.5px] text-ink-700/80 sm:text-[16px]">{sub}</p>}
+    <div className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
+      <div className="min-w-0">
+        <h2 className="text-[28px] leading-tight text-ink-900 sm:text-[36px]">{children}</h2>
+        {sub && <p className="mt-1 text-[14.5px] text-ink-700/80 sm:text-[16px]">{sub}</p>}
+      </div>
+      {href && (
+        <Link href={href} className="group flex shrink-0 items-center gap-2 pb-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-900 underline underline-offset-4 hover:text-brand-600 sm:text-[13px]">
+          {cta} <ArrowRight size={20} strokeWidth={1.1} className="transition group-hover:translate-x-1" />
+        </Link>
+      )}
     </div>
   );
 }
@@ -34,28 +43,31 @@ function From({ amount, label = "From" }: { amount: number; label?: string }) {
   );
 }
 
-export type DealTile = { name: string; href: string; img: string; from: number };
+export type DealTile = { name: string; href: string; img: string; from: number; blurb: string };
 
-/** Each department, pictured, with its lowest price and its name. */
+/**
+ * Each department as a tall photograph in a sliding rail: its name, a line
+ * about it, its lowest price and "Shop now".
+ */
 export function DealTiles({ tiles }: { tiles: DealTile[] }) {
   return (
     <section aria-label="Shop by department">
-      <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-9 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+      <SectionTitle href="/shop">Shop By Department</SectionTitle>
+      <ProgressRail>
         {tiles.map((t) => (
-          <Link key={t.href} href={t.href} className="group w-[44%] shrink-0 snap-start sm:w-auto">
-            <span className="relative block aspect-[5/4] overflow-hidden rounded-t-md bg-white">
-              <SafeImage src={t.img} alt={t.name} fill sizes="(max-width: 640px) 45vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.05]" />
+          <Link key={t.href} href={t.href} className="group w-[70%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
+            <span className="relative block aspect-[4/5] overflow-hidden bg-white">
+              <SafeImage src={t.img} alt={t.name} fill sizes="(max-width: 640px) 70vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
             </span>
-            <span className="block h-[6px] rounded-b-md bg-brand-400" />
-            <span className="mt-3 block">
-              <From amount={t.from} />
+            <span className="mt-4 flex items-baseline justify-between gap-2">
+              <span className="font-display text-[22px] leading-tight text-ink-900">{t.name}</span>
+              <span className="whitespace-nowrap text-[13px] text-ink-700/80">From {ugx(t.from)}</span>
             </span>
-            <span className="mt-2 flex items-center justify-center gap-1 text-[14px] text-ink-800 group-hover:text-brand-600 sm:text-[16px]">
-              {t.name} <ChevronRight size={16} strokeWidth={2} />
-            </span>
+            <span className="mt-1.5 line-clamp-2 block text-[14.5px] leading-snug text-ink-700/85">{t.blurb}</span>
+            <span className="mt-3 inline-block text-[14px] text-ink-900 underline underline-offset-4 group-hover:text-brand-600">Shop Now</span>
           </Link>
         ))}
-      </div>
+      </ProgressRail>
     </section>
   );
 }
@@ -65,14 +77,14 @@ export function BeyondMosaic() {
   const dark = "group relative flex flex-col items-center justify-center overflow-hidden rounded-md bg-ink-800 p-6 text-center text-white";
   return (
     <section aria-label="Beyond the shop">
-      <SectionTitle sub="Software, training and support — under the same roof as the shop.">Beyond The Shop</SectionTitle>
+      <SectionTitle sub="Software, training and support — under the same roof as the shop." href="/services" cta="All services">Beyond The Shop</SectionTitle>
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
         <Link href="/development" className="group relative block aspect-[4/3] overflow-hidden rounded-md lg:aspect-auto lg:min-h-[560px]">
           <SafeImage src="/hero/hero-6.webp" alt="Software being built at Online Tech Uganda" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition duration-700 group-hover:scale-[1.03]" />
           <span className="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/30 to-transparent" />
           <span className="absolute inset-x-0 bottom-0 flex flex-col items-center p-6 text-center text-white sm:p-10">
             <span className="rounded-sm bg-brand-500 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.12em]">Software</span>
-            <span className="mt-3 text-[30px] font-semibold leading-tight sm:text-[46px]">Websites, Apps &amp; Systems</span>
+            <span className="mt-3 font-display text-[32px] leading-tight sm:text-[48px]">Websites, Apps &amp; Systems</span>
             <span className="mt-4 bg-white px-8 py-3 text-[15px] font-semibold text-ink-900 transition group-hover:bg-brand-500 group-hover:text-white">Get a quote</span>
           </span>
         </Link>
@@ -81,21 +93,21 @@ export function BeyondMosaic() {
             <SafeImage src="/web/photo-1509062522246-3755977927d7.webp" alt="A class at the Online Tech academy" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition duration-700 group-hover:scale-[1.03]" />
             <span className="absolute inset-0 bg-ink-900/45" />
             <span className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white">
-              <span className="text-[28px] font-semibold leading-tight sm:text-[40px]">Learn Academy</span>
+              <span className="font-display text-[30px] leading-tight sm:text-[42px]">Learn Academy</span>
               <span className="mt-1 text-[15px] sm:text-[18px]">22 computer courses, with a certificate.</span>
               <span className="mt-4 bg-white px-8 py-3 text-[15px] font-semibold text-ink-900 transition group-hover:bg-brand-500 group-hover:text-white">Browse courses</span>
             </span>
           </Link>
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <Link href="/internship" className={`${dark} min-h-[180px] lg:min-h-[272px]`}>
-              <span className="text-[22px] font-semibold leading-tight sm:text-[32px]">Internships</span>
+              <span className="font-display text-[24px] leading-tight sm:text-[34px]">Internships</span>
               <span className="mt-1.5 text-[13.5px] text-white/85 sm:text-[17px]">Industrial training on real client work.</span>
               <span className="mt-4 flex items-center gap-1 text-[15px] font-semibold sm:text-[18px]">
                 Apply now <ChevronRight size={18} className="transition group-hover:translate-x-1" />
               </span>
             </Link>
             <Link href="/services#repairs-support" className={`${dark} min-h-[180px] !bg-brand-600 lg:min-h-[272px]`}>
-              <span className="text-[22px] font-semibold leading-tight sm:text-[32px]">Repairs</span>
+              <span className="font-display text-[24px] leading-tight sm:text-[34px]">Repairs</span>
               <span className="mt-1.5 text-[13.5px] text-white/90 sm:text-[17px]">Free diagnosis, from UGX 30,000.</span>
               <span className="mt-4 flex items-center gap-1 text-[15px] font-semibold sm:text-[18px]">
                 Book a repair <ChevronRight size={18} className="transition group-hover:translate-x-1" />
@@ -114,7 +126,7 @@ export type BudgetTile = { max: number; img: string; name: string; href: string 
 export function BudgetTiles({ tiles }: { tiles: BudgetTile[] }) {
   return (
     <section aria-label="Shop by budget">
-      <SectionTitle sub="Tell us what you can spend — everything here is in stock.">Shop By Budget</SectionTitle>
+      <SectionTitle sub="Tell us what you can spend — everything here is in stock." href="/find" cta="Find my laptop">Shop By Budget</SectionTitle>
       <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
         {tiles.map((t) => (
           <Link key={t.max} href={t.href} className="group w-[62%] shrink-0 snap-start sm:w-auto">
@@ -144,7 +156,7 @@ export type PickTile = { name: string; href: string; img: string; price: number 
 export function TopPicks({ picks }: { picks: PickTile[] }) {
   return (
     <section aria-label="Top picks">
-      <SectionTitle>More Top Picks</SectionTitle>
+      <SectionTitle href="/shop">Top Picks</SectionTitle>
       <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-6">
         {picks.map((p) => (
           <Link key={p.href} href={p.href} className="group text-center">
@@ -176,20 +188,30 @@ export function TopPicks({ picks }: { picks: PickTile[] }) {
   );
 }
 
+/** The best-rated products, in a sliding rail with the shop's own cards. */
+export function Bestsellers({ children }: { children: React.ReactNode }) {
+  return (
+    <section aria-label="Bestsellers">
+      <SectionTitle href="/shop?sort=popular">Bestsellers</SectionTitle>
+      <ProgressRail>{children}</ProgressRail>
+    </section>
+  );
+}
+
 export type BrandTile = { name: string; img: string; count: number };
 
 /** The brands asked for by name, each by one of its products. */
 export function FeaturedBrands({ brands }: { brands: BrandTile[] }) {
   return (
     <section aria-label="Featured brands">
-      <SectionTitle>Featured Brands</SectionTitle>
+      <SectionTitle href="/categories">Featured Brands</SectionTitle>
       <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {brands.map((b) => (
           <Link key={b.name} href={`/shop?brand=${encodeURIComponent(b.name)}`} className="group">
             <span className="relative block aspect-[4/3] overflow-hidden rounded-md bg-white">
               <SafeImage src={b.img} alt={b.name} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-contain p-5 transition duration-500 group-hover:scale-[1.05]" />
             </span>
-            <span className="mt-3 block text-center text-[20px] font-bold uppercase tracking-[0.04em] text-ink-900 group-hover:text-brand-600 sm:text-[24px]">{b.name}</span>
+            <span className="mt-3 block text-center font-display text-[24px] text-ink-900 group-hover:text-brand-600 sm:text-[28px]">{b.name}</span>
             <span className="block text-center text-[13px] text-ink-700/75">{b.count} in stock ›</span>
           </Link>
         ))}

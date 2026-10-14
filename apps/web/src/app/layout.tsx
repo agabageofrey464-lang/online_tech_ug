@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Jost } from "next/font/google";
+import { EB_Garamond, Jost } from "next/font/google";
 import "./globals.css";
 import { IntakeBanner } from "@/components/intake-banner";
 import { MobileAdSlot } from "@/components/mobile-ad-slot";
@@ -24,8 +24,9 @@ import { Analytics } from "@/components/analytics";
 import { GoogleTranslate } from "@/components/google-translate";
 import { site } from "@/lib/site";
 
-// One clean geometric sans for everything — headings, names, prices and
-// forms — as the large home stores use. Headings take it at a heavier weight.
+// A refined serif for headings, over one clean geometric sans for everything
+// read — names, prices, forms — as the finer home stores pair them.
+const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif-face", display: "swap", style: ["normal", "italic"] });
 const sans = Jost({ subsets: ["latin"], variable: "--font-sans-face", display: "swap", style: ["normal", "italic"] });
 
 // The browser's own bars take the shop's orange, and a visitor may always zoom.
@@ -89,7 +90,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body className="min-h-screen antialiased">
         <SiteStructuredData />
         <Analytics />

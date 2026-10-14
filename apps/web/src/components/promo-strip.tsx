@@ -182,7 +182,7 @@ function Side({
       <span className="strip-spring shrink-0 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-extrabold text-ink-900 shadow-sm sm:px-3 sm:text-[13px]">
         {offer.deal}
       </span>
-      <span className="strip-rise-late hidden truncate text-xs font-medium text-white/90 2xl:inline">{offer.note}</span>
+      <span className="strip-rise-late hidden truncate text-xs font-medium text-white/90 lg:inline">{offer.note}</span>
     </Link>
   );
 }
@@ -273,43 +273,37 @@ export function PromoStrip() {
       <div
         className={`stripes relative z-10 min-w-0 flex-1 items-center transition-colors duration-500 ${storeBg} ${
           turn === "store" ? "flex" : "hidden"
-        } lg:flex`}
+        }`}
       >
-        <div className="relative flex min-h-[46px] w-full min-w-0 items-center overflow-hidden py-2 pl-[clamp(0.875rem,2.5vw,2rem)] pr-3 sm:min-h-[62px] lg:pr-10">
+        <div className="container-wide relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 sm:min-h-[62px]">
           <span aria-hidden className="strip-shine" />
           <span aria-hidden key={`sc${store.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
-          <Side key={`s${store.title}`} offer={store} label={store.fresh ? "New in" : "Store"} icon={<ShoppingBag size={10} />} className="flex-1" />
+          <Side key={`s${store.title}`} offer={store} label={store.fresh ? "New in" : "Store"} icon={<ShoppingBag size={10} />} className="strip-float flex-1 lg:justify-center" />
           {/* Call to order belongs with the shop — a tablet has room for it
               here; a desktop moves it to the far end of the banner. */}
           <a
             href={telHref(site.phoneDisplay)}
-            className="ml-3 hidden shrink-0 items-center gap-2 rounded-full bg-black/15 px-3 py-1.5 text-[11px] font-bold leading-tight ring-1 ring-white/20 sm:flex lg:hidden"
+            className="hidden shrink-0 items-center gap-2 rounded-full bg-black/15 px-3 py-1.5 text-[11px] font-bold leading-tight ring-1 ring-white/20 sm:flex"
           >
             <span className="text-white/80">Call</span>
             <span className="text-sm font-black tracking-tight">{site.phoneDisplay}</span>
           </a>
         </div>
-        {/* The slanted edge, in the store's own colour, with the yellow seam
-            that joins the two halves. Desktop only. */}
-        <span
-          aria-hidden
-          className={`absolute -right-5 top-0 hidden h-full w-10 -skew-x-[18deg] shadow-[4px_0_0_0_#FCDC04] transition-colors duration-500 lg:block ${storeBg}`}
-        />
       </div>
 
       {/* ── Academy ───────────────────────────────────────────── */}
       <div
         className={`stripes relative min-w-0 flex-1 items-center ${academyBg} ${
           turn === "academy" ? "flex" : "hidden"
-        } lg:flex`}
+        }`}
       >
-        <div className="relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 pl-3 pr-[clamp(0.875rem,2.5vw,2rem)] sm:min-h-[62px] lg:pl-12">
+        <div className="container-wide relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 sm:min-h-[62px]">
           <span aria-hidden className="strip-shine" style={{ animationDelay: "1.7s" }} />
           <span aria-hidden key={`ac${course.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
-          <Side key={`a${course.title}`} offer={course} label="Academy" icon={<GraduationCap size={11} />} className="flex-1" />
+          <Side key={`a${course.title}`} offer={course} label="Academy" icon={<GraduationCap size={11} />} className="strip-float flex-1 lg:justify-center" />
           <a
             href={telHref(site.phoneDisplay)}
-            className="hidden shrink-0 items-center gap-2 rounded-full bg-black/20 px-3 py-1.5 text-right text-[11px] font-bold leading-tight ring-1 ring-white/20 2xl:flex"
+            className="hidden shrink-0 items-center gap-2 rounded-full bg-black/20 px-3 py-1.5 text-right text-[11px] font-bold leading-tight ring-1 ring-white/20 sm:flex"
           >
             <span className="text-white/80">Call to order</span>
             <span className="text-base font-black tracking-tight">{site.phoneDisplay}</span>
