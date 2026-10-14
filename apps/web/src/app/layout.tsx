@@ -113,11 +113,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="hidden lg:block">
                   <IntakeBanner />
                 </div>
-                {/* Wide screens: the Store and Academy festival strip, above the header.
-                    It is outside the sticky header, so it scrolls away with the page. */}
-                <div className="hidden lg:block">
-                  <PromoStrip />
-                </div>
+                {/* The Store and Academy festival strip, above the header on every
+                    screen. It is outside the sticky header, so it scrolls away. */}
+                <PromoStrip />
                 <SiteHeader />
                 {/* Phones: the one advert under the header, changing every two hours. */}
                 <MobileAdSlot />

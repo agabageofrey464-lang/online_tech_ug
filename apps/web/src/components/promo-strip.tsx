@@ -139,6 +139,21 @@ const academyOffers = (): Offer[] => [
   ...ACADEMY,
 ];
 
+/** One business emoji for where a message leads, so each strip says at a glance what it is about. */
+function emojiFor(href: string, text = ""): string {
+  const t = `${href} ${text}`.toLowerCase();
+  if (t.includes("intern")) return "💼";
+  if (t.includes("/learn") || t.includes("academy") || t.includes("course") || t.includes("intake")) return "🎓";
+  if (t.includes("repair") || t.includes("services")) return "🛠️";
+  if (t.includes("development") || t.includes("software") || t.includes("website")) return "💻";
+  if (t.includes("phone")) return "📱";
+  if (t.includes("laptop") || t.includes("ram") || t.includes("ssd")) return "💻";
+  if (t.includes("deliver")) return "🚚";
+  if (t.includes("network") || t.includes("router")) return "📶";
+  if (t.includes("new")) return "✨";
+  return "🛒";
+}
+
 /** One side of the banner: a picture, what it is, and the offer. */
 function Side({
   offer,
@@ -176,6 +191,7 @@ function Side({
           {label}
         </span>
         <span className="strip-rise mt-0.5 truncate font-display text-[15px] font-black uppercase leading-tight tracking-tight drop-shadow-sm sm:text-lg">
+          <span aria-hidden className="mr-1.5 normal-case">{offer.fresh ? "✨" : emojiFor(offer.href, offer.title)}</span>
           {offer.title}
         </span>
       </span>
@@ -264,7 +280,10 @@ export function PromoStrip() {
   // and the store never borrows it, so the halves cannot land on the same
   // shade and lose the seam between them.
   const storeBg = store.bg.startsWith("bg-green") ? "bg-brand-600" : store.bg;
-  const academyBg = "bg-green-700";
+  // The academy takes a colour of its own each turn — crimson, gold, plum —
+  // so it never melts into the green link row beneath it.
+  const ACADEMY_BGS = ["bg-[#b3122e]", "bg-[#b07a06]", "bg-[#7a1f5c]"];
+  const academyBg = ACADEMY_BGS[Math.floor(tick / 2) % ACADEMY_BGS.length];
   const turn = tick % 2 === 0 ? "store" : "academy";
 
   return (

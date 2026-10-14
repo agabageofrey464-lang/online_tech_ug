@@ -498,8 +498,8 @@ body {
    band's colour, with the words standing on top of them. */
 .stripes {
   background-image:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.11) 0 1.5px, transparent 1.5px 16px),
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.11) 0 1.5px, transparent 1.5px 16px);
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0 3px, transparent 3px 18px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.16) 0 3px, transparent 3px 18px);
 }
 
 /* ─── Light bands ──────────────────────────────────────────────────

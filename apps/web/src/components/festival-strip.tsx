@@ -7,7 +7,7 @@ import { upcomingIntakes } from "@/lib/intakes";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { isAcademyLink, offersFor } from "@/lib/academy-zone";
+import { isAcademyLink, offersFor } from "@/lib/academy-zone";
 
 /**
  * Slim rotating offer bar, shown on every page under the header.
@@ -76,6 +76,21 @@ const intakeStrips = (): Strip[] =>
     img: i.img,
   }));
 
+/** One business emoji for where a message leads, so each strip says at a glance what it is about. */
+function emojiFor(href: string, text = ""): string {
+  const t = `${href} ${text}`.toLowerCase();
+  if (t.includes("intern")) return "💼";
+  if (t.includes("/learn") || t.includes("academy") || t.includes("course") || t.includes("intake")) return "🎓";
+  if (t.includes("repair") || t.includes("services")) return "🛠️";
+  if (t.includes("development") || t.includes("software") || t.includes("website")) return "💻";
+  if (t.includes("phone")) return "📱";
+  if (t.includes("laptop") || t.includes("ram") || t.includes("ssd")) return "💻";
+  if (t.includes("deliver")) return "🚚";
+  if (t.includes("network") || t.includes("router")) return "📶";
+  if (t.includes("new")) return "✨";
+  return "🛒";
+}
+
 export function FestivalStrip() {
   const pathname = usePathname();
   // Where we are is only trusted once the page is running in the browser:
@@ -133,7 +148,7 @@ export function FestivalStrip() {
 
   // Not on the home page: it has the festival strip above this and the offer
   // band just below, and a third bar of offers was one too many.
-  if (closed || !where.known || where.home) return null;
+  if (closed || !where.known) return null;
   const s = strips[i % strips.length];
   if (!s) return null;
 
@@ -148,9 +163,8 @@ export function FestivalStrip() {
 
   return (
     <div
-      // Always the charcoal: it sits directly under the orange-and-green strip,
-      // and a second band of colour there was too much.
-      className="stripes relative bg-ink-800 text-white"
+      // A colour of its own for each message, never the charcoal.
+      className={`stripes relative text-white transition-colors duration-500 ${["bg-[#7a1f5c]", "bg-brand-600", "bg-[#b07a06]", "bg-[#b3122e]"][i % 4]}`}
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
@@ -171,7 +185,7 @@ export function FestivalStrip() {
               />
             </span>
           )}
-          <span className="text-[12.5px] font-semibold leading-snug sm:text-[13px]">{s.text}</span>
+          <span className="text-[12.5px] font-semibold leading-snug sm:text-[13px]"><span aria-hidden className="mr-1.5 text-[15px]">{emojiFor(s.href, s.text)}</span>{s.text}</span>
           <span className="whitespace-nowrap rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-bold ring-1 ring-white/25 transition group-hover:bg-white group-hover:text-ink-900">
             {s.cta} →
           </span>

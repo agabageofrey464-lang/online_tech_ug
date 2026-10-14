@@ -338,19 +338,6 @@ export function SiteHeader() {
         </nav>
       </div>
 
-      {/* Phones: one message at a time, with its link. */}
-      <div className="bg-ink-700 text-white lg:hidden">
-        <div key={tick} className="strip-rise">
-        <p className="container-wide flex items-center justify-center gap-2 py-2 text-[13px] font-semibold sm:text-[14px]">
-          <Truck size={17} strokeWidth={1.8} className="hidden shrink-0 sm:block" />
-          <span className="truncate">{a.text}</span>
-          <Link href={a.href} className="shrink-0 whitespace-nowrap font-medium underline underline-offset-4 hover:text-brand-200">
-            {a.cta}
-          </Link>
-        </p>
-        </div>
-      </div>
-
       <header id="top" className="sticky top-0 z-50 border-b border-ink-600/15 bg-white">
         {/* Phone and tablet: menu, logo, account and cart; the search beneath. */}
         <div className="container-wide lg:hidden">

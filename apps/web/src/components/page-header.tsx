@@ -30,14 +30,14 @@ export function PageHeader({
   return (
     <section className="relative overflow-hidden bg-ink-800 text-white">
       <Image src={image} alt={`${title} — Online Tech Uganda`} fill priority sizes="100vw" className="object-cover" />
-      <div className="absolute inset-0 bg-ink-900/55" />
+      <div className="absolute inset-0 bg-ink-900/60" />
       <div className="container-page relative flex min-h-[250px] flex-col py-5 sm:min-h-[360px] xl:min-h-[420px]">
         {crumbs && crumbs.length > 0 && (
           <Breadcrumbs items={crumbs} light />
         )}
         <div className="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center py-6 text-center">
-          {eyebrow && <p className="font-display text-[18px] italic text-brand-200">{eyebrow}</p>}
-          <h1 className="mt-1 text-[34px] leading-[1.1] text-balance-pretty sm:text-[52px]">{title}</h1>
+          {eyebrow && <p className="font-display text-[19px] italic text-brand-200 sm:text-[24px]">{eyebrow}</p>}
+          <h1 className="mt-2 font-display text-[32px] uppercase leading-[1.05] text-balance-pretty sm:text-[52px]">{title}</h1>
           {subtitle && <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-white/95 sm:text-[18px]">{subtitle}</p>}
           {children && <div className="mt-5 flex flex-wrap items-center justify-center gap-3">{children}</div>}
         </div>
