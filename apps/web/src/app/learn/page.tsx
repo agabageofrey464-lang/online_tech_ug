@@ -13,6 +13,8 @@ import { CourseBrowser } from "@/components/course-browser";
 import { IntakeAdverts } from "@/components/intake-adverts";
 import { PromoBanners } from "@/components/promo-banners";
 import { SafeImage } from "@/components/safe-image";
+import { StoryRail } from "@/components/home-sections";
+import { card } from "@/lib/thumb";
 import { courses, liveClasses, REGISTRATION_FEE } from "@/lib/data";
 import { courseNotes } from "@/lib/course-notes";
 import { ugx, whatsappLink } from "@/lib/site";
@@ -104,16 +106,9 @@ export default function LearnPage() {
           <Breadcrumbs items={[{ label: "Learn" }]} light />
 
           <div className="mx-auto mt-8 max-w-3xl text-center">
-            <div className="flex flex-wrap justify-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider ring-1 ring-white/20">
-                <Award size={13} /> Certificate included
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20">
-                <Building2 size={13} /> Physical &amp; Online classes
-              </span>
-            </div>
-            <h1 className="mt-4 text-[36px] leading-[1.1] sm:text-[54px]">
-              Learn Real Computer Skills, <em className="font-display text-brand-200">Pay Per Lesson</em>
+            <p className="font-display text-[19px] italic text-brand-200 sm:text-[24px]">Certificate included · in class or online</p>
+            <h1 className="mt-2 font-display text-[34px] uppercase leading-[1.05] sm:text-[54px]">
+              Real Computer Skills, Lesson By Lesson
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-white/95">
               From your very first click to graphic design, Excel and coding. Built for students and
@@ -125,7 +120,7 @@ export default function LearnPage() {
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="#courses"
-                className="press bg-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90"
+                className="press bg-white px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-brand-500 hover:text-white"
               >
                 Browse courses
               </Link>
@@ -160,6 +155,24 @@ export default function LearnPage() {
         <IntakeAdverts />
         {/* The course offers that used to rotate on the home page. */}
         <PromoBanners zone="academy" />
+      </section>
+
+      {/* The courses as a rail of tall photographs, each the way into its page. */}
+      <section className="container-page pt-14">
+        <StoryRail
+          title="Popular Courses"
+          sub="Two months each, with hands-on practicals and a certificate."
+          href="#courses"
+          cta="All courses"
+          more="See the course"
+          tiles={courses.slice(0, 12).map((c) => ({
+            href: `/learn/${c.slug}`,
+            img: card(`/courses/${c.slug}.webp`),
+            title: c.title,
+            meta: `${c.level} · ${c.lessons} lessons`,
+            line: c.blurb,
+          }))}
+        />
       </section>
 
       {/* The four study tracks, moved off the home page so that page stays a

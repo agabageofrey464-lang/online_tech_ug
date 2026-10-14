@@ -13,7 +13,9 @@ import {
   Phone,
   ArrowRight,
 } from "lucide-react";
-import { PageHeader } from "@/components/page-header";
+import Image from "next/image";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { StoryRail } from "@/components/home-sections";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { ExploreMore } from "@/components/explore-more";
 import { ServicesGrid } from "@/components/services-grid";
@@ -110,62 +112,43 @@ export default function DevelopmentPage() {
 
   return (
     <>
-      <PageHeader
-        crumbs={[{ label: "Development" }]}
-        eyebrow="Software"
-        title="Software & Website Development"
-        subtitle="Custom software, mobile apps, websites, online shops and management systems — built in Kampala."
-      />
-
-      {/* ── Hero pitch ── */}
-      <section className="container-page pt-10">
-        <div className="relative overflow-hidden rounded-card bg-ink-700 p-6 text-white sm:p-9">
-          <span className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-500/25 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
-              <Code2 size={13} /> Hire our developers
-            </span>
-            <h2 className="mt-3 text-2xl font-black leading-tight sm:text-3xl">
-              Software built for how business works here
-            </h2>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/85">
-              Mobile Money instead of card-only checkout. Pages that load on a slow connection.
-              Systems your staff can actually use. We build for Ugandan businesses, schools and
-              organisations — and we&apos;re here afterwards when you need a change.
+      {/* ── Banner: a photograph across the page, the words centred over it,
+          as the finer home stores open each of their departments. ── */}
+      <section className="relative overflow-hidden bg-ink-900 text-white">
+        <Image src="/hero/hero-6.webp" alt="Software being built at Online Tech Uganda" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-ink-900/60" />
+        <div className="container-page relative py-5 sm:py-8">
+          <Breadcrumbs items={[{ label: "Software" }]} light />
+          <div className="mx-auto max-w-3xl py-10 text-center sm:py-16">
+            <p className="font-display text-[19px] italic text-brand-200 sm:text-[24px]">Built in Kampala, for how business works here</p>
+            <h1 className="mt-2 font-display text-[36px] uppercase leading-[1.05] sm:text-[56px]">Software &amp; Websites</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-white/90 sm:text-[18px]">
+              Custom systems, mobile apps, websites and online shops — with Mobile Money, pages that load on a slow
+              connection, and people here afterwards when you need a change.
             </p>
-
-            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+              <a href={quote} target="_blank" rel="noreferrer" className="bg-white px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-brand-500 hover:text-white">
+                Get a free quote
+              </a>
+              <Link href="/portfolio" className="text-[12px] font-semibold uppercase tracking-[0.16em] text-white underline underline-offset-4 hover:text-brand-200">
+                See our work
+              </Link>
+            </div>
+            <div className="mx-auto mt-8 grid max-w-xl gap-2 text-left sm:grid-cols-2">
               {WHY.slice(0, 4).map((w) => (
-                <p key={w} className="flex items-center gap-2 text-sm text-white/90">
+                <p key={w} className="flex items-center gap-2 text-[14px] text-white/90">
                   <Check size={16} className="shrink-0 text-green-400" />
                   {w}
                 </p>
               ))}
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-2.5">
-              <a
-                href={quote}
-                target="_blank"
-                rel="noreferrer"
-                className="press inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-green-700"
-              >
-                <MessageCircle size={16} /> Get a free quote
-              </a>
-              <Link
-                href="/portfolio"
-                className="press inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-ink-900 transition hover:bg-white/90"
-              >
-                See our work <ArrowRight size={15} />
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── What we build ── */}
-      <section className="container-page pt-10">
-        <h2 className="text-lg font-extrabold text-ink-900">What we build</h2>
+      <section className="container-page pt-14">
+        <h2 className="text-[28px] leading-tight text-ink-900 sm:text-[34px]">What we build</h2>
         <p className="mt-1 text-sm text-ink-700/65">
           Starting prices below. Final cost depends on what the system has to do — we quote in
           writing before any work begins.
@@ -221,48 +204,29 @@ export default function DevelopmentPage() {
         <ServicesGrid />
       </div>
 
-      {/* ── Recent work ── */}
+      {/* ── Recent work, as a rail of tall photographs ── */}
       {caseStudies().length > 0 && (
-        <section className="container-page pt-10">
-          <div className="flex items-end justify-between gap-2">
-            <h2 className="text-lg font-extrabold text-ink-900">Work we&apos;ve delivered</h2>
-            <Link href="/portfolio" className="text-sm font-bold text-brand-600 hover:underline">
-              View all →
-            </Link>
-          </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {caseStudies().map((p) => (
-              <Link
-                key={p.slug}
-                href={`/portfolio/${p.slug}`}
-                className="group overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-sm card-lift"
-              >
-                <span className="relative block h-36 w-full overflow-hidden bg-ink-50">
-                  <SafeImage
-                    src={p.shots?.[0] ?? `/portfolio/${p.slug}.webp`}
-                    alt={p.title}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                    className="object-cover transition duration-300 group-hover:scale-105"
-                  />
-                </span>
-                <span className="block p-4">
-                  <span className="block font-bold text-ink-900 group-hover:text-brand-600">
-                    {p.title}
-                  </span>
-                  {p.summary && (
-                    <span className="clamp-2 mt-1 block text-sm text-ink-700/70">{p.summary}</span>
-                  )}
-                </span>
-              </Link>
-            ))}
-          </div>
+        <section className="container-page pt-14">
+          <StoryRail
+            title="Work We've Delivered"
+            sub="Shops, systems and sites running for real businesses."
+            href="/portfolio"
+            cta="View all"
+            more="See the work"
+            tiles={caseStudies().map((w) => ({
+              href: `/portfolio/${w.slug}`,
+              img: w.shots?.[0] ?? `/portfolio/${w.slug}.webp`,
+              title: w.title,
+              meta: `${w.category} · ${w.year}`,
+              line: w.summary,
+            }))}
+          />
         </section>
       )}
 
       {/* ── Process ── */}
-      <section className="container-page pt-10">
-        <h2 className="text-lg font-extrabold text-ink-900">How we work</h2>
+      <section className="container-page pt-14">
+        <h2 className="text-[28px] leading-tight text-ink-900 sm:text-[34px]">How we work</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((s) => (
             <div
@@ -280,7 +244,7 @@ export default function DevelopmentPage() {
       </section>
 
       {/* ── Students ── */}
-      <section className="container-page pt-10">
+      <section className="container-page pt-14">
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-card border border-green-300 bg-green-50 p-6">
           <div className="max-w-xl">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
