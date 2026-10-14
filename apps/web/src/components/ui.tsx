@@ -15,9 +15,9 @@ export function SectionHeading({
   return (
     <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       {eyebrow && (
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-500">{eyebrow}</p>
+        <p className="font-display text-[18px] italic text-brand-600 sm:text-[20px]">{eyebrow}</p>
       )}
-      <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-ink-600 text-balance-pretty sm:text-3xl">
+      <h2 className="mt-1 text-[28px] leading-tight text-ink-900 text-balance-pretty sm:text-[36px]">
         {title}
       </h2>
       {subtitle && <p className="mt-3 text-base leading-relaxed text-ink-700/70">{subtitle}</p>}
@@ -41,7 +41,7 @@ const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
 };
 
 export function Button({ href, children, variant = "primary", external, className = "" }: ButtonProps) {
-  const cls = `inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition ${variants[variant]} ${className}`;
+  const cls = `inline-flex items-center justify-center gap-2 px-6 py-3.5 text-[12px] font-semibold uppercase tracking-[0.14em] transition ${variants[variant]} ${className}`;
   if (external) {
     return (
       <a href={href} target="_blank" rel="noreferrer" className={cls}>
