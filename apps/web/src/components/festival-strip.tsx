@@ -165,7 +165,7 @@ export function FestivalStrip() {
   return (
     <div
       // A colour of its own for each message, never the charcoal.
-      className="relative bg-[#16151d] text-white"
+      className="relative bg-gradient-to-r from-brand-800 via-brand-700 to-brand-800 text-white"
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
@@ -187,7 +187,7 @@ export function FestivalStrip() {
             </span>
           )}
           <span className="text-[12.5px] font-semibold leading-snug sm:text-[13px]"><span aria-hidden className="mr-1.5 text-[15px]">{emojiFor(s.href, s.text)}</span>{s.text}</span>
-          <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white transition group-hover:bg-white group-hover:text-ink-900 ${["bg-[#7a1f5c]", "bg-brand-600", "bg-[#8a5a00]", "bg-[#a50e27]"][i % 4]}`}>
+          <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-white text-brand-800 transition group-hover:bg-brand-100`}>
             {s.cta} →
           </span>
         </Link>

@@ -198,7 +198,7 @@ function Side({
           {offer.title}
         </span>
       </span>
-      <span className={`strip-spring shrink-0 rounded-full px-2.5 py-1 text-[10.5px] font-extrabold text-white shadow-sm sm:px-3 sm:text-[13px] ${accent}`}>
+      <span className={`strip-spring shrink-0 rounded-full px-2.5 py-1 text-[10.5px] font-extrabold shadow-sm sm:px-3 sm:text-[13px] bg-white text-brand-800`}>
         {offer.deal}
       </span>
       <span className="strip-rise-late hidden truncate text-xs font-medium text-white/90 lg:inline">{offer.note}</span>
@@ -293,7 +293,7 @@ export function PromoStrip() {
     <div className="relative flex overflow-hidden text-white">
       {/* ── Store ─────────────────────────────────────────────── */}
       <div
-        className={`relative z-10 min-w-0 flex-1 items-center bg-[#16151d] ${
+        className={`relative z-10 min-w-0 flex-1 items-center bg-gradient-to-r from-brand-800 via-brand-700 to-brand-800 ${
           turn === "store" ? "flex" : "hidden"
         }`}
       >
@@ -316,7 +316,7 @@ export function PromoStrip() {
 
       {/* ── Academy ───────────────────────────────────────────── */}
       <div
-        className={`relative min-w-0 flex-1 items-center bg-[#16151d] ${
+        className={`relative min-w-0 flex-1 items-center bg-gradient-to-r from-brand-800 via-brand-700 to-brand-800 ${
           turn === "academy" ? "flex" : "hidden"
         }`}
       >
