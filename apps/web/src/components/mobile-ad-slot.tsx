@@ -28,7 +28,7 @@ const TURNS = [
     icon: ShoppingBag,
     bar: "bg-brand-500",
     button: "bg-white text-ink-900",
-    label: "Shop",
+    label: "🛒 Shop",
     text: "Phones & laptops, delivered today",
     cta: "Shop now",
     href: "/shop",
@@ -36,9 +36,9 @@ const TURNS = [
   {
     key: "software",
     icon: Code2,
-    bar: "bg-ink-800",
+    bar: "bg-[#7a1f5c]",
     button: "bg-brand-500 text-white",
-    label: "Software",
+    label: "💻 Software",
     text: "Websites, apps & systems built",
     cta: "Get a quote",
     href: "/development",
@@ -48,7 +48,7 @@ const TURNS = [
     icon: GraduationCap,
     bar: "bg-[#067a39]",
     button: "bg-brand-500 text-white",
-    label: "Internship",
+    label: "💼 Internship",
     text: "Starts 2 Nov · UGX 150,000",
     cta: "Apply",
     href: "/apply",
@@ -74,7 +74,7 @@ export function MobileAdSlot() {
 
   const a = TURNS[turn];
   return (
-    <div className={`lg:hidden ${a.bar} text-white`}>
+    <div className={`stripes lg:hidden ${a.bar} text-white`}>
       <Link href={a.href} className="container-wide flex items-center gap-2.5 py-2">
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
           <a.icon size={15} />

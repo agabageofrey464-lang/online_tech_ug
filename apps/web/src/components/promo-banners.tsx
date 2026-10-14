@@ -421,7 +421,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
     // strip says the same thing in a line: what it is, the offer, the button.
     <section
       aria-label="Offers"
-      className={`group/promo relative overflow-hidden text-white transition-colors duration-500 ${b.bg}`}
+      className={`stripes group/promo relative overflow-hidden text-white transition-colors duration-500 ${b.bg}`}
       style={b.bgHex ? { backgroundColor: b.bgHex } : undefined}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
