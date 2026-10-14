@@ -381,7 +381,7 @@ export function SiteHeader() {
 
         {/* Wide screens: a dark row of links — selling, what we do with the
             internships as a yellow badge, the rest muted, and the phone. */}
-        <div className="hidden bg-ink-800 text-white lg:block">
+        <div className="hidden bg-green-700 text-white lg:block">
           <div className="container-wide flex items-center gap-x-4 py-2 text-[13px] font-medium">
             <Link href="/sell" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600">
               <Star size={12} className="fill-white" /> Sell on {site.name}
@@ -413,12 +413,12 @@ export function SiteHeader() {
               )}
               <span className="h-3.5 w-px shrink-0 bg-white/25" aria-hidden />
               {UTILITY_SECONDARY.map((it) => (
-                <Link key={it.href} href={it.href} className="whitespace-nowrap text-white/60 transition hover:text-white">
+                <Link key={it.href} href={it.href} className="whitespace-nowrap text-white/80 transition hover:text-white">
                   {it.label}
                 </Link>
               ))}
             </nav>
-            <a href={telHref(site.phoneDisplay)} className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 transition hover:bg-white/20">
+            <a href={telHref(site.phoneDisplay)} className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-black/15 px-3 py-1 ring-1 ring-white/20 transition hover:bg-black/25">
               <Phone size={12} /> {site.phoneDisplay}
             </a>
           </div>
