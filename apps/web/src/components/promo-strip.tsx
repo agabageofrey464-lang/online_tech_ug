@@ -157,6 +157,7 @@ function emojiFor(href: string, text = ""): string {
 /** One side of the banner: a picture, what it is, and the offer. */
 function Side({
   offer,
+  accent = "bg-brand-500",
   label,
   icon,
   className = "",
@@ -165,6 +166,8 @@ function Side({
   label: string;
   icon: React.ReactNode;
   className?: string;
+  /** The offer's colour, used for its price pill. */
+  accent?: string;
 }) {
   return (
     <Link href={offer.href} className={`flex min-w-0 items-center gap-2.5 sm:gap-3 ${className}`}>
@@ -195,7 +198,7 @@ function Side({
           {offer.title}
         </span>
       </span>
-      <span className="strip-spring shrink-0 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-extrabold text-ink-900 shadow-sm sm:px-3 sm:text-[13px]">
+      <span className={`strip-spring shrink-0 rounded-full px-2.5 py-1 text-[10.5px] font-extrabold text-white shadow-sm sm:px-3 sm:text-[13px] ${accent}`}>
         {offer.deal}
       </span>
       <span className="strip-rise-late hidden truncate text-xs font-medium text-white/90 lg:inline">{offer.note}</span>
@@ -290,14 +293,15 @@ export function PromoStrip() {
     <div className="relative flex overflow-hidden text-white">
       {/* ── Store ─────────────────────────────────────────────── */}
       <div
-        className={`stripes relative z-10 min-w-0 flex-1 items-center transition-colors duration-500 ${storeBg} ${
+        className={`relative z-10 min-w-0 flex-1 items-center bg-[#16151d] ${
           turn === "store" ? "flex" : "hidden"
         }`}
       >
         <div className="container-wide relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 sm:min-h-[62px]">
+          <span aria-hidden className={`absolute inset-y-0 left-0 w-1.5 transition-colors duration-500 ${storeBg}`} />
           <span aria-hidden className="strip-shine" />
           <span aria-hidden key={`sc${store.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
-          <Side key={`s${store.title}`} offer={store} label={store.fresh ? "New in" : "Store"} icon={<ShoppingBag size={10} />} className="strip-float flex-1 lg:justify-center" />
+          <Side key={`s${store.title}`} offer={store} label={store.fresh ? "New in" : "Store"} icon={<ShoppingBag size={10} />} className="strip-float flex-1 lg:justify-center" accent={storeBg} />
           {/* Call to order belongs with the shop — a tablet has room for it
               here; a desktop moves it to the far end of the banner. */}
           <a
@@ -312,14 +316,15 @@ export function PromoStrip() {
 
       {/* ── Academy ───────────────────────────────────────────── */}
       <div
-        className={`stripes relative min-w-0 flex-1 items-center ${academyBg} ${
+        className={`relative min-w-0 flex-1 items-center bg-[#16151d] ${
           turn === "academy" ? "flex" : "hidden"
         }`}
       >
         <div className="container-wide relative flex min-h-[46px] w-full min-w-0 items-center gap-3 overflow-hidden py-2 sm:min-h-[62px]">
+          <span aria-hidden className={`absolute inset-y-0 left-0 w-1.5 transition-colors duration-500 ${academyBg}`} />
           <span aria-hidden className="strip-shine" style={{ animationDelay: "1.7s" }} />
           <span aria-hidden key={`ac${course.title}`} className="strip-count" style={{ animationDuration: `${2 * TURN}ms` }} />
-          <Side key={`a${course.title}`} offer={course} label="Academy" icon={<GraduationCap size={11} />} className="strip-float flex-1 lg:justify-center" />
+          <Side key={`a${course.title}`} offer={course} label="Academy" icon={<GraduationCap size={11} />} className="strip-float flex-1 lg:justify-center" accent={academyBg} />
           <a
             href={telHref(site.phoneDisplay)}
             className="hidden shrink-0 items-center gap-2 rounded-full bg-black/20 px-3 py-1.5 text-right text-[11px] font-bold leading-tight ring-1 ring-white/20 sm:flex"
