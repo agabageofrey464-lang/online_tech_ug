@@ -24,49 +24,47 @@ export function SidebarExtras() {
     })
     .slice(0, 5);
 
+  // Each of the three offers is a picture with its words over it: a photograph
+  // across the box, the crossing pattern, a large emoji and the button.
+  const offer = (o: { href: string; img: string; emoji: string; title: string; line: string; cta: string; bg: string; fade: string }) => (
+    <Link key={o.href} href={o.href} className={`stripes group relative flex min-h-[300px] flex-col overflow-hidden rounded-md text-white shadow-sm ${o.bg}`}>
+      <span className="relative z-10 block p-5">
+        <span aria-hidden className="block text-[34px] leading-none drop-shadow">{o.emoji}</span>
+        <span className="mt-3 block font-display text-[24px] leading-tight">{o.title}</span>
+        <span className="mt-1 block text-[14px] text-white/90">{o.line}</span>
+        <span className="mt-4 inline-block rounded-full bg-white px-4 py-1.5 text-[12.5px] font-bold text-ink-900 transition group-hover:bg-ink-900 group-hover:text-white">{o.cta}</span>
+      </span>
+      {/* The photograph fills the lower part, fading up into the colour. */}
+      <span className="relative mt-auto block h-[150px] overflow-hidden">
+        <SafeImage src={o.img} alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.06]" />
+        <span className={`absolute inset-x-0 top-0 h-16 bg-gradient-to-b ${o.fade} to-transparent`} />
+      </span>
+    </Link>
+  );
+
   return (
     <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {/* Budget finder — the most useful thing we can offer someone still deciding */}
-      <Link
-        href="/find"
-        className="group block overflow-hidden rounded bg-brand-500 p-4 text-white shadow-sm transition hover:brightness-110"
-      >
-        <span className="text-xl" aria-hidden>
-          🔎
-        </span>
-        <p className="mt-1 text-sm font-extrabold leading-snug">Not sure what to buy?</p>
-        <p className="mt-0.5 text-xs text-white/85">
-          Tell us your budget — we&apos;ll show what genuinely fits.
-        </p>
-        <span className="mt-2 inline-block rounded-full bg-white px-3 py-1 text-[11px] font-bold text-brand-600">
-          Find my laptop →
-        </span>
-      </Link>
+      {offer({ href: "/find", img: "/web/photo-1496181133206-80ce9b88a853.webp", emoji: "🔎", title: "Not sure what to buy?", line: "Tell us your budget — we'll show what genuinely fits.", cta: "Find my laptop →", bg: "bg-brand-500", fade: "from-brand-500" })}
 
-      {/* Trending */}
-      <div className="rounded bg-white p-4 shadow-sm">
-        <p className="text-sm font-bold text-ink-900">Trending now</p>
-        <ul className="mt-2 space-y-2.5">
+      {/* Trending: the list, with the top one's photograph as a header. */}
+      <div className="overflow-hidden rounded-md bg-white shadow-sm">
+        <div className="stripes flex items-center gap-2 bg-[#b07a06] px-4 py-3 text-white">
+          <span aria-hidden className="text-[20px]">🔥</span>
+          <span className="font-display text-[20px] leading-none">Trending now</span>
+        </div>
+        <ul className="space-y-2.5 p-4">
           {trending.map((p, i) => (
             <li key={p.id}>
               <Link href={`/shop/${p.id}`} className="group flex items-center gap-2.5">
-                <span className="w-3 shrink-0 text-center text-[11px] font-black text-ink-600/30">
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white ${i === 0 ? "bg-brand-500" : i === 1 ? "bg-[#b07a06]" : "bg-ink-600/40"}`}>
                   {i + 1}
                 </span>
-                <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-ink-50">
-                  <SafeImage
-                    src={productImage(p)}
-                    alt={p.name}
-                    fill
-                    sizes="40px"
-                    className="object-contain p-0.5"
-                  />
+                <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded bg-ink-50">
+                  <SafeImage src={productImage(p)} alt={p.name} fill sizes="44px" className="object-contain p-0.5" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="clamp-2 block text-[11.5px] leading-snug text-ink-800 group-hover:text-brand-600">
-                    {p.name}
-                  </span>
-                  <span className="block text-[11px] font-bold text-ink-900">{ugx(p.price)}</span>
+                  <span className="clamp-2 block text-[12px] leading-snug text-ink-800 group-hover:text-brand-600">{p.name}</span>
+                  <span className="block text-[12px] font-bold text-ink-900">{ugx(p.price)}</span>
                 </span>
               </Link>
             </li>
@@ -74,37 +72,8 @@ export function SidebarExtras() {
         </ul>
       </div>
 
-      {/* Courses — the other half of the business, easy to miss from the shop */}
-      <Link
-        href="/learn"
-        className="group block overflow-hidden rounded bg-green-600 p-4 text-white shadow-sm transition hover:brightness-110"
-      >
-        <span className="text-xl" aria-hidden>
-          🎓
-        </span>
-        <p className="mt-1 text-sm font-extrabold leading-snug">Learn computer skills</p>
-        <p className="mt-0.5 text-xs text-white/85">
-          22 courses, physical or online, with a certificate.
-        </p>
-        <span className="mt-2 inline-block rounded-full bg-white px-3 py-1 text-[11px] font-bold text-green-700">
-          Browse courses →
-        </span>
-      </Link>
-
-      {/* Repairs */}
-      <Link
-        href="/services#repairs-support"
-        className="group block overflow-hidden rounded bg-ink-700 p-4 text-white shadow-sm transition hover:brightness-110"
-      >
-        <span className="text-xl" aria-hidden>
-          🔧
-        </span>
-        <p className="mt-1 text-sm font-extrabold leading-snug">Laptop not working?</p>
-        <p className="mt-0.5 text-xs text-white/85">Free diagnosis, repairs from UGX 30,000.</p>
-        <span className="mt-2 inline-block rounded-full bg-white px-3 py-1 text-[11px] font-bold text-ink-800">
-          Book a repair →
-        </span>
-      </Link>
+      {offer({ href: "/learn", img: "/web/photo-1509062522246-3755977927d7.webp", emoji: "🎓", title: "Learn computer skills", line: "22 courses, physical or online, with a certificate.", cta: "Browse courses →", bg: "bg-green-600", fade: "from-green-600" })}
+      {offer({ href: "/services#repairs-support", img: "/hero/hero-5.webp", emoji: "🛠️", title: "Laptop not working?", line: "Free diagnosis, repairs from UGX 30,000.", cta: "Book a repair →", bg: "bg-[#7a1f5c]", fade: "from-[#7a1f5c]" })}
     </div>
   );
 }
