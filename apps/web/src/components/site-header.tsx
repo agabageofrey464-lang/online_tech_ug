@@ -196,6 +196,16 @@ const DEPARTMENTS = [
   { href: "/shop?cat=Networking", label: "Networking", wide: true },
   { href: "/stickers", label: "Laptop Skins", wide: true },
 ];
+// The link row of the wide header: what we do first, the rest muted after.
+const UTILITY = navGroups.flatMap((g) => g.items);
+const UTILITY_PRIMARY = UTILITY.slice(0, 5);
+const UTILITY_SECONDARY = UTILITY.slice(5);
+// The three businesses, each in its own colour.
+const PILLS = [
+  { href: "/shop", label: "Shop", sub: "Computers", icon: ShoppingBag, bg: "bg-brand-500 hover:bg-brand-600", ink: "text-brand-600" },
+  { href: "/learn", label: "Learn", sub: "Academy", icon: GraduationCap, bg: "bg-green-600 hover:bg-green-700", ink: "text-green-700" },
+  { href: "/development", label: "Develop", sub: "Software", icon: Code2, bg: "bg-ink-700 hover:bg-ink-800", ink: "text-ink-700" },
+];
 const deptLink = "flex items-center gap-1 whitespace-nowrap border-b-[3px] py-3 text-[14.5px] transition xl:text-[15.5px]";
 
 /** An icon with its name beneath it, as the header's right-hand buttons are drawn. */
@@ -212,6 +222,33 @@ function IconLabel({ href, icon: I, label, badge = 0 }: { href: string; icon: ty
       </span>
       <span className="text-[12px] leading-none">{label}</span>
     </Link>
+  );
+}
+
+function WishlistIcon() {
+  const { count } = useWishlist();
+  return (
+    <span className="relative">
+      <Heart size={23} strokeWidth={1.6} />
+      {count > 0 && (
+        <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-bold leading-none text-white ring-2 ring-white">{count}</span>
+      )}
+    </span>
+  );
+}
+
+function CartInline() {
+  const { count, open } = useCart();
+  return (
+    <button type="button" onClick={open} aria-label={`Cart, ${count} items`} className="flex items-center gap-1.5 text-ink-800 transition hover:text-brand-600">
+      <span className="relative">
+        <ShoppingCart size={24} strokeWidth={1.6} />
+        {count > 0 && (
+          <span className="absolute -right-2 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-500 px-1 text-[11px] font-bold leading-none text-white ring-2 ring-white">{count}</span>
+        )}
+      </span>
+      <span className="text-[15px] font-semibold">Cart</span>
+    </button>
   );
 }
 
@@ -284,8 +321,8 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* The family of businesses, in one thin dark line. */}
-      <div className="bg-ink-900 text-white">
+      {/* Phones: the family of businesses, in one thin dark line. */}
+      <div className="bg-ink-900 text-white lg:hidden">
         <nav className="container-wide flex items-center overflow-x-auto py-2 text-[12px] no-scrollbar sm:justify-center sm:text-[13px]">
           {FAMILY.map((f, i) => {
             const on = f.match.some((x) => pathname.startsWith(x));
@@ -301,8 +338,8 @@ export function SiteHeader() {
         </nav>
       </div>
 
-      {/* One message at a time, with its link. */}
-      <div className="bg-ink-700 text-white">
+      {/* Phones: one message at a time, with its link. */}
+      <div className="bg-ink-700 text-white lg:hidden">
         <div key={tick} className="strip-rise">
         <p className="container-wide flex items-center justify-center gap-2 py-2 text-[13px] font-semibold sm:text-[14px]">
           <Truck size={17} strokeWidth={1.8} className="hidden shrink-0 sm:block" />
@@ -342,26 +379,71 @@ export function SiteHeader() {
           </div>
         </div>
 
-        {/* Wide screens: the logo, a long search box, and the icons with their names. */}
-        <div className="container-wide hidden items-center gap-6 py-3 lg:flex xl:gap-8">
+        {/* Wide screens: a dark row of links — selling, what we do with the
+            internships as a yellow badge, the rest muted, and the phone. */}
+        <div className="hidden bg-ink-800 text-white lg:block">
+          <div className="container-wide flex items-center gap-x-4 py-2 text-[13px] font-medium">
+            <Link href="/sell" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600">
+              <Star size={12} className="fill-white" /> Sell on {site.name}
+            </Link>
+            <nav className="flex min-w-0 flex-1 items-center gap-x-4 overflow-x-auto no-scrollbar">
+              {UTILITY_PRIMARY.map((it) =>
+                it.href === "/internship" ? (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FCDC04] px-3 py-1 font-bold text-ink-900 shadow-sm transition hover:brightness-105 ${pathname.startsWith(it.href) ? "ring-2 ring-white" : ""}`}
+                  >
+                    <Briefcase size={13} strokeWidth={2.4} />
+                    {it.label}
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75 motion-reduce:hidden" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className={`whitespace-nowrap border-b-2 pb-0.5 transition ${pathname.startsWith(it.href) ? "border-brand-500" : "border-transparent hover:border-brand-400"}`}
+                  >
+                    {it.label}
+                  </Link>
+                ),
+              )}
+              <span className="h-3.5 w-px shrink-0 bg-white/25" aria-hidden />
+              {UTILITY_SECONDARY.map((it) => (
+                <Link key={it.href} href={it.href} className="whitespace-nowrap text-white/60 transition hover:text-white">
+                  {it.label}
+                </Link>
+              ))}
+            </nav>
+            <a href={telHref(site.phoneDisplay)} className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 transition hover:bg-white/20">
+              <Phone size={12} /> {site.phoneDisplay}
+            </a>
+          </div>
+        </div>
+
+        {/* Wide screens: the logo, the round search with its orange button,
+            and Account, Help, Saved and Cart with their names. */}
+        <div className="container-wide hidden items-center gap-6 py-3 lg:flex">
           <Link href="/" className="flex shrink-0 items-center text-ink-900">
             <BrandLogoFull size="md" onLight />
           </Link>
-          <div className="min-w-0 flex-1">
-            <SearchBar variant="store" />
+          <div className="min-w-0 flex-1 xl:max-w-3xl">
+            <SearchBar className="border border-ink-600/20 shadow-sm" />
           </div>
-          <div className="flex shrink-0 items-end gap-1">
-            <div className="flex flex-col items-center gap-0.5 text-ink-800">
-              <HeaderAccount onLight />
-            </div>
-            <WishlistLabel />
-            <IconLabel href="/track" icon={Package} label="Orders" />
-            <IconLabel href="/stores" icon={MapPin} label="Branches" />
-            <a href={telHref(site.phoneDisplay)} className="hidden flex-col items-center gap-0.5 px-2 text-ink-800 transition hover:text-brand-600 xl:flex">
-              <Phone size={24} strokeWidth={1.4} />
-              <span className="text-[12px] leading-none">Call us</span>
-            </a>
-            <CartLabel />
+          <div className="ml-auto flex shrink-0 items-center gap-4 xl:gap-6">
+            <HeaderAccount onLight />
+            <Link href="/help" className="flex items-center gap-1.5 text-ink-800 transition hover:text-brand-600">
+              <HelpCircle size={23} strokeWidth={1.7} />
+              <span className="text-[15px] font-semibold">Help</span>
+            </Link>
+            <Link href="/wishlist" className="flex items-center gap-1.5 text-ink-800 transition hover:text-brand-600">
+              <WishlistIcon />
+              <span className="text-[15px] font-semibold">Saved</span>
+            </Link>
+            <CartInline />
           </div>
         </div>
 
@@ -374,7 +456,24 @@ export function SiteHeader() {
             >
               <Home size={16} strokeWidth={1.8} /> Home
             </Link>
-            {menu(MENUS[0])}
+            {/* The three businesses as coloured pills, as before. */}
+            <span className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-4">
+              {PILLS.map((b) => (
+                <Link
+                  key={b.href}
+                  href={b.href}
+                  className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 text-[14px] font-semibold text-white shadow-sm ring-1 ring-black/5 transition ${b.bg}`}
+                >
+                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ${b.ink}`}>
+                    <b.icon size={14} strokeWidth={2.4} />
+                  </span>
+                  <span className="leading-none">
+                    {b.label}
+                    <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/80 2xl:inline">{b.sub}</span>
+                  </span>
+                </Link>
+              ))}
+            </span>
             {DEPARTMENTS.map((d) => (
               <Link
                 key={d.href}
@@ -384,9 +483,6 @@ export function SiteHeader() {
                 {d.label}
               </Link>
             ))}
-            {menu(MENUS[1])}
-            {menu(MENUS[2])}
-            {menu(MENUS[3], true)}
             <div className="group/more">
               <button type="button" className={`${deptLink} !border-transparent text-ink-900 group-hover/more:text-brand-600`}>
                 More <ChevronDown size={14} strokeWidth={1.75} />

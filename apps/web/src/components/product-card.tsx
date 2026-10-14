@@ -138,8 +138,8 @@ export function ProductCard({ product, large = false }: { product: Product; larg
     // A container, so the name and price sit side by side on a wide tile and
     // stack on a narrow one — the same card is used in three-across grids and
     // in 13rem rails.
-    <article className="group @container relative flex h-full w-full flex-col overflow-hidden bg-white transition hover:shadow-[0_12px_30px_-16px_rgba(22,21,29,0.45)]">
-      <div className="relative aspect-square overflow-hidden bg-white">
+    <article className="group @container relative flex h-full w-full flex-col overflow-hidden bg-[var(--tile)] transition hover:shadow-[0_12px_30px_-16px_rgba(22,21,29,0.45)]">
+      <div className="relative aspect-square overflow-hidden">
         <Link href={`/shop/${product.id}`} className="block h-full w-full">
           {/* Multiply lets a photo shot on white sit on the panel instead of
               in a white box of its own. */}
@@ -156,7 +156,7 @@ export function ProductCard({ product, large = false }: { product: Product; larg
           {/* Another view of the same product, on hover. The wrapper carries the
               fade: the image's own opacity belongs to its load-in. */}
           {second && (
-            <div className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-[var(--tile)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <SafeImage
                 src={card(second)}
                 alt={`${product.name} — another view`}
@@ -211,10 +211,10 @@ export function ProductCard({ product, large = false }: { product: Product; larg
           and the price on one line, the name, the stars, and small grey tags. */}
       <Link href={`/shop/${product.id}`} className="flex flex-1 flex-col px-2.5 pb-3.5 pt-3 @[15rem]:px-3">
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="rounded-md bg-brand-600 px-2 py-0.5 text-[12px] font-medium text-white @[15rem]:text-[13.5px]">
+          <span className="rounded-md bg-ink-600 px-2 py-0.5 text-[12px] font-medium text-white @[15rem]:text-[13.5px]">
             {product.condition === "Brand New" ? "New" : product.category === "Phones" ? "Phone" : "In stock"}
           </span>
-          <span className="whitespace-nowrap text-[15px] font-semibold text-brand-700 @[15rem]:text-[16.5px]">{ugx(product.price)}</span>
+          <span className="whitespace-nowrap text-[15px] font-semibold text-ink-900 @[15rem]:text-[16.5px]">{ugx(product.price)}</span>
           {oldPrice && <span className="whitespace-nowrap text-[12px] text-ink-700/60 line-through decoration-dotted @[15rem]:text-[13px]">{ugx(oldPrice)}</span>}
         </p>
         <h3 className="mt-2 line-clamp-2 text-[14.5px] !font-normal leading-[1.35] text-ink-900 transition-colors group-hover:text-brand-600 @[15rem]:text-[16.5px]">
@@ -228,9 +228,9 @@ export function ProductCard({ product, large = false }: { product: Product; larg
           </p>
         )}
         <span className="mt-2.5 flex flex-wrap gap-1.5">
-          {inStock && <span className="bg-[#f1efea] px-2 py-1 text-[11.5px] text-ink-700 @[15rem]:text-[12.5px]">Same-Day Delivery</span>}
-          <span className="hidden bg-[#f1efea] px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Warranty</span>
-          {(product.rating ?? 0) >= 4.7 && <span className="hidden bg-[#f1efea] px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Best Seller</span>}
+          {inStock && <span className="bg-white/70 px-2 py-1 text-[11.5px] text-ink-700 @[15rem]:text-[12.5px]">Same-Day Delivery</span>}
+          <span className="hidden bg-white/70 px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Warranty</span>
+          {(product.rating ?? 0) >= 4.7 && <span className="hidden bg-white/70 px-2 py-1 text-[12.5px] text-ink-700 @[15rem]:inline">Best Seller</span>}
         </span>
       </Link>
     </article>

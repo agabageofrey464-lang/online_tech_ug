@@ -198,46 +198,46 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="min-w-0 lg:sticky lg:top-44 lg:self-start">
-          {product.condition === "Brand New" && (
-            <span className="inline-block bg-ink-600 px-5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white">
-              Brand New
-            </span>
-          )}
-          <h1 className="mt-4 text-[30px] leading-[1.15] text-ink-900 sm:text-[34px]">{product.name}</h1>
-          <p className="mt-2 text-[13px] text-ink-700/70">
-            Brand:{" "}
-            <Link href={`/shop?brand=${product.brand}`} className="font-semibold text-brand-600 hover:underline">
-              {product.brand}
-            </Link>
-            {" · "}
-            <Link href={`/shop?brand=${product.brand}`} className="text-brand-600 hover:underline">
-              Similar products from {product.brand}
-            </Link>
-            {" · "}Official Store
-          </p>
-
-          <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="text-[20px] text-ink-900">{ugx(product.price)}</span>
-            {oldPrice && (
-              <>
-                <span className="text-sm text-ink-700/45 line-through">{ugx(oldPrice)}</span>
-                <span className="text-sm font-bold text-brand-600">-{discountPct}%</span>
-              </>
-            )}
-          </div>
-          <p className={`mt-1.5 text-[13px] ${inStock ? "text-ink-700/70" : "font-semibold text-brand-700"}`}>
-            {inStock ? "In stock" : "Currently unavailable"} · delivered the same day, transport by distance
-          </p>
-          <a href="#reviews" className="mt-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-800 underline-offset-4 hover:underline">
+          {/* As the big home stores set it: the brand, the name, the stars, the
+              price large and bold, then a grey box saying when it arrives. */}
+          <Link href={`/shop?brand=${encodeURIComponent(product.brand)}`} className="text-[14px] text-brand-700 underline underline-offset-4 hover:text-brand-600">
+            Shop all {product.brand}
+          </Link>
+          <h1 className="mt-2 text-[24px] !font-normal leading-[1.25] text-ink-900 sm:text-[28px]">{product.name}</h1>
+          <a href="#reviews" className="mt-2 flex items-center gap-2 text-[13.5px] text-ink-700 hover:underline">
             {ratings ? (
               <>
                 <Stars rating={ratings.average} />
-                {ratings.count} verified {ratings.count === 1 ? "review" : "reviews"}
+                <span>
+                  {ratings.average.toFixed(1)} ({ratings.count} {ratings.count === 1 ? "review" : "reviews"})
+                </span>
               </>
             ) : (
               "No reviews yet — be the first"
             )}
           </a>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="rounded-md bg-brand-600 px-2.5 py-1 text-[13.5px] font-medium text-white">
+              {product.condition === "Brand New" ? "Brand New" : product.condition ?? "In stock"}
+            </span>
+            <span className="text-[28px] font-bold leading-none text-ink-900 sm:text-[32px]">{ugx(product.price)}</span>
+            {oldPrice && (
+              <span className="text-[15px] text-ink-700/60">
+                <span className="line-through decoration-dotted">{ugx(oldPrice)}</span> <span className="font-semibold text-green-700">-{discountPct}%</span>
+              </span>
+            )}
+          </div>
+
+          <div className="mt-5 rounded-md bg-[#f1efea] p-4">
+            <p className="flex items-center gap-2 text-[15px] font-semibold text-ink-900">
+              <Truck size={19} strokeWidth={1.8} className="shrink-0 text-brand-600" />
+              {inStock ? "Order before 7pm — delivered today in Kampala" : "Currently unavailable"}
+            </p>
+            <p className="mt-1 pl-7 text-[13px] text-ink-700/80">
+              {inStock ? "Countrywide delivery the next day. The fee depends on your distance." : "Ask us to tell you the moment it is back."}
+            </p>
+          </div>
 
           {(copy?.description || product.details?.purpose) && (
             <p className="mt-5 font-display text-[19px] leading-[1.45] text-ink-900">
@@ -256,9 +256,6 @@ export default async function ProductDetailPage({
                 <StockAlert productName={product.name} slug={product.id} />
               </div>
             )}
-            <p className="mt-4 text-center font-display text-[17px] italic text-ink-800">
-              Countrywide delivery — the fee depends on your distance
-            </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button
                 href={whatsappLink(productEnquiryMessage({ name: product.name, priceLabel: ugx(product.price), condition: product.condition, url: `${site.url}/shop/${product.id}` }))}
@@ -272,26 +269,26 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Promotions — real offers only, no invented ones. */}
-            <ul className="mt-6 space-y-2.5 border-t border-ink-600/15 pt-5">
-              <li className="flex items-start gap-2.5 text-sm">
+            <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+              <li className="flex items-start gap-2.5 rounded-md bg-[#f1efea] px-3 py-2.5 text-[13.5px]">
                 <Truck size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                 <span className="text-ink-700/85">
                   Countrywide delivery — <b className="text-ink-900">fee based on your distance</b>
                 </span>
               </li>
-              <li className="flex items-start gap-2.5 text-sm">
+              <li className="flex items-start gap-2.5 rounded-md bg-[#f1efea] px-3 py-2.5 text-[13.5px]">
                 <Phone size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                 <a href={`tel:${site.phoneDisplay.replace(/\s/g, "")}`} className="text-brand-600 hover:underline">
                   Call {site.phoneDisplay} to order
                 </a>
               </li>
-              <li className="flex items-start gap-2.5 text-sm">
+              <li className="flex items-start gap-2.5 rounded-md bg-[#f1efea] px-3 py-2.5 text-[13.5px]">
                 <ShieldCheck size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                 <span className="text-ink-700/85">
                   {warrantyFor(product)} · Tested before dispatch
                 </span>
               </li>
-              <li className="flex items-start gap-2.5 text-sm">
+              <li className="flex items-start gap-2.5 rounded-md bg-[#f1efea] px-3 py-2.5 text-[13.5px]">
                 <RotateCcw size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                 <span className="text-ink-700/85">7-day easy return on eligible items</span>
               </li>
@@ -308,11 +305,12 @@ export default async function ProductDetailPage({
 
       {/* The long-form detail, with delivery and seller beside it. */}
       <div className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
-        <div className="min-w-0 space-y-5">
+        <div className="min-w-0 border-t border-ink-600/15">
           {/* Key features — derived from the spec table, so the two always agree. */}
           {product.details && (
-            <div className="bg-[var(--tile)] p-5 sm:p-6">
-              <h2 className="text-[22px] text-ink-900">Key Features</h2>
+            <details open={true} className="group/acc border-b border-ink-600/15 bg-white">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[19px] font-medium text-ink-900 sm:px-6 [&::-webkit-details-marker]:hidden">Key Features<span className="text-[24px] leading-none text-ink-700 transition group-open/acc:rotate-45">+</span></summary>
+              <div className="px-5 pb-5 sm:px-6">
               <ul className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
                 {keyFeatures(product).map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-ink-700/85">
@@ -321,18 +319,22 @@ export default async function ProductDetailPage({
                   </li>
                 ))}
               </ul>
-            </div>
+              </div>
+            </details>
           )}
 
           {copy?.description && (
-            <div className="bg-white p-5 sm:p-6">
-              <h2 className="text-[22px] text-ink-900">Product Details</h2>
+            <details open={true} className="group/acc border-b border-ink-600/15 bg-white">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[19px] font-medium text-ink-900 sm:px-6 [&::-webkit-details-marker]:hidden">Product Details<span className="text-[24px] leading-none text-ink-700 transition group-open/acc:rotate-45">+</span></summary>
+              <div className="px-5 pb-5 sm:px-6">
               <p className="mt-2 text-sm leading-relaxed text-ink-700/85">{copy.description}</p>
-            </div>
+              </div>
+            </details>
           )}
 
-          <div className="bg-white p-5 sm:p-6">
-            <h2 className="text-[22px] text-ink-900">Full specifications</h2>
+          <details open={true} className="group/acc border-b border-ink-600/15 bg-white">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[19px] font-medium text-ink-900 sm:px-6 [&::-webkit-details-marker]:hidden">Full specifications<span className="text-[24px] leading-none text-ink-700 transition group-open/acc:rotate-45">+</span></summary>
+              <div className="px-5 pb-5 sm:px-6">
             {product.details ? (
               <dl className="mt-3 divide-y divide-ink-600/10">
                 {specRows(product).map(([label, value]) => (
@@ -351,13 +353,15 @@ export default async function ProductDetailPage({
                 ))}
               </ul>
             )}
-          </div>
+              </div>
+          </details>
 
           {/* What's in the box + warranty — stacks on phones, side by side on tablets up. */}
           {product.details && (
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="bg-white p-5 sm:p-6">
-                <h2 className="text-[22px] text-ink-900">What&apos;s in the box</h2>
+            <>
+              <details open={false} className="group/acc border-b border-ink-600/15 bg-white">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[19px] font-medium text-ink-900 sm:px-6 [&::-webkit-details-marker]:hidden">What&apos;s in the box<span className="text-[24px] leading-none text-ink-700 transition group-open/acc:rotate-45">+</span></summary>
+              <div className="px-5 pb-5 sm:px-6">
                 <ul className="mt-2 space-y-1.5">
                   {boxContents(product).map((bx) => (
                     <li key={bx} className="flex items-start gap-2 text-sm text-ink-700/85">
@@ -367,8 +371,10 @@ export default async function ProductDetailPage({
                   ))}
                 </ul>
               </div>
-              <div className="bg-white p-5 sm:p-6">
-                <h2 className="text-[22px] text-ink-900">Warranty</h2>
+              </details>
+              <details open={false} className="group/acc border-b border-ink-600/15 bg-white">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[19px] font-medium text-ink-900 sm:px-6 [&::-webkit-details-marker]:hidden">Warranty<span className="text-[24px] leading-none text-ink-700 transition group-open/acc:rotate-45">+</span></summary>
+              <div className="px-5 pb-5 sm:px-6">
                 <p className="mt-2 flex items-start gap-2 text-sm text-ink-700/85">
                   <ShieldCheck size={15} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-700" />
                   <span className="min-w-0">
@@ -377,7 +383,8 @@ export default async function ProductDetailPage({
                   </span>
                 </p>
               </div>
-            </div>
+              </details>
+            </>
           )}
         </div>
 
@@ -442,8 +449,8 @@ export default async function ProductDetailPage({
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-[28px] text-ink-900">
-            {sameBrand.length > 0 ? `More from ${product.brand}` : "Related products"}
+          <h2 className="text-center text-[23px] !font-bold uppercase text-ink-900 sm:text-[30px]">
+            {sameBrand.length > 0 ? `More from ${product.brand}` : "You may also like"}
           </h2>
           <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {related.map((p) => (
