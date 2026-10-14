@@ -282,7 +282,7 @@ export function PromoStrip() {
   const storeBg = store.bg.startsWith("bg-green") ? "bg-brand-600" : store.bg;
   // The academy takes a colour of its own each turn — crimson, gold, plum —
   // so it never melts into the green link row beneath it.
-  const ACADEMY_BGS = ["bg-[#b3122e]", "bg-[#b07a06]", "bg-[#7a1f5c]"];
+  const ACADEMY_BGS = ["bg-[#a50e27]", "bg-[#8a5a00]", "bg-[#7a1f5c]"];
   const academyBg = ACADEMY_BGS[Math.floor(tick / 2) % ACADEMY_BGS.length];
   const turn = tick % 2 === 0 ? "store" : "academy";
 

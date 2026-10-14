@@ -164,7 +164,7 @@ export function FestivalStrip() {
   return (
     <div
       // A colour of its own for each message, never the charcoal.
-      className={`stripes relative text-white transition-colors duration-500 ${["bg-[#7a1f5c]", "bg-brand-600", "bg-[#b07a06]", "bg-[#b3122e]"][i % 4]}`}
+      className={`stripes relative text-white transition-colors duration-500 ${["bg-[#7a1f5c]", "bg-brand-600", "bg-[#8a5a00]", "bg-[#a50e27]"][i % 4]}`}
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">

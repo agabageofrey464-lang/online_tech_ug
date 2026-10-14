@@ -29,7 +29,7 @@ export function ProgressRail({ children, className = "" }: { children: ReactNode
 
   return (
     <div className={className}>
-      <div ref={row} onScroll={measure} className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:px-0">
+      <div ref={row} onScroll={measure} className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:scroll-px-0 sm:px-0">
         {children}
       </div>
       <div className="mt-6 flex items-center gap-6">

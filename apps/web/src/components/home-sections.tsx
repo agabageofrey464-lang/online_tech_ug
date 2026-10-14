@@ -55,7 +55,7 @@ export function DealTiles({ tiles }: { tiles: DealTile[] }) {
       <SectionTitle href="/shop">Shop By Department</SectionTitle>
       <ProgressRail>
         {tiles.map((t) => (
-          <Link key={t.href} href={t.href} className="group w-[70%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
+          <Link key={t.href} href={t.href} className="group w-[58%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
             <span className="relative block aspect-[4/5] overflow-hidden bg-white">
               <SafeImage src={t.img} alt={t.name} fill sizes="(max-width: 640px) 70vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
             </span>
@@ -127,7 +127,7 @@ export function BudgetTiles({ tiles }: { tiles: BudgetTile[] }) {
   return (
     <section aria-label="Shop by budget">
       <SectionTitle sub="Tell us what you can spend — everything here is in stock." href="/find" cta="Find my laptop">Shop By Budget</SectionTitle>
-      <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+      <div className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
         {tiles.map((t) => (
           <Link key={t.max} href={t.href} className="group w-[62%] shrink-0 snap-start sm:w-auto">
             <span className="relative block aspect-square overflow-hidden rounded-md bg-white">
@@ -234,7 +234,7 @@ export function StoryRail({ title, sub, href, cta, tiles, more = "Find out more"
       </SectionTitle>
       <ProgressRail>
         {tiles.map((t) => (
-          <Link key={t.href} href={t.href} className="group w-[70%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
+          <Link key={t.href} href={t.href} className="group w-[58%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
             <span className="relative block aspect-[4/5] overflow-hidden bg-white">
               <SafeImage src={t.img} alt={t.title} fill sizes="(max-width: 640px) 70vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
             </span>

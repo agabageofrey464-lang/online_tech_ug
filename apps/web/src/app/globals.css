@@ -496,16 +496,9 @@ body {
 /* Soft diagonal stripes over a solid band — the look of our offer strips.
    The stripes are a single shade lighter than the base so they read as texture,
    not as pattern, and never fight the white text on top. */
-/* The festival strips: wide ribbon bands in a lighter shade of the strip's
-   own colour, a scatter of small dots like confetti, and a soft glow from the
-   left — lively, but the words on top still read first. */
+/* The festival strips: solid colour, so the words on them read clearly. */
 .stripes {
-  background-image:
-    radial-gradient(circle at 12% 50%, rgba(255, 255, 255, 0.22), transparent 38%),
-    radial-gradient(rgba(255, 255, 255, 0.28) 1.4px, transparent 1.6px),
-    repeating-linear-gradient(115deg, transparent 0 46px, rgba(255, 255, 255, 0.1) 46px 70px, transparent 70px 96px, rgba(0, 0, 0, 0.08) 96px 108px);
-  background-size: auto, 22px 22px, auto;
-  background-position: 0 0, 6px 4px, 0 0;
+  background-image: none;
 }
 
 /* ─── Light bands ──────────────────────────────────────────────────

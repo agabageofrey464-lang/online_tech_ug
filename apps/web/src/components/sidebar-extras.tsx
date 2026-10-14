@@ -48,7 +48,7 @@ export function SidebarExtras() {
 
       {/* Trending: the list, with the top one's photograph as a header. */}
       <div className="overflow-hidden rounded-md bg-white shadow-sm">
-        <div className="stripes flex items-center gap-2 bg-[#b07a06] px-4 py-3 text-white">
+        <div className="stripes flex items-center gap-2 bg-[#8a5a00] px-4 py-3 text-white">
           <span aria-hidden className="text-[20px]">🔥</span>
           <span className="font-display text-[20px] leading-none">Trending now</span>
         </div>
@@ -56,7 +56,7 @@ export function SidebarExtras() {
           {trending.map((p, i) => (
             <li key={p.id}>
               <Link href={`/shop/${p.id}`} className="group flex items-center gap-2.5">
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white ${i === 0 ? "bg-brand-500" : i === 1 ? "bg-[#b07a06]" : "bg-ink-600/40"}`}>
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white ${i === 0 ? "bg-brand-500" : i === 1 ? "bg-[#8a5a00]" : "bg-ink-600/40"}`}>
                   {i + 1}
                 </span>
                 <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded bg-ink-50">

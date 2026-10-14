@@ -24,7 +24,7 @@ const HOUSE: Strip[] = [
   { key: "software", label: "💻 Software", title: "We build websites, apps & systems", text: "Designed, built, hosted and looked after for your business.", cta: "Get a quote", href: "/development", img: "/portfolio/online-tech-uganda-1.webp", bar: "bg-[#7a1f5c]" },
   { key: "courses", label: "🎓 Learn Academy", title: "22 computer courses, with a certificate", text: "In class or online, in short lessons. Pay per lesson.", cta: "Browse courses", href: "/learn", img: "/cards/courses/microsoft-office.webp", bar: "bg-[#067a39]" },
   { key: "intern", label: "💼 Internships", title: "Industrial training, on real client work", text: "Online placements for university and college students.", cta: "Apply", href: "/internship", img: "/internship-photo.jpg", bar: "bg-brand-500" },
-  { key: "space", label: "📣 Advertise here", title: "Put your business in this space", text: "Seen by everyone who opens the shop. Ask us for the rates.", cta: "Advertise", href: "/advertise", bar: "bg-[#b07a06]" },
+  { key: "space", label: "📣 Advertise here", title: "Put your business in this space", text: "Seen by everyone who opens the shop. Ask us for the rates.", cta: "Advertise", href: "/advertise", bar: "bg-[#8a5a00]" },
 ];
 
 const STAY = 5000;
@@ -50,7 +50,7 @@ export function AdvertStrips({ className = "" }: { className?: string }) {
               ? a.link_url
               : whatsappLink(`Hello Online Tech Uganda, I saw the advert "${a.title}" by ${a.advertiser || "an advertiser"} on your site and would like to know more.`),
             img: a.image_url,
-            bar: "bg-[#b3122e]",
+            bar: "bg-[#a50e27]",
           })),
         );
       })

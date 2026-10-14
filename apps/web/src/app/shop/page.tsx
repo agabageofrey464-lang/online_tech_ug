@@ -9,6 +9,7 @@ import { productImage } from "@/lib/data";
 import { CATEGORY_ORDER } from "@/lib/browse-order";
 import { card } from "@/lib/thumb";
 import { share } from "@/lib/seo";
+import { BudgetTiles, FeaturedBrands } from "@/components/home-sections";
 
 // Rebuilt in the background every few minutes, so a product added or
 // repriced in the admin reaches the shop without a deploy.
@@ -72,6 +73,25 @@ export default async function ShopPage() {
     .reverse()
     .map((p) => card(productImage(p)));
 
+  // Spending to a budget, each pictured from what is most bought at it.
+  const BUDGETS: [number, string, string[]][] = [
+    [100_000, "Accessories & upgrades", ["Accessories", "Power", "Storage"]],
+    [500_000, "Phones & storage", ["Phones"]],
+    [2_000_000, "Laptops & phones", ["Laptops"]],
+    [5_000_000, "Premium laptops", ["Laptops"]],
+  ];
+  const listed = products.filter((p) => p.inStock !== false && (p.image || productImage(p).startsWith("/products/")));
+  const budgetTiles = BUDGETS.map(([max, name, kinds], i) => {
+    const floor = i === 0 ? 0 : BUDGETS[i - 1][0];
+    const fits = listed.filter((p) => p.price < max && p.price >= floor);
+    const pick = fits.find((p) => kinds.includes(p.category)) ?? fits[0] ?? listed[0];
+    return { max, name, href: `/shop?max=${max}`, img: card(productImage(pick)) };
+  });
+  const brands = ["HP", "Lenovo", "Dell", "Apple"]
+    .map((b) => ({ name: b, items: listed.filter((p) => p.brand.toLowerCase() === b.toLowerCase()) }))
+    .filter((g) => g.items.length > 0)
+    .map((g) => ({ name: g.name, count: g.items.length, img: card(productImage(g.items[0])) }));
+
   return (
     <div className="container-wide py-3">
       {/* useSearchParams needs a Suspense boundary to prerender. */}
@@ -85,8 +105,10 @@ export default async function ShopPage() {
 
       <Suspense fallback={null}>
         <UnfilteredOnly>
-          <div className="mt-8">
+          <div className="mt-12 space-y-14">
             <FeaturedProducts />
+            <BudgetTiles tiles={budgetTiles} />
+            <FeaturedBrands brands={brands} />
           </div>
         </UnfilteredOnly>
       </Suspense>

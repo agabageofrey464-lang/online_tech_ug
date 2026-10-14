@@ -11,9 +11,8 @@ import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { ShopHeading } from "@/components/shop-heading";
 import { ShopGrid } from "@/components/shop-grid";
-import { BeyondMosaic, Bestsellers, BudgetTiles, DealTiles, FeaturedBrands, StoryRail, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
+import { Bestsellers, DealTiles, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
 import { SoftwareBand } from "@/components/software-band";
-import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
 import { OrderBanner } from "@/components/order-banner";
 import { PromoBanners } from "@/components/promo-banners";
@@ -328,28 +327,6 @@ export default async function HomePage() {
       {/* The shop: every department, by a photograph and its lowest price. */}
       <DealTiles tiles={dealTiles} />
 
-      {/* The rest of the business, as a mosaic. */}
-      <BeyondMosaic />
-
-      {/* This intake's internship advert; it removes itself once the intake is under way. */}
-      <InternshipAdvert />
-
-      {/* The academy: its courses, each the way into its own page. */}
-      <StoryRail
-        title="Learn Academy"
-        sub="22 computer courses — in class or online, with a certificate."
-        href="/learn"
-        cta="All courses"
-        more="See the course"
-        tiles={courses.slice(0, 10).map((c) => ({
-          href: `/learn/${c.slug}`,
-          img: card(`/courses/${c.slug}.webp`),
-          title: c.title,
-          meta: `${c.level} · ${c.lessons} lessons`,
-          line: c.blurb,
-        }))}
-      />
-
       {/* What we sell most, as an advert for the shop. */}
       <Bestsellers>
         {topSelling.map((p) => (
@@ -358,28 +335,6 @@ export default async function HomePage() {
           </div>
         ))}
       </Bestsellers>
-
-      {/* Software: what we have built, each the way into its own story. */}
-      <StoryRail
-        title="Software We Build"
-        sub="Websites, online shops and business systems — designed, built and looked after."
-        href="/development"
-        cta="Start a project"
-        more="See the work"
-        tiles={portfolio.slice(0, 10).map((w) => ({
-          href: `/portfolio/${w.slug}`,
-          img: w.shots[0],
-          title: w.title,
-          meta: `${w.category} · ${w.year}`,
-          line: w.summary,
-        }))}
-      />
-
-      {/* Spending to a budget. */}
-      <BudgetTiles tiles={budgetTiles} />
-
-      {/* The brands people ask for by name. */}
-      <FeaturedBrands brands={featured} />
 
       {/* The rotating offers placed from the dashboard. */}
       <PromoBanners />
