@@ -458,21 +458,48 @@ export function SiteHeader() {
             </Link>
             {/* The three businesses as coloured pills, as before. */}
             <span className="flex shrink-0 items-center gap-2 border-r border-ink-600/10 pr-4">
-              {PILLS.map((b) => (
-                <Link
-                  key={b.href}
-                  href={b.href}
-                  className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3.5 text-[14px] font-semibold text-white shadow-sm ring-1 ring-black/5 transition ${b.bg}`}
-                >
-                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ${b.ink}`}>
-                    <b.icon size={14} strokeWidth={2.4} />
+              {PILLS.map((b) => {
+                // Each business opens a menu of its own pages, so every page
+                // of the academy and the software side is in the top bar.
+                const m = MENUS.find((x) => x.href === b.href);
+                return (
+                  <span key={b.href} className="group/menu py-2">
+                    <Link
+                      href={b.href}
+                      className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-[14px] font-semibold text-white shadow-sm ring-1 ring-black/5 transition ${b.bg}`}
+                    >
+                      <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ${b.ink}`}>
+                        <b.icon size={14} strokeWidth={2.4} />
+                      </span>
+                      <span className="leading-none">
+                        {b.label}
+                        <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/80 2xl:inline">{b.sub}</span>
+                      </span>
+                      {m && <ChevronDown size={13} strokeWidth={2.2} className="transition group-hover/menu:rotate-180" />}
+                    </Link>
+                    {m && (
+                      <span className="invisible absolute left-0 top-full z-50 block w-[38rem] opacity-0 transition duration-150 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
+                        <span className="grid grid-cols-[14rem_1fr] bg-white shadow-2xl ring-1 ring-ink-600/10">
+                          <span className={`block p-6 text-white ${b.bg.split(" ")[0]}`}>
+                            <span className="block font-display text-[28px] leading-tight">{m.label}</span>
+                            <span className="mt-2 block text-[13.5px] leading-relaxed text-white/90">{m.blurb}</span>
+                            <Link href={m.href} className="mt-4 inline-block border-b border-white pb-0.5 text-[11px] font-bold uppercase tracking-[0.16em]">
+                              Go to {m.label}
+                            </Link>
+                          </span>
+                          <span className="grid grid-cols-2 content-start gap-x-6 gap-y-1 p-6">
+                            {m.links.map((l) => (
+                              <Link key={l.href} href={l.href} className="py-1.5 text-[14.5px] text-ink-800 hover:text-brand-600 hover:underline hover:underline-offset-4">
+                                {l.label}
+                              </Link>
+                            ))}
+                          </span>
+                        </span>
+                      </span>
+                    )}
                   </span>
-                  <span className="leading-none">
-                    {b.label}
-                    <span className="ml-1 hidden text-[10px] font-bold uppercase tracking-[0.08em] text-white/80 2xl:inline">{b.sub}</span>
-                  </span>
-                </Link>
-              ))}
+                );
+              })}
             </span>
             {DEPARTMENTS.map((d) => (
               <Link

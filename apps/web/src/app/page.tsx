@@ -11,7 +11,7 @@ import { SafeImage } from "@/components/safe-image";
 import { HeroRotator } from "@/components/hero-rotator";
 import { ShopHeading } from "@/components/shop-heading";
 import { ShopGrid } from "@/components/shop-grid";
-import { BeyondMosaic, Bestsellers, BudgetTiles, DealTiles, FeaturedBrands, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
+import { BeyondMosaic, Bestsellers, BudgetTiles, DealTiles, FeaturedBrands, StoryRail, TopPicks, type BudgetTile, type DealTile, type PickTile } from "@/components/home-sections";
 import { SoftwareBand } from "@/components/software-band";
 import { InternshipAdvert } from "@/components/internship-advert";
 import { SERVICE_FROM } from "@/lib/service-prices";
@@ -27,6 +27,8 @@ import { card } from "@/lib/thumb";
 import { Reveal } from "@/components/reveal";
 import { whyUs, productImage, type Product } from "@/lib/data";
 import { getStoreProducts } from "@/lib/catalog";
+import { courses } from "@/lib/data";
+import { portfolio } from "@/lib/portfolio";
 import { ugx, whatsappLink } from "@/lib/site";
 import { share } from "@/lib/seo";
 
@@ -315,18 +317,40 @@ export default async function HomePage() {
 
   return (
     <div className="container-wide space-y-10 py-3 sm:space-y-14">
-      {/* The rotating banner leads the page, edge to edge. */}
+      {/* The home page is the front door: adverts, and the way into each
+          part of the business. Each part has pages of its own for the rest. */}
+
+      {/* The rotating banner — our own campaigns and the adverts placed in it. */}
       <div className="bleed-wide -mt-3">
-        <HeroRotator heading={false} />
+        <HeroRotator />
       </div>
 
-      {/* Every department: a photograph, its lowest price, its name. */}
+      {/* The shop: every department, by a photograph and its lowest price. */}
       <DealTiles tiles={dealTiles} />
 
-      {/* Software, training, internships and repairs, as a mosaic. */}
+      {/* The rest of the business, as a mosaic. */}
       <BeyondMosaic />
 
-      {/* The best-rated products, in a rail. */}
+      {/* This intake's internship advert; it removes itself once the intake is under way. */}
+      <InternshipAdvert />
+
+      {/* The academy: its courses, each the way into its own page. */}
+      <StoryRail
+        title="Learn Academy"
+        sub="22 computer courses — in class or online, with a certificate."
+        href="/learn"
+        cta="All courses"
+        more="See the course"
+        tiles={courses.slice(0, 10).map((c) => ({
+          href: `/learn/${c.slug}`,
+          img: card(`/courses/${c.slug}.webp`),
+          title: c.title,
+          meta: `${c.level} · ${c.lessons} lessons`,
+          line: c.blurb,
+        }))}
+      />
+
+      {/* What we sell most, as an advert for the shop. */}
       <Bestsellers>
         {topSelling.map((p) => (
           <div key={p.id} className="w-[46%] shrink-0 snap-start sm:w-[30%] lg:w-[calc((100%-3.75rem)/5)]">
@@ -335,269 +359,38 @@ export default async function HomePage() {
         ))}
       </Bestsellers>
 
+      {/* Software: what we have built, each the way into its own story. */}
+      <StoryRail
+        title="Software We Build"
+        sub="Websites, online shops and business systems — designed, built and looked after."
+        href="/development"
+        cta="Start a project"
+        more="See the work"
+        tiles={portfolio.slice(0, 10).map((w) => ({
+          href: `/portfolio/${w.slug}`,
+          img: w.shots[0],
+          title: w.title,
+          meta: `${w.category} · ${w.year}`,
+          line: w.summary,
+        }))}
+      />
+
       {/* Spending to a budget. */}
       <BudgetTiles tiles={budgetTiles} />
 
-      {/* The whole collection: the categories as a rail, the filters, and the
-          first rows of products. */}
-      <div>
-        <Suspense fallback={<div className="mb-3 h-40 bg-ink-600/10" />}>
-          <ShopHeading stats={listingStats} tiles={railTiles} fresh={newest.map((p) => card(productImage(p)))} home />
-        </Suspense>
-        <Suspense fallback={null}>
-          <ShopGrid items={products} home />
-        </Suspense>
-      </div>
-
-      {/* Single best-rated products, and the brands people ask for by name. */}
-      <TopPicks picks={topPicks} />
+      {/* The brands people ask for by name. */}
       <FeaturedBrands brands={featured} />
 
-      {/* This intake's internship advert, as the wide banner after the range —
-          it removes itself once the intake is under way. Here on wide screens;
-          on a phone it follows the first rows of products. */}
-      <div className="hidden lg:block">
-        <InternshipAdvert />
-      </div>
-
-      {/* Call / WhatsApp — after the range, on every device. */}
-      <OrderBanner />
-
-      {/* The rotating offers, as a festival strip directly under the hero —
-          where an offer is seen — rather than a full campaign board halfway
-          down the page. */}
+      {/* The rotating offers placed from the dashboard. */}
       <PromoBanners />
 
-      {/* Category quick-nav removed below desktop: 9 tiles left an orphan card
-          on its own row and ate the first screen. Desktop keeps the sidebar,
-          and "Explore our top categories" covers browsing for everyone. */}
-
-
-      {/* Phones lead the page, ahead of the computers. */}
-      <Panel title="Phones & Smartphones" href="/shop?cat=Phones" items={byCat("Phones")}>
-        {/* Every phone we stock, in a row that slides sideways. As a grid of
-            large tiles it ran to four screens on a handset before anything
-            else on the page could be seen. */}
-        <Rail items={byCat("Phones")} />
-      </Panel>
-
-      {/* Then Lenovo, HP and Dell, in that order. */}
-      {leadRows.map((g) => (
-        <DealBand
-          key={g.brand}
-          title={`${g.brand} Computers`}
-          subtitle={`${g.items.length} in stock`}
-          href={`/shop?brand=${encodeURIComponent(g.brand)}`}
-          items={g.items}
-        >
-          <Rail items={g.items.slice(0, RAIL)} />
-        </DealBand>
-      ))}
-
-      {/* That we build software too — said here, among the products, where a
-          visitor who came for a laptop will see it. */}
-      <SoftwareBand />
-
-      {/* Phones: the internship poster, after the shop and the software. */}
-      <div className="lg:hidden">
-        <InternshipAdvert />
-      </div>
-
-      {/* What approved vendors have listed, beside our own stock. */}
-      {fromVendors.length > 0 && (
-        <DealBand title="From Our Vendors" subtitle="Sold through Online Tech Uganda" href="/marketplace" items={fromVendors}>
-          <Rail items={fromVendors.slice(0, RAIL)} />
-        </DealBand>
-      )}
-
-      {/* Price drops — shown only while something really is reduced */}
-      {priceDrops.length > 0 && (
-        <section className="overflow-hidden bg-white pb-6">
-          <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-            <p className="font-display text-[17px] italic text-brand-600">
-              {priceDrops.length} {priceDrops.length === 1 ? "item" : "items"} reduced, while stock lasts
-            </p>
-            <h2 className="text-[28px] leading-tight sm:text-[34px]">Price Drops</h2>
-          </div>
-          <div className="flex snap-x gap-2 overflow-x-auto p-3 no-scrollbar">
-            {priceDrops.map((p) => (
-              <div key={p.id} className="w-[62%] shrink-0 snap-start sm:w-[17rem] lg:w-[19rem]">
-                <FlashSaleCard product={p} />
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <FeatureBanner
-        img="/hero/shop-floor.webp"
-        eyebrow="On laptops over UGX 1M"
-        title="Free Setup. Ready To Use."
-        sub="Windows, Office and antivirus installed before you leave the shop."
-        cta="Shop laptops"
-        href="/shop?cat=Laptops"
-      />
-
-      {/* Picks of the Day — the same row of cards as every other section. */}
-      <DealBand title="Picks Of The Day" subtitle="A different set each day" href="/shop" items={picks}>
-        <Rail items={picks.slice(0, RAIL)} />
-      </DealBand>
-
-
-
-      {/* Feature strip (trust badges) — computers only (hidden on phones) */}
-      <div className="hidden gap-3 md:grid md:grid-cols-4">
-        {whyUs.map((w) => (
-          <div key={w.title} className="flex items-center gap-3 rounded-lg border border-ink-600/10 bg-white p-3 shadow-sm">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
-              <Icon name={w.icon} size={20} />
-            </span>
-            <div>
-              <p className="text-xs font-bold text-ink-900">{w.title}</p>
-              <p className="hidden text-[11px] text-ink-700/60 sm:block">{w.body}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Promo cards — Repairs & Websites — computers only (hidden on phones) */}
-      <div className="hidden gap-3 md:grid md:grid-cols-2">
-        <Link href="/services#repairs-support" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-600/10 border-l-4 border-l-brand-500 bg-white p-4 shadow-sm transition hover:shadow-md">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
-              <Icon name="repair" size={24} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-sm font-extrabold text-ink-900">Repairs & IT Support</p>
-              <p className="text-xs text-ink-700/70">Laptops, desktops & networks · onsite & remote · from {ugx(30000)}</p>
-            </div>
-          </div>
-          <span className="hidden shrink-0 rounded-full bg-brand-500 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-brand-600 sm:inline-block">
-            Book a repair →
-          </span>
-        </Link>
-        <Link href="/services" className="group flex items-center justify-between gap-3 rounded-lg border border-ink-600/10 border-l-4 border-l-ink-600 bg-white p-4 shadow-sm transition hover:shadow-md">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-600 shadow-sm">
-              <Icon name="web" size={24} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-sm font-extrabold text-ink-900">Websites & Software</p>
-              <p className="text-xs text-ink-700/70">Custom sites, systems & apps for your business · from {ugx(SERVICE_FROM.website)}</p>
-            </div>
-          </div>
-          <span className="hidden shrink-0 rounded-full bg-ink-600 px-4 py-2 text-xs font-bold text-white transition group-hover:bg-ink-700 sm:inline-block">
-            Get a quote →
-          </span>
-        </Link>
-      </div>
-
-      {/* Top selling — teal banded separator */}
-      <DealBand title={trending.title} subtitle={trending.subtitle} href="/shop?sort=popular" items={topSelling}>
-        <Rail items={topSelling} />
-      </DealBand>
-
-      <FeatureBanner
-        img="/hero/hero-5.webp"
-        eyebrow="Our most-requested service"
-        title="Repairs & IT Support"
-        sub="Free diagnosis. Laptop and desktop repairs from UGX 30,000."
-        cta="Book a repair"
-        href="/services#repairs-support"
-        align="left"
-      />
-
-      {/* The academy's short video lessons, which are paid for one at a time. */}
-      <FeatureBanner
-        img="/courses/web-development.webp"
-        eyebrow="Online Tech Academy"
-        title="Short Video Lessons. Pay Per Lesson."
-        sub="22 courses in short lessons from UGX 5,000 each. Watch on your phone, unlock the next when you are ready, and earn a certificate."
-        cta="Watch a lesson"
-        href="/learn"
-      />
-
-      {/* Where to find us — ahead of the brand bands, because the page below
-          this point keeps loading products and has no end to put it at. */}
+      {/* Where to find us. */}
       <BranchShowcase />
 
-      {/* Shop by brand */}
-      <section className="overflow-hidden bg-white">
-        <div className="flex items-center justify-between px-4 py-4">
-          <h2 className="text-base font-extrabold text-ink-900">Shop by Brand</h2>
-          <Link href="/shop" className="text-sm font-semibold text-brand-600 hover:underline">See all →</Link>
-        </div>
-        <div className="flex gap-2.5 overflow-x-auto px-4 pb-4 no-scrollbar">
-          {["Dell", "HP", "Lenovo", "Apple", "ASUS", "TP-Link", "SanDisk", "Kingston", "Logitech"].map((b) => {
-            // Show a real product from that brand so the tile is a picture, not a word.
-            const hero = products.find((p) => p.brand === b);
-            const count = products.filter((p) => p.brand === b).length;
-            return (
-              <Link
-                key={b}
-                href={`/shop?brand=${encodeURIComponent(b)}`}
-                className="group/brand flex w-32 shrink-0 flex-col overflow-hidden rounded-lg border border-ink-600/10 bg-white shadow-sm transition hover:border-brand-300 hover:shadow-md"
-              >
-                <span className="relative block h-20 w-full bg-white">
-                  {hero && (
-                    <SafeImage
-                      src={productImage(hero)}
-                      alt={b}
-                      fill
-                      sizes="128px"
-                      className="object-contain p-2 transition duration-200 group-hover/brand:scale-105"
-                    />
-                  )}
-                </span>
-                <span className="border-t border-ink-600/5 px-2 py-1.5 text-center">
-                  <span className="block text-xs font-extrabold text-ink-800 group-hover/brand:text-brand-600">{b}</span>
-                  <span className="block text-[10px] text-ink-700/50">{count} item{count === 1 ? "" : "s"}</span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+      {/* Call / WhatsApp. */}
+      <OrderBanner />
 
-      {/* Category sections (Jumia-style horizontal rails). Phones are not here
-          — they lead the whole page, above the campaign banners. */}
-      <Panel title="Laptops" href="/shop?cat=Laptops" items={byCat("Laptops")}>
-        <Rail items={byCat("Laptops").slice(0, RAIL)} />
-      </Panel>
-
-      <Panel title="Desktops & PCs" href="/shop?cat=Desktops" items={byCat("Desktops")}>
-        <Rail items={byCat("Desktops").slice(0, RAIL)} />
-      </Panel>
-
-      <Panel title="Upgrades — RAM, SSD & Power" href="/shop?cat=Components" items={[...byCat("Components"), ...byCat("Power")]}>
-        <Rail items={[...byCat("Components"), ...byCat("Power")].slice(0, RAIL)} />
-      </Panel>
-
-      <Panel title="Accessories, Networking & Storage" href="/shop" items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")]}>
-        <Rail items={[...byCat("Accessories"), ...byCat("Networking"), ...byCat("Storage")].slice(0, RAIL)} />
-      </Panel>
-
-      {/* Browse all products — same coloured deal-band treatment as the rails */}
-      <Reveal as="section" className="overflow-hidden bg-white">
-        <div className="px-4 pb-4 pt-8 text-center text-ink-900 sm:px-6">
-          <p className="font-display text-[17px] italic text-brand-600">{inStock.length} in stock — Lenovo, HP, Dell, phones and more</p>
-          <h2 className="text-[28px] leading-tight sm:text-[34px]">Browse all products</h2>
-        </div>
-        {/* A grid that keeps going: the first products come with the page, and
-            the rest are added as the reader scrolls, until the whole catalogue
-            has been shown. Cards only — the shop's filters stay in the shop. */}
-        <EndlessProducts initial={browse.slice(0, GRID)} total={inStock.length} counts={categoryCounts} />
-      </Reveal>
-
-      {/* Your recently viewed items */}
-      <RecentlyViewed />
-
-      {/* The rest of the business — the page used to stop dead after the grid,
-          which on a phone is a long way to scroll for nothing. */}
-      <ExploreMore title="More from Online Tech Uganda" limit={6} exclude={["/learn"]} />
-
-      {/* The standing offer to be told what is new, as the page's closing
-          strip: someone who has read this far and not bought is who it is for. */}
+      {/* The standing offer to be told what is new. */}
       <DailyUpdates />
 
       {/* WhatsApp CTA */}

@@ -219,3 +219,32 @@ export function FeaturedBrands({ brands }: { brands: BrandTile[] }) {
     </section>
   );
 }
+
+export type StoryTile = { href: string; img: string; title: string; line: string; meta: string };
+
+/**
+ * A rail of tall photographs, each with a title, a line and "Find out more" —
+ * used for the academy's courses and for the software we have built.
+ */
+export function StoryRail({ title, sub, href, cta, tiles, more = "Find out more" }: { title: string; sub?: string; href: string; cta: string; tiles: StoryTile[]; more?: string }) {
+  return (
+    <section aria-label={title}>
+      <SectionTitle sub={sub} href={href} cta={cta}>
+        {title}
+      </SectionTitle>
+      <ProgressRail>
+        {tiles.map((t) => (
+          <Link key={t.href} href={t.href} className="group w-[70%] shrink-0 snap-start sm:w-[40%] lg:w-[calc((100%-2.25rem)/4)]">
+            <span className="relative block aspect-[4/5] overflow-hidden bg-white">
+              <SafeImage src={t.img} alt={t.title} fill sizes="(max-width: 640px) 70vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
+            </span>
+            <span className="mt-4 block font-display text-[22px] leading-tight text-ink-900">{t.title}</span>
+            <span className="mt-1 block text-[12.5px] uppercase tracking-[0.12em] text-ink-700/70">{t.meta}</span>
+            <span className="mt-1.5 line-clamp-2 block text-[14.5px] leading-snug text-ink-700/85">{t.line}</span>
+            <span className="mt-3 inline-block text-[14px] text-ink-900 underline underline-offset-4 group-hover:text-brand-600">{more}</span>
+          </Link>
+        ))}
+      </ProgressRail>
+    </section>
+  );
+}
