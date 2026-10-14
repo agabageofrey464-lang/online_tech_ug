@@ -458,7 +458,10 @@ body {
    sensible size when there are only a few of them. */
 @utility grid-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (min-width: 768px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (min-width: 1024px) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (min-width: 1800px) { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 @utility grid-cards-sm {
   display: grid;
@@ -479,7 +482,6 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
 }
 @media (min-width: 640px) {
-  .grid-cards { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
   .grid-cards-sm { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
 }
 
@@ -660,4 +662,18 @@ article.card-lift,
   box-shadow: 0 0 14px rgba(255, 170, 120, 0.55);
   animation: dropRise linear infinite;
   will-change: transform, opacity;
+}
+
+/* ─── One heading style for the whole site ─────────────────────────
+   Pages written before the redesign set their section titles small and
+   heavy (text-lg/xl, extrabold) with an orange marker bar. Every section
+   title in the page body now reads the same: the serif, one size, no bar.
+   Card names (h3 inside article) and the cart drawer are not touched. */
+main h2:where(.text-sm, .text-base, .text-lg, .text-xl, .text-2xl) {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.15;
+}
+main h2 > span.rounded-full:empty,
+main h2 > span.rounded-sm:empty {
+  display: none;
 }

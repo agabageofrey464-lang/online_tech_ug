@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
+import { SectionTitle } from "@/components/home-sections";
+import { ProgressRail } from "@/components/progress-rail";
 import { listedProducts as products } from "@/lib/data";
 
 /** Curated featured products (best-rated + discounted) shown atop the shop. */
@@ -13,20 +15,15 @@ export function FeaturedProducts() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="mb-4 overflow-hidden rounded-lg bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-ink-600/5 px-4 py-3">
-        <h2 className="flex items-center gap-2 text-base font-extrabold text-ink-900">
-          <span className="h-4 w-1 rounded-full bg-brand-500" /> Featured Products
-        </h2>
-        <Link href="/shop?deals=1" className="text-sm font-semibold text-brand-600 hover:underline">See deals →</Link>
-      </div>
-      <div className="flex snap-x gap-2.5 overflow-x-auto p-3 no-scrollbar">
+    <section aria-label="Featured products">
+      <SectionTitle href="/shop?deals=1" cta="See deals">Featured Products</SectionTitle>
+      <ProgressRail>
         {featured.map((p) => (
-          <div key={p.id} className="w-[45%] shrink-0 snap-start sm:w-[30%] lg:w-[15.5%]">
+          <div key={p.id} className="w-[46%] shrink-0 snap-start sm:w-[30%] lg:w-[calc((100%-2.25rem)/4)]">
             <ProductCard product={p} />
           </div>
         ))}
-      </div>
+      </ProgressRail>
     </section>
   );
 }
