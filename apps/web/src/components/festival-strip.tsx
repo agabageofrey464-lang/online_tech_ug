@@ -150,7 +150,7 @@ export function FestivalStrip() {
     <div
       // Always the charcoal: it sits directly under the orange-and-green strip,
       // and a second band of colour there was too much.
-      className="relative bg-ink-800 text-white"
+      className="stripes relative bg-ink-800 text-white"
     >
       <div className="container-wide flex items-center justify-center gap-3 py-2 pr-8 text-center">
         <Link href={s.href} className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">

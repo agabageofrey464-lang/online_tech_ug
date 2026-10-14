@@ -494,10 +494,12 @@ body {
 /* Soft diagonal stripes over a solid band — the look of our offer strips.
    The stripes are a single shade lighter than the base so they read as texture,
    not as pattern, and never fight the white text on top. */
-/* Bands are flat colour. `.stripes` used to lay a diagonal pattern over
-   them; the class is kept so the markup need not change. */
+/* The festival strips: fine diagonal lines crossing each other over the
+   band's colour, with the words standing on top of them. */
 .stripes {
-  background-image: none;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.11) 0 1.5px, transparent 1.5px 16px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.11) 0 1.5px, transparent 1.5px 16px);
 }
 
 /* ─── Light bands ──────────────────────────────────────────────────
