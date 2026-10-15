@@ -110,7 +110,7 @@ export default function LearnPage() {
             <h1 className="mt-2 font-display text-[34px] uppercase leading-[1.05] sm:text-[54px]">
               Real Computer Skills, Lesson By Lesson
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-white/95">
+            <p className="mx-auto mt-4 line-clamp-3 max-w-2xl text-[15px] leading-relaxed text-white/95 sm:line-clamp-none sm:text-[16px]">
               From your very first click to graphic design, Excel and coding. Built for students and
               mature learners in Uganda. Attend in person at our Kampala centre or learn online from
               anywhere — enrol on a full programme or study lesson by lesson, and earn a

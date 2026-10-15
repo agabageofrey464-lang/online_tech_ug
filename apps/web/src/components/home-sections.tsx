@@ -15,7 +15,7 @@ export function SectionTitle({ children, sub, href, cta = "Shop all" }: { childr
   return (
     <div className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
       <div className="min-w-0">
-        <h2 className="text-[28px] leading-tight text-ink-900 sm:text-[36px]">{children}</h2>
+        <h2 className="text-[24px] leading-tight text-ink-900 sm:text-[36px]">{children}</h2>
         {sub && <p className="mt-1 text-[14.5px] text-ink-700/80 sm:text-[16px]">{sub}</p>}
       </div>
       {href && (

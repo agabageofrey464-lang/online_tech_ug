@@ -179,7 +179,7 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
   // button, and the dots beneath the banner rather than on it.
   return (
     <div>
-    <div className="group/hero relative h-[440px] overflow-hidden bg-ink-900 sm:h-[480px] xl:h-[560px]">
+    <div className="group/hero relative h-[360px] overflow-hidden bg-ink-900 sm:h-[480px] xl:h-[560px]">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -211,7 +211,7 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
                 first={heading && idx === 0}
                 className={`mt-2 font-display uppercase leading-[1.02] tracking-[0.01em] ${
                   // An advertiser's headline can be any length; ours are written to fit.
-                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[28px] sm:text-[40px] xl:text-[46px]" : "line-clamp-3 text-[36px] sm:text-[52px] xl:text-[60px]"
+                  s.ad && s.title.length > 48 ? "line-clamp-3 text-[28px] sm:text-[40px] xl:text-[46px]" : "line-clamp-3 text-[30px] sm:text-[52px] xl:text-[60px]"
                 }`}
               >
                 {s.title}
