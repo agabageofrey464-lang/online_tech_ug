@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logoPlate } from "@/lib/doc-kit";
+import { IT_FIELDS, OTHER_FIELDS } from "@/lib/internship-brochure-pdf";
 
 /**
  * Internship letters.
@@ -24,16 +25,54 @@ type Issued = {
   created_at: string;
 };
 
-const FIELDS = [
-  "Web Development",
-  "Graphic Design",
-  "IT Support & Networking",
-  "Computer Repair & Maintenance",
-  "Digital Marketing",
-  "Data Entry & Analysis",
-  "Video Editing & Photography",
-  "Software Development",
-];
+// The fields we offer, the same list as the brochure and the apply form.
+const FIELDS = [...IT_FIELDS.map((f) => f.title), ...OTHER_FIELDS.map((f) => f.title)];
+
+/** An application from the site, as the dashboard lists it. */
+type Applicant = { id: number; name: string; job_title: string | null; message: string; status: string };
+
+/** The "Key: value" lines the apply form writes, read back into fields. */
+function readApplication(message: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const line of (message || "").split(/\r?\n/)) {
+    const m = line.match(/^([^:]{2,40}):\s*(.*)$/);
+    if (m) out[m[1].trim().toLowerCase()] = m[2].trim();
+  }
+  return out;
+}
+
+const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+/** "1 November – 18 December 2026" → two ISO dates, or null if it cannot be read. */
+function readDates(text: string): [string, string] | null {
+  const m = (text || "").match(/(\d{1,2})\s+([A-Za-z]+)\s*(\d{4})?\s*[–—-]+\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+  if (!m) return null;
+  const mo = (s: string) => MONTHS.findIndex((x) => x.startsWith(s.toLowerCase().slice(0, 3)));
+  const y2 = Number(m[6]);
+  const y1 = m[3] ? Number(m[3]) : mo(m[2]) > mo(m[5]) ? y2 - 1 : y2;
+  if (mo(m[2]) < 0 || mo(m[5]) < 0) return null;
+  const iso = (y: number, mIdx: number, d: string) => `${y}-${String(mIdx + 1).padStart(2, "0")}-${d.padStart(2, "0")}`;
+  return [iso(y1, mo(m[2]), m[1]), iso(y2, mo(m[5]), m[4])];
+}
+
+/**
+ * A paragraph answering what this student asked about in their note, so each
+ * letter speaks to that student rather than being the same for everyone.
+ */
+function answerFor(note: string, district: string): string {
+  const n = (note || "").toLowerCase();
+  const parts: string[] = [];
+  if (/log ?book|supervis|assess|form/.test(n))
+    parts.push("The student will be assigned a named supervisor who will follow their work daily, sign their logbook each week, and complete the assessment forms the institution requires at the end of the placement.");
+  if (/dut|day|work|job|busy|time|schedule|week/.test(n))
+    parts.push("We have noted the student's other commitments. Sessions run three to four days a week, from 9:00 am to 12:00 pm, and we shall agree with the student a weekly timetable that allows for their other duties while meeting the hours the institution requires.");
+  if (/laptop|computer|internet|data|network/.test(n))
+    parts.push("Where the student lacks a suitable machine or connection for a session, arrangements can be made for them to work from our Kampala office.");
+  if (/certif|letter|recommend/.test(n))
+    parts.push("At the end of the placement the student will receive a completion letter on our letterhead, and we shall be glad to write a recommendation on request.");
+  if (parts.length === 0 && district && !/kampala/i.test(district))
+    parts.push(`The training is conducted online, so the student may take part from ${district} with a computer and an internet connection, joining the team's daily check-ins and live sessions.`);
+  return parts.join(" ");
+}
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const addMonths = (iso: string, n: number) => {
@@ -72,6 +111,13 @@ export default function InternshipLettersPage() {
   const [end, setEnd] = useState(addMonths(todayISO(), 2));
   const [supervisor, setSupervisor] = useState("Agaba Geofrey");
   const [dated, setDated] = useState(todayISO());
+  // What each applicant gave, so every letter speaks to that student.
+  const [year, setYear] = useState("");
+  const [addressee, setAddressee] = useState("");
+  const [district, setDistrict] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [picked, setPicked] = useState("");
   const [busy, setBusy] = useState(false);
   // Every letter issued is kept on the backend, privately. Before this the
   // only copy was wherever the browser saved the download.
@@ -88,7 +134,35 @@ export default function InternshipLettersPage() {
   }
   useEffect(() => {
     void loadIssued();
+    fetch("/api/applications", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows: Applicant[]) =>
+        setApplicants((Array.isArray(rows) ? rows : []).filter((a) => /intern/i.test(a.job_title ?? "") || /field wanted:/i.test(a.message ?? ""))),
+      )
+      .catch(() => {});
   }, []);
+
+  /** Fill the letter from one student's application. */
+  function fillFrom(id: string) {
+    setPicked(id);
+    const a = applicants.find((x) => String(x.id) === id);
+    if (!a) return;
+    const f = readApplication(a.message);
+    setName(a.name.trim());
+    setInstitution(f["university"] ?? "");
+    setProgramme(f["course"] ?? "");
+    setRegNo(f["registration no."] ?? f["registration no"] ?? "");
+    setYear(f["year of study"] ?? "");
+    if (f["field wanted"]) setField(f["field wanted"]);
+    setAddressee(f["letter addressed to"] ?? "");
+    setDistrict(f["doing it from"] ?? "");
+    const d = readDates(f["dates required by school"] ?? "");
+    if (d) {
+      setStart(d[0]);
+      setEnd(d[1]);
+    }
+    setAnswer(answerFor(f["note"] ?? "", f["doing it from"] ?? ""));
+  }
 
   async function keepCopy(blob: Blob, filename: string, title: string, reference: string) {
     setSaved("");
@@ -176,8 +250,11 @@ export default function InternshipLettersPage() {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
       doc.setTextColor(30, 30, 30);
-      doc.text("The Academic Registrar / Internship Coordinator", M, y);
-      y += 5;
+      // To whoever the student's school asked the letter to go to.
+      const to = addressee.trim() ? addressee.trim().replace(/\b([a-z])/g, (c) => c.toUpperCase()) : "The Academic Registrar / Internship Coordinator";
+      const toLines = doc.splitTextToSize(to, width) as string[];
+      doc.text(toLines, M, y);
+      y += 5 * toLines.length;
       doc.setFont("helvetica", "normal");
       doc.text(institution.trim() || "________________________________", M, y);
       y += 12;
@@ -200,8 +277,9 @@ export default function InternshipLettersPage() {
       doc.setTextColor(45, 45, 45);
 
       const student = name.trim() || "________________";
-      const prog = programme.trim() ? ` pursuing ${programme.trim()}` : "";
+      const prog = programme.trim() ? `, a ${year.trim() ? `${year.trim()} ` : ""}student pursuing ${programme.trim()}` : "";
       const reg = regNo.trim() ? ` (Registration No. ${regNo.trim()})` : "";
+      const where = district.trim() ? ` The training is conducted online; the student will take part from ${district.trim()}, joining our team's daily check-ins and live working sessions.` : "";
       const inst = institution.trim() || "your institution";
 
       const body =
@@ -213,8 +291,9 @@ export default function InternshipLettersPage() {
               "",
               `We are pleased to inform you that ${student} has been ACCEPTED to undertake industrial training with Online Tech Uganda in the area of ${field}.`,
               "",
-              `The training will run from ${long(start)} to ${long(end)}. During this period the student will be attached to our team and will gain practical, supervised experience in ${field}, including real client work where appropriate.`,
+              `The training will run from ${long(start)} to ${long(end)}. During this period the student will be attached to our team and will gain practical, supervised experience in ${field}, including real client work where appropriate.${where}`,
               "",
+              ...(answer.trim() ? [answer.trim(), ""] : []),
               `The student will be supervised by ${supervisor.trim() || "a member of our senior team"}, and will be assessed on attendance, conduct, initiative and the quality of work produced. We shall be glad to complete any assessment forms your institution requires.`,
               "",
               "We look forward to working with your student and to a continued relationship with your institution.",
@@ -241,17 +320,26 @@ export default function InternshipLettersPage() {
         y += lines.length * 5.2;
       }
 
-      y += 10;
+      // The signature and the stamp need about 52 mm. If the letter has run
+      // long, they go to the top of a second page rather than being squeezed.
+      y += 8;
+      if (y > 222) {
+        doc.addPage();
+        y = 30;
+      }
 
-      // ── Sign-off
+      // ── Sign-off on the left
+      const top = y;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(45, 45, 45);
       doc.text("Yours faithfully,", M, y);
       y += 4;
       if (sign.current) doc.addImage(sign.current, "PNG", M, y, 50, 10.3);
-      y += 8.8;
-
+      y += 16;
       doc.setDrawColor(120, 120, 120);
       doc.setLineWidth(0.3);
-      doc.line(M, y, M + 70, y);
+      doc.line(M, y, M + 72, y);
       y += 5;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
@@ -260,15 +348,23 @@ export default function InternshipLettersPage() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(90, 90, 90);
-      doc.text("For: Online Tech Uganda", M, y);
+      doc.text("Internship Supervisor, for Online Tech Uganda", M, y);
+      y += 4.5;
+      doc.text("+256 756 839 270  ·  onlinetechug@gmail.com", M, y);
 
-      // Stamp hint on the right of the signature block
-      doc.setDrawColor(200, 200, 200);
+      // ── A clear box on the right for the official stamp, 58 × 44 mm
+      const bw = 58;
+      const bh = 44;
+      const bx = W - M - bw;
+      const by = top - 2;
+      doc.setDrawColor(170, 170, 170);
       doc.setLineWidth(0.3);
-      doc.circle(W - M - 18, y - 12, 16);
+      doc.setLineDashPattern([1.2, 1.2], 0);
+      doc.roundedRect(bx, by, bw, bh, 2, 2, "S");
+      doc.setLineDashPattern([], 0);
       doc.setFontSize(7);
-      doc.setTextColor(180, 180, 180);
-      doc.text("OFFICIAL STAMP", W - M - 18, y - 11, { align: "center" });
+      doc.setTextColor(175, 175, 175);
+      doc.text("OFFICIAL STAMP", bx + bw / 2, by + bh - 3, { align: "center" });
 
       // ── Footer
       doc.setFillColor(14, 116, 144);
@@ -330,6 +426,22 @@ export default function InternshipLettersPage() {
             ))}
           </div>
 
+          {/* Fill everything from what the student sent with their application. */}
+          <div className="mt-4 rounded-lg border border-brand-200 bg-brand-50/60 p-3">
+            <label className="block text-sm font-bold text-ink-700">Fill from an applicant</label>
+            <select value={picked} onChange={(e) => fillFrom(e.target.value)} className={`${input} bg-white`}>
+              <option value="">— choose a student who applied —</option>
+              {applicants.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name.trim()} · {(readApplication(a.message)["university"] ?? "").slice(0, 40) || "no university given"} · {a.status}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-ink-600/65">
+              Their university, course, year, registration number, field, dates, who the letter is addressed to and their note are filled in for you. Check and change anything below.
+            </p>
+          </div>
+
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <label className="block text-sm font-semibold text-ink-700">Student&apos;s full name</label>
@@ -357,6 +469,23 @@ export default function InternshipLettersPage() {
               <label className="block text-sm font-semibold text-ink-700">Registration number</label>
               <input value={regNo} onChange={(e) => setRegNo(e.target.value)} placeholder="e.g. 21/U/1234" className={input} />
             </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Year of study</label>
+              <input value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. Year 3" className={input} />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700">Doing it from (district)</label>
+              <input value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="e.g. Kikuube" className={input} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-semibold text-ink-700">Letter addressed to</label>
+              <input
+                value={addressee}
+                onChange={(e) => setAddressee(e.target.value)}
+                placeholder="As the student's school asked, e.g. The Dean, Faculty of Science and Technology"
+                className={input}
+              />
+            </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-semibold text-ink-700">Training area</label>
               <input list="otu-fields" value={field} onChange={(e) => setField(e.target.value)} className={input} />
@@ -381,6 +510,16 @@ export default function InternshipLettersPage() {
             <div>
               <label className="block text-sm font-semibold text-ink-700">Letter date</label>
               <input type="date" value={dated} onChange={(e) => setDated(e.target.value)} className={input} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-semibold text-ink-700">Answer to the student&apos;s request</label>
+              <textarea
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                rows={4}
+                placeholder="Written from the note the student left (supervision and logbook, other duties, working from home…). Change it as you like, or leave it empty."
+                className={input}
+              />
             </div>
           </div>
 
@@ -436,7 +575,8 @@ export default function InternshipLettersPage() {
               "Student name, reg no. and programme",
               "Training area and dates",
               "Supervisor and signature",
-              "Space for your official stamp",
+              "Their own addressee, year, district and request",
+              "A clear box for your official stamp",
             ].map((x) => (
               <li key={x}>• {x}</li>
             ))}
