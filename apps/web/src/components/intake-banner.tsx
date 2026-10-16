@@ -55,7 +55,7 @@ export function IntakeBanner() {
             <span className="hidden sm:inline">Industrial training & internship begins Monday 2 November</span>
           </span>
           <span className="mt-0.5 block text-[11px] leading-snug text-white/85 sm:text-[13px]">
-            7 weeks · online · classes 9:00 am – 12:00 pm, 3–4 days a week · UGX 150,000
+            7 weeks · online · hours fitted to your time — working people welcome · UGX 150,000
           </span>
         </Link>
         <Link

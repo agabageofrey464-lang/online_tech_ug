@@ -507,9 +507,9 @@ async def send_contact_notification(
 # replies say the same (apps/admin/src/lib/intern-templates.ts) — change both.
 INTERNSHIP_TIMETABLE = [
     "Orientation: Monday 2 November 2026.",
-    "Class: 3 to 4 days each week, 9:00 am – 12:00 pm (3 hours), online.",
+    "Sessions: 3 to 4 days each week, about 3 hours each, online, at hours agreed with you around your lectures or work.",
     "Each class is practical: the first 30 minutes are theory, the rest is hands-on work.",
-    "The days for each week are shared in advance, so please keep your mornings free.",
+    "Tell us when you are free and we set your timetable around it; the days for each week are shared in advance.",
 ]
 
 

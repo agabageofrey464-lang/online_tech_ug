@@ -64,7 +64,7 @@ function answerFor(note: string, district: string): string {
   if (/log ?book|supervis|assess|form/.test(n))
     parts.push("The student will be assigned a named supervisor who will follow their work daily, sign their logbook each week, and complete the assessment forms the institution requires at the end of the placement.");
   if (/dut|day|work|job|busy|time|schedule|week/.test(n))
-    parts.push("We have noted the student's other commitments. Sessions run three to four days a week, from 9:00 am to 12:00 pm, and we shall agree with the student a weekly timetable that allows for their other duties while meeting the hours the institution requires.");
+    parts.push("We have noted the student's other commitments. Sessions run three to four days a week, at hours agreed with the student around their other commitments, while meeting the hours the institution requires.");
   if (/laptop|computer|internet|data|network/.test(n))
     parts.push("Where the student lacks a suitable machine or connection for a session, arrangements can be made for them to work from our Kampala office.");
   if (/certif|letter|recommend/.test(n))

@@ -208,7 +208,8 @@ function Side({
 }
 
 /** How long before one half or the other changes its offer. */
-const TURN = 3000;
+// Long enough to read each one before it moves on.
+const TURN = 5000;
 
 export function PromoStrip() {
   const [tick, setTick] = useState(0);

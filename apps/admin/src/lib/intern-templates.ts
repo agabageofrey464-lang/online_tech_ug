@@ -20,7 +20,8 @@ export const INTAKE = {
   /** Not every weekday: three or four classes a week, the days told in advance. */
   days: "3 to 4 days each week",
   /** One class a day, three hours. */
-  classTime: "9:00 am – 12:00 pm",
+  // Hours are agreed with each intern around their lectures or work.
+  classTime: "at hours agreed with you",
   fee: "UGX 150,000",
   pay: "Airtel Money 0756 839 270 (Online TechUG Services, Merchant ID 7148212)",
   phone: "0756 839 270",
@@ -28,9 +29,9 @@ export const INTAKE = {
 
 const TIMETABLE =
   `• Orientation: ${INTAKE.firstDay}\n` +
-  `• Class: ${INTAKE.days}, ${INTAKE.classTime} (3 hours), online\n` +
+  `• Sessions: ${INTAKE.days}, about 3 hours each, ${INTAKE.classTime}, online\n` +
   `• Each class is practical: the first 30 minutes are theory, the rest is hands-on work\n` +
-  `• The days for each week are shared in advance, so please keep your mornings free`;
+  `• Tell us when you are free and we set your timetable around it; the days for each week are shared in advance`;
 
 export const INTERN_TEMPLATES: Template[] = [
   {
@@ -52,7 +53,7 @@ export const INTERN_TEMPLATES: Template[] = [
     body: () =>
       `Thank you for asking. The internship runs online from ${INTAKE.window}.\n\n` +
       `${TIMETABLE}\n\n` +
-      `We will send you the meeting link before the first day. Please be online a few minutes before 9:00 am.`,
+      `We will send you the meeting link before the first day. Please be online a few minutes before the time we agree with you.`,
   },
   {
     label: "Send your details / letter",
@@ -87,7 +88,7 @@ export const INTERN_TEMPLATES: Template[] = [
     label: "Before the first day",
     subject: "Your internship starts on Monday — Online Tech Uganda",
     body: () =>
-      `Your internship begins with orientation on ${INTAKE.firstDay} at 9:00 am, online. The meeting link follows in a separate message.\n\n` +
+      `Your internship begins with orientation on ${INTAKE.firstDay}, online, at a time we confirm with you. The meeting link follows in a separate message.\n\n` +
       `Have ready: a laptop or desktop, a steady internet connection, and a notebook.\n\n` +
       `${TIMETABLE}\n\n` +
       `If anything will stop you from joining, tell us before the day on ${INTAKE.phone}.`,

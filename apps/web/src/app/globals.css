@@ -566,7 +566,7 @@ article.card-lift,
   100% { transform: none; opacity: 1; }
 }
 @keyframes stripRise {
-  0% { transform: translateY(110%); opacity: 0; }
+  0% { transform: translateY(60%); opacity: 0.35; }
   100% { transform: none; opacity: 1; }
 }
 @keyframes stripSpring {
@@ -588,7 +588,7 @@ article.card-lift,
 
 .strip-photo { animation: stripPhoto 0.75s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, stripGlow 2.2s ease-in-out 0.8s infinite; }
 /* The strip's message floats in from the right, across the whole width. */
-@keyframes stripFloat { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes stripFloat { from { transform: translateX(40px); } to { transform: none; } }
 .strip-float { animation: stripFloat 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .strip-rise { display: block; animation: stripRise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.12s both; }
 .strip-rise-late { animation: stripRise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.42s both; }

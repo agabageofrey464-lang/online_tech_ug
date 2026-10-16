@@ -93,6 +93,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   const nav = (
     <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
+      {/* The website itself, one tap away, opening beside the dashboard. */}
+      <a
+        href="https://www.onlinetechug.com"
+        target="_blank"
+        rel="noreferrer"
+        className="mb-2 flex items-center gap-3 rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-[#11505d] shadow-sm transition hover:bg-brand-500 hover:text-white"
+      >
+        <span>🌐</span>
+        <span className="flex-1">Open the website</span>
+        <span aria-hidden>↗</span>
+      </a>
       {sections.map((s) => {
         const n = s.count && counts ? counts[s.count] ?? 0 : undefined;
         return (
