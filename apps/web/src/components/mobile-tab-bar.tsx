@@ -2,22 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, ShoppingCart, GraduationCap, User } from "lucide-react";
-import { useCart } from "@/lib/cart";
+import { Home, LayoutGrid, Briefcase, GraduationCap, User } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-
-function Badge({ n }: { n: number }) {
-  if (n <= 0) return null;
-  return (
-    <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-bold text-white">
-      {n > 9 ? "9+" : n}
-    </span>
-  );
-}
 
 export function MobileTabBar() {
   const pathname = usePathname();
-  const { count: cartCount, open } = useCart();
   const { user } = useAuth();
 
   const cls = (active: boolean) =>
@@ -33,13 +22,15 @@ export function MobileTabBar() {
       <Link href="/shop" className={cls(pathname.startsWith("/categories") || pathname.startsWith("/shop"))}>
         <LayoutGrid size={22} strokeWidth={1.8} /> Shop
       </Link>
-      <button onClick={open} className={cls(false)}>
-        <span className="relative">
-          <ShoppingCart size={22} strokeWidth={1.8} />
-          <Badge n={cartCount} />
+      {/* The internship, in the middle of the bar and in yellow: it is what
+          most students reach the site for this season. The cart stays in the
+          header, beside the logo. */}
+      <Link href="/internship" className="flex flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-bold text-ink-900">
+        <span className={`flex h-7 w-11 items-center justify-center rounded-full bg-[#FCDC04] ${pathname.startsWith("/internship") || pathname.startsWith("/apply") ? "ring-2 ring-ink-900" : ""}`}>
+          <Briefcase size={17} strokeWidth={2.2} />
         </span>
-        Cart
-      </button>
+        Internship
+      </Link>
       {/* Learn keeps the academy's green on mobile too, so it is the one tab
           that stands out from the shopping ones. */}
       <Link

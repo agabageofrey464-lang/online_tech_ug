@@ -526,6 +526,12 @@ export function SiteHeader() {
             >
               <Home size={13} strokeWidth={2.2} /> Home
             </Link>
+            <Link
+              href="/internship"
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FCDC04] px-4 py-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-900"
+            >
+              <Briefcase size={13} strokeWidth={2.4} /> Internship
+            </Link>
             {CATEGORIES.map((c) => (
               <Link
                 key={c.href}
