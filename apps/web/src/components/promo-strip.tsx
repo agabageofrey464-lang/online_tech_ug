@@ -292,7 +292,7 @@ export function PromoStrip() {
   const turn = tick % 2 === 0 ? "store" : "academy";
 
   return (
-    <div className="relative flex overflow-hidden text-white">
+    <div className="relative mx-2 mt-2 flex overflow-hidden rounded-[22px] text-white shadow-md sm:mx-0 sm:mt-0 sm:rounded-none sm:shadow-none">
       {/* ── Store ─────────────────────────────────────────────── */}
       <div
         className={`relative z-10 min-w-0 flex-1 items-center bg-gradient-to-r from-brand-800 via-brand-700 to-brand-800 ${

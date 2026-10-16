@@ -36,7 +36,7 @@ export function IntakeBanner() {
   if (hidden) return null;
 
   return (
-    <div className="green-ribbon relative overflow-hidden text-white">
+    <div className="green-ribbon relative mx-2 mt-2 overflow-hidden rounded-[22px] text-white shadow-md sm:mx-0 sm:mt-0 sm:rounded-none sm:shadow-none">
       <span aria-hidden className="strip-shine" />
       <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-brand-500" />
       <div className="container-wide flex items-center gap-3 py-2.5 pr-10 sm:gap-4 sm:py-3">
@@ -55,7 +55,8 @@ export function IntakeBanner() {
             <span className="hidden sm:inline">Industrial training & internship begins Monday 2 November</span>
           </span>
           <span className="mt-0.5 block text-[11px] leading-snug text-white/85 sm:text-[13px]">
-            7 weeks · online · hours fitted to your time — working people welcome · UGX 150,000
+            <span className="sm:hidden">7 weeks · online · at your own hours · UGX 150,000</span>
+            <span className="hidden sm:inline">7 weeks · online · hours fitted to your time — working people welcome · UGX 150,000</span>
           </span>
         </Link>
         <Link
