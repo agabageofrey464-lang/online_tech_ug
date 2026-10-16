@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { GraduationCap, X } from "lucide-react";
+import { X } from "lucide-react";
 
 /** The intake starts on 2 November; a fortnight in, there is no place left to announce. */
 const UNTIL = "2026-11-15";
@@ -40,8 +40,10 @@ export function IntakeBanner() {
       <span aria-hidden className="strip-shine" />
       <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-brand-500" />
       <div className="container-wide flex items-center gap-3 py-2.5 pr-10 sm:gap-4 sm:py-3">
-        <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#067a39] sm:flex">
-          <GraduationCap size={21} />
+        {/* A graduate in cap and gown: where the training leads. */}
+        <span className="relative block h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-[#fcdc04] sm:h-14 sm:w-14">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/people/graduate.webp" alt="An Online Tech Uganda graduate in cap and gown" width={56} height={56} className="h-full w-full object-cover" />
         </span>
         <Link href="/apply" className="min-w-0 flex-1">
           <span className="block text-[10px] font-black uppercase leading-none tracking-[0.2em] text-[#fcdc04] sm:text-[11px]">
@@ -49,7 +51,8 @@ export function IntakeBanner() {
             <span className="hidden sm:inline">Nov – Dec internship · university students, every level · non-students welcome</span>
           </span>
           <span className="mt-1 block font-display text-[17px] font-semibold leading-tight sm:text-[22px]">
-            Industrial training & internship begins Monday 2 November
+            <span className="sm:hidden">Internship begins Monday 2 November</span>
+            <span className="hidden sm:inline">Industrial training & internship begins Monday 2 November</span>
           </span>
           <span className="mt-0.5 hidden text-[11.5px] leading-snug text-white/85 sm:block sm:text-[13px]">
             7 weeks · online · classes 9:00 am – 12:00 pm, 3–4 days a week · UGX 150,000
