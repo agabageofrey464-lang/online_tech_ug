@@ -681,3 +681,12 @@ main h2 > span.rounded-sm:empty {
   background-color: #1b7a8c;
   background-image: repeating-linear-gradient(115deg, transparent 0 46px, rgba(255, 255, 255, 0.07) 46px 70px, transparent 70px 96px, rgba(0, 0, 0, 0.07) 96px 108px);
 }
+
+/* ─── Phones: one rule for every page ─────────────────────────────
+   Section titles one size, whichever page and whichever card they sit in. */
+@media (max-width: 639px) {
+  main h2 {
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+  }
+}

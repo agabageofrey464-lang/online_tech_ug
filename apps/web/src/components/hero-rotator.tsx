@@ -113,8 +113,8 @@ const SLIDES: Slide[] = [
   {
     tab: "Internships",
     eyebrow: "Internships",
-    title: "Industrial Training, On Real Client Work",
-    sub: "Online placements for university and college students, with signed letters.",
+    title: "Nov – Dec Industrial Training & Internship",
+    sub: "For university students at every level, graduates and non-students — online, on real client work, with signed letters.",
     cta: "Apply for a place",
     href: "/internship",
     more: { label: "How it works", href: "/internship" },

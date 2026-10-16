@@ -348,20 +348,14 @@ export default async function HomePage() {
       {/* The standing offer to be told what is new. */}
       <DailyUpdates />
 
-      {/* WhatsApp CTA */}
-      <section className="rounded bg-ink-700 px-6 py-8 text-center text-white">
-        <h2 className="text-xl font-extrabold sm:text-2xl">Need help choosing?</h2>
-        <p className="mx-auto mt-1 max-w-lg text-sm text-white/85">
-          Chat with our team on WhatsApp — we&apos;ll help you pick the right device or service.
-        </p>
-        <a
-          href={whatsappLink("Hello Online Tech Uganda, I'd like help choosing.")}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-block rounded-md bg-white px-6 py-2.5 text-sm font-bold text-brand-600 hover:bg-brand-50"
-        >
-          Chat on WhatsApp
-        </a>
+      {/* Then everything in stock, phones first, arriving as the page is
+          scrolled — with a row of buttons to jump to any kind of product. */}
+      <section aria-label="Everything in the shop">
+        <div className="mb-2">
+          <h2 className="text-[24px] leading-tight text-ink-900 sm:text-[36px]">Everything In The Shop</h2>
+          <p className="mt-1 text-[14.5px] text-ink-700/80">Phones first, then computers and the rest — keep scrolling.</p>
+        </div>
+        <EndlessProducts initial={browse.slice(0, 24)} total={browse.length} counts={categoryCounts} />
       </section>
     </div>
   );

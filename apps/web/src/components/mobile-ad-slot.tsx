@@ -49,7 +49,7 @@ const TURNS = [
     bar: "bg-[#067a39]",
     button: "bg-brand-500 text-white",
     label: "💼 Internship",
-    text: "KIU & all universities · starts 2 Nov",
+    text: "Nov–Dec · all students & non-students",
     cta: "Apply",
     href: "/apply",
   },

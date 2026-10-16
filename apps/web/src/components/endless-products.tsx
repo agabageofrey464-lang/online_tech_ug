@@ -122,28 +122,46 @@ export function EndlessProducts({
     else sections.push({ category: group, items: [p] });
   }
 
+  const anchor = (c: string) => `browse-${c.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  // Every group with stock, in the order the feed brings them: phones first.
+  const groups = Object.keys(counts).filter((c) => counts[c] > 0);
+  const jump = (c: string) => {
+    const el = document.getElementById(anchor(c));
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.location.href = groupHref(c);
+  };
+
   return (
     <>
+      {/* A row of buttons that stays at the top while the products scroll by,
+          to jump straight to a kind of product. */}
+      <div className="sticky top-[148px] z-30 -mx-4 mb-2 flex gap-2 overflow-x-auto bg-[var(--background)]/95 px-4 py-2.5 backdrop-blur no-scrollbar lg:top-[160px] lg:mx-0 lg:px-0">
+        {groups.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => jump(c)}
+            className="shrink-0 whitespace-nowrap rounded-full border border-ink-700/25 bg-white px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-900 transition hover:border-brand-500 hover:text-brand-600"
+          >
+            {groupTitle(c)} <span className="text-ink-700/50">{counts[c]}</span>
+          </button>
+        ))}
+      </div>
       {sections.map((sec) => (
-        <section key={sec.category} aria-label={sec.category} className="bg-[#f3efe9]">
-          <div className="flex items-center justify-between gap-2 px-3 pb-1 pt-4 sm:px-4">
-            <h3 className="flex items-center gap-2 font-display text-lg font-black text-ink-900 sm:text-xl">
-              <span className="h-5 w-1.5 rounded-full bg-brand-500" />
+        <section key={sec.category} id={anchor(sec.category)} aria-label={sec.category} className="scroll-mt-56 pt-6 lg:scroll-mt-60">
+          <div className="mb-4 flex items-end justify-between gap-3">
+            <h3 className="font-display text-[24px] leading-tight text-ink-900 sm:text-[32px]">
               {groupTitle(sec.category)}
-              {counts[sec.category] ? (
-                <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-ink-700/70 ring-1 ring-ink-600/10">
-                  {counts[sec.category]}
-                </span>
-              ) : null}
+              {counts[sec.category] ? <span className="ml-2 font-sans text-[13px] text-ink-700/55">{counts[sec.category]} in stock</span> : null}
             </h3>
             <Link
               href={groupHref(sec.category)}
-              className="shrink-0 text-xs font-bold text-brand-600 hover:underline sm:text-sm"
+              className="shrink-0 pb-1 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-900 underline underline-offset-4 hover:text-brand-600"
             >
-              All {LEADS.includes(sec.category) ? sec.category : sec.category.toLowerCase()} →
+              Shop all →
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 sm:gap-3 sm:p-3">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">
             {sec.items.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -151,7 +169,7 @@ export function EndlessProducts({
         </section>
       ))}
 
-      <div ref={sentinel} className="bg-[#f3efe9] px-3 pb-4 pt-1 text-center">
+      <div ref={sentinel} className="px-3 pb-4 pt-4 text-center">
         {!done ? (
           <p className="flex items-center justify-center gap-2 py-3 text-xs font-semibold text-ink-700/60">
             <span className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />

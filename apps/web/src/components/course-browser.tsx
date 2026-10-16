@@ -58,6 +58,8 @@ export function CourseBrowser({
   withNotes: string[];
 }) {
   const [q, setQ] = useState("");
+  // A phone shows the first six courses and a button for the rest.
+  const [all, setAll] = useState(false);
   const [cat, setCat] = useState("all");
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("All levels");
 
@@ -160,11 +162,11 @@ export function CourseBrowser({
         </div>
       ) : (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((c) => (
+          {filtered.map((c, i) => (
             <Link
               key={c.slug}
               href={`/learn/${c.slug}`}
-              className="group flex flex-col overflow-hidden bg-white card-lift"
+              className={`group flex-col overflow-hidden bg-white card-lift ${i >= 6 && !all ? "hidden sm:flex" : "flex"}`}
             >
               <div className="relative h-36 w-full overflow-hidden">
                 <SafeImage
@@ -242,6 +244,15 @@ export function CourseBrowser({
               </div>
             </Link>
           ))}
+          {filtered.length > 6 && !all && (
+            <button
+              type="button"
+              onClick={() => setAll(true)}
+              className="border border-ink-900 px-6 py-3.5 text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900 sm:hidden"
+            >
+              Show all {filtered.length} courses
+            </button>
+          )}
         </div>
       )}
     </div>

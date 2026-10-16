@@ -23,7 +23,7 @@ const isWebLink = (url: string) => /^https?:\/\//i.test(url) && !/\.(png|jpe?g|w
 const HOUSE: Strip[] = [
   { key: "software", label: "💻 Software", title: "We build websites, apps & systems", text: "Designed, built, hosted and looked after for your business.", cta: "Get a quote", href: "/development", img: "/portfolio/online-tech-uganda-1.webp", bar: "bg-[#7a1f5c]" },
   { key: "courses", label: "🎓 Learn Academy", title: "22 computer courses, with a certificate", text: "In class or online, in short lessons. Pay per lesson.", cta: "Browse courses", href: "/learn", img: "/cards/courses/microsoft-office.webp", bar: "bg-[#067a39]" },
-  { key: "intern", label: "💼 Internships", title: "Industrial training, on real client work", text: "Online placements for university and college students.", cta: "Apply", href: "/internship", img: "/internship-photo.jpg", bar: "bg-brand-500" },
+  { key: "intern", label: "💼 Internships", title: "Nov – Dec industrial training & internship", text: "University students at every level, graduates and non-students.", cta: "Apply", href: "/internship", img: "/internship-photo.jpg", bar: "bg-brand-500" },
   { key: "space", label: "📣 Advertise here", title: "Put your business in this space", text: "Seen by everyone who opens the shop. Ask us for the rates.", cta: "Advertise", href: "/advertise", bar: "bg-[#8a5a00]" },
 ];
 

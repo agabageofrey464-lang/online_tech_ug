@@ -45,10 +45,11 @@ export function IntakeBanner() {
         </span>
         <Link href="/apply" className="min-w-0 flex-1">
           <span className="block text-[10px] font-black uppercase leading-none tracking-[0.2em] text-[#fcdc04] sm:text-[11px]">
-            Internship intake · apply now
+            <span className="sm:hidden">Nov – Dec internship · all levels</span>
+            <span className="hidden sm:inline">Nov – Dec internship · university students, every level · non-students welcome</span>
           </span>
           <span className="mt-1 block font-display text-[17px] font-semibold leading-tight sm:text-[22px]">
-            Industrial training begins Monday 2 November
+            Industrial training & internship begins Monday 2 November
           </span>
           <span className="mt-0.5 hidden text-[11.5px] leading-snug text-white/85 sm:block sm:text-[13px]">
             7 weeks · online · classes 9:00 am – 12:00 pm, 3–4 days a week · UGX 150,000

@@ -167,10 +167,10 @@ export default function InternshipPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Online placements for university and college students"
+        eyebrow="For university and college students at every level — and for non-students too"
         title="Industrial Training & Internship"
         image="/web/photo-1523240795612-9a054b0db644.webp"
-        subtitle={`${ugx(INTERNSHIP_FEE)} · online · ${INTERNSHIP_WINDOW}. Software, IT and design, on real client work.`}
+        subtitle={`November – December intake · ${INTERNSHIP_WINDOW} · online · ${ugx(INTERNSHIP_FEE)}. Certificate, diploma and degree students, graduates and anyone ready to learn — on real client work.`}
         crumbs={[{ label: "Internship" }]}
       >
         <a href="#apply" className="press bg-white px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-white/90">
