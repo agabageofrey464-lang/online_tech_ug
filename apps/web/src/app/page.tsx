@@ -30,6 +30,7 @@ import { courses } from "@/lib/data";
 import { portfolio } from "@/lib/portfolio";
 import { ugx, whatsappLink } from "@/lib/site";
 import { share } from "@/lib/seo";
+import { preload } from "react-dom";
 
 // Section bands are white with a dark serif heading. They were solid colour,
 // a different one per band, and a page of them left nowhere for the eye to
@@ -161,6 +162,10 @@ function rotate<T>(arr: T[], by: number): T[] {
 // "Sold" bar figures — stable per product so the bar doesn't jump around.
 
 export default async function HomePage() {
+  // The banner's first photograph is what a visitor sees first: ask for it
+  // ahead of everything else, at the size their screen needs.
+  preload("/phone/shop-shelves.webp", { as: "image", fetchPriority: "high", media: "(max-width: 640px)" });
+  preload("/hero/shop-shelves.webp", { as: "image", fetchPriority: "high", media: "(min-width: 641px)" });
   // The live catalogue and vendors' products. This page used to read the
   // catalogue file it was built with, so a price changed in the dashboard, or
   // a product added there, showed in the shop but not here.
