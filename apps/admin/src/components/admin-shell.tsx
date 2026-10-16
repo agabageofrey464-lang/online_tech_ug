@@ -100,7 +100,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             key={s.href}
             href={s.href}
             className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition hover:bg-white/10 hover:text-white ${
-              pathname === s.href ? "bg-white/10 text-white" : "text-white/80"
+              pathname === s.href ? "bg-white/20 font-semibold text-white shadow-sm" : "text-white/85"
             }`}
           >
             <span>{s.icon}</span>
@@ -150,7 +150,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col bg-ink-700 p-4 text-white md:flex">
+      <aside className="side-teal hidden w-64 shrink-0 flex-col p-4 text-white md:flex">
         <div className="mb-6">{brand}</div>
         {nav}
         {signOut}
@@ -158,7 +158,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between bg-ink-700 px-4 text-white md:hidden">
+      <header className="side-teal fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between px-4 text-white md:hidden">
         {brand}
         <button
           onClick={() => setDrawerOpen(true)}
@@ -173,7 +173,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {drawerOpen && (
         <div className="fixed inset-0 z-40 md:hidden" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50" onClick={() => setDrawerOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-72 max-w-[85%] flex-col bg-ink-700 p-4 text-white shadow-2xl">
+          <aside className="side-teal absolute left-0 top-0 flex h-full w-72 max-w-[85%] flex-col p-4 text-white shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               {brand}
               <button

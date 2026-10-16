@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { EB_Garamond, Jost } from "next/font/google";
 import "./globals.css";
 import { AdminShell } from "@/components/admin-shell";
 import { Analytics } from "@/components/analytics";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// The storefront's two faces, so the dashboard reads as the same company:
+// a clean sans for everything, the serif for page titles.
+const sans = Jost({ subsets: ["latin"], variable: "--font-sans-face", display: "swap" });
+const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif-face", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Online Tech Uganda — Admin",
@@ -14,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="min-h-screen">
         <Analytics />
         <AdminShell>{children}</AdminShell>

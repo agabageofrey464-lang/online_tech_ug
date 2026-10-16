@@ -10,12 +10,18 @@
   --color-ink-600: #3a3945;
   --color-ink-700: #2e2d38;
   --color-ink-50: #f3f3f5;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* The storefront's teal, for the sidebar. */
+  --color-teal-500: #1b7a8c;
+  --color-teal-600: #166879;
+  --color-teal-700: #11505d;
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif-face), Georgia, serif;
 }
 
 body {
   font-family: var(--font-sans);
-  background: #f6f7fb;
+  /* The storefront's warm off-white. */
+  background: #f4f2ee;
   color: #16151d;
   -webkit-font-smoothing: antialiased;
 }
@@ -26,4 +32,18 @@ body {
    is too long then truncates or wraps where its own classes say. */
 main :where(div, section, article, header, ul, li, p, form) {
   min-width: 0;
+}
+
+/* Page titles in the storefront's serif, as on the site. */
+main h1 {
+  font-family: var(--font-display);
+  font-weight: 500 !important;
+  letter-spacing: 0;
+  font-size-adjust: 0.46;
+}
+
+/* The sidebar: the storefront's banded teal. */
+.side-teal {
+  background-color: var(--color-teal-600);
+  background-image: repeating-linear-gradient(115deg, transparent 0 46px, rgba(255, 255, 255, 0.05) 46px 70px, transparent 70px 96px, rgba(0, 0, 0, 0.06) 96px 108px);
 }
