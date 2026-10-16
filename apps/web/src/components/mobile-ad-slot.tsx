@@ -63,7 +63,9 @@ export function MobileAdSlot() {
   useEffect(() => {
     const pick = () => {
       const open = new Date().toISOString().slice(0, 10) <= INTAKE_UNTIL;
-      const list = open ? [0, 1, 2] : [0, 1];
+      // The internship has its own banner at the top now, so this slot carries
+      // the shop and the software.
+      const list = open ? [0, 1] : [0, 1];
       setTurn(list[Math.floor(Date.now() / TURN_MS) % list.length]);
     };
     pick();

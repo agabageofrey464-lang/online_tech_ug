@@ -368,12 +368,12 @@ export function SiteHeader() {
 
         {/* Wide screens: a dark row of links — selling, what we do with the
             internships as a yellow badge, the rest muted, and the phone. */}
-        <div className="green-ribbon hidden text-white lg:block">
-          <div className="container-wide flex items-center gap-x-4 py-2 text-[13px] font-medium">
+        <div className="green-ribbon text-white">
+          <div className="container-wide flex items-center gap-x-4 overflow-x-auto py-2 text-[13px] font-medium no-scrollbar lg:overflow-visible">
             <Link href="/sell" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-white transition hover:bg-brand-600">
               <Star size={12} className="fill-white" /> Sell on {site.name}
             </Link>
-            <nav className="flex min-w-0 flex-1 items-center gap-x-4 overflow-x-auto no-scrollbar">
+            <nav className="flex shrink-0 items-center gap-x-4 lg:min-w-0 lg:flex-1 lg:shrink lg:overflow-x-auto lg:no-scrollbar">
               {UTILITY_PRIMARY.map((it) =>
                 it.href === "/internship" ? (
                   <Link
