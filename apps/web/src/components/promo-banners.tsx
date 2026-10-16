@@ -439,7 +439,7 @@ export function PromoBanners({ zone = "shop" }: { zone?: "shop" | "academy" }) {
           className={`strip-photo relative h-12 w-12 shrink-0 overflow-hidden rounded-full sm:h-16 sm:w-16 ${b.panel}`}
           style={b.panelHex ? { backgroundColor: b.panelHex } : undefined}
         >
-          <Image src={b.img} alt={b.title} fill sizes="64px" className="object-cover" />
+          <Image src={b.img.startsWith("/hero/") ? b.img.replace("/hero/", "/hero/small/") : b.img} alt={b.title} fill sizes="64px" className="object-cover" />
         </span>
 
         {/* What it is. */}

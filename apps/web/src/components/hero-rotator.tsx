@@ -172,7 +172,14 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
   }, [n, i]);
 
   // Only the slide on show, the one it replaced and the one after carry a photograph.
-  const near = (idx: number) => idx === i || idx === prev || idx === (i + 1) % n;
+  // The next slide's photograph is fetched only once the page has shown, so
+  // on a slow phone connection the first one has the line to itself.
+  const [warm, setWarm] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setWarm(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+  const near = (idx: number) => idx === i || idx === prev || (warm && idx === (i + 1) % n);
 
   // A banner from edge to edge, as the big home stores run theirs: the
   // photograph behind, the headline large and centred in capitals, one solid
@@ -197,7 +204,11 @@ export function HeroRotator({ heading = true }: { heading?: boolean }) {
               // eslint-disable-next-line @next/next/no-img-element
               s.img && <img src={s.img} alt={s.title} className="absolute inset-0 h-full w-full object-cover" />
             ) : (
-              <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill priority={idx === 0} sizes="100vw" className={`object-cover ${s.pos}`} />
+              // A phone gets a copy cut to its screen: a fifth of the weight.
+              <picture>
+                <source media="(max-width: 640px)" srcSet={`/phone/${s.img.split("/").pop()}`} />
+                <Image src={s.img} alt={`${s.tab} — Online Tech Uganda`} fill loading={idx === 0 ? "eager" : "lazy"} fetchPriority={idx === 0 ? "high" : "auto"} sizes="100vw" className={`object-cover ${s.pos}`} />
+              </picture>
             ))}
           {/* Just enough shade under the words for them to be read. */}
           <div className="absolute inset-0 bg-ink-900/45" />

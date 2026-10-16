@@ -43,7 +43,8 @@ type Offer = {
   fresh?: boolean;
 };
 
-const picture = (o: Offer) => (o.photo ? thumb(o.photo) : `/products/${o.img}.webp`);
+// The small copy: these draw at 36–44px, and the full photograph is 100KB+.
+const picture = (o: Offer) => (o.photo ? thumb(o.photo) : thumb(`/products/${o.img}.webp`));
 const ugxShort = (n: number) => `UGX ${Math.round(n).toLocaleString("en-UG")}`;
 
 const STORE: Offer[] = [
