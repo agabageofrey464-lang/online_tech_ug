@@ -94,6 +94,7 @@ export const navGroups = [
       { href: "/internship", label: "Internships" },
   { href: "/jobs", label: "Jobs" },
       { href: "/stores", label: "Branches" },
+      { href: "/gallery", label: "Gallery" },
       { href: "/services", label: "Services" },
       { href: "/about", label: "About Us" },
       { href: "/blog", label: "Blog" },
