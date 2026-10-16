@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import { COMPANY, INK, MUTED, ORANGE, RULE, TEAL, TEAL_DARK, ZEBRA, logoPlate, long, todayISO } from "@/lib/doc-kit";
+import { IT_FIELDS, OTHER_FIELDS } from "@/lib/internship-brochure-pdf";
 
 /**
  * The list of students on an internship intake, as a sheet to share.
@@ -99,6 +100,53 @@ export function buildInternList(rows: ListRow[], opts: { title: string; window: 
     y += ROW;
     fill(RULE);
     doc.rect(M, y, W - M * 2, 0.2, "F");
+  });
+
+  // Under the confirmed students: every field still taking interns, so the
+  // sheet passed round a class invites the rest of it to apply. Counts are
+  // the real ones — a field shows how many have been confirmed in it.
+  const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
+  const taken = (title: string) => rows.filter((r) => r.field && same(r.field, title)).length;
+  const fields = [...IT_FIELDS.map((f) => f.title), ...OTHER_FIELDS.map((f) => f.title)];
+  y += 10;
+  const COLS = 2;
+  const CELL = 9;
+  const colW = (W - M * 2 - 6) / COLS;
+  const need = 16 + Math.ceil(fields.length / COLS) * CELL;
+  if (y + Math.min(need, 60) > H - 20) {
+    doc.addPage();
+    head();
+    y = 40;
+  }
+  ink(TEAL);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("PLACES STILL OPEN", M, y + 4);
+  ink(MUTED);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.6);
+  doc.text(`Apply at ${COMPANY.site}/apply  ·  call or WhatsApp ${COMPANY.phone}`, M, y + 10);
+  y += 15;
+  fields.forEach((f, i) => {
+    const col = i % COLS;
+    if (col === 0 && i > 0) y += CELL;
+    if (y + CELL > H - 20) {
+      doc.addPage();
+      head();
+      y = 40;
+    }
+    const x = M + col * (colW + 6);
+    fill(i % 4 < 2 ? ZEBRA : [255, 255, 255]);
+    doc.rect(x, y, colW, CELL - 1.2, "F");
+    ink(INK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.4);
+    doc.text((doc.splitTextToSize(f, colW - 34) as string[])[0], x + 3, y + 5.2);
+    const n = taken(f);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.4);
+    ink(n > 0 ? [0, 130, 70] : ORANGE);
+    doc.text(n > 0 ? `${n} CONFIRMED · OPEN` : "PLACES OPEN", x + colW - 3, y + 5.2, { align: "right" });
   });
 
   const pages = doc.getNumberOfPages();

@@ -54,7 +54,7 @@ const ugx = (n: number) => `UGX ${Math.round(n).toLocaleString("en-UG")}`;
  * IT, Software Engineering and Information Systems. Named one by one because a
  * student searches the sheet for the word their course uses.
  */
-const IT_FIELDS: { title: string; what: string; tools: string }[] = [
+export const IT_FIELDS: { title: string; what: string; tools: string }[] = [
   { title: "Front-End Web Development", what: "Build the pages people see and use, responsive on every screen.", tools: "HTML · CSS · JavaScript · React · Next.js" },
   { title: "Back-End & API Development", what: "Write the logic behind a site: accounts, orders, records and the APIs that serve them.", tools: "Python · FastAPI · Node.js · REST" },
   { title: "Full-Stack Development", what: "Take one feature from the database to the screen and ship it to a live system.", tools: "React · Python · PostgreSQL" },
@@ -76,7 +76,7 @@ const IT_FIELDS: { title: string; what: string; tools: string }[] = [
 ];
 
 /** For students who are not on an IT course: the computer side of their own field. */
-const OTHER_FIELDS: { title: string; what: string }[] = [
+export const OTHER_FIELDS: { title: string; what: string }[] = [
   { title: "Computer Applications for the Office", what: "Word, Excel, PowerPoint and Access used on real documents, budgets and records." },
   { title: "Digital Marketing & Social Media", what: "Run pages and paid campaigns, write the content and read the results." },
   { title: "Graphic Design & Branding", what: "Logos, flyers, posters and social artwork that go out under a client's name." },
