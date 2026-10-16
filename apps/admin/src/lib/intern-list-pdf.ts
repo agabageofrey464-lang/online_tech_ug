@@ -23,7 +23,8 @@ export function buildInternList(rows: ListRow[], opts: { title: string; window: 
   const ink = (c: readonly number[]) => doc.setTextColor(c[0], c[1], c[2]);
 
   // number · name · university · course · field · status
-  const X = [M + 3, M + 12, M + 62, M + 104, M + 141, right - 3];
+  // Each column ends before the next begins, so nothing overlaps.
+  const X = [M + 3, M + 11, M + 52, M + 90, M + 122, right - 3];
 
   const head = () => {
     fill(TEAL);
@@ -62,7 +63,7 @@ export function buildInternList(rows: ListRow[], opts: { title: string; window: 
 
   head();
   let y = 62;
-  const ROW = 11;
+  const ROW = 12;
   rows.forEach((r, i) => {
     if (y + ROW > H - 20) {
       doc.addPage();
@@ -80,21 +81,21 @@ export function buildInternList(rows: ListRow[], opts: { title: string; window: 
     ink(INK);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.8);
-    doc.text((doc.splitTextToSize(r.name, 48) as string[])[0], X[1], y + 6.6);
+    doc.text((doc.splitTextToSize(r.name, 38) as string[])[0], X[1], y + 6.6);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7.6);
     const two = (t: string, w: number, x: number) => {
       const lines = (doc.splitTextToSize(t || "—", w) as string[]).slice(0, 2);
       lines.forEach((l, n) => doc.text(l, x, y + (lines.length === 1 ? 6.6 : 4.8) + n * 3.4));
     };
-    two(r.university, 40, X[2]);
-    two(r.course, 35, X[3]);
-    two(r.field, 34, X[4]);
+    two(r.university, 35, X[2]);
+    two(r.course, 29, X[3]);
+    two(r.field, 31, X[4]);
     const confirmed = /confirmed/i.test(r.status);
     ink(confirmed ? [0, 130, 70] : /declined/i.test(r.status) ? [190, 60, 40] : MUTED);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.4);
-    doc.text(r.status.toUpperCase(), X[5], y + 6.6, { align: "right" });
+    doc.text(r.status.replace(/^place\s+/i, "").toUpperCase(), X[5], y + 6.6, { align: "right" });
     y += ROW;
     fill(RULE);
     doc.rect(M, y, W - M * 2, 0.2, "F");

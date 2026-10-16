@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, Header, HTTPException
+from datetime import datetime, timedelta, timezone
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -21,15 +23,35 @@ def _count(db: Session, model, *where) -> int:
     return int(db.execute(stmt).scalar_one())
 
 
+def _since(value: str | None) -> datetime:
+    """When the owner last opened that page; a week ago if never, or unreadable."""
+    try:
+        t = datetime.fromisoformat((value or "").replace("Z", "+00:00"))
+        return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return datetime.now(timezone.utc) - timedelta(days=7)
+
+
 @router.get("/counts", dependencies=[Depends(require_admin)])
-def counts(db: Session = Depends(get_db)) -> dict:
+def counts(
+    db: Session = Depends(get_db),
+    orders_since: str | None = Query(default=None),
+    enrollments_since: str | None = Query(default=None),
+) -> dict:
     """Active/pending counts per admin section for sidebar badges.
 
     Each value is the number worth acting on (pending items where that makes
     sense, otherwise the total). 0 means nothing there yet.
     """
     U = models.User
+    o_since = _since(orders_since)
+    # Unlock codes keep their time without a zone, in UTC.
+    e_since = _since(enrollments_since).astimezone(timezone.utc).replace(tzinfo=None)
     return {
+        # Only what arrived since the owner last opened Orders or Enrollments:
+        # the sidebar marks what is new, not everything still on the books.
+        "orders_new": _count(db, models.Order, models.Order.created_at > o_since),
+        "enrollments_new": _count(db, models.UnlockCode, models.UnlockCode.created_at > e_since),
         "products": _count(db, models.Product),
         "inventory": _count(db, models.Product),
         "orders": _count(db, models.Order, models.Order.status == "pending"),

@@ -7,41 +7,41 @@ import { useEffect, useState } from "react";
 
 type Counts = Record<string, number>;
 
-// `count` maps a nav item to a key in /api/counts. Items without a key
-// (Dashboard, Sales report, Settings) show no badge.
+// Only Orders and Enrollments carry a badge: the orders and the students that
+// arrived since the owner last opened that page. Everything else is plain.
 // `attention: true` → the badge pulses with a red dot when its count > 0,
 // so incoming items (orders, vendors, applications…) grab your attention.
-const sections = [
+const sections: { href: string; label: string; icon: string; count?: string; attention?: boolean }[] = [
   { href: "/", label: "Dashboard", icon: "📊" },
-  { href: "/products", label: "Products", icon: "🛒", count: "products" },
-  { href: "/inventory", label: "Inventory", icon: "📊", count: "inventory" },
-  { href: "/orders", label: "Orders", icon: "📦", count: "orders", attention: true },
-  { href: "/reviews", label: "Reviews", icon: "⭐", count: "reviews", attention: true },
+  { href: "/products", label: "Products", icon: "🛒" },
+  { href: "/inventory", label: "Inventory", icon: "📊" },
+  { href: "/orders", label: "Orders", icon: "📦", count: "orders_new", attention: true },
+  { href: "/reviews", label: "Reviews", icon: "⭐" },
   { href: "/reports", label: "Sales report", icon: "📈" },
-  { href: "/coupons", label: "Coupons", icon: "🏷️", count: "coupons" },
-  { href: "/courses", label: "Courses", icon: "🎓", count: "courses" },
-  { href: "/enrollments", label: "Enrollments", icon: "🎟️", count: "enrollments", attention: true },
+  { href: "/coupons", label: "Coupons", icon: "🏷️" },
+  { href: "/courses", label: "Courses", icon: "🎓" },
+  { href: "/enrollments", label: "Enrollments", icon: "🎟️", count: "enrollments_new", attention: true },
   { href: "/academy", label: "Online Academy", icon: "🎬" },
   { href: "/certificates", label: "Certificates", icon: "🏅" },
   { href: "/enrolment-forms", label: "Enrolment Forms", icon: "📝" },
   { href: "/internship-letters", label: "Internship Letters", icon: "📄" },
   { href: "/quotations", label: "Quotations", icon: "📑" },
   { href: "/receipts", label: "Receipts", icon: "🧾" },
-  { href: "/vendors", label: "Vendors", icon: "🏪", count: "vendors", attention: true },
-  { href: "/lessons", label: "Lessons", icon: "🎓", attention: true },
-  { href: "/community", label: "Community", icon: "💬", attention: true },
+  { href: "/vendors", label: "Vendors", icon: "🏪" },
+  { href: "/lessons", label: "Lessons", icon: "🎓" },
+  { href: "/community", label: "Community", icon: "💬" },
   { href: "/newsletter", label: "Notifications", icon: "📣" },
   { href: "/campaigns", label: "Campaigns", icon: "🎯" },
   { href: "/commissions", label: "Commissions", icon: "💰" },
-  { href: "/referrals", label: "Referrals", icon: "🎁", count: "referrals", attention: true },
-  { href: "/jobs", label: "Jobs", icon: "💼", count: "jobs" },
-  { href: "/internship-applicants", label: "Internship applicants", icon: "🎓", attention: true },
-  { href: "/applications", label: "Job applications", icon: "📄", count: "applications", attention: true },
-  { href: "/freelancers", label: "Freelancers", icon: "🧑‍💻", count: "freelancers", attention: true },
-  { href: "/blog", label: "Blog & News", icon: "📰", count: "posts" },
-  { href: "/adverts", label: "Adverts", icon: "📢", count: "adverts" },
-  { href: "/payments", label: "Payments", icon: "💵", count: "payments", attention: true },
-  { href: "/leads", label: "Leads", icon: "💬", count: "leads", attention: true },
+  { href: "/referrals", label: "Referrals", icon: "🎁" },
+  { href: "/jobs", label: "Jobs", icon: "💼" },
+  { href: "/internship-applicants", label: "Internship applicants", icon: "🎓" },
+  { href: "/applications", label: "Job applications", icon: "📄" },
+  { href: "/freelancers", label: "Freelancers", icon: "🧑‍💻" },
+  { href: "/blog", label: "Blog & News", icon: "📰" },
+  { href: "/adverts", label: "Adverts", icon: "📢" },
+  { href: "/payments", label: "Payments", icon: "💵" },
+  { href: "/leads", label: "Leads", icon: "💬" },
   { href: "/settings", label: "Settings", icon: "⚙️" },
 ];
 
@@ -54,7 +54,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (pathname === "/login") return;
     let alive = true;
-    fetch("/api/counts", { cache: "no-store" })
+    // Opening Orders or Enrollments marks everything there as seen.
+    const SEEN = { "/orders": "otu_seen_orders", "/enrollments": "otu_seen_enrollments" } as Record<string, string>;
+    const now = new Date().toISOString();
+    try {
+      if (SEEN[pathname]) localStorage.setItem(SEEN[pathname], now);
+    } catch {}
+    const read = (k: string) => {
+      try {
+        return localStorage.getItem(k) ?? "";
+      } catch {
+        return "";
+      }
+    };
+    const q = new URLSearchParams({ orders_since: read("otu_seen_orders"), enrollments_since: read("otu_seen_enrollments") });
+    fetch(`/api/counts?${q}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => alive && d && setCounts(d))
       .catch(() => {});
@@ -91,7 +105,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           >
             <span>{s.icon}</span>
             <span className="flex-1">{s.label}</span>
-            {n !== undefined && (
+            {n !== undefined && n > 0 && (
               <span className="relative flex items-center">
                 {s.attention && n > 0 && (
                   <>
