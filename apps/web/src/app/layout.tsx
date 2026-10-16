@@ -27,7 +27,7 @@ import { site } from "@/lib/site";
 // A refined serif for headings, over one clean geometric sans for everything
 // read — names, prices, forms — as the finer home stores pair them.
 const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif-face", display: "swap", style: ["normal", "italic"] });
-const sans = Jost({ subsets: ["latin"], variable: "--font-sans-face", display: "swap", style: ["normal", "italic"] });
+const sans = Jost({ subsets: ["latin"], variable: "--font-sans-face", display: "swap" });
 
 // The browser's own bars take the shop's orange, and a visitor may always zoom.
 export const viewport: Viewport = {
