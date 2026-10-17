@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { logoPlate } from "@/lib/doc-kit";
+import { loadStamp, logoPlate, officialStamp } from "@/lib/doc-kit";
 import { IT_FIELDS, OTHER_FIELDS } from "@/lib/internship-brochure-pdf";
 
 /**
@@ -334,9 +334,9 @@ export default function InternshipLettersPage() {
       doc.setFontSize(10);
       doc.setTextColor(45, 45, 45);
       doc.text("Yours faithfully,", M, y);
-      y += 4;
-      if (sign.current) doc.addImage(sign.current, "PNG", M, y, 50, 10.3);
-      y += 16;
+      y += 14;
+      // The signature sits on its line, its lowest stroke just crossing it.
+      if (sign.current) doc.addImage(sign.current, "PNG", M + 2, y - 9.3, 50, 10.3);
       doc.setDrawColor(120, 120, 120);
       doc.setLineWidth(0.3);
       doc.line(M, y, M + 72, y);
@@ -352,19 +352,8 @@ export default function InternshipLettersPage() {
       y += 4.5;
       doc.text("+256 756 839 270  ·  onlinetechug@gmail.com", M, y);
 
-      // ── A clear box on the right for the official stamp, 58 × 44 mm
-      const bw = 58;
-      const bh = 44;
-      const bx = W - M - bw;
-      const by = top - 2;
-      doc.setDrawColor(170, 170, 170);
-      doc.setLineWidth(0.3);
-      doc.setLineDashPattern([1.2, 1.2], 0);
-      doc.roundedRect(bx, by, bw, bh, 2, 2, "S");
-      doc.setLineDashPattern([], 0);
-      doc.setFontSize(7);
-      doc.setTextColor(175, 175, 175);
-      doc.text("OFFICIAL STAMP", bx + bw / 2, by + bh - 3, { align: "center" });
+      // ── The official stamp on the right, dated the day the letter is made.
+      officialStamp(doc, await loadStamp(), W - M - 56, top + 4, 56);
 
       // ── Footer
       doc.setFillColor(14, 116, 144);
@@ -576,14 +565,14 @@ export default function InternshipLettersPage() {
               "Training area and dates",
               "Supervisor and signature",
               "Their own addressee, year, district and request",
-              "A clear box for your official stamp",
+              "The company stamp, dated the day it is printed",
             ].map((x) => (
               <li key={x}>• {x}</li>
             ))}
           </ul>
 
           <p className="mt-4 border-t border-ink-600/10 pt-3 text-xs text-ink-600/55">
-            Print it, sign and stamp it, then give it to the student or email the PDF.
+            The stamp and today's date are already on it. Print or download it, then give it to the student or email the PDF.
           </p>
         </section>
       </div>

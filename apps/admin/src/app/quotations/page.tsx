@@ -27,6 +27,8 @@ import {
   type Line,
   type RGB,
   ugx,
+  loadStamp,
+  officialStamp,
 } from "@/lib/doc-kit";
 import { PRESETS, detectJob } from "@/lib/quote-presets";
 
@@ -384,8 +386,11 @@ function QuotationInner() {
     doc.text(signatory.trim() || "Online Tech Uganda", M, y + 18.6);
     doc.text("For and on behalf of Online Tech Uganda", M, y + 22.8);
 
+    // The company stamp beside our signature, dated the day the quotation is made.
+    officialStamp(doc, await loadStamp(), M + 76, y - 5, 38);
+
     // Somewhere for the client to sign their acceptance.
-    draw(STAMP);
+    draw(PEN);
     doc.setLineWidth(0.3);
     doc.line(right - 72, y + 9, right, y + 9);
     doc.setFont("helvetica", "bold");

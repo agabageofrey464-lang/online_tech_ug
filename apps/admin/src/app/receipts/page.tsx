@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { logoPlate } from "@/lib/doc-kit";
+import { logoPlate, loadStamp, officialStamp } from "@/lib/doc-kit";
 
 /**
  * Customer receipts.
@@ -53,7 +53,6 @@ const GREEN = [0, 150, 80] as const;
 const AMBER = [214, 120, 20] as const;
 const RED = [200, 60, 40] as const;
 const PEN = [150, 150, 150] as const;
-const STAMP = [210, 218, 220] as const;
 
 // Where a balance can be settled — printed rather than explained on the phone.
 const MOMO = {
@@ -493,13 +492,8 @@ export default function ReceiptsPage() {
     doc.text(signatory.trim() || "Online Tech Uganda", M, y + 18.6);
     doc.text("For and on behalf of Online Tech Uganda", M, y + 22.8);
 
-    draw(STAMP);
-    doc.setLineWidth(0.4);
-    doc.circle(right - 19, y + 9, 16.5);
-    doc.setFontSize(7);
-    doc.setTextColor(185, 195, 198);
-    doc.text("COMPANY", right - 19, y + 7.6, { align: "center" });
-    doc.text("STAMP", right - 19, y + 11.4, { align: "center" });
+    // The company stamp, dated the day the receipt is made.
+    officialStamp(doc, await loadStamp(), right - 50, y - 6, 50);
 
     /* ── Footer ───────────────────────────────────────────────── */
     fill(TEAL);
@@ -874,13 +868,13 @@ export default function ReceiptsPage() {
                 "The amount in figures and in words",
                 "How they paid, and any balance due",
                 "The onlinetechug mark and authorised signature",
-                "Space for your company stamp",
+                "The company stamp, dated the day it is printed",
               ].map((x) => (
                 <li key={x}>• {x}</li>
               ))}
             </ul>
             <p className="mt-3 border-t border-ink-600/10 pt-3 text-[11px] text-ink-600/55">
-              Numbers run in order on this device. Sign and stamp before handing it over.
+              Numbers run in order on this device. The stamp and date are printed on it.
             </p>
           </div>
         </section>

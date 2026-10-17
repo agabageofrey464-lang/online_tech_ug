@@ -225,3 +225,111 @@ export function logoPlate(
   doc.roundedRect(x - pad, y - pad, w + pad * 2, h + pad * 2, 1.8, 1.8, "F");
   doc.addImage(logo, "PNG", x, y, w, h);
 }
+
+/* ─── The company's official stamp ────────────────────────────────
+   Drawn as the real stamp is laid out — the border, "Online Tech UG LTD",
+   the tagline, the OT mark, the telephone line and the star — in vector
+   lines and lettering, so it prints sharp at any size, with the date set
+   in red each time a document is made. Only the OT mark is an image, lifted
+   from a photograph of the real stamp. */
+let stampLogo: Promise<HTMLImageElement | null> | null = null;
+
+/** Loads the stamp's OT mark once and keeps it. */
+export function loadStamp(): Promise<HTMLImageElement | null> {
+  if (typeof window === "undefined") return Promise.resolve(null);
+  stampLogo ??= new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = "/stamp-logo.png";
+  });
+  return stampLogo;
+}
+
+/** "17 OCT 2026", as the stamp's dater prints it. */
+export function stampDate(d = new Date()): string {
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/\./g, "").toUpperCase();
+}
+
+// Sampled from a photograph of the real stamp.
+const STAMP_INK = [20, 40, 165] as const;
+const DATE_INK = [222, 25, 55] as const;
+
+/** Text set as large as fits `maxW`, centred on cx. */
+function fitText(doc: jsPDF, text: string, cx: number, y: number, maxW: number, maxSize: number) {
+  let size = maxSize;
+  doc.setFontSize(size);
+  while (doc.getTextWidth(text) > maxW && size > 4) {
+    size -= 0.25;
+    doc.setFontSize(size);
+  }
+  doc.text(text, cx, y, { align: "center" });
+}
+
+/** A five-pointed star centred on (cx, cy). */
+function star(doc: jsPDF, cx: number, cy: number, r: number) {
+  const pts: [number, number][] = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    const rr = i % 2 === 0 ? r : r * 0.42;
+    pts.push([cx + rr * Math.cos(a), cy + rr * Math.sin(a)]);
+  }
+  const rel = pts.slice(1).map((p, i) => [p[0] - pts[i][0], p[1] - pts[i][1]] as [number, number]);
+  doc.lines(rel, pts[0][0], pts[0][1], [1, 1], "F", true);
+}
+
+/**
+ * The official stamp, `w` mm wide with its top-left at (x, y), dated `date`
+ * in red. The `logo` is the OT mark from loadStamp(); without it the stamp is
+ * still drawn, with the mark left out.
+ */
+export function officialStamp(doc: jsPDF, logo: HTMLImageElement | null, x: number, y: number, w = 52, date = stampDate()) {
+  const h = w / 1.85;
+  const cx = x + w / 2;
+  // Ink is never quite solid on paper.
+  const GState = (doc as unknown as { GState: new (o: { opacity: number }) => unknown }).GState;
+  const setOpacity = (o: number) => (doc as unknown as { setGState: (g: unknown) => void }).setGState(new GState({ opacity: o }));
+  setOpacity(0.9);
+
+  doc.setDrawColor(STAMP_INK[0], STAMP_INK[1], STAMP_INK[2]);
+  doc.setFillColor(STAMP_INK[0], STAMP_INK[1], STAMP_INK[2]);
+  doc.setTextColor(STAMP_INK[0], STAMP_INK[1], STAMP_INK[2]);
+
+  // The border.
+  doc.setLineWidth(w * 0.018);
+  doc.roundedRect(x, y, w, h, w * 0.025, w * 0.025, "S");
+
+  // Online Tech UG LTD
+  doc.setFont("helvetica", "bold");
+  fitText(doc, "Online Tech UG LTD", cx, y + h * 0.24, w * 0.88, w * 0.3);
+
+  // ——YOUR TECHNOLOGY PARTNER——
+  doc.setFontSize(w * 0.095);
+  const tag = "YOUR TECHNOLOGY PARTNER";
+  const tw = doc.getTextWidth(tag);
+  const ty = y + h * 0.355;
+  doc.text(tag, cx, ty, { align: "center" });
+  doc.setLineWidth(w * 0.008);
+  doc.line(x + w * 0.06, ty - w * 0.012, cx - tw / 2 - w * 0.015, ty - w * 0.012);
+  doc.line(cx + tw / 2 + w * 0.015, ty - w * 0.012, x + w * 0.94, ty - w * 0.012);
+
+  // The OT mark on the left, the star on the right.
+  if (logo) {
+    const lw = w * 0.2;
+    const lh = (lw * logo.naturalHeight) / logo.naturalWidth;
+    doc.addImage(logo, "PNG", x + w * 0.05, y + h * 0.43, lw, lh);
+  }
+  star(doc, x + w * 0.89, y + h * 0.56, w * 0.035);
+
+  // Tel:0756839270 / 0760547211
+  doc.setFont("helvetica", "bold");
+  fitText(doc, "Tel:0756839270 / 0760547211", cx, y + h * 0.9, w * 0.92, w * 0.17);
+
+  // The date, in red, where the dater sits.
+  doc.setTextColor(DATE_INK[0], DATE_INK[1], DATE_INK[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(w * 0.19);
+  doc.text(date, x + w * 0.56, y + h * 0.625, { align: "center" });
+
+  setOpacity(1);
+}

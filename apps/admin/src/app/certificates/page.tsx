@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { loadStamp, officialStamp } from "@/lib/doc-kit";
 
 /**
  * Certificate issuer — the owner decides who gets certified.
@@ -213,6 +214,8 @@ export default function CertificatesPage() {
       doc.text(shown, leftCx, baseY - 3, { align: "center" });
 
       if (sign.current) doc.addImage(sign.current, "PNG", rightCx - 25, baseY - 8.8, 50, 10.3);
+      // The company stamp over the end of the signature line, dated today.
+      officialStamp(doc, await loadStamp(), rightCx + 6, baseY - 21, 40);
 
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
