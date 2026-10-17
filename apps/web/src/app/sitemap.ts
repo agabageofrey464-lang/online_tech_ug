@@ -19,7 +19,7 @@ const PUBLIC_PATHS = [
   "/", "/shop", "/find", "/categories", "/marketplace", "/sell", "/learn", "/development", "/community", "/jobs",
   "/internship", "/freelancers", "/advertise", "/services", "/pricing", "/portfolio", "/request", "/track",
   "/news", "/blog", "/about", "/about/agaba-geofrey", "/help", "/pay", "/invoice", "/contact", "/stores", "/stickers",
-  "/privacy", "/terms", "/returns", "/gallery",
+  "/privacy", "/terms", "/returns", "/gallery", "/seminar",
 ];
 
 async function apiList(path: string): Promise<Record<string, unknown>[]> {

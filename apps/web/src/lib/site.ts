@@ -92,6 +92,7 @@ export const navGroups = [
       { href: "/development", label: "Software Development" },
       { href: "/find", label: "Find My Laptop" },
       { href: "/internship", label: "Internships" },
+      { href: "/seminar", label: "S.4 & S.6 Seminar" },
   { href: "/jobs", label: "Jobs" },
       { href: "/stores", label: "Branches" },
       { href: "/gallery", label: "Gallery" },
