@@ -29,8 +29,8 @@ export default function SeminarPage() {
         crumbs={[{ label: "S.4 & S.6 Seminar" }]}
         eyebrow="Make the holiday count"
         title="S.4 & S.6 Holiday Computer Seminar"
-        subtitle="Saturday 5 and Sunday 6 December 2026 — two full days, physical and online, for Senior Four and Senior Six leavers. Special student price: UGX 30,000, with a certificate of attendance."
-        image="/web/photo-1509062522246-3755977927d7.webp"
+        subtitle="Saturday 5 and Sunday 6 December 2026 — two full days, physical and online, for Senior Four and Senior Six leavers — and open to primary kids, S.1–S.5, university students and adults. Special student price: UGX 30,000, with a certificate of attendance."
+        image="/web/kids-laptop.webp"
       >
         <a href="#register" className="bg-white px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-brand-500 hover:text-white">
           Register now
@@ -67,7 +67,7 @@ export default function SeminarPage() {
           <div className="mt-8 rounded-md border-l-4 border-brand-500 bg-white p-5 shadow-sm">
             <p className="font-semibold text-ink-900">👨‍👩‍👧 A word to parents</p>
             <p className="mt-1 text-[15px] leading-relaxed text-ink-700/85">
-              The long holiday after S.4 and S.6 is the best time to learn the computer skills every course and job now
+              The long holiday is the best time, whether your child has just finished S.4 or S.6, is in primary school or S.1–S.5, to learn the computer skills every course and job now
               expects. Kindly register your child, and share this page with fellow parents so their children can join too.
             </p>
             <a
