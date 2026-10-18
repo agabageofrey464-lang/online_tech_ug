@@ -128,7 +128,12 @@ const STORE_TODAY = 8;
 const ACADEMY_TODAY = 6;
 const NEW_TODAY = 4;
 
+// The S.4 & S.6 seminar takes the first turn until it has happened.
+const SEMINAR: Offer = { title: "S.4 & S.6 Seminar", deal: "SAT 5 & SUN 6 DEC · UGX 30,000", note: "Physical & online · certificate", href: "/seminar", bg: "bg-brand-600", photo: "/adverts/seminar-thumb.webp" };
+const seminarOn = () => new Date().toISOString().slice(0, 10) <= "2026-12-06";
+
 const academyOffers = (): Offer[] => [
+  ...(seminarOn() ? [SEMINAR] : []),
   ...upcomingIntakes().map((i) => ({
     title: i.title,
     deal: `STARTS ${i.label.replace(/ \d{4}$/, "").toUpperCase()}`,
