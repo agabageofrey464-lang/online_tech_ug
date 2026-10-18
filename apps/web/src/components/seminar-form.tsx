@@ -20,6 +20,7 @@ export function SeminarForm() {
     const message = [
       `Student: ${get("student")}`,
       `Class just finished: ${get("level")}`,
+      `Attending: ${get("mode")}`,
       `School: ${get("school")}`,
       `Parent / guardian: ${get("parent")}`,
       get("note") ? `Note: ${get("note")}` : "",
@@ -71,7 +72,7 @@ export function SeminarForm() {
   return (
     <form onSubmit={submit} className="rounded-md bg-white p-6 shadow-sm">
       <p className="text-[24px] font-semibold text-ink-900">Register a student</p>
-      <p className="mt-1 text-[14px] text-ink-700/75">Parents may register for their children. Saturday 5 &amp; Sunday 6 December, online. We confirm how to pay.</p>
+      <p className="mt-1 text-[14px] text-ink-700/75">Parents may register for their children. Saturday 5 &amp; Sunday 6 December, physical (Kampala venue announced soon) or online. We confirm how to pay.</p>
       <p className="mt-2 text-[14px] font-semibold text-ink-900">📞 Call or WhatsApp: <a href="tel:+256756839270" className="text-brand-600">0756 839 270</a> · <a href="tel:+256760547211" className="text-brand-600">0760 547 211</a> · <a href="tel:+256754917768" className="text-brand-600">0754 917 768</a></p>
       <div className="mt-4 grid gap-3">
         <label className="text-[14px] font-semibold text-ink-800">Student&apos;s full name<input name="student" required minLength={2} className={input} /></label>
@@ -81,6 +82,13 @@ export function SeminarForm() {
             <option>Senior Four (S.4)</option>
             <option>Senior Six (S.6)</option>
             <option>Other</option>
+          </select>
+        </label>
+        <label className="text-[14px] font-semibold text-ink-800">
+          How will the student attend?
+          <select name="mode" required className={input}>
+            <option>Physical (in class, Kampala)</option>
+            <option>Online</option>
           </select>
         </label>
         <label className="text-[14px] font-semibold text-ink-800">School<input name="school" className={input} /></label>
