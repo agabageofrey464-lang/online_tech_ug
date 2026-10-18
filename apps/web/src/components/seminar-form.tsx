@@ -19,7 +19,7 @@ export function SeminarForm() {
     const get = (k: string) => String(f.get(k) ?? "").trim();
     const message = [
       `Student: ${get("student")}`,
-      `Class just finished: ${get("level")}`,
+      `Class / level: ${get("level")}`,
       `Attending: ${get("mode")}`,
       `School: ${get("school")}`,
       `Parent / guardian: ${get("parent")}`,
@@ -77,11 +77,15 @@ export function SeminarForm() {
       <div className="mt-4 grid gap-3">
         <label className="text-[14px] font-semibold text-ink-800">Student&apos;s full name<input name="student" required minLength={2} className={input} /></label>
         <label className="text-[14px] font-semibold text-ink-800">
-          Class just finished
+          Class / level
           <select name="level" required className={input}>
             <option>Senior Four (S.4)</option>
             <option>Senior Six (S.6)</option>
-            <option>Other</option>
+            <option>Primary school (kids)</option>
+            <option>S.1 – S.3</option>
+            <option>S.5</option>
+            <option>University / college</option>
+            <option>Adult / other</option>
           </select>
         </label>
         <label className="text-[14px] font-semibold text-ink-800">
