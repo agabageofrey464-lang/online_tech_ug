@@ -55,7 +55,7 @@ export function SeminarForm() {
       <div className="rounded-md bg-white p-6 shadow-sm">
         <p className="text-[22px] font-semibold text-ink-900">✅ Registration received</p>
         <p className="mt-2 text-[15px] text-ink-700/85">
-          Thank you. We will call or WhatsApp you with the seminar dates, the joining link and how to pay the UGX 30,000.
+          Thank you. We will call or WhatsApp you with the joining link for Saturday 5 and Sunday 6 December, and how to pay the UGX 30,000.
         </p>
         <a
           href={whatsappLink(`Hello Online Tech Uganda, I have registered for the S.4 & S.6 Holiday Seminar.\n\n${summary}`)}
@@ -71,7 +71,7 @@ export function SeminarForm() {
   return (
     <form onSubmit={submit} className="rounded-md bg-white p-6 shadow-sm">
       <p className="text-[24px] font-semibold text-ink-900">Register a student</p>
-      <p className="mt-1 text-[14px] text-ink-700/75">Parents may register for their children. We confirm the dates and how to pay.</p>
+      <p className="mt-1 text-[14px] text-ink-700/75">Parents may register for their children. Saturday 5 &amp; Sunday 6 December, online. We confirm how to pay.</p>
       <p className="mt-2 text-[14px] font-semibold text-ink-900">📞 Call or WhatsApp: <a href="tel:+256756839270" className="text-brand-600">0756 839 270</a> · <a href="tel:+256754917768" className="text-brand-600">0754 917 768</a></p>
       <div className="mt-4 grid gap-3">
         <label className="text-[14px] font-semibold text-ink-800">Student&apos;s full name<input name="student" required minLength={2} className={input} /></label>

@@ -29,7 +29,7 @@ export default function SeminarPage() {
         crumbs={[{ label: "S.4 & S.6 Seminar" }]}
         eyebrow="Make the holiday count"
         title="S.4 & S.6 Holiday Computer Seminar"
-        subtitle="Two full days, online, for Senior Four and Senior Six leavers. Special student price: UGX 30,000, with a certificate of attendance."
+        subtitle="Saturday 5 and Sunday 6 December 2026 — two full days, online, for Senior Four and Senior Six leavers. Special student price: UGX 30,000, with a certificate of attendance."
         image="/web/photo-1509062522246-3755977927d7.webp"
       >
         <a href="#register" className="bg-white px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-900 transition hover:bg-brand-500 hover:text-white">
@@ -54,7 +54,7 @@ export default function SeminarPage() {
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             {[
               ["UGX 30,000", "special student price, for both days"],
-              ["2 days", "online, join on a phone or laptop"],
+              ["Sat 5 & Sun 6 Dec", "two days, online, on a phone or laptop"],
               ["Certificate", "of attendance for every student"],
             ].map(([big, small]) => (
               <div key={big} className="rounded-md bg-[#fcdc04] p-4 text-ink-900">
@@ -71,7 +71,7 @@ export default function SeminarPage() {
               expects. Kindly register your child, and share this page with fellow parents so their children can join too.
             </p>
             <a
-              href={whatsappLink("Hello! Online Tech Uganda is running a 2-day online computer seminar for S.4 and S.6 leavers, UGX 30,000. Details and registration: https://www.onlinetechug.com/seminar")}
+              href={whatsappLink("Hello! Online Tech Uganda is running a 2-day online computer seminar for S.4 and S.6 leavers on Saturday 5 and Sunday 6 December, UGX 30,000. Details and registration: https://www.onlinetechug.com/seminar")}
               target="_blank"
               rel="noreferrer"
               className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-[13px] font-bold text-white"
