@@ -78,7 +78,7 @@ export default function SeminarPage() {
             >
               Share on WhatsApp
             </a>
-            <p className="mt-3 text-[14px] text-ink-700/85">Questions? Call or WhatsApp <a href="tel:+256756839270" className="font-semibold text-brand-600">0756 839 270</a> or <a href="tel:+256754917768" className="font-semibold text-brand-600">0754 917 768</a>.</p>
+            <p className="mt-3 text-[14px] text-ink-700/85">Questions? Call or WhatsApp <a href="tel:+256756839270" className="font-semibold text-brand-600">0756 839 270</a>, <a href="tel:+256760547211" className="font-semibold text-brand-600">0760 547 211</a> or <a href="tel:+256754917768" className="font-semibold text-brand-600">0754 917 768</a>.</p>
           </div>
 
           <div className="mt-8 overflow-hidden rounded-md">
