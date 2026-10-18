@@ -72,6 +72,7 @@ export function SeminarForm() {
     <form onSubmit={submit} className="rounded-md bg-white p-6 shadow-sm">
       <p className="text-[24px] font-semibold text-ink-900">Register a student</p>
       <p className="mt-1 text-[14px] text-ink-700/75">Parents may register for their children. We confirm the dates and how to pay.</p>
+      <p className="mt-2 text-[14px] font-semibold text-ink-900">📞 Call or WhatsApp: <a href="tel:+256756839270" className="text-brand-600">0756 839 270</a> · <a href="tel:+256754917768" className="text-brand-600">0754 917 768</a></p>
       <div className="mt-4 grid gap-3">
         <label className="text-[14px] font-semibold text-ink-800">Student&apos;s full name<input name="student" required minLength={2} className={input} /></label>
         <label className="text-[14px] font-semibold text-ink-800">
@@ -93,7 +94,7 @@ export function SeminarForm() {
       </button>
       {sent === "fail" && (
         <p className="mt-3 text-[14px] text-red-600">
-          That did not go through. Please WhatsApp 0756 839 270 with the student&apos;s name and class.
+          That did not go through. Please WhatsApp 0756 839 270 or 0754 917 768 with the student&apos;s name and class.
         </p>
       )}
     </form>
